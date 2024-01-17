@@ -1,26 +1,50 @@
-import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
-import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
+import 'package:finwise/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/widgets/test_container.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class AuthScreenLayout extends StatefulWidget {
+  const AuthScreenLayout({
+    super.key,
+    this.title = '',
+    this.subtitle = '',
+    this.buttonLabel = '',
+    required this.bottomContent,
+  });
+
+  final String title;
+  final String subtitle;
+  final String buttonLabel;
+  final Widget bottomContent;
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<AuthScreenLayout> createState() => _AuthScreenLayoutState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _AuthScreenLayoutState extends State<AuthScreenLayout> {
   @override
   Widget build(BuildContext context) {
-    return AuthScreenLayout(
-      title: 'Create Account',
-      subtitle: 'Please enter your email and password to sign up',
-      buttonLabel: 'Sign up',
-      bottomContent: _buildBottomContent(),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: _buildAppBar(),
+      body: SafeArea(
+        child: GestureDetector(
+          child: _buildBody(),
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+        ),
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      foregroundColor: Colors.black,
     );
   }
 
@@ -38,10 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     // _buildArrow(),
                     _buildTopContent(),
                     _buildTextFields(),
-                    _buildBottomContent(),
-                    // TestContainer(
-                    //   text: 'Hello',
-                    // ),
+                    widget.bottomContent,
                   ],
                 ),
               ),
@@ -54,11 +75,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buildArrow() {
-    return Container(
-      // color: Colors.lightBlue[200],
-      padding: EdgeInsets.symmetric(vertical: 14),
-      alignment: Alignment.topLeft,
-      child: Icon(Icons.arrow_back),
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 14),
+        alignment: Alignment.topLeft,
+        child: Icon(Icons.arrow_back),
+      ),
     );
   }
 
@@ -73,12 +98,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Create Account',
+            widget.title,
             style: _textTheme.headlineMedium!
                 .copyWith(fontWeight: FontWeight.w500),
           ),
           Text(
-            'Please enter your email and password to sign up',
+            widget.subtitle,
             style: _textTheme.bodyMedium!.copyWith(
               fontFamily: FontConstant.balooThambi2Medium,
             ),
@@ -109,6 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           SizedBox(height: 24),
           _buildTextLabel(text: 'Password'),
           _buildTextFieldItem(
+            obscureText: true,
             hintText: 'Password',
             prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
             controller: _passwordController,
@@ -132,6 +158,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  // TODO
+  // better make it as a component
 
   Widget _buildTextFieldItem({
     required TextEditingController controller,
@@ -182,54 +211,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildBottomContent() {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'I agree to Finwise ',
-                style: _textTheme.bodyMedium!.copyWith(
-                  fontFamily: FontConstant.balooThambi2Medium,
-                ),
-              ),
-              Text(
-                'Terms and Policy.',
-                style: _textTheme.bodyMedium!.copyWith(
-                    fontFamily: FontConstant.balooThambi2Medium,
-                    color: ColorConstant.boldLink),
-              ),
-            ],
-          ),
-          SizedBox(height: 48),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Already have an account? ', style: _textTheme.bodyMedium),
-              InkWell(
-                child: Text(
-                  'Sign In',
-                  style: _textTheme.bodyMedium!.copyWith(
-                      fontFamily: FontConstant.balooThambi2Medium,
-                      color: ColorConstant.boldLink),
-                ),
-                onTap: () {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => SignInScreen()));
-                },
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   bool get _isFormFilled =>
       _emailController.value.text.isNotEmpty &&
       _passwordController.value.text.isNotEmpty;
@@ -245,7 +226,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: InkWell(
         onTap: _isFormFilled
             ? () {
-                print('Sign up button: Please fill everything');
+                // TODO
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
               }
             : null,
         child: Container(
@@ -258,9 +241,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Text(
-            'Sign up',
+            widget.buttonLabel,
             style: TextStyle(
-                fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
