@@ -1,7 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
+import 'package:finwise/core/constants/text_style_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
+import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -20,6 +22,8 @@ class _SignInScreenState extends State<SignInScreen> {
       subtitle: 'Please enter your email and password to sign in',
       buttonLabel: 'Sign in',
       bottomContent: _buildBottomContent(),
+      isFormFilled: _isFormFilled,
+      formArea: _buildTextFields(),
     );
   }
 
@@ -76,4 +80,57 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  Color formColor = Color(0xffF2F3F7);
+
+  Widget _buildTextFields() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTextLabel(text: 'Email'),
+          FormWidget(
+            hintText: 'Email',
+            controller: _emailController,
+            prefixIcon: Icon(
+              Icons.email_outlined,
+              color: ColorConstant.mainText,
+            ),
+            onChanged: (value) {
+              setState(() => _isFormFilled);
+            },
+          ),
+          SizedBox(height: 24),
+          _buildTextLabel(text: 'Password'),
+          FormWidget(
+            obscureText: true,
+            hintText: 'Password',
+            prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
+            controller: _passwordController,
+            onChanged: (value) {
+              setState(() => _isFormFilled);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextLabel({required String text}) {
+    return Container(
+      padding: EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        text,
+        style: AuthScreenTextStyle.formLabel,
+      ),
+    );
+  }
+
+  bool get _isFormFilled =>
+      _emailController.value.text.isNotEmpty &&
+      _passwordController.value.text.isNotEmpty;
+
+ 
 }

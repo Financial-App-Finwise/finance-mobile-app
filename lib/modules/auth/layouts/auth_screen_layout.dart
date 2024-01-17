@@ -1,9 +1,8 @@
+import 'package:finwise/core/constants/auth_text_style_constant.dart';
+import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:finwise/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/font_constant.dart';
-import 'package:finwise/core/widgets/test_container.dart';
 
 class AuthScreenLayout extends StatefulWidget {
   const AuthScreenLayout({
@@ -12,12 +11,18 @@ class AuthScreenLayout extends StatefulWidget {
     this.subtitle = '',
     this.buttonLabel = '',
     required this.bottomContent,
+    required this.formArea,
+    this.isFormFilled = false,
+    this.onButtonTap,
   });
 
   final String title;
   final String subtitle;
   final String buttonLabel;
   final Widget bottomContent;
+  final Widget formArea;
+  final bool isFormFilled;
+  final void Function()? onButtonTap;
 
   @override
   State<AuthScreenLayout> createState() => _AuthScreenLayoutState();
@@ -61,7 +66,8 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
                   children: [
                     // _buildArrow(),
                     _buildTopContent(),
-                    _buildTextFields(),
+                    // _buildTextFields(),
+                    widget.formArea,
                     widget.bottomContent,
                   ],
                 ),
@@ -87,8 +93,6 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
     );
   }
 
-  late TextTheme _textTheme = Theme.of(context).textTheme;
-
   Widget _buildTopContent() {
     return Container(
       alignment: Alignment.topLeft,
@@ -99,121 +103,16 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         children: [
           Text(
             widget.title,
-            style: _textTheme.headlineMedium!
-                .copyWith(fontWeight: FontWeight.w500),
+            style: AuthScreenTextStyle.topContentTitle,
           ),
           Text(
             widget.subtitle,
-            style: _textTheme.bodyMedium!.copyWith(
-              fontFamily: FontConstant.balooThambi2Medium,
-            ),
+            style: AuthScreenTextStyle.topContentSubtitle,
           ),
         ],
       ),
     );
   }
-
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  Color formColor = Color(0xffF2F3F7);
-
-  Widget _buildTextFields() {
-    return Container(
-      // color: Colors.amber[100],
-      // padding: EdgeInsets.zero,
-      // alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTextLabel(text: 'Email'),
-          _buildTextFieldItem(
-              hintText: 'Email',
-              prefixIcon:
-                  Icon(Icons.email_outlined, color: ColorConstant.mainText),
-              controller: _emailController),
-          SizedBox(height: 24),
-          _buildTextLabel(text: 'Password'),
-          _buildTextFieldItem(
-            obscureText: true,
-            hintText: 'Password',
-            prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
-            controller: _passwordController,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextLabel({required String text}) {
-    return Container(
-      padding: EdgeInsets.only(left: 8, bottom: 8),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          color: ColorConstant.mainText,
-          fontFamily: FontConstant.primary,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
-  }
-
-  // TODO
-  // better make it as a component
-
-  Widget _buildTextFieldItem({
-    required TextEditingController controller,
-    required String hintText,
-    required Widget prefixIcon,
-    bool obscureText = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Color(0xffF2F3F7),
-      ),
-      child: TextFormField(
-        // cursorHeight: 14,
-        textAlignVertical: TextAlignVertical.center,
-        style: TextStyle(
-          color: ColorConstant.mainText,
-          fontWeight: FontWeight.w400,
-        ),
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-            color: ColorConstant.thin,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
-          prefixIcon: Container(
-            margin: EdgeInsets.all(16),
-            child: prefixIcon,
-          ),
-          // focusColor: ColorConstant.mainText,
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.zero,
-        ),
-        obscureText: obscureText,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter...';
-          }
-        },
-        onChanged: (value) {
-          setState(() {
-            _isFormFilled;
-          });
-        },
-      ),
-    );
-  }
-
-  bool get _isFormFilled =>
-      _emailController.value.text.isNotEmpty &&
-      _passwordController.value.text.isNotEmpty;
 
   Widget _buildButton() {
     return Container(
@@ -224,7 +123,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         // horizontal: 16,
       ),
       child: InkWell(
-        onTap: _isFormFilled
+        onTap: widget.isFormFilled
             ? () {
                 // TODO
                 Navigator.pushReplacement(context,
@@ -234,7 +133,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: _isFormFilled
+            color: widget.isFormFilled
                 ? ColorConstant.secondary
                 : ColorConstant.secondary.withOpacity(0.4),
             borderRadius: BorderRadius.circular(12),
@@ -242,14 +141,108 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Text(
             widget.buttonLabel,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AuthScreenTextStyle.button,
           ),
         ),
       ),
     );
   }
 }
+
+//   TextEditingController _emailController = TextEditingController();
+//   TextEditingController _passwordController = TextEditingController();
+//   Color formColor = Color(0xffF2F3F7);
+
+//   Widget _buildTextFields() {
+//     return Container(
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           _buildTextLabel(text: 'Email'),
+//           FormWidget(
+//             hintText: 'Email',
+//             controller: _emailController,
+//             prefixIcon: Icon(
+//               Icons.email_outlined,
+//               color: ColorConstant.mainText,
+//             ),
+//             onChanged: (value) {
+//               setState(() => _isFormFilled);
+//             },
+//           ),
+//           SizedBox(height: 24),
+//           _buildTextLabel(text: 'Password'),
+//           FormWidget(
+//             obscureText: true,
+//             hintText: 'Password',
+//             prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
+//             controller: _passwordController,
+//             onChanged: (value) {
+//               setState(() => _isFormFilled);
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _buildTextLabel({required String text}) {
+//     return Container(
+//       padding: EdgeInsets.only(left: 8, bottom: 8),
+//       child: Text(
+//         text,
+//         style: AuthScreenTextStyle.formLabel,
+//       ),
+//     );
+//   }
+
+//   bool get _isFormFilled =>
+//       _emailController.value.text.isNotEmpty &&
+//       _passwordController.value.text.isNotEmpty;
+
+
+
+// better make it as a component, making it convenient to share with other classes
+
+// Widget _buildTextFieldItem({
+//   required TextEditingController controller,
+//   required String hintText,
+//   required Widget prefixIcon,
+//   bool obscureText = false,
+// }) {
+//   return Container(
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(12),
+//       color: Color(0xffF2F3F7),
+//     ),
+//     child: TextFormField(
+//       // cursorHeight: 14,
+//       textAlignVertical: TextAlignVertical.center,
+//       style: AuthScreenTextStyle.formText,
+//       controller: controller,
+//       decoration: InputDecoration(
+//         hintText: hintText,
+//         hintStyle: AuthScreenTextStyle.formHint,
+//         prefixIcon: Container(
+//           margin: EdgeInsets.all(16),
+//           child: prefixIcon,
+//         ),
+//         // focusColor: ColorConstant.mainText,
+//         border: InputBorder.none,
+//         contentPadding: EdgeInsets.zero,
+//       ),
+//       obscureText: obscureText,
+//       validator: (value) {
+//         if (value!.isEmpty) {
+//           return 'Please enter...';
+//         }
+//       },
+//       onChanged: (value) {
+//         setState(() {
+//           _isFormFilled;
+//         });
+//       },
+//     ),
+//   );
+// }
+

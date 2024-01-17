@@ -4,6 +4,7 @@ class ColorConstant {
   // main color
   static Color primary = Color(0xff0B8AAF);
   static Color secondary = Color(0xff0ABDE3);
+  static Color backgroundColor = Color(0xffF5F6F7);
 
   // finance
   static Color total = primary;
@@ -26,4 +27,6 @@ class ColorConstant {
 
   // sign up
   static Color boldLink = Color(0xff165A74);
+
+
 }
