@@ -1,9 +1,11 @@
+import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constant.dart';
 import 'package:flutter/material.dart';
 
 class FormWidget extends StatefulWidget {
   const FormWidget({
     super.key,
+    // this.backgroundColor
     required this.controller,
     this.hintText = '',
     required this.prefixIcon,
@@ -11,6 +13,7 @@ class FormWidget extends StatefulWidget {
     this.onChanged,
   });
 
+  // final Color backgroundColor;
   final TextEditingController controller;
   final String hintText;
   final Widget prefixIcon;
@@ -27,7 +30,7 @@ class _FormWidgetState extends State<FormWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Color(0xffF2F3F7),
+        color: ColorConstant.backgroundColor,
       ),
       child: TextFormField(
         textAlignVertical: TextAlignVertical.center,

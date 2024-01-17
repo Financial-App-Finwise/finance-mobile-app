@@ -2,10 +2,8 @@ import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
-import 'package:finwise/core/widgets/test_container.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -35,9 +33,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildTextFields() {
     return Container(
-      // color: Colors.amber[100],
-      // padding: EdgeInsets.zero,
-      // alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

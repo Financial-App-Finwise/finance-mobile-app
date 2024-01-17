@@ -44,17 +44,13 @@ class _SignInScreenState extends State<SignInScreen> {
                   Checkbox(value: true, onChanged: (value) {}),
                   Text(
                     'Remember me',
-                    style: _textTheme.bodyMedium!.copyWith(
-                      fontFamily: FontConstant.balooThambi2Medium,
-                    ),
+                    style: AuthScreenTextStyle.rememberMe,
                   ),
                 ],
               ),
               Text(
                 'Forget Password?',
-                style: _textTheme.bodyMedium!.copyWith(
-                    fontFamily: FontConstant.balooThambi2Medium,
-                    color: ColorConstant.boldLink),
+                style: AuthScreenTextStyle.forgetPass,
               ),
             ],
           ),
@@ -71,7 +67,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       color: ColorConstant.boldLink),
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => SignUpScreen()));
                 },
               ),
             ],
@@ -83,7 +80,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  Color formColor = Color(0xffF2F3F7);
 
   Widget _buildTextFields() {
     return Container(
@@ -98,9 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Icons.email_outlined,
               color: ColorConstant.mainText,
             ),
-            onChanged: (value) {
-              setState(() => _isFormFilled);
-            },
+            onChanged: (value) => setState(() => _isFormFilled),
           ),
           SizedBox(height: 24),
           _buildTextLabel(text: 'Password'),
@@ -109,9 +103,7 @@ class _SignInScreenState extends State<SignInScreen> {
             hintText: 'Password',
             prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
             controller: _passwordController,
-            onChanged: (value) {
-              setState(() => _isFormFilled);
-            },
+            onChanged: (value) => setState(() => _isFormFilled),
           ),
         ],
       ),
@@ -131,6 +123,4 @@ class _SignInScreenState extends State<SignInScreen> {
   bool get _isFormFilled =>
       _emailController.value.text.isNotEmpty &&
       _passwordController.value.text.isNotEmpty;
-
- 
 }

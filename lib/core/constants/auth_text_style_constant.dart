@@ -39,4 +39,22 @@ abstract class AuthScreenTextStyle {
     color: Colors.white,
     fontWeight: FontWeight.w600,
   );
+
+  static TextStyle rememberMe = TextStyle(
+    color: ColorConstant.mainText,
+    fontSize: 14,
+    fontFamily: FontConstant.balooThambi2Medium,
+  );
+
+  static TextStyle forgetPass = TextStyle(
+    fontSize: 14,
+    fontFamily: FontConstant.balooThambi2Medium,
+    color: ColorConstant.boldLink,
+  );
+
+  static TextStyle noAccount = TextStyle();
+
+  static TextStyle goToSignUp = TextStyle();
+
+  static TextStyle boldLink = TextStyle();
 }
