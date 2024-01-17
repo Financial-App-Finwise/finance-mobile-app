@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:test/core/constants/color_constant.dart';
 import 'package:test/core/constants/font_constant.dart';
 import 'package:test/core/widgets/test_container.dart';
@@ -13,8 +14,10 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
+    print(Theme.of(context).textTheme.headlineMedium);
     return Scaffold(
-      body: _buildBody(),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(child: _buildBody()),
     );
   }
 
@@ -24,17 +27,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildArrow(),
-                  _buildTopContent(),
-                  _buildTextFields(),
-                  _buildBottomContent(),
-                  TestContainer(
-                    text: 'Hello',
-                  ),
-                ],
+            child: Container(
+              // color: Colors.green[200],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildArrow(),
+                    _buildTopContent(),
+                    _buildTextFields(),
+                    _buildBottomContent(),
+                    // TestContainer(
+                    //   text: 'Hello',
+                    // ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -46,29 +52,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildArrow() {
     return Container(
+      // color: Colors.lightBlue[200],
+      padding: EdgeInsets.symmetric(vertical: 14),
       alignment: Alignment.topLeft,
       child: Icon(Icons.arrow_back),
     );
   }
 
+  late TextTheme _textTheme = Theme.of(context).textTheme;
+
   Widget _buildTopContent() {
     return Container(
       alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(bottom: 32),
-      color: Colors.grey[400],
+      padding: EdgeInsets.only(top: 12, bottom: 32),
+      // color: Colors.orange[200],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Create Account',
-            style: Theme.of(context).textTheme.displayMedium,
+            style: _textTheme.headlineMedium!
+                .copyWith(fontWeight: FontWeight.w500),
           ),
           Text(
             'Please enter your email and password to sign up',
-            style: TextStyle(
-              color: ColorConstant.mainText,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+            style: _textTheme.bodyMedium!.copyWith(
+              fontFamily: FontConstant.balooThambi2Medium,
             ),
           ),
         ],
@@ -82,21 +91,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildTextFields() {
     return Container(
-      padding: EdgeInsets.zero,
+      // color: Colors.amber[100],
+      // padding: EdgeInsets.zero,
+      // alignment: Alignment.topLeft,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildTextLabel(text: 'Email'),
           _buildTextFieldItem(
-            hintText: 'Email',
-            prefixIcon: Icon(Icons.email, color: ColorConstant.mainText),
-            controller: _emailController
-          ),
+              hintText: 'Email',
+              prefixIcon:
+                  Icon(Icons.email_outlined, color: ColorConstant.mainText),
+              controller: _emailController),
           SizedBox(height: 24),
+          _buildTextLabel(text: 'Password'),
           _buildTextFieldItem(
             hintText: 'Password',
-            prefixIcon: Icon(Icons.lock, color: ColorConstant.mainText),
+            prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
             controller: _passwordController,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTextLabel({required String text}) {
+    return Container(
+      padding: EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 16,
+          color: ColorConstant.mainText,
+          fontFamily: FontConstant.primary,
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }
@@ -110,7 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: formColor,
+        color: Color(0xffF2F3F7),
       ),
       child: TextFormField(
         // cursorHeight: 14,
@@ -123,8 +152,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(
-            color: Colors.grey,
+            color: ColorConstant.thin,
             fontSize: 14,
+            fontWeight: FontWeight.w400,
           ),
           prefixIcon: Container(
             margin: EdgeInsets.all(16),
@@ -151,14 +181,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildBottomContent() {
     return Container(
+      alignment: Alignment.center,
+      // color: Colors.yellow[200],
+      padding: EdgeInsets.only(top: 12),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('I agree to Finwise Terms and Policy'),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Already have an account?'),
+              Text(
+                'I agree to Finwise ',
+                style: _textTheme.bodyMedium!.copyWith(
+                  fontFamily: FontConstant.balooThambi2Medium,
+                ),
+              ),
+              Text(
+                'Terms and Policy.',
+                style: _textTheme.bodyMedium!.copyWith(
+                    fontFamily: FontConstant.balooThambi2Medium,
+                    color: ColorConstant.boldLink),
+              ),
+            ],
+          ),
+          SizedBox(height: 48),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Already have an account? ', style: _textTheme.bodyMedium),
               InkWell(
-                child: Text('Sign In'),
+                child: Text(
+                  'Sign In',
+                  style: _textTheme.bodyMedium!.copyWith(
+                      fontFamily: FontConstant.balooThambi2Medium,
+                      color: ColorConstant.boldLink),
+                ),
                 onTap: () {
                   print('hi');
                 },
@@ -176,6 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildButton() {
     return Container(
+      // color: Colors.blue[200],
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
         vertical: 50,
@@ -197,7 +255,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Text(
-            'Sign Up',
+            'Sign up',
             style: TextStyle(
                 fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
           ),
