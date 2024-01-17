@@ -86,5 +86,9 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+  fonts:
+    - family: Baloo_Thambi_2
+      fonts:
+        - asset: assets/fonts/baloo_thambi_2/BalooThambi2-Regular.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
