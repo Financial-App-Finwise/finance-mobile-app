@@ -263,11 +263,11 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
             child: Row(children: [
-              _buildFeatureItem(),
+              _buildFeatureItem(text: 'My Budget', amount: '3'),
               SizedBox(width: 12),
-              _buildFeatureItem(),
+              _buildFeatureItem(text: 'Upcoming Bill', amount: '3'),
               SizedBox(width: 12),
-              _buildFeatureItem(),
+              _buildFeatureItem(text: 'Smart Goal', amount: '3'),
             ]),
           ),
         ],
@@ -275,33 +275,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFeatureItem() {
-    return Container(
-      width: 150,
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: [ColorConstant.primary, ColorConstant.secondary],
-            stops: [0, 0.8]),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Column(
-            children: [
-              Text('My Budget Plan'),
-              Text('3'),
-            ],
-          ),
-          Icon(FlutterIcons.ellipsis1_ant),
-        ],
+  Widget _buildFeatureItem({String text = '', String amount = ''}) {
+    return TextButton(
+      onPressed: () {},
+      child: Container(
+        width: 165.5,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [ColorConstant.primary, ColorConstant.secondary],
+              stops: [0, 0.8]),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    text,
+                    style:
+                        HomeTextStyleConstant.medium.copyWith(color: Colors.white),
+                  ),
+                  Text(
+                    amount,
+                    style: HomeTextStyleConstant.numberFocus(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Icon(FlutterIcons.ellipsis1_ant, color: Colors.white),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildSpendingIncome() {
     return Container(
+      color: Colors.orange[100],
       alignment: Alignment.topLeft,
       child: Text(
         'Spending and Income',
