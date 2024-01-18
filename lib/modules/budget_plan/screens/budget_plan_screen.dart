@@ -408,7 +408,7 @@ class BudgetPlanScreen extends StatelessWidget {
           ClipRRect(
             child: LinearProgressIndicator(
               minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
+              // borderRadius: BorderRadius.circular(5),
               value: ((spent * 10) / total) / 10,
               valueColor: const AlwaysStoppedAnimation<Color>(
                 Color(0xFFEE5353),

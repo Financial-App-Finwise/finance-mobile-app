@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
+import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icons_flutter/icons_flutter.dart';
@@ -263,7 +264,17 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
             child: Row(children: [
-              _buildFeatureItem(text: 'My Budget', amount: '3'),
+              _buildFeatureItem(
+                  text: 'My Budget',
+                  amount: '3',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BudgetPlanScreen(),
+                      ),
+                    );
+                  }),
               SizedBox(width: 12),
               _buildFeatureItem(text: 'Upcoming Bill', amount: '3'),
               SizedBox(width: 12),
@@ -275,9 +286,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFeatureItem({String text = '', String amount = ''}) {
+  Widget _buildFeatureItem(
+      {String text = '', String amount = '', void Function()? onPressed}) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       child: Container(
         width: 165.5,
         alignment: Alignment.center,
@@ -296,12 +308,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     text,
-                    style:
-                        HomeTextStyleConstant.medium.copyWith(color: Colors.white),
+                    style: HomeTextStyleConstant.medium
+                        .copyWith(color: Colors.white),
                   ),
                   Text(
                     amount,
-                    style: HomeTextStyleConstant.numberFocus(color: Colors.white),
+                    style:
+                        HomeTextStyleConstant.numberFocus(color: Colors.white),
                   ),
                 ],
               ),
