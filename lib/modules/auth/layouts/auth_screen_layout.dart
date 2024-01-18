@@ -1,5 +1,4 @@
 import 'package:finwise/core/constants/auth_text_style_constant.dart';
-import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:finwise/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';

@@ -27,6 +27,4 @@ class ColorConstant {
 
   // sign up
   static Color boldLink = Color(0xff165A74);
-
-
 }

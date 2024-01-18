@@ -1,3 +1,4 @@
+import 'package:finwise/core/constants/auth_text_style_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
@@ -24,8 +25,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       formArea: _buildTextFields(),
     );
   }
-
-  late TextTheme _textTheme = Theme.of(context).textTheme;
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -72,6 +71,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  bool get _isFormFilled =>
+      _emailController.value.text.isNotEmpty &&
+      _passwordController.value.text.isNotEmpty;
+
   Widget _buildBottomContent() {
     return Container(
       alignment: Alignment.center,
@@ -84,15 +87,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             children: [
               Text(
                 'I agree to Finwise ',
-                style: _textTheme.bodyMedium!.copyWith(
-                  fontFamily: FontConstant.balooThambi2Medium,
-                ),
+                style: AuthScreenTextStyle.medium,
               ),
               Text(
                 'Terms and Policy.',
-                style: _textTheme.bodyMedium!.copyWith(
-                    fontFamily: FontConstant.balooThambi2Medium,
-                    color: ColorConstant.boldLink),
+                style: AuthScreenTextStyle.boldLink,
               ),
             ],
           ),
@@ -100,13 +99,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Already have an account? ', style: _textTheme.bodyMedium),
+              Text('Already have an account? ',
+                  style: AuthScreenTextStyle.regular),
               InkWell(
                 child: Text(
                   'Sign In',
-                  style: _textTheme.bodyMedium!.copyWith(
-                      fontFamily: FontConstant.balooThambi2Medium,
-                      color: ColorConstant.boldLink),
+                  style: AuthScreenTextStyle.boldLink,
                 ),
                 onTap: () {
                   Navigator.of(context).pushReplacement(
@@ -119,8 +117,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
-  bool get _isFormFilled =>
-      _emailController.value.text.isNotEmpty &&
-      _passwordController.value.text.isNotEmpty;
 }
