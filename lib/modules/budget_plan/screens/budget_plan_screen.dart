@@ -1,5 +1,5 @@
+import 'package:finwise/modules/budget_plan/widgets/contentManager.dart';
 import 'package:flutter/material.dart';
-import '../widgets/contentManager.dart';
 
 class BudgetPlanScreen extends StatelessWidget {
   const BudgetPlanScreen({super.key});
@@ -7,7 +7,6 @@ class BudgetPlanScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F7F8),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -18,17 +17,18 @@ class BudgetPlanScreen extends StatelessWidget {
           child: Column(
             children: [
               _topBarContent(),
-              const ContentManager(),
               Expanded(
                 child: Container(
                   color: const Color(0xFFF5F7F8),
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: _mainContentListView(),
+                  child: Stack(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: _mainContentListView(),
+                        ),
                       ),
+                      const ContentManager(),
                     ],
                   ),
                 ),
@@ -111,11 +111,15 @@ class BudgetPlanScreen extends StatelessWidget {
       color: const Color(0xFFF5F7F8),
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
-        vertical: 16,
+        vertical: 77,
       ),
       child: Column(
         children: [
           _budgetOverview(3, 130, 30, 0, 150),
+          const SizedBox(
+            height: 16,
+          ),
+          _filterBar(),
           const SizedBox(
             height: 16,
           ),
@@ -467,6 +471,42 @@ class BudgetPlanScreen extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _filterBar() {
+    return Container(
+      alignment: Alignment.topLeft,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _filterBarLink('All'),
+            _filterBarLink('One-time budget'),
+            _filterBarLink('Monthly budget'),
+            _filterBarLink('Monthly budget'),
+            _filterBarLink('Monthly budget'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filterBarLink(String title) {
+    return Container(
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0ABDE3),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Color(0xFFFFFFFF),
+        ),
       ),
     );
   }

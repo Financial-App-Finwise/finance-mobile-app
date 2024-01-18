@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ContentManager extends StatefulWidget {
-  const ContentManager({
-    super.key,
-    Color gradient1 = const Color(0xFF0ABDE3),
-    Color gradient2 = const Color(0xFF0B8AAF),
-  });
+  const ContentManager({super.key});
 
   @override
   State<ContentManager> createState() => _ContentManagerState();
@@ -18,10 +14,13 @@ class _ContentManagerState extends State<ContentManager> {
       height: 62,
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFFF5F7F8),
+        color: Colors.transparent,
       ),
       child: Stack(children: [
         Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
           child: Container(
             height: 31,
             decoration: const BoxDecoration(
