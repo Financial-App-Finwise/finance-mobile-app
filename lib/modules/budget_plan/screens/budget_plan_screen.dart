@@ -1,9 +1,17 @@
-import 'package:finwise/modules/budget_plan/widgets/contentManager.dart';
+import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_card.dart';
+import 'package:finwise/modules/budget_plan/widgets/content_manager.dart';
+import 'package:finwise/modules/budget_plan/widgets/filter_bar.dart';
 import 'package:flutter/material.dart';
 
-class BudgetPlanScreen extends StatelessWidget {
+class BudgetPlanScreen extends StatefulWidget {
   const BudgetPlanScreen({super.key});
 
+  @override
+  State<BudgetPlanScreen> createState() => _BudgetPlanScreenState();
+}
+
+class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,11 +30,9 @@ class BudgetPlanScreen extends StatelessWidget {
                   color: const Color(0xFFF5F7F8),
                   child: Stack(
                     children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: _mainContentListView(),
-                        ),
+                      SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: _mainContentListView(),
                       ),
                       const ContentManager(),
                     ],
@@ -44,7 +50,7 @@ class BudgetPlanScreen extends StatelessWidget {
   Widget _topBarContent() {
     return Container(
       alignment: Alignment.topLeft,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
             colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)], stops: [0.2, 0.8]),
@@ -109,9 +115,11 @@ class BudgetPlanScreen extends StatelessWidget {
   Widget _mainContentListView() {
     return Container(
       color: const Color(0xFFF5F7F8),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 77,
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 77,
+        bottom: 16,
       ),
       child: Column(
         children: [
@@ -119,7 +127,13 @@ class BudgetPlanScreen extends StatelessWidget {
           const SizedBox(
             height: 16,
           ),
-          _filterBar(),
+          const FilterBar(filterTitles: [
+            'All',
+            'One-time budget',
+            'Monthly budget',
+            'Monthly budget',
+            'Monthly budget'
+          ]),
           const SizedBox(
             height: 16,
           ),
@@ -315,197 +329,53 @@ class BudgetPlanScreen extends StatelessWidget {
 
   Widget _budgetCard(
       String title, int transaction, int remain, int spent, int total) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: const Color(0xFFEE5353),
-                    borderRadius: BorderRadius.circular(4)),
-                child: const Icon(
-                  Icons.car_rental_outlined,
-                  color: Color(0xFFFFFFFF),
-                ),
-              ),
-              const SizedBox(
-                width: 11,
-              ),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF000000),
-                ),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BudgetPlanDetailScreen(),
           ),
-          const Divider(
-            color: Color(0xFFF2F2F2),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    '$transaction',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF191B29),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  const Text(
-                    'transactions',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    '\$$remain',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF191B29),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  const Text(
-                    'left',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          ClipRRect(
-            child: LinearProgressIndicator(
-              minHeight: 10,
-              // borderRadius: BorderRadius.circular(5),
-              value: ((spent * 10) / total) / 10,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFFEE5353),
-              ),
-              backgroundColor: const Color(0xFFEDF2F7),
-            ),
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    '\$$spent',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF191B29),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  const Text(
-                    'spent',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Text(
-                    'out of',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  Text(
-                    '\$$total',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF191B29),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _filterBar() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _filterBarLink('All'),
-            _filterBarLink('One-time budget'),
-            _filterBarLink('Monthly budget'),
-            _filterBarLink('Monthly budget'),
-            _filterBarLink('Monthly budget'),
-          ],
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ),
-    );
-  }
-
-  Widget _filterBarLink(String title) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0ABDE3),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFFFFFFFF),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFEE5353),
+                      borderRadius: BorderRadius.circular(4)),
+                  child: const Icon(
+                    Icons.car_rental_outlined,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+                const SizedBox(
+                  width: 11,
+                ),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF000000),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              color: Color(0xFFF2F2F2),
+            ),
+            const BudgetCard(transaction: 7, remain: 40, total: 50, spent: 10),
+          ],
         ),
       ),
     );

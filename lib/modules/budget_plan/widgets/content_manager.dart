@@ -32,7 +32,7 @@ class _ContentManagerState extends State<ContentManager> {
         ),
         Positioned(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: _contentManager(),
           ),
         ),
@@ -58,7 +58,7 @@ class _ContentManagerState extends State<ContentManager> {
             size: 24,
             color: Color(0xFF191B29),
           ),
-          const Text('Dec'),
+          Text('Dec'),
           SizedBox(
             width: 24,
             height: 24,
