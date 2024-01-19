@@ -39,6 +39,7 @@ dependencies:
   outline_material_icons: ^1.0.0
   icons_flutter: ^0.0.4
   fl_chart: ^0.66.0
+  mobkit_dashed_border: ^0.0.5
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   fonts:
+    # bamloo
     - family: Baloo_Thambi_2
       fonts:
         - asset: assets/fonts/baloo_thambi_2/BalooThambi2-Regular.ttf
@@ -103,6 +105,7 @@ flutter:
       fonts:
         - asset: assets/fonts/baloo_thambi_2/BalooThambi2-Medium.ttf
 
+    # poppins
     - family: Poppins-Regular
       fonts:
         - asset: assets/fonts/poppins/Poppins-Regular.ttf
@@ -118,3 +121,12 @@ flutter:
     - family: Poppins-Light
       fonts:
         - asset: assets/fonts/poppins/Poppins-Light.ttf
+
+    # inter
+    - family: Inter-Regular
+      fonts:
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+
+      - family: Inter-Medium
+      fonts:
+        - asset: assets/fonts/inter/Inter-Medium.ttf
