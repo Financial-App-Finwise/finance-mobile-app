@@ -1,3 +1,4 @@
+import 'package:finwise/core/widgets/calendar_header_layout.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_card.dart';
 import 'package:finwise/modules/budget_plan/widgets/content_manager.dart';
@@ -15,33 +16,10 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)],
-              stops: [0.2, 0.8]),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _topBarContent(),
-              Expanded(
-                child: Container(
-                  color: const Color(0xFFF5F7F8),
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: _mainContentListView(),
-                      ),
-                      const ContentManager(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      body: CalendarHeaderLayout(
+        child: _mainContentListView(),
+        title: 'My budget plan',
+        description: 'Effortlessly manage your finance with a powerful simple tool in FinWise',
       ),
     );
   }
