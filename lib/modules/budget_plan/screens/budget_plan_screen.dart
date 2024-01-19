@@ -1,7 +1,6 @@
 import 'package:finwise/core/widgets/calendar_header_layout.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_card.dart';
-import 'package:finwise/modules/budget_plan/widgets/content_manager.dart';
 import 'package:finwise/modules/budget_plan/widgets/filter_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -17,74 +16,9 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CalendarHeaderLayout(
-        child: _mainContentListView(),
         title: 'My budget plan',
         description: 'Effortlessly manage your finance with a powerful simple tool in FinWise',
-      ),
-    );
-  }
-
-// Top bar content
-  Widget _topBarContent() {
-    return Container(
-      alignment: Alignment.topLeft,
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)], stops: [0.2, 0.8]),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.arrow_back,
-                size: 24,
-              ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                iconColor: MaterialStateProperty.all(
-                  const Color(0xFFFFFFFF),
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(
-            height: 12,
-          ),
-
-          // Title and Description text
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'My budget plan',
-                style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Text(
-                'Effortlessly manage your finance with a powerful simple tool in FinWise',
-                style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 14,
-                    height: 1.7,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          )
-        ],
+        child: _mainContentListView(),
       ),
     );
   }
