@@ -35,7 +35,7 @@ abstract class AuthScreenTextStyle {
     color: ColorConstant.thin,
   );
 
-  static TextStyle button = TextStyle(
+  static TextStyle button = const TextStyle(
     fontSize: 16,
     color: Colors.white,
     fontWeight: FontWeight.w600,

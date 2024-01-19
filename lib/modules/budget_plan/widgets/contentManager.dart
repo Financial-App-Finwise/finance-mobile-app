@@ -58,7 +58,7 @@ class _ContentManagerState extends State<ContentManager> {
             size: 24,
             color: Color(0xFF191B29),
           ),
-          Text('Dec'),
+          const Text('Dec'),
           SizedBox(
             width: 24,
             height: 24,
@@ -71,7 +71,7 @@ class _ContentManagerState extends State<ContentManager> {
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                 iconColor: MaterialStateProperty.all(
-                  Color(0xFF0ABDE3),
+                  const Color(0xFF0ABDE3),
                 ),
               ),
             ),

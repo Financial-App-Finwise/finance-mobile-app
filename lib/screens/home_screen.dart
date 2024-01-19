@@ -1,10 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icons_flutter/icons_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         alignment: Alignment.topRight,
         // color: Colors.yellow[200],
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -51,19 +49,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildProfile() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
               SizedBox.fromSize(
-                size: Size(56, 56),
+                size: const Size(56, 56),
                 child: CircleAvatar(
                   child: Image.asset('assets/images/Avatar.png'),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -82,9 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
           InkWell(
             onTap: () {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => SignInScreen()));
+                  MaterialPageRoute(builder: (context) => const SignInScreen()));
             },
-            child: Icon(Icons.notifications_active_outlined),
+            child: const Icon(Icons.notifications_active_outlined),
           ),
         ],
       ),
@@ -97,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -119,10 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           // build content
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -150,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Container(
                   // color: Colors.pink,
-                  padding: EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Divider(color: Colors.grey[300]),
                 ),
                 // Income and Expense
@@ -169,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: VerticalDivider(color: Colors.grey[300]),
                       ),
                       Expanded(
@@ -202,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     return Row(
       children: [
-        icon ?? SizedBox(),
-        SizedBox(width: 12),
+        icon ?? const SizedBox(),
+        const SizedBox(width: 12),
         Column(
           children: [
             Text(
@@ -225,26 +223,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDurationButton() {
     return TextButton(
       onPressed: () {},
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: const BorderSide(color: Color(0xffD3D5E4))),
+        ),
+      ),
       child: Row(
         children: [
           Text(
             'Last 7 days',
             style: HomeTextStyleConstant.small,
           ),
-          Icon(
+          const Icon(
             Icons.arrow_drop_down,
             color: Color(0xff292D32),
           ),
         ],
-      ),
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: Color(0xffD3D5E4))),
-        ),
       ),
     );
   }
@@ -261,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: HomeTextStyleConstant.header,
           ),
           SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
             child: Row(children: [
               _buildFeatureItem(
@@ -271,13 +269,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BudgetPlanScreen(),
+                        builder: (context) => const BudgetPlanScreen(),
                       ),
                     );
                   }),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               _buildFeatureItem(text: 'Upcoming Bill', amount: '3'),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               _buildFeatureItem(text: 'Smart Goal', amount: '3'),
             ]),
           ),
@@ -293,11 +291,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         width: 165.5,
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: BoxDecoration(
           gradient: LinearGradient(
               colors: [ColorConstant.primary, ColorConstant.secondary],
-              stops: [0, 0.8]),
+              stops: const [0, 0.8]),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -319,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Icon(FlutterIcons.ellipsis1_ant, color: Colors.white),
+            const Icon(FlutterIcons.ellipsis1_ant, color: Colors.white),
           ],
         ),
       ),

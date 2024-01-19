@@ -40,7 +40,7 @@ class _FormWidgetState extends State<FormWidget> {
           hintText: widget.hintText,
           hintStyle: AuthScreenTextStyle.formHint,
           prefixIcon: Container(
-            margin: EdgeInsets.all(16),
+            margin: const EdgeInsets.all(16),
             child: widget.prefixIcon,
           ),
           border: InputBorder.none,
@@ -52,6 +52,7 @@ class _FormWidgetState extends State<FormWidget> {
           if (value!.isEmpty) {
             return 'Please enter...';
           }
+          return null;
         },
         onChanged: widget.onChanged,
       ),

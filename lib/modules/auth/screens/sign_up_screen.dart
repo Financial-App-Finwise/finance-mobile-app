@@ -26,9 +26,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  Color formColor = Color(0xffF2F3F7);
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  Color formColor = const Color(0xffF2F3F7);
 
   Widget _buildTextFields() {
     return Container(
@@ -43,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: _emailController,
             onChanged: (value) => setState(() => _isFormFilled),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           _buildTextLabel(text: 'Password'),
           FormWidget(
             hintText: 'Password',
@@ -58,7 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildTextLabel({required String text}) {
     return Container(
-      padding: EdgeInsets.only(left: 8, bottom: 8),
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
       child: Text(
         text,
         style: TextStyle(
@@ -78,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildBottomContent() {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.only(top: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -95,7 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ],
           ),
-          SizedBox(height: 48),
+          const SizedBox(height: 48),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -108,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 onTap: () {
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => SignInScreen()));
+                      MaterialPageRoute(builder: (context) => const SignInScreen()));
                 },
               ),
             ],

@@ -54,7 +54,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
 
   Widget _buildBody() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           Expanded(
@@ -85,9 +85,9 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         Navigator.pop(context);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         alignment: Alignment.topLeft,
-        child: Icon(Icons.arrow_back),
+        child: const Icon(Icons.arrow_back),
       ),
     );
   }
@@ -95,7 +95,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
   Widget _buildTopContent() {
     return Container(
       alignment: Alignment.topLeft,
-      padding: EdgeInsets.only(top: 12, bottom: 32),
+      padding: const EdgeInsets.only(top: 12, bottom: 32),
       // color: Colors.orange[200],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
     return Container(
       // color: Colors.blue[200],
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: 50,
         // horizontal: 16,
       ),
@@ -126,7 +126,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
             ? () {
                 // TODO
                 Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                    MaterialPageRoute(builder: (context) => const HomeScreen()));
               }
             : null,
         child: Container(
@@ -137,7 +137,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
                 : ColorConstant.secondary.withOpacity(0.4),
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Text(
             widget.buttonLabel,
             style: AuthScreenTextStyle.button,
