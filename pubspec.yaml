@@ -127,6 +127,6 @@ flutter:
       fonts:
         - asset: assets/fonts/inter/Inter-Regular.ttf
 
-      - family: Inter-Medium
+    - family: Inter-Medium
       fonts:
         - asset: assets/fonts/inter/Inter-Medium.ttf
