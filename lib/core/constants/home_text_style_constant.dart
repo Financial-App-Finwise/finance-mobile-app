@@ -50,4 +50,26 @@ abstract class HomeTextStyleConstant {
         fontWeight: FontWeight.w600,
         color: color,
       );
+
+  static TextStyle barChartBottomTitle = TextStyle(
+    fontFamily: FontConstant.interRegular,
+    fontSize: 8,
+    fontWeight: FontWeight.w400,
+    color: Color(0xff4F4F4F),
+  );
+
+  static TextStyle barChartLeftTitle = TextStyle(
+    fontFamily: FontConstant.interRegular,
+    fontSize: 9,
+    fontWeight: FontWeight.w400,
+    color: Color(0xff4F4F4F),
+  );
+
+  static TextStyle barChartLegend = TextStyle(
+    fontFamily: FontConstant.balooThambi2Medium,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+  
 }

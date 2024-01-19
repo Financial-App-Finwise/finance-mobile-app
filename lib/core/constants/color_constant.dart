@@ -27,4 +27,7 @@ class ColorConstant {
 
   // sign up
   static Color boldLink = const Color(0xff165A74);
+
+  // pie chart
+  static Color topSpending = const Color(0xffB71E1E);
 }
