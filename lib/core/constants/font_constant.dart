@@ -4,4 +4,6 @@ class FontConstant {
   static String poppinsRegular = 'Poppins-Regular';
   static String poppinsBlack = 'Poppins-Black';
   static String poppinsMedium = 'Poppins-Medium';
+  static String interRegular = 'Inter-Regular';
+  static String interMidium = 'Inter-Medium';
 }
