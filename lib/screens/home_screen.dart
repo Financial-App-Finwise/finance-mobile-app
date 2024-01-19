@@ -1,9 +1,11 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:icons_flutter/icons_flutter.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 
@@ -139,13 +141,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       // color: Colors.amber,
                       child: _buildFinanceItem(
-                          text: 'Total Balance',
-                          amount: '\$1000',
-                          color: ColorConstant.primary,
-                          icon: Icon(
-                            FlutterIcons.ellipsis1_ant,
-                            color: ColorConstant.totalIcon,
-                          )),
+                        text: 'Total Balance',
+                        amount: '\$1000',
+                        color: ColorConstant.primary,
+                        icon: IconConstant.piggyBank,
+                      ),
                     ),
                     Container(child: _buildDurationButton()),
                   ],
@@ -164,10 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           text: 'Income',
                           amount: '\$100',
                           color: ColorConstant.income,
-                          icon: Icon(
-                            FlutterIcons.ellipsis1_ant,
-                            color: ColorConstant.incomeIcon,
-                          ),
+                          icon: IconConstant.earn,
                         ),
                       ),
                       Container(
@@ -179,10 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           text: 'Expense',
                           amount: '\$50',
                           color: ColorConstant.expense,
-                          icon: Icon(
-                            FlutterIcons.ellipsis1_ant,
-                            color: ColorConstant.expenseIcon,
-                          ),
+                          icon: IconConstant.expense,
                         ),
                       ),
                     ],
@@ -578,9 +572,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPieChartLegend() {
-    return Row(
+    return Column(
       children: [
-        Text('item1')
+        Row(
+          children: [
+            Text('item1'),
+          ],
+        ),
       ],
     );
   }
