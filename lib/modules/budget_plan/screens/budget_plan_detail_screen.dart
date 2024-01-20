@@ -60,12 +60,7 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
             height: 24,
             child: IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BudgetPlanScreen(),
-                  ),
-                );
+                Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back,

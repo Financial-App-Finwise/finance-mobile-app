@@ -4,12 +4,16 @@ class CalendarHeaderLayout extends StatefulWidget {
   final Widget child;
   final String title;
   final String description;
+  final Color firstColor;
+  final Color secondColor;
 
   const CalendarHeaderLayout({
     super.key,
     required this.child,
     required this.title,
     required this.description,
+    required this.firstColor,
+    required this.secondColor,
   });
 
   @override
@@ -20,9 +24,10 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)], stops: [0.2, 0.8]),
+            colors: [widget.firstColor, widget.secondColor],
+            stops: const [0.2, 0.8]),
       ),
       child: SafeArea(
         child: Column(
@@ -52,9 +57,10 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
     return Container(
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)], stops: [0.2, 0.8]),
+            colors: [widget.firstColor, widget.secondColor],
+            stops: const [0.2, 0.8]),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -128,10 +134,10 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
           right: 0,
           child: Container(
             height: 31,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)],
-                  stops: [0.2, 0.8]),
+                  colors: [widget.firstColor, widget.secondColor],
+                  stops: const [0.2, 0.8]),
             ),
           ),
         ),

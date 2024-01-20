@@ -18,6 +18,8 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
       body: CalendarHeaderLayout(
         title: 'My budget plan',
         description: 'Effortlessly manage your finance with a powerful simple tool in FinWise',
+        firstColor: const Color(0xFF0ABDE3),
+        secondColor: const Color(0xFF0B8AAF),
         child: _mainContentListView(),
       ),
     );
