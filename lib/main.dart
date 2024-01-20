@@ -1,4 +1,6 @@
+import 'package:finwise/route.dart';
 import 'package:finwise/screens/home_screen.dart';
+import 'package:finwise/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/themes/app_theme.dart';
 
@@ -14,7 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // debugShowCheckedModeBanner: ,
       theme: appTheme,
-      home: const HomeScreen(),
+      routes: appRoutes,
+      home: const SplashScreen(),
     );
   }
 }
