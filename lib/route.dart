@@ -1,5 +1,5 @@
 import 'package:finwise/screens/home_screen.dart';
-import 'package:finwise/screens/main_screen.dart';
+import 'package:finwise/screens/index_screen.dart';
 import 'package:finwise/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
