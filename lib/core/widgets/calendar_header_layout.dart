@@ -6,6 +6,7 @@ class CalendarHeaderLayout extends StatefulWidget {
   final String description;
   final Color firstColor;
   final Color secondColor;
+  final VoidCallback? changeView;
 
   const CalendarHeaderLayout({
     super.key,
@@ -14,6 +15,7 @@ class CalendarHeaderLayout extends StatefulWidget {
     required this.description,
     required this.firstColor,
     required this.secondColor,
+    this.changeView,
   });
 
   @override
@@ -163,10 +165,22 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(
-            Icons.dashboard_customize_outlined,
-            size: 24,
-            color: Color(0xFF191B29),
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: IconButton(
+              onPressed: widget.changeView,
+              icon: const Icon(
+                Icons.dashboard_customize_outlined,
+                size: 24,
+              ),
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                iconColor: MaterialStateProperty.all(
+                  const Color(0xFF191B29),
+                ),
+              ),
+            ),
           ),
           Text('Dec'),
           SizedBox(
