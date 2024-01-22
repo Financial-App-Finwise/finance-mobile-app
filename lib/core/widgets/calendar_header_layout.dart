@@ -1,3 +1,5 @@
+import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:flutter/material.dart';
 
 class CalendarHeaderLayout extends StatefulWidget {
@@ -170,10 +172,7 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
             height: 24,
             child: IconButton(
               onPressed: widget.changeView,
-              icon: const Icon(
-                Icons.dashboard_customize_outlined,
-                size: 24,
-              ),
+              icon: IconConstant.contentManagerDashboard,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                 iconColor: MaterialStateProperty.all(
@@ -187,11 +186,15 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
             width: 24,
             height: 24,
             child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.add_box_outlined,
-                size: 24,
-              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddBudgetPlanScreen(),
+                  ),
+                );
+              },
+              icon: IconConstant.addSquare,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                 iconColor: MaterialStateProperty.all(

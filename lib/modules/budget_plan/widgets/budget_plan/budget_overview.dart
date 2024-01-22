@@ -1,3 +1,5 @@
+import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 
 class BudgetOverview extends StatelessWidget {
@@ -44,11 +46,12 @@ class BudgetOverview extends StatelessWidget {
       child: Column(children: [
         Row(
           children: [
-            // Icon
-            const Icon(
-              Icons.circle,
-              size: 36,
-              color: Color(0xFF0ABDE3),
+            SizedBox(
+              height: 36,
+              width: 36,
+              child: IconConstant.myBudget(
+                color: ColorConstant.secondary,
+              ),
             ),
 
             const SizedBox(
@@ -99,34 +102,12 @@ class BudgetOverview extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: _budgetOverviewCardSection('Available', available,
-                      const Color(0xFF10AC84), const Color(0xFF35D2A5)),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                const VerticalDivider(
-                  color: Color(0xFFF2F2F2),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Expanded(
-                  child: _budgetOverviewCardSection('Spend', spend,
-                      const Color(0xFFEE5353), const Color(0xFFEE5353)),
-                ),
-              ],
-            ),
-          ),
-          const Divider(
-            color: Color(0xFFF2F2F2),
-          ),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _budgetOverviewCardSection('Over Budget', overBudget,
-                      const Color(0xFFFE7B11), const Color(0xFFEF6007)),
+                  child: _budgetOverviewCardSection(
+                    IconConstant.available,
+                    'Available',
+                    available,
+                    const Color(0xFF35D2A5),
+                  ),
                 ),
                 const SizedBox(
                   width: 4,
@@ -139,10 +120,45 @@ class BudgetOverview extends StatelessWidget {
                 ),
                 Expanded(
                   child: _budgetOverviewCardSection(
-                      'Planned Budget',
-                      plannedBudget,
-                      const Color(0xFF0ABDE3),
-                      const Color(0xFF0B8AAF)),
+                    IconConstant.spend,
+                    'Spend',
+                    spend,
+                    const Color(0xFFEE5353),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            color: Color(0xFFF2F2F2),
+          ),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _budgetOverviewCardSection(
+                    IconConstant.overBudget,
+                    'Over Budget',
+                    overBudget,
+                    const Color(0xFFEF6007),
+                  ),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                const VerticalDivider(
+                  color: Color(0xFFF2F2F2),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Expanded(
+                  child: _budgetOverviewCardSection(
+                    IconConstant.budgetPlan,
+                    'Planned Budget',
+                    plannedBudget,
+                    const Color(0xFF0B8AAF),
+                  ),
                 ),
               ],
             ),
@@ -154,16 +170,12 @@ class BudgetOverview extends StatelessWidget {
 
   // Budget overview section
   Widget _budgetOverviewCardSection(
-      String category, int amount, Color iconColor, Color textColor) {
+      Widget icon, String category, int amount, Color textColor) {
     return Row(
       children: [
-        Icon(
-          Icons.circle,
-          color: iconColor,
-          size: 20,
-        ),
+        icon,
         const SizedBox(
-          width: 4,
+          width: 12,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

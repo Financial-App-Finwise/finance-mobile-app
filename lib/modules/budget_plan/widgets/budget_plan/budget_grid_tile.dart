@@ -42,7 +42,7 @@ class BudgetGridTile extends StatelessWidget {
               letterSpacing: 0.75,
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: ColorConstant.grayScale,
+              color: ColorConstant.mainText,
             ),
           ),
           const SizedBox(

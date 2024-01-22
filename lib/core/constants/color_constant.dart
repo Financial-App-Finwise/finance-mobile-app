@@ -25,7 +25,6 @@ class ColorConstant {
   static Color white = const Color(0xffffffff);
   static Color mainText = const Color(0xff333652);
   static Color thin = const Color(0xff656B9F);
-  static Color grayScale = const Color(0xff333652);
 
   // sign up
   static Color boldLink = const Color(0xff165A74);
