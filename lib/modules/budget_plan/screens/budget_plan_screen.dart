@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/calendar_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_card.dart';
+import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/filtered_budget.dart';
@@ -21,6 +22,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CalendarHeaderLayout(
+        addScreen: const AddBudgetPlanScreen(),
         title: 'My budget plan',
         description:
             'Effortlessly manage your finance with a powerful simple tool in FinWise',

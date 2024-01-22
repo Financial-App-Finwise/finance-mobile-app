@@ -39,10 +39,12 @@ class IconConstant {
 
   static SvgPicture overBudget = SvgPicture.asset('${_svgPath}over_budget.svg');
 
-  static SvgPicture contentManagerDashboard = SvgPicture.asset('${_svgPath}content_manager_dashboard.svg');
+  static SvgPicture contentManagerDashboard =
+      SvgPicture.asset('${_svgPath}content_manager_dashboard.svg');
 
-  static SvgPicture addSquare =
-      SvgPicture.asset('${_svgPath}add_square.svg');
+  static SvgPicture addSquare = SvgPicture.asset('${_svgPath}add_square.svg');
+
+  static SvgPicture close = SvgPicture.asset('${_svgPath}close.svg');
 
   // static
 }

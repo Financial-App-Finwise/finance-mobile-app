@@ -1,9 +1,9 @@
 import 'package:finwise/core/constants/icon_constant.dart';
-import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:flutter/material.dart';
 
 class CalendarHeaderLayout extends StatefulWidget {
   final Widget child;
+  final Widget addScreen;
   final String title;
   final String description;
   final Color firstColor;
@@ -13,6 +13,7 @@ class CalendarHeaderLayout extends StatefulWidget {
   const CalendarHeaderLayout({
     super.key,
     required this.child,
+    required this.addScreen,
     required this.title,
     required this.description,
     required this.firstColor,
@@ -190,7 +191,7 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AddBudgetPlanScreen(),
+                    builder: (context) => widget.addScreen,
                   ),
                 );
               },

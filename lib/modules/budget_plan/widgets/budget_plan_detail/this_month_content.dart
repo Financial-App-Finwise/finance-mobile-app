@@ -1,4 +1,5 @@
-import 'package:finwise/modules/budget_plan/widgets/budget_card.dart';
+import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/widgets/progress_card.dart';
 import 'package:flutter/material.dart';
 
 class ThisMonthContent extends StatelessWidget {
@@ -34,7 +35,8 @@ class ThisMonthContent extends StatelessWidget {
         Container(
           color: const Color(0xFFFFFFFF),
           padding: const EdgeInsets.all(16),
-          child: BudgetCard(
+          child: ProgressCard(
+              color: ColorConstant.expense,
               transaction: transaction,
               remain: remain,
               total: total,

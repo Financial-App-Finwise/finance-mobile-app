@@ -22,6 +22,7 @@ class ColorConstant {
 
   // text
   static Color black = const Color(0xff191B29);
+  static Color lightBlack = const Color(0xff333652);
   static Color white = const Color(0xffffffff);
   static Color mainText = const Color(0xff333652);
   static Color thin = const Color(0xff656B9F);

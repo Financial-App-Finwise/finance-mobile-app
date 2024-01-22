@@ -1,13 +1,17 @@
+import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:flutter/material.dart';
 
-class BudgetCard extends StatefulWidget {
+class ProgressCard extends StatelessWidget {
+  final Color color;
   final int transaction;
   final int remain;
   final int total;
   final int spent;
 
-  const BudgetCard({
+  const ProgressCard({
     super.key,
+    required this.color,
     required this.transaction,
     required this.remain,
     required this.total,
@@ -15,15 +19,10 @@ class BudgetCard extends StatefulWidget {
   });
 
   @override
-  State<BudgetCard> createState() => _BudgetCardState();
-}
-
-class _BudgetCardState extends State<BudgetCard> {
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
+        color: ColorConstant.white,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -34,7 +33,7 @@ class _BudgetCardState extends State<BudgetCard> {
               Row(
                 children: [
                   Text(
-                    '${widget.transaction}',
+                    '$transaction',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -44,12 +43,12 @@ class _BudgetCardState extends State<BudgetCard> {
                   const SizedBox(
                     width: 6,
                   ),
-                  const Text(
+                  Text(
                     'transactions',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
+                      color: ColorConstant.mainText,
                     ),
                   ),
                 ],
@@ -57,7 +56,7 @@ class _BudgetCardState extends State<BudgetCard> {
               Row(
                 children: [
                   Text(
-                    '\$${widget.remain}',
+                    '\$$remain',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -67,12 +66,12 @@ class _BudgetCardState extends State<BudgetCard> {
                   const SizedBox(
                     width: 6,
                   ),
-                  const Text(
+                  Text(
                     'left',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
+                      color: ColorConstant.mainText,
                     ),
                   ),
                 ],
@@ -82,16 +81,9 @@ class _BudgetCardState extends State<BudgetCard> {
           const SizedBox(
             height: 6,
           ),
-          ClipRRect(
-            child: LinearProgressIndicator(
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
-              value: ((widget.spent * 10) / widget.total) / 10,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFFEE5353),
-              ),
-              backgroundColor: const Color(0xFFEDF2F7),
-            ),
+          CustomProgressBar(
+            value: ((spent * 10) / total) / 10,
+            color: color,
           ),
           const SizedBox(
             height: 6,
@@ -102,7 +94,7 @@ class _BudgetCardState extends State<BudgetCard> {
               Row(
                 children: [
                   Text(
-                    '\$${widget.spent}',
+                    '\$$spent',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -112,12 +104,12 @@ class _BudgetCardState extends State<BudgetCard> {
                   const SizedBox(
                     width: 6,
                   ),
-                  const Text(
+                  Text(
                     'spent',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF333652),
+                      color: ColorConstant.mainText,
                     ),
                   ),
                 ],
@@ -136,7 +128,7 @@ class _BudgetCardState extends State<BudgetCard> {
                     width: 6,
                   ),
                   Text(
-                    '\$${widget.total}',
+                    '\$$total',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
