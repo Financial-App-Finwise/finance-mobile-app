@@ -277,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildFeatureItem(
                     text: 'My Budget',
                     amount: '3',
-                    icon: IconConstant.myBudget,
+                    icon: IconConstant.myBudget(),
                     onPressed: () {
                       Navigator.pushNamed(context, RouteName.budgetPlan);
                     }),

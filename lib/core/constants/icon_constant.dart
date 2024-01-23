@@ -13,9 +13,10 @@ class IconConstant {
 
   static SvgPicture expense = SvgPicture.asset('${_svgPath}expense.svg');
 
-  static SvgPicture home = SvgPicture.asset('${_svgPath}home.svg');
-
-  static SvgPicture myBudget = SvgPicture.asset('${_svgPath}my_budget.svg');
+  static SvgPicture myBudget({Color color = Colors.white}) => SvgPicture.asset(
+        '${_svgPath}my_budget.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 
   static SvgPicture notification =
       SvgPicture.asset('${_svgPath}notification.svg');
@@ -44,4 +45,18 @@ class IconConstant {
             isSelected ? Color(0xff00A6FB) : ColorConstant.mainText,
             BlendMode.srcIn),
       );
+  static SvgPicture available = SvgPicture.asset('${_svgPath}available.svg');
+
+  static SvgPicture spend = SvgPicture.asset('${_svgPath}spend.svg');
+
+  static SvgPicture overBudget = SvgPicture.asset('${_svgPath}over_budget.svg');
+
+  static SvgPicture contentManagerDashboard =
+      SvgPicture.asset('${_svgPath}content_manager_dashboard.svg');
+
+  static SvgPicture addSquare = SvgPicture.asset('${_svgPath}add_square.svg');
+
+  static SvgPicture close = SvgPicture.asset('${_svgPath}close.svg');
+
+  // static
 }

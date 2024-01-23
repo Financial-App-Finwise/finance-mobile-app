@@ -1,7 +1,11 @@
+import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/calendar_header_layout.dart';
-import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
-import 'package:finwise/modules/budget_plan/widgets/budget_card.dart';
-import 'package:finwise/modules/budget_plan/widgets/filter_bar.dart';
+import 'package:finwise/modules/budget_plan/models/budget_card.dart';
+import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_plan/filtered_budget.dart';
 import 'package:flutter/material.dart';
 
 class BudgetPlanScreen extends StatefulWidget {
@@ -12,18 +16,30 @@ class BudgetPlanScreen extends StatefulWidget {
 }
 
 class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
+  bool _gridView = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CalendarHeaderLayout(
+        addScreen: const AddBudgetPlanScreen(),
         title: 'My budget plan',
-        description: 'Effortlessly manage your finance with a powerful simple tool in FinWise',
-        child: _mainContentListView(),
+        description:
+            'Effortlessly manage your finance with a powerful simple tool in FinWise',
+        firstColor: const Color(0xFF0ABDE3),
+        secondColor: const Color(0xFF0B8AAF),
+        // child: _noContentView(),
+        child: _gridView ? _mainContentGridView() : _mainContentListView(),
+        changeView: () => setState(
+          () {
+            _gridView = !_gridView;
+          },
+        ),
       ),
     );
   }
 
-// Main content liste view
+// Main content list view
   Widget _mainContentListView() {
     return Container(
       color: const Color(0xFFF5F7F8),
@@ -33,260 +49,131 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
         top: 77,
         bottom: 16,
       ),
-      child: Column(
+      child: const Column(
         children: [
-          _budgetOverview(3, 130, 30, 0, 150),
-          const SizedBox(
+          BudgetOverview(
+              totalBudget: 3,
+              available: 130,
+              spend: 30,
+              overBudget: 0,
+              plannedBudget: 150),
+          SizedBox(
             height: 16,
           ),
-          const FilterBar(filterTitles: [
+          FilteredBudget(filterTitles: [
             'All',
             'One-time budget',
             'Monthly budget',
             'Monthly budget',
             'Monthly budget'
-          ]),
-          const SizedBox(
-            height: 16,
-          ),
-          _budgetCard('Transportation', 7, 40, 10, 50),
-          const SizedBox(
-            height: 16,
-          ),
-          _budgetCard('Transportation', 7, 40, 10, 50),
-          const SizedBox(
-            height: 16,
-          ),
-          _budgetCard('Transportation', 7, 40, 10, 50),
+          ], budgetCards: [
+            BudgetCardModel(
+                title: 'Transportation',
+                transaction: 7,
+                remain: 40,
+                spent: 10,
+                total: 50),
+            BudgetCardModel(
+                title: 'Transportation',
+                transaction: 7,
+                remain: 40,
+                spent: 10,
+                total: 50),
+            BudgetCardModel(
+                title: 'Transportation',
+                transaction: 7,
+                remain: 40,
+                spent: 10,
+                total: 50),
+          ])
         ],
       ),
     );
   }
 
-  // Budget overview
-  Widget _budgetOverview(
-      int amount, int available, int spend, int overBudget, int plannedBudget) {
-    return Column(
-      children: [
-        // Total budgets
-        _totalBudget(amount),
-
-        // Gap
-        const SizedBox(
-          height: 16,
-        ),
-
-        // Budget Overview Card
-        _budgetOverviewCard(available, spend, overBudget, plannedBudget),
-      ],
-    );
-  }
-
-  // Total budget
-  Widget _totalBudget(int amount) {
+  Widget _mainContentGridView() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      decoration: BoxDecoration(
-          color: const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(12)),
-      child: Column(children: [
-        Row(
-          children: [
-            // Icon
-            const Icon(
-              Icons.circle,
-              size: 36,
-              color: Color(0xFF0ABDE3),
-            ),
-
-            const SizedBox(
-              width: 12,
-            ),
-            // Text
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Total budgets',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF333652),
-                  ),
-                ),
-                const SizedBox(
-                  height: 1,
-                ),
-                Text(
-                  '$amount',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF0B8AAF),
-                  ),
-                ),
-              ],
-            ),
-          ],
+      color: const Color(0xFFF5F7F8),
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 77,
+        bottom: 16,
+      ),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 12,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          crossAxisCount: 3,
         ),
-      ]),
-    );
-  }
-
-  // Budget overview card
-  Widget _budgetOverviewCard(
-      int available, int spend, int overBudget, int plannedBudget) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _budgetOverviewCardSection('Available', available,
-                      const Color(0xFF10AC84), const Color(0xFF35D2A5)),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                const VerticalDivider(
-                  color: Color(0xFFF2F2F2),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Expanded(
-                  child: _budgetOverviewCardSection('Spend', spend,
-                      const Color(0xFFEE5353), const Color(0xFFEE5353)),
-                ),
-              ],
-            ),
-          ),
-          const Divider(
-            color: Color(0xFFF2F2F2),
-          ),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _budgetOverviewCardSection('Over Budget', overBudget,
-                      const Color(0xFFFE7B11), const Color(0xFFEF6007)),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                const VerticalDivider(
-                  color: Color(0xFFF2F2F2),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Expanded(
-                  child: _budgetOverviewCardSection(
-                      'Planned Budget',
-                      plannedBudget,
-                      const Color(0xFF0ABDE3),
-                      const Color(0xFF0B8AAF)),
-                ),
-              ],
-            ),
-          ),
-        ],
+        itemBuilder: (context, index) =>
+            const BudgetGridTile(month: 'January', budget: 3),
       ),
     );
   }
 
-  // Budget overview section
-  Widget _budgetOverviewCardSection(
-      String category, int amount, Color iconColor, Color textColor) {
-    return Row(
-      children: [
-        Icon(
-          Icons.circle,
-          color: iconColor,
-          size: 20,
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              category,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF333652),
-              ),
-            ),
-            Text(
-              '\$$amount',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: textColor,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _budgetCard(
-      String title, int transaction, int remain, int spent, int total) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const BudgetPlanDetailScreen(),
-          ),
-        );
-      },
+// No content
+  Widget _noContentView() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(top: 77, left: 16, right: 16, bottom: 16),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(8),
+          color: ColorConstant.white,
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: const Color(0xFFEE5353),
-                      borderRadius: BorderRadius.circular(4)),
-                  child: const Icon(
-                    Icons.car_rental_outlined,
-                    color: Color(0xFFFFFFFF),
-                  ),
-                ),
-                const SizedBox(
-                  width: 11,
-                ),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF000000),
-                  ),
-                ),
-              ],
+            // Icon(
+            //   Icons.circle,
+            //   color: ColorConstant.primary,
+            //   size: 100,
+            // ),
+            SizedBox(
+              height: 100,
+              width: 100,
+              child: IconConstant.myBudget(color: const Color(0xFFA4A7C6)),
             ),
-            const Divider(
-              color: Color(0xFFF2F2F2),
+            const SizedBox(
+              height: 8,
             ),
-            const BudgetCard(transaction: 7, remain: 40, total: 50, spent: 10),
+            Text(
+              'You have no budget plan for this month.',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: ColorConstant.mainText,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 24,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: ColorConstant.secondary,
+              ),
+              child: Text(
+                'Add Budget Plan',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: ColorConstant.white,
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
           ],
         ),
       ),

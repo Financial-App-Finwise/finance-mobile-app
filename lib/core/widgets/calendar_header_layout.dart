@@ -1,15 +1,24 @@
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 
 class CalendarHeaderLayout extends StatefulWidget {
   final Widget child;
+  final Widget addScreen;
   final String title;
   final String description;
+  final Color firstColor;
+  final Color secondColor;
+  final VoidCallback? changeView;
 
   const CalendarHeaderLayout({
     super.key,
     required this.child,
+    required this.addScreen,
     required this.title,
     required this.description,
+    required this.firstColor,
+    required this.secondColor,
+    this.changeView,
   });
 
   @override
@@ -20,9 +29,10 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)], stops: [0.2, 0.8]),
+            colors: [widget.firstColor, widget.secondColor],
+            stops: const [0.2, 0.8]),
       ),
       child: SafeArea(
         child: Column(
@@ -52,9 +62,10 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
     return Container(
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)], stops: [0.2, 0.8]),
+            colors: [widget.firstColor, widget.secondColor],
+            stops: const [0.2, 0.8]),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -128,10 +139,10 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
           right: 0,
           child: Container(
             height: 31,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Color(0xFF0ABDE3), Color(0xFF0B8AAF)],
-                  stops: [0.2, 0.8]),
+                  colors: [widget.firstColor, widget.secondColor],
+                  stops: const [0.2, 0.8]),
             ),
           ),
         ),
@@ -157,21 +168,34 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(
-            Icons.dashboard_customize_outlined,
-            size: 24,
-            color: Color(0xFF191B29),
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: IconButton(
+              onPressed: widget.changeView,
+              icon: IconConstant.contentManagerDashboard,
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                iconColor: MaterialStateProperty.all(
+                  const Color(0xFF191B29),
+                ),
+              ),
+            ),
           ),
           Text('Dec'),
           SizedBox(
             width: 24,
             height: 24,
             child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.add_box_outlined,
-                size: 24,
-              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => widget.addScreen,
+                  ),
+                );
+              },
+              icon: IconConstant.addSquare,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                 iconColor: MaterialStateProperty.all(
