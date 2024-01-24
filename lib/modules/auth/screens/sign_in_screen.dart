@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: AuthScreenTextStyle.boldLink,
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacementNamed(RouteName.index);
+                  Navigator.of(context).pushReplacementNamed(RouteName.signUp);
                 },
               ),
             ],
