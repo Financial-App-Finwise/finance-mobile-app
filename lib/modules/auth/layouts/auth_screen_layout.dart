@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/auth_text_style_constant.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 
@@ -125,8 +126,8 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         onTap: widget.isFormFilled
             ? () {
                 // TODO
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()));
+                // implement differently in sign up and sign in
+                Navigator.pushReplacementNamed(context, RouteName.index);
               }
             : null,
         child: Container(
