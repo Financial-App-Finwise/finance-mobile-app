@@ -34,8 +34,7 @@ class _IndexScreenState extends State<IndexScreen> {
           // go to transaction screen
         },
         elevation: 0,
-        // backgroundColor: Color(0xff00A6FB),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xff00A6FB),
         shape: CircleBorder(),
         child: Icon(Icons.add, color: Colors.white),
       ),
