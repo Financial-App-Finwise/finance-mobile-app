@@ -1,5 +1,6 @@
 import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
 import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
+import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/screens/index_screen.dart';
@@ -13,6 +14,7 @@ abstract class RouteName {
   static String index = '/index';
   static String home ='/home';
   static String budgetPlan = '/budget_plan';
+  static String addBudget = '/budget_plan/create';
 }
 
 var appRoutes = {
@@ -22,4 +24,5 @@ var appRoutes = {
   RouteName.index: (BuildContext context) => IndexScreen(),
   RouteName.home: (BuildContext context) => HomeScreen(),
   RouteName.budgetPlan: (BuildContext context) => BudgetPlanScreen(),
+  RouteName.addBudget: (BuildContext context) => AddBudgetPlanScreen(),
 };

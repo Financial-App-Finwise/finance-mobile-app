@@ -31,12 +31,15 @@ class IconConstant {
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  static SvgPicture upcomingBill =
-      SvgPicture.asset('${_svgPath}upcoming_bill.svg');
-
   static SvgPicture warning = SvgPicture.asset('${_svgPath}warning.svg');
 
   // methods
+
+  static SvgPicture getUpcomingBill({Color color = Colors.white}) =>
+      SvgPicture.asset(
+        '${_svgPath}upcoming_bill.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 
   // bottom navigation
   static SvgPicture getHome({bool isSelected = false}) => SvgPicture.asset(

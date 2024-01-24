@@ -1,7 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
-import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
+import 'package:finwise/core/widgets/budget_card.dart';
+import 'package:finwise/core/widgets/budget_overview.dart';
+import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     return Scaffold(
       // appBar: _buildAppBar(),
-      
+
       body: _buildBody(),
       backgroundColor: ColorConstant.backgroundColor,
       // backgroundColor: Colors.blue,
@@ -140,6 +142,7 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   Text('View More',
                       style: HomeTextStyleConstant.headerBoldLink),
+                  SizedBox(width: 6),
                   Icon(Icons.arrow_forward, color: ColorConstant.totalIcon),
                 ],
               ),
@@ -231,29 +234,6 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildDurationButton({
-    VoidCallback? onPressed,
-    String text = 'Button',
-  }) {
-    return TextButton(
-      onPressed: onPressed,
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: const BorderSide(color: Color(0xffD3D5E4)),
-          ),
-        ),
-      ),
-      child: Row(children: [
-        Text(text, style: HomeTextStyleConstant.small),
-        const Icon(Icons.arrow_drop_down, color: Color(0xff292D32)),
-      ]),
-    );
-  }
-
   // ----------------------------------------------------------------------
 
   // Other Features
@@ -285,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildFeatureItem(
                     text: 'Upcoming Bill',
                     amount: '3',
-                    icon: IconConstant.upcomingBill),
+                    icon: IconConstant.getUpcomingBill()),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
                   text: 'Smart Goal',
@@ -364,7 +344,10 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 Row(children: [
                   Expanded(child: SizedBox()),
-                  _buildDurationButton(text: 'This 4 months'),
+                  _buildDurationButton(
+                    text: 'Last 4 months',
+                    onPressed: () {},
+                  ),
                 ]),
                 SizedBox(height: 24),
                 _buildBarChart(),
@@ -538,10 +521,17 @@ class _HomeScreenState extends State<HomeScreen>
           _roundedContainer(
             child: Column(
               children: [
-                _buildTopSpendingContentHeader(),
+                _buildGeneralContentHeading(
+                  title: 'Totally Spent',
+                  amount: '\$356',
+                  color: ColorConstant.expense,
+                  icon: IconConstant.expense,
+                  buttonText: 'This month',
+                  onButtonPressed: () {},
+                ),
                 _buildPieChart(values, opacities),
                 _buildPieChartLegend(values, opacities),
-                _showMorePieChartInfo ? _buildMorePieChartInfo() : SizedBox(),
+                // _showMorePieChartInfo ? _buildMorePieChartInfo() : SizedBox(),
               ],
             ),
           ),
@@ -550,26 +540,57 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildTopSpendingContentHeader() {
+  // General
+  Widget _buildGeneralContentHeading({
+    String title = 'title',
+    String amount = 'amount',
+    Color color = Colors.black,
+    Widget? icon,
+    String buttonText = 'button',
+    void Function()? onButtonPressed,
+  }) {
     return Row(
       children: [
         Expanded(
           child: Row(children: [
-            IconConstant.expense,
+            icon ?? SizedBox(),
             SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Totally Spent', style: HomeTextStyleConstant.medium),
-                Text('\$356',
-                    style: HomeTextStyleConstant.numberFocus(
-                        color: ColorConstant.expense)),
+                Text(title, style: HomeTextStyleConstant.medium),
+                Text(amount,
+                    style: HomeTextStyleConstant.numberFocus(color: color)),
               ],
             )
           ]),
         ),
-        _buildDurationButton(),
+        _buildDurationButton(text: buttonText, onPressed: onButtonPressed),
       ],
+    );
+  }
+
+  // General
+  Widget _buildDurationButton({
+    VoidCallback? onPressed,
+    String text = 'Button',
+  }) {
+    return TextButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: const BorderSide(color: Color(0xffD3D5E4)),
+          ),
+        ),
+      ),
+      child: Row(children: [
+        Text(text, style: HomeTextStyleConstant.small),
+        const Icon(Icons.arrow_drop_down, color: Color(0xff292D32)),
+      ]),
     );
   }
 
@@ -743,54 +764,191 @@ class _HomeScreenState extends State<HomeScreen>
 
   ////
   ///
-  ////////
-  ///
-  ///
-  ///
-  ///
 
   Widget _buildBudgetPlan() {
     return Container(
       color: Colors.pink[200],
       alignment: Alignment.topLeft,
-      child: Text(
-        'My Budget Plan',
-        style: HomeTextStyleConstant.header,
-      ),
-    );
-  }
-
-  Widget _buildTotalSpend() {
-    return Container(
-      alignment: Alignment.topLeft,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
-          Text(
-            'Totally Spent',
-            style: HomeTextStyleConstant.header,
+          _buildGeneralTitle('My Budget Plan'),
+          _roundedContainer(
+            child: Column(
+              children: [
+                _buildBudgetPlanHeader(),
+                _buildBudgetOverview(),
+                _buildBudgetCards(),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTotalEarn() {
+  Widget _buildBudgetPlanHeader() {
     return Container(
-      alignment: Alignment.topLeft,
-      child: Text(
-        'Totally Earned',
-        style: HomeTextStyleConstant.header,
+      color: Colors.amber[200],
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        _buildBudgetPlanDate(),
+        _buildAddButton(),
+      ]),
+    );
+  }
+
+  Widget _buildBudgetPlanDate() {
+    return Container(
+      child: Text('Date filter...'),
+    );
+  }
+
+  Widget _buildAddButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, RouteName.addBudget);
+      },
+      child: Row(
+        children: [
+          Icon(Icons.add, color: Colors.white),
+          SizedBox(width: 8),
+          Text('Add New'),
+        ],
+      ),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(ColorConstant.secondary),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        padding: MaterialStateProperty.all(
+          EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        ),
       ),
     );
   }
 
+  Widget _buildBudgetOverview() {
+    return BudgetOverview(
+      totalBudget: 130,
+      available: 30,
+      spend: 0,
+      overBudget: 0,
+      plannedBudget: 150,
+    );
+  }
+
+  Widget _buildBudgetCards() {
+    return SingleChildScrollView(
+      child: Row(
+        children: [
+          _buildBudgetCardItem(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBudgetCardItem() {
+    return Container(
+      child: BudgetCard(
+        screen: BudgetPlanDetailScreen(),
+        // title: 'Transportation',
+        // color: Colors.blue,
+        // transaction: 0,
+        // remain: 0,
+        // total: 0,
+        // spent: 0,
+      ),
+    );
+  }
+
+  // --------------------------------------------------------------------------
+
+  //----------------------------------------------------------------------------
+
+  Widget _buildTotalSpend() {
+    return Container(
+      color: Colors.green[100],
+      alignment: Alignment.topLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGeneralTitle('Totally Spent'),
+          _roundedContainer(
+            child: Column(
+              children: [
+                _buildGeneralContentHeading(
+                  title: 'Totally Spent',
+                  amount: '\$256',
+                  color: ColorConstant.expense,
+                  icon: IconConstant.expense,
+                  buttonText: 'Last 7 days',
+                  onButtonPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --------------------------------------------------------------------------
+
+  //----------------------------------------------------------------------------
+
+  Widget _buildTotalEarn() {
+    return Container(
+      color: Colors.yellow[100],
+      alignment: Alignment.topLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGeneralTitle('Totally Earned'),
+          _roundedContainer(
+            child: Column(
+              children: [
+                _buildGeneralContentHeading(
+                  title: 'Totally Earned',
+                  amount: '\$356',
+                  color: ColorConstant.income,
+                  icon: IconConstant.earn,
+                  buttonText: 'Last 7 days',
+                  onButtonPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --------------------------------------------------------------------------
+
+  //----------------------------------------------------------------------------
+
   Widget _buildUpcomingBill() {
     return Container(
+      color: Colors.red[100],
       alignment: Alignment.topLeft,
-      child: Text(
-        'Upcoming Bill',
-        style: HomeTextStyleConstant.header,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGeneralTitle('Upcoming Bill'),
+          _roundedContainer(
+            child: Column(
+              children: [
+                _buildGeneralContentHeading(
+                  title: 'Total Upcoming Bills',
+                  amount: '4',
+                  color: ColorConstant.bill,
+                  icon: IconConstant.getUpcomingBill(color: ColorConstant.bill),
+                  buttonText: 'This month',
+                  onButtonPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
