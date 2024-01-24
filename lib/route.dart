@@ -17,8 +17,8 @@ abstract class RouteName {
 
 var appRoutes = {
   RouteName.splash: (BuildContext context) => SplashScreen(),
-  RouteName.splash: (BuildContext context) => SignInScreen(),
-  RouteName.splash: (BuildContext context) => SignUpScreen(),
+  RouteName.signIn: (BuildContext context) => SignInScreen(),
+  RouteName.signUp: (BuildContext context) => SignUpScreen(),
   RouteName.index: (BuildContext context) => IndexScreen(),
   RouteName.home: (BuildContext context) => HomeScreen(),
   RouteName.budgetPlan: (BuildContext context) => BudgetPlanScreen(),
