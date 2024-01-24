@@ -58,5 +58,9 @@ class IconConstant {
 
   static SvgPicture close = SvgPicture.asset('${_svgPath}close.svg');
 
+  static SvgPicture arrowLeft = SvgPicture.asset('${_svgPath}arrow_left.svg');
+
+  static SvgPicture arrowRight = SvgPicture.asset('${_svgPath}arrow_right.svg');
+
   // static
 }
