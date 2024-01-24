@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -107,8 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: AuthScreenTextStyle.boldLink,
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const SignUpScreen()));
+                  Navigator.of(context).pushReplacementNamed(RouteName.index);
                 },
               ),
             ],
