@@ -1,6 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class OneTimeBudget extends StatefulWidget {
   final VoidCallback backToMain;
@@ -92,6 +93,9 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
             TextField(
               controller: _budgetAmountController,
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
@@ -100,7 +104,15 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
               ),
               decoration: InputDecoration(
                   alignLabelWithHint: true,
-                  label: Text('Amount'),
+                  label: Text(
+                    'Amount',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      letterSpacing: 0.75,
+                      color: ColorConstant.mainText,
+                    ),
+                  ),
                   prefixText: '\$',
                   prefixStyle: TextStyle(
                     fontWeight: FontWeight.w600,
