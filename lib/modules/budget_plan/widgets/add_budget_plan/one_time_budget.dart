@@ -1,5 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
+import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,10 +24,20 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _description(),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _description(),
+          const SizedBox(
+            height: 12,
+          ),
+          _form(),
+          const SizedBox(
+            height: 20,
+          ),
+          _buttons(),
+        ],
+      ),
     );
   }
 
@@ -71,14 +84,6 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 12,
-        ),
-        _form(),
-        const SizedBox(
-          height: 20,
-        ),
-        _buttons(),
       ],
     );
   }
@@ -86,61 +91,13 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
   Widget _form() {
     return Column(
       children: [
-        // Budget amount
+        // Amount input
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _budgetAmountController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-              ],
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                letterSpacing: 0.75,
-                color: ColorConstant.mainText,
-              ),
-              decoration: InputDecoration(
-                  alignLabelWithHint: true,
-                  label: Text(
-                    'Amount',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      letterSpacing: 0.75,
-                      color: ColorConstant.mainText,
-                    ),
-                  ),
-                  prefixText: '\$',
-                  prefixStyle: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    letterSpacing: 0.75,
-                    color: ColorConstant.mainText,
-                  ),
-                  hintStyle: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    letterSpacing: 0.75,
-                    color: ColorConstant.thin,
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
-                  border: InputBorder.none,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.transparent),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.transparent),
-                  ),
-                  filled: true,
-                  fillColor: ColorConstant.white),
-            ),
+            AmountInput(controller: _budgetAmountController),
             const SizedBox(
-              height: 12,
+              height: 8,
             ),
             Text(
               'Amount needed to be spent in this category.',
@@ -151,49 +108,22 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
                 height: 1.5,
                 color: ColorConstant.mainText,
               ),
-            )
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const BudgetRecommendation(amount: 74),
           ],
         ),
-
         const SizedBox(
           height: 20,
         ),
-
-        // Expense name
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _expenseNameController,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                letterSpacing: 0.75,
-                color: ColorConstant.mainText,
-              ),
-              decoration: InputDecoration(
-                  hintText: "Expense name (Optional)",
-                  hintStyle: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    letterSpacing: 0.75,
-                    color: ColorConstant.thin,
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
-                  border: InputBorder.none,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.transparent),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.transparent),
-                  ),
-                  filled: true,
-                  fillColor: ColorConstant.white),
-            ),
+            ExpenseNameInput(controller: _expenseNameController),
             const SizedBox(
-              height: 12,
+              height: 8,
             ),
             Text(
               'Category name will be used if no custom name is set.',
@@ -204,9 +134,9 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
                 height: 1.5,
                 color: ColorConstant.mainText,
               ),
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }

@@ -23,8 +23,8 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            physics: const BouncingScrollPhysics(),
             children: [
               _titleContent(),
               const SizedBox(
