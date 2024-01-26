@@ -5,6 +5,12 @@ import 'package:flutter_svg/svg.dart';
 const _svgPath = 'assets/images/svg/';
 
 class IconConstant {
+  static SvgPicture arrowLeft = SvgPicture.asset('${_svgPath}arrow_left.svg');
+
+  static SvgPicture arrowRight = SvgPicture.asset('${_svgPath}arrow_right.svg');
+
+  static SvgPicture infoALert = SvgPicture.asset('${_svgPath}info_alert.svg');
+
   static SvgPicture avatar = SvgPicture.asset('${_svgPath}avatar.svg');
 
   static SvgPicture budgetPlan = SvgPicture.asset('${_svgPath}budget_plan.svg');
@@ -71,15 +77,29 @@ class IconConstant {
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  static SvgPicture getBottomUser({Color color = Colors.white}) => SvgPicture.asset(
+  static SvgPicture getUser({Color color = Colors.white}) =>
+      SvgPicture.asset(
+        '${_svgPath}user.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getBottomUser({Color color = Colors.white}) =>
+      SvgPicture.asset(
         '${_svgPath}bottom_nav_user.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
-  static SvgPicture arrowLeft = SvgPicture.asset('${_svgPath}arrow_left.svg');
 
-  static SvgPicture arrowRight = SvgPicture.asset('${_svgPath}arrow_right.svg');
-  
-  static SvgPicture infoALert = SvgPicture.asset('${_svgPath}info_alert.svg');
+  static SvgPicture getArrowRight({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}arrow_right.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getMore({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}more.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 
   // static
 }

@@ -62,6 +62,8 @@ class _IndexScreenState extends State<IndexScreen> {
         highlightColor: Colors.transparent,
       ),
       child: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         onTap: (index) {
           if (index != 1) {
             setState(() {

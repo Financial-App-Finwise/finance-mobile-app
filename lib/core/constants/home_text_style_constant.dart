@@ -85,7 +85,7 @@ abstract class HomeTextStyleConstant {
     fontWeight: FontWeight.w500,
     color: Colors.black,
   );
-  
+
   static TextStyle budgetCardTitle = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 16,
@@ -99,4 +99,26 @@ abstract class HomeTextStyleConstant {
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
+
+  static TextStyle transactionItemTitle = TextStyle(
+    fontFamily: FontConstant.balooThambi2Medium,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: ColorConstant.black,
+  );
+
+  static TextStyle transactionItemSubtitle = TextStyle(
+    fontFamily: FontConstant.balooThambi2Medium,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: ColorConstant.thin,
+  );
+
+  static TextStyle getTransactionItemSuffix({Color color = Colors.black}) =>
+      TextStyle(
+        fontFamily: FontConstant.balooThambi2Medium,
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+        color: color,
+      );
 }

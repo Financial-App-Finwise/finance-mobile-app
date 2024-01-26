@@ -33,4 +33,7 @@ class ColorConstant {
 
   // pie chart
   static Color topSpending = const Color(0xffB71E1E);
+
+  // divider
+  static Color divider = const Color(0xffF2F2F2);
 }

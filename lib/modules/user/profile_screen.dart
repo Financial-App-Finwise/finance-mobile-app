@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Expanded(child: UnimplementedScreen()),
           ElevatedButton(
             onPressed: () {
-              context.read<AuthStore>().signOut();
+              // context.read<AuthStore>().signOut();
             },
             child: Text('Log out'),
           ),

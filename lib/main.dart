@@ -1,6 +1,6 @@
-import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/route.dart';
+import 'package:finwise/screens/index_screen.dart';
 import 'package:finwise/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/themes/app_theme.dart';
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         // debugShowCheckedModeBanner: ,
         theme: appTheme,
         routes: appRoutes,
-        home: const SplashScreen(),
+        home: const IndexScreen(),
       ),
     );
   }

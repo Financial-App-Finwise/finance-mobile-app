@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: Container(
         alignment: Alignment.topRight,
         // color: Colors.yellow[200],
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -94,7 +94,9 @@ class _HomeScreenState extends State<HomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Welcome Back,', style: HomeTextStyleConstant.welcome),
-                  Text(authStore.user!.userData.name,
+                  // Text(authStore.user!.userData.name,
+                  //     style: HomeTextStyleConstant.profileName),
+                  Text('User',
                       style: HomeTextStyleConstant.profileName),
                 ],
               ),
@@ -560,16 +562,19 @@ class _HomeScreenState extends State<HomeScreen>
           child: Row(children: [
             icon ?? SizedBox(),
             SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: HomeTextStyleConstant.medium),
-                Text(amount,
-                    style: HomeTextStyleConstant.numberFocus(color: color)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: HomeTextStyleConstant.medium),
+                  Text(amount,
+                      style: HomeTextStyleConstant.numberFocus(color: color)),
+                ],
+              ),
             )
           ]),
         ),
+        SizedBox(width: 12),
         _buildDurationButton(text: buttonText, onPressed: onButtonPressed),
       ],
     );
@@ -679,13 +684,13 @@ class _HomeScreenState extends State<HomeScreen>
   }) {
     return PieChartSectionData(
       value: value,
-      title: '$value',
+      // title: '$value',
       titleStyle: TextStyle(
         color: Colors.white,
         fontSize: 10,
       ),
       color: ColorConstant.topSpending.withOpacity(opacity),
-      showTitle: true,
+      showTitle: false,
       radius: 25,
     );
   }
@@ -802,8 +807,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildBudgetPlanDate() {
     return Container(
-      color: Colors.amber[200],
-      child: Text('Date filter...'),
+      child: _datePicker(),
     );
   }
 
@@ -895,7 +899,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildTotalSpend() {
     return Container(
-      color: Colors.green[100],
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -903,6 +906,7 @@ class _HomeScreenState extends State<HomeScreen>
           _buildGeneralTitle('Totally Spent'),
           _roundedContainer(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
@@ -912,6 +916,12 @@ class _HomeScreenState extends State<HomeScreen>
                   buttonText: 'Last 7 days',
                   onButtonPressed: () {},
                 ),
+                Divider(color: ColorConstant.divider),
+                SizedBox(height: 16),
+                Text('Recent Transactions',
+                    style: HomeTextStyleConstant.medium),
+                SizedBox(height: 12),
+                _buildTransactions(color: ColorConstant.expense),
               ],
             ),
           ),
@@ -919,14 +929,80 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
-
   // --------------------------------------------------------------------------
 
-  //----------------------------------------------------------------------------
+  // --------- General ------------
+  Widget _buildTransactions({Color color = Colors.black}) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 2,
+      itemBuilder: (context, index) {
+        return _buildTransactionItem(color: color);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(color: ColorConstant.divider);
+      },
+    );
+  }
 
+  Widget _buildTransactionItem({Color color = Colors.black}) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 6),
+      alignment: Alignment.center,
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                _buildSmallRoundedSquare(color: color),
+                SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Transportation',
+                        style: HomeTextStyleConstant.transactionItemTitle),
+                    SizedBox(height: 1),
+                    Text('12 December, 2023',
+                        style: HomeTextStyleConstant.transactionItemSubtitle),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Text(
+                '\$10',
+                style: HomeTextStyleConstant.getTransactionItemSuffix(
+                    color: color),
+              ),
+              SizedBox(width: 12),
+              IconConstant.getArrowRight(color: Color(0xff292D32)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmallRoundedSquare({Color color = Colors.black}) {
+    return Container(
+      width: 32,
+      height: 32,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: IconConstant.getSchoolBus(),
+    );
+  }
+  // --------- General ------------
+
+  //----------------------------------------------------------------------------
   Widget _buildTotalEarn() {
     return Container(
-      color: Colors.yellow[100],
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -934,6 +1010,7 @@ class _HomeScreenState extends State<HomeScreen>
           _buildGeneralTitle('Totally Earned'),
           _roundedContainer(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Earned',
@@ -943,6 +1020,12 @@ class _HomeScreenState extends State<HomeScreen>
                   buttonText: 'Last 7 days',
                   onButtonPressed: () {},
                 ),
+                Divider(color: ColorConstant.divider),
+                SizedBox(height: 16),
+                Text('Recent Transactions',
+                    style: HomeTextStyleConstant.medium),
+                SizedBox(height: 12),
+                _buildTransactions(color: ColorConstant.income),
               ],
             ),
           ),
@@ -950,14 +1033,11 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
-
   // --------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------
-
   Widget _buildUpcomingBill() {
     return Container(
-      color: Colors.red[100],
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -974,6 +1054,9 @@ class _HomeScreenState extends State<HomeScreen>
                   buttonText: 'This month',
                   onButtonPressed: () {},
                 ),
+                Divider(color: ColorConstant.divider),
+                SizedBox(height: 16),
+                _buildBills(),
               ],
             ),
           ),
@@ -981,4 +1064,137 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
+
+  Widget _buildBills() {
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _buildBillItem(),
+          SizedBox(width: 8),
+          _buildBillItem(),
+          SizedBox(width: 8),
+          _buildBillItem(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBillItem() {
+    return Container(
+      width: 200,
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(color: ColorConstant.divider),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  _buildSmallRoundedSquare(color: ColorConstant.bill),
+                  SizedBox(width: 12),
+                  Text('Today', style: HomeTextStyleConstant.budgetCardTitle),
+                ],
+              ),
+              IconConstant.getMore(color: Color(0xffBABCD4)),
+            ],
+          ),
+          SizedBox(height: 8),
+          Divider(color: ColorConstant.divider),
+          SizedBox(height: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Netflix', style: HomeTextStyleConstant.medium),
+              SizedBox(height: 2),
+              Text('\$2.5',
+                  style: HomeTextStyleConstant.numberFocus(
+                    color: ColorConstant.black,
+                  )),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  DateTime currentDate = DateTime.now();
+
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  Widget _datePicker() {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              currentDate = subtractMonth(currentDate);
+            });
+          },
+          child: IconConstant.arrowLeft,
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        Text(
+          '${monthNames[currentDate.month - 1]} ${currentDate.year}',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+            letterSpacing: 1,
+            color: ColorConstant.black,
+          ),
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              currentDate = addMonth(currentDate);
+            });
+          },
+          child: IconConstant.arrowRight,
+        ),
+      ],
+    );
+  }
+
+  DateTime subtractMonth(DateTime date) {
+    // Calculate the number of days in the previous month
+    int daysInPreviousMonth = DateTime(date.year, date.month, 0).day;
+
+    // Subtract the days in the previous month from the current date
+    return date.subtract(Duration(days: daysInPreviousMonth));
+  }
+
+  DateTime addMonth(DateTime date) {
+    // Calculate the number of days in the current month
+    int daysInCurrentMonth = DateTime(date.year, date.month + 1, 0).day;
+
+    // Add the days in the current month to the current date
+    return date.add(Duration(days: daysInCurrentMonth));
+  }
+
+// ------------------
 }

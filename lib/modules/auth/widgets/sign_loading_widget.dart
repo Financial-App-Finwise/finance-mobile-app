@@ -37,7 +37,7 @@ class _SignLoadingWidgetState extends State<SignLoadingWidget> {
                     ],
                     stops: [0, 0.5, 1],
                   )),
-              child: IconConstant.getBottomUser(),
+              child: IconConstant.getUser(),
             ),
             SizedBox(height: 16),
             Text('Just a moment', style: AuthScreenTextStyle.loadingTitle),
