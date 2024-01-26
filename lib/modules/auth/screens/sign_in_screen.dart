@@ -161,7 +161,19 @@ class _SignInScreenState extends State<SignInScreen> {
                 },
               ),
             ],
-          )
+          ),
+          InkWell(
+            child: Text(
+              'Verify Email',
+              style: AuthScreenTextStyle.boldLink,
+            ),
+            onTap: () {
+              // Navigator.of(context).pushNamed(RouteName.signUp);
+              if (widget.changeScreen != null) {
+                Navigator.of(context).pushNamed(RouteName.verifyEmail);
+              }
+            },
+          ),
         ],
       ),
     );

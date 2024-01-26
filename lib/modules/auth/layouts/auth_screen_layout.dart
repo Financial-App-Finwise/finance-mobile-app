@@ -80,9 +80,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
 
   Widget _buildArrow({bool hide = true}) {
     return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
+      onTap: null,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         height: 50,

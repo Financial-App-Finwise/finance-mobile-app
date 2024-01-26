@@ -48,6 +48,18 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     return Column(
       children: [
         FormWidget(
+          hintText: 'Enter your email',
+          controller: _emailController,
+          prefixIcon: SizedBox(),
+          onChanged: (value) {
+            setState(() {
+              _isFormFilled();
+            });
+          },
+          onEditingComplete: _verify,
+        ),
+        const SizedBox(height: 24),
+        FormWidget(
           hintText: 'Enter your code',
           controller: _codeController,
           prefixIcon: SizedBox(),
@@ -67,7 +79,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   Future _verify() async {
     bool success = await authStore.verifyEmail(
       model: VerifyEmailModel(
-        email: authStore.email,
+        email: _emailController.text,
         code: _codeController.text,
       ),
     );
