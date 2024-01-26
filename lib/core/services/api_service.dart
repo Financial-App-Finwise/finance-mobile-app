@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class ApiService {
   static Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'https://finwise-api-test.up.railway.app/',
+      baseUrl: 'https://finwise-api-test.up.railway.app/api/',
     )
   )..interceptors.add(LogInterceptor());
 }
