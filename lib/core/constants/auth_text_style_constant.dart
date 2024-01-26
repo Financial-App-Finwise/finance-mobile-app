@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/font_constant.dart';
 import 'package:flutter/material.dart';
 
 // text styles to be used in specific section
-abstract class AuthScreenTextStyle {
+class AuthScreenTextStyle {
   static TextStyle topContentTitle = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     color: ColorConstant.black,
@@ -56,5 +56,12 @@ abstract class AuthScreenTextStyle {
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 14,
     color: ColorConstant.boldLink,
+  );
+
+  static TextStyle loadingTitle = TextStyle(
+    fontFamily: FontConstant.balooThambi2Medium,
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    color: ColorConstant.primary,
   );
 }

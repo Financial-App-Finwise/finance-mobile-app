@@ -86,4 +86,17 @@ abstract class HomeTextStyleConstant {
     color: Colors.black,
   );
   
+  static TextStyle budgetCardTitle = TextStyle(
+    fontFamily: FontConstant.balooThambi2Medium,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+  );
+
+  static TextStyle smallAddButton = TextStyle(
+    fontFamily: FontConstant.balooThambi2Medium,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
 }

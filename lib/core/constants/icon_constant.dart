@@ -33,21 +33,6 @@ class IconConstant {
 
   static SvgPicture warning = SvgPicture.asset('${_svgPath}warning.svg');
 
-  // methods
-
-  static SvgPicture getUpcomingBill({Color color = Colors.white}) =>
-      SvgPicture.asset(
-        '${_svgPath}upcoming_bill.svg',
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      );
-
-  // bottom navigation
-  static SvgPicture getHome({bool isSelected = false}) => SvgPicture.asset(
-        '${_svgPath}home.svg',
-        colorFilter: ColorFilter.mode(
-            isSelected ? Color(0xff00A6FB) : ColorConstant.mainText,
-            BlendMode.srcIn),
-      );
   static SvgPicture available = SvgPicture.asset('${_svgPath}available.svg');
 
   static SvgPicture spend = SvgPicture.asset('${_svgPath}spend.svg');
@@ -61,5 +46,33 @@ class IconConstant {
 
   static SvgPicture close = SvgPicture.asset('${_svgPath}close.svg');
 
-  // static
+  // methods
+
+  static SvgPicture getUpcomingBill({Color color = Colors.white}) =>
+      SvgPicture.asset(
+        '${_svgPath}upcoming_bill.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  // bottom navigation
+  static SvgPicture getHome({Color color = Colors.black}) => SvgPicture.asset(
+        '${_svgPath}home.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getReport({Color color = Colors.black}) => SvgPicture.asset(
+        '${_svgPath}report.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getSchoolBus({Color color = Colors.white}) =>
+      SvgPicture.asset(
+        '${_svgPath}school_bus.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getBottomUser({Color color = Colors.white}) => SvgPicture.asset(
+        '${_svgPath}bottom_nav_user.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 }
