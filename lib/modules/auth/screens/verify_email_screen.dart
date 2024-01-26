@@ -84,10 +84,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       ),
     );
     if (success) {
-      // Navigator.pushReplacementNamed(context, RouteName.signIn);
-      if (widget.changeScreen != null) {
-        widget.changeScreen!();
-      }
+      Navigator.pop(context);
+      // if (widget.changeScreen != null) {
+      //   widget.changeScreen!();
+      // }
     }
+    Navigator.pop(context);
   }
 }
