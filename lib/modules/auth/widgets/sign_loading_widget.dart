@@ -6,14 +6,14 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-class SignLoadingScreen extends StatefulWidget {
-  const SignLoadingScreen({super.key});
+class SignLoadingWidget extends StatefulWidget {
+  const SignLoadingWidget({super.key});
 
   @override
-  State<SignLoadingScreen> createState() => _SignLoadingScreenState();
+  State<SignLoadingWidget> createState() => _SignLoadingWidgetState();
 }
 
-class _SignLoadingScreenState extends State<SignLoadingScreen> {
+class _SignLoadingWidgetState extends State<SignLoadingWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +37,7 @@ class _SignLoadingScreenState extends State<SignLoadingScreen> {
                     ],
                     stops: [0, 0.5, 1],
                   )),
-              child: IconConstant.getUser(),
+              child: IconConstant.getBottomUser(),
             ),
             SizedBox(height: 16),
             Text('Just a moment', style: AuthScreenTextStyle.loadingTitle),

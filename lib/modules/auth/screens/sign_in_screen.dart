@@ -1,58 +1,94 @@
 import 'package:finwise/core/constants/auth_text_style_constant.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
+import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart';
+import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
 import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
+import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  SignInScreen({
+    super.key,
+    this.changeScreen,
+  });
+
+  void Function()? changeScreen;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  // @override
+  // void deactivate() {
+  //   _emailController.dispose();
+  //   super.deactivate();
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return AuthScreenLayout(
-      // appBar: ,
-      title: 'Welcome Back',
-      subtitle: 'Please enter your email and password to sign in',
-      buttonLabel: 'Sign in',
-      bottomContent: _buildBottomContent(),
-      isFormFilled: _isFormFilled,
-      formArea: _buildTextFields(),
-    );
+    AuthStore authStore = context.read<AuthStore>();
+    return Observer(builder: (context) {
+      return authStore.isLoading
+          ? SignLoadingWidget()
+          : AuthScreenLayout(
+              // appBar: ,
+              title: 'Welcome Back',
+              subtitle: 'Please enter your email and password to sign in',
+              buttonLabel: 'Sign in',
+              bottomContent: _buildBottomContent(),
+              isFormFilled: _isFormFilled,
+              formArea: _buildTextFields(),
+              onButtonTap: () async {
+                print(_emailController.text);
+                bool success = await authStore.signIn(
+                  UserSignIn(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  ),
+                );
+              },
+            );
+    });
   }
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   Widget _buildTextFields() {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTextLabel(text: 'Email'),
-          FormWidget(
-            hintText: 'Email',
-            controller: _emailController,
-            prefixIcon:
-                Icon(Icons.email_outlined, color: ColorConstant.mainText),
-            onChanged: (value) => setState(() => _isFormFilled),
-          ),
-          const SizedBox(height: 24),
-          _buildTextLabel(text: 'Password'),
-          FormWidget(
-            obscureText: true,
-            hintText: 'Password',
-            prefixIcon: Icon(Icons.lock_outline, color: ColorConstant.mainText),
-            controller: _passwordController,
-            onChanged: (value) => setState(() => _isFormFilled),
-          ),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTextLabel(text: 'Email'),
+            FormWidget(
+              hintText: 'Email',
+              controller: _emailController,
+              prefixIcon:
+                  Icon(Icons.email_outlined, color: ColorConstant.mainText),
+              onChanged: (value) => setState(() => _isFormFilled),
+            ),
+            const SizedBox(height: 24),
+            _buildTextLabel(text: 'Password'),
+            FormWidget(
+              obscureText: true,
+              hintText: 'Password',
+              prefixIcon:
+                  Icon(Icons.lock_outline, color: ColorConstant.mainText),
+              controller: _passwordController,
+              onChanged: (value) => setState(() => _isFormFilled),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -71,6 +107,8 @@ class _SignInScreenState extends State<SignInScreen> {
       _emailController.value.text.isNotEmpty &&
       _passwordController.value.text.isNotEmpty;
 
+  bool _remember = false;
+
   Widget _buildBottomContent() {
     return Container(
       alignment: Alignment.center,
@@ -83,7 +121,15 @@ class _SignInScreenState extends State<SignInScreen> {
             children: [
               Row(
                 children: [
-                  Checkbox(value: true, onChanged: (value) {}),
+                  Checkbox(
+                      value: _remember,
+                      onChanged: (value) {
+                        setState(() {
+                          _remember = !_remember;
+                          // TODO
+                          // save to cache
+                        });
+                      }),
                   Text(
                     'Remember me',
                     style: AuthScreenTextStyle.medium,
@@ -108,7 +154,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: AuthScreenTextStyle.boldLink,
                 ),
                 onTap: () {
-                  Navigator.of(context).pushReplacementNamed(RouteName.signUp);
+                  // Navigator.of(context).pushNamed(RouteName.signUp);
+                  if (widget.changeScreen != null) {
+                    widget.changeScreen!();
+                  }
                 },
               ),
             ],

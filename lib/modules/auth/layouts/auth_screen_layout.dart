@@ -1,5 +1,4 @@
 import 'package:finwise/core/constants/auth_text_style_constant.dart';
-import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 
@@ -32,7 +31,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: _buildAppBar(),
+      // appBar: _buildAppBar(),
       body: SafeArea(
         child: GestureDetector(
           child: _buildBody(),
@@ -63,7 +62,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // _buildArrow(),
+                    _buildArrow(),
                     _buildTopContent(),
                     // _buildTextFields(),
                     widget.formArea,
@@ -79,15 +78,16 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
     );
   }
 
-  Widget _buildArrow() {
+  Widget _buildArrow({bool hide = true}) {
     return InkWell(
       onTap: () {
         Navigator.pop(context);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
+        height: 50,
         alignment: Alignment.topLeft,
-        child: const Icon(Icons.arrow_back),
+        child: hide ? SizedBox() : const Icon(Icons.arrow_back),
       ),
     );
   }
@@ -122,13 +122,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         // horizontal: 16,
       ),
       child: InkWell(
-        onTap: widget.isFormFilled
-            ? () {
-                // TODO
-                // implement differently in sign up and sign in
-                Navigator.pushReplacementNamed(context, RouteName.index);
-              }
-            : null,
+        onTap: widget.onButtonTap,
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(

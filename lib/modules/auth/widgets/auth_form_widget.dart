@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:flutter/material.dart';
 
 class FormWidget extends StatefulWidget {
-  const FormWidget({
+  FormWidget({
     super.key,
     // this.backgroundColor
     required this.controller,
@@ -11,20 +11,25 @@ class FormWidget extends StatefulWidget {
     required this.prefixIcon,
     this.obscureText = false,
     this.onChanged,
+    this.validator,
+    this.onEditingComplete,
   });
 
   // final Color backgroundColor;
   final TextEditingController controller;
   final String hintText;
   final Widget prefixIcon;
-  final bool obscureText;
+  bool obscureText;
   final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
+  final void Function()? onEditingComplete;
 
   @override
   State<FormWidget> createState() => _FormWidgetState();
 }
 
 class _FormWidgetState extends State<FormWidget> {
+  late bool _isPassword = widget.obscureText;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,6 +38,7 @@ class _FormWidgetState extends State<FormWidget> {
         color: ColorConstant.backgroundColor,
       ),
       child: TextFormField(
+        
         textAlignVertical: TextAlignVertical.center,
         style: AuthScreenTextStyle.formText,
         controller: widget.controller,
@@ -43,18 +49,28 @@ class _FormWidgetState extends State<FormWidget> {
             margin: const EdgeInsets.all(16),
             child: widget.prefixIcon,
           ),
+          suffix: _isPassword
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.obscureText = !widget.obscureText;
+                    });
+                  },
+                  icon: Icon(
+                    widget.obscureText
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                        size: 10,
+                  ),
+                )
+              : SizedBox(),
           border: InputBorder.none,
           contentPadding: EdgeInsets.zero,
         ),
         obscureText: widget.obscureText,
-        validator: (value) {
-          // TODO
-          if (value!.isEmpty) {
-            return 'Please enter...';
-          }
-          return null;
-        },
+        validator: widget.validator,
         onChanged: widget.onChanged,
+        onEditingComplete: widget.onEditingComplete,
       ),
     );
   }
