@@ -1,4 +1,7 @@
+import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/widgets/bar_graph/bar_graph.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/six_month_chart.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/this_month_content.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/transaction_content.dart';
 import 'package:flutter/material.dart';
@@ -25,14 +28,17 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
             children: [
               _topBarContent(),
               Expanded(
-                child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: _mainContent(),
-                    )
-                  ],
+                child: Container(
+                  color: ColorConstant.backgroundColor,
+                  child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: _mainContent(),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -189,6 +195,19 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
       child: const Column(
         children: [
           ThisMonthContent(transaction: 7, total: 50, remain: 40, spent: 10),
+          SizedBox(
+            height: 16,
+          ),
+          SixMonthChart(
+            sixMonthBudget: [
+              10.0,
+              10.0,
+              10.0,
+              10.0,
+              10.0,
+              10.0,
+            ],
+          ),
           SizedBox(
             height: 16,
           ),
