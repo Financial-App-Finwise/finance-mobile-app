@@ -1,7 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
-import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/main_content.dart';
 import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/monthly_budget.dart';
 import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/one_time_budget.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +14,7 @@ class AddBudgetPlanScreen extends StatefulWidget {
 
 class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
   int _currentWidgetIndex = 0;
-
-  List<Widget> widgets = const [
-    MainContent(),
-    OneTimeBudget(),
-    MonthlyBudget(),
-  ];
+  double _progressBar = 0.5;
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +23,30 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            physics: const BouncingScrollPhysics(),
             children: [
               _titleContent(),
               const SizedBox(
-                height: 32,
+                height: 10,
               ),
               AnimatedSwitcher(
                 duration: const Duration(seconds: 1),
                 child: _currentWidgetIndex == 0
-                    ? MainContent(
-                        setIndex: () => setState(() {
-                          _currentWidgetIndex = 1;
-                        }),
-                      )
-                    : widgets[_currentWidgetIndex],
+                    ? _mainContent()
+                    : _currentWidgetIndex == 1
+                        ? OneTimeBudget(
+                            backToMain: () => setState(() {
+                              _currentWidgetIndex = 0;
+                              _progressBar = 0.5;
+                            }),
+                          )
+                        : MonthlyBudget(
+                            backToMain: () => setState(() {
+                              _currentWidgetIndex = 0;
+                              _progressBar = 0.5;
+                            }),
+                          ),
               ),
             ],
           ),
@@ -81,23 +83,11 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
               ),
               Expanded(
                 child: CustomProgressBar(
-                  value: 0.5,
+                  value: _progressBar,
                   color: ColorConstant.primary,
                 ),
               ),
             ],
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Text(
-          'Add budget plan',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 32,
-            letterSpacing: 1,
-            color: ColorConstant.black,
           ),
         ),
       ],
@@ -111,16 +101,32 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
         const SizedBox(
           height: 16,
         ),
-        _mainContentButton(
-          'One-time Budget',
-          'Create a budget that applies to this month only',
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _currentWidgetIndex = 1;
+              _progressBar = 0.8;
+            });
+          },
+          child: _mainContentButton(
+            'One-time Budget',
+            'Create a budget that applies to this month only',
+          ),
         ),
         const SizedBox(
           height: 16,
         ),
-        _mainContentButton(
-          'Monthly Budget',
-          'Create a budget that recurs every month',
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _currentWidgetIndex = 2;
+              _progressBar = 0.8;
+            });
+          },
+          child: _mainContentButton(
+            'Monthly Budget',
+            'Create a budget that recurs every month',
+          ),
         ),
       ],
     );
@@ -130,6 +136,18 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Add budget plan',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 32,
+            letterSpacing: 1,
+            color: ColorConstant.black,
+          ),
+        ),
+        const SizedBox(
+          height: 32,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -174,45 +192,42 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
   }
 
   Widget _mainContentButton(title, description) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: ColorConstant.white,
-          border: Border.all(
-            width: 1,
-            color: const Color(0xFFD3D5E4),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: ColorConstant.white,
+        border: Border.all(
+          width: 1,
+          color: const Color(0xFFD3D5E4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                letterSpacing: 1,
+                color: ColorConstant.black),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                  letterSpacing: 1,
-                  color: ColorConstant.black),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            description,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              height: 1.5,
+              letterSpacing: 0.75,
+              color: ColorConstant.lightBlack,
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            Text(
-              description,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                height: 1.5,
-                letterSpacing: 0.75,
-                color: ColorConstant.lightBlack,
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

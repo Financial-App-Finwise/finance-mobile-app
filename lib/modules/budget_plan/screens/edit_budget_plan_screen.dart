@@ -4,45 +4,65 @@ import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class MonthlyBudget extends StatefulWidget {
-  final VoidCallback backToMain;
-
-  const MonthlyBudget({
-    super.key,
-    required this.backToMain,
-  });
+class EditBudgetPlanScreen extends StatefulWidget {
+  const EditBudgetPlanScreen({super.key});
 
   @override
-  State<MonthlyBudget> createState() => _MonthlyBudgetState();
+  State<EditBudgetPlanScreen> createState() => _EditBudgetPlanScreenState();
 }
 
-class _MonthlyBudgetState extends State<MonthlyBudget> {
+class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
   final _expenseNameController = TextEditingController();
   final _budgetAmountController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-
-    _budgetAmountController.text = '0';
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _description(),
-      ],
+    return Scaffold(
+      backgroundColor: ColorConstant.backgroundColor,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: ListView(
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _title(),
+              const SizedBox(
+                height: 20,
+              ),
+              _form(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _description() {
+  Widget _title() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: IconConstant.close,
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(
+                const EdgeInsets.all(0),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 12,
+        ),
         Text(
-          'Add monthly budget',
+          'Edit budget',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 32,
@@ -68,7 +88,7 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
             ),
             Expanded(
               child: Text(
-                'Budget plan in specific category that recurs every month.',
+                'Budget plan in specific category for this month only.',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
@@ -80,14 +100,6 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 12,
-        ),
-        _form(),
-        const SizedBox(
-          height: 20,
-        ),
-        _buttons(),
       ],
     );
   }
@@ -142,42 +154,6 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buttons() {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () => widget.backToMain(),
-          child: _backButton(),
-        ),
-      ],
-    );
-  }
-
-  Widget _backButton() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: 24,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: ColorConstant.primary,
-          width: 1,
-        ),
-      ),
-      child: Text(
-        'Back',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          letterSpacing: 1,
-          color: ColorConstant.primary,
-        ),
-      ),
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/this_month_content.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/transaction_content.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +128,14 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     width: 24,
                     height: 24,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditBudgetPlanScreen(),
+                          ),
+                        );
+                      },
                       icon: const Icon(
                         Icons.edit_outlined,
                         size: 24,

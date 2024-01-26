@@ -75,4 +75,11 @@ class IconConstant {
         '${_svgPath}bottom_nav_user.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
+  static SvgPicture arrowLeft = SvgPicture.asset('${_svgPath}arrow_left.svg');
+
+  static SvgPicture arrowRight = SvgPicture.asset('${_svgPath}arrow_right.svg');
+  
+  static SvgPicture infoALert = SvgPicture.asset('${_svgPath}info_alert.svg');
+
+  // static
 }

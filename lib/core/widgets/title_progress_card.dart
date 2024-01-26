@@ -1,6 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
-import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class TitleProgressCard extends StatelessWidget {
