@@ -3,11 +3,13 @@ import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
+import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,9 +30,12 @@ class _HomeScreenState extends State<HomeScreen>
     super.deactivate();
   }
 
+  late AuthStore authStore = context.read<AuthStore>();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    print('--> START: build home screen');
     return Scaffold(
       // appBar: _buildAppBar(),
 
@@ -62,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen>
                   _buildTotalSpend(),
                   _buildTotalEarn(),
                   _buildUpcomingBill(),
+                  SizedBox(height: 48),
                 ],
               ),
             ],
@@ -88,15 +94,14 @@ class _HomeScreenState extends State<HomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Welcome Back,', style: HomeTextStyleConstant.welcome),
-                  Text('Taylor Lauren',
+                  Text(authStore.user!.userData.name,
                       style: HomeTextStyleConstant.profileName),
                 ],
               ),
             ],
           ),
           InkWell(
-            onTap: () =>
-                Navigator.pushReplacementNamed(context, RouteName.signIn),
+            onTap: () {},
             child: IconConstant.notification,
           ),
         ],
@@ -767,7 +772,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildBudgetPlan() {
     return Container(
-      color: Colors.pink[200],
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -789,7 +793,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildBudgetPlanHeader() {
     return Container(
-      color: Colors.amber[200],
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _buildBudgetPlanDate(),
         _buildAddButton(),
@@ -799,6 +802,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildBudgetPlanDate() {
     return Container(
+      color: Colors.amber[200],
       child: Text('Date filter...'),
     );
   }
@@ -808,20 +812,21 @@ class _HomeScreenState extends State<HomeScreen>
       onPressed: () {
         Navigator.pushNamed(context, RouteName.addBudget);
       },
-      child: Row(
-        children: [
-          Icon(Icons.add, color: Colors.white),
-          SizedBox(width: 8),
-          Text('Add New'),
-        ],
-      ),
       style: ButtonStyle(
+        elevation: MaterialStateProperty.all(0),
         backgroundColor: MaterialStateProperty.all(ColorConstant.secondary),
         shape: MaterialStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
         padding: MaterialStateProperty.all(
           EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         ),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.add, color: Colors.white),
+          SizedBox(width: 8),
+          Text('Add New', style: HomeTextStyleConstant.smallAddButton),
+        ],
       ),
     );
   }
@@ -837,11 +842,20 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetCards() {
-    return SingleChildScrollView(
-      child: Row(
-        children: [
-          _buildBudgetCardItem(),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _buildBudgetCardItem(),
+            SizedBox(width: 12),
+            _buildBudgetCardItem(),
+            SizedBox(width: 12),
+            _buildBudgetCardItem(),
+          ],
+        ),
       ),
     );
   }
@@ -850,12 +864,27 @@ class _HomeScreenState extends State<HomeScreen>
     return Container(
       child: BudgetCard(
         screen: BudgetPlanDetailScreen(),
-        // title: 'Transportation',
-        // color: Colors.blue,
-        // transaction: 0,
-        // remain: 0,
-        // total: 0,
-        // spent: 0,
+        title: 'Transportation',
+        color: ColorConstant.expense,
+        topLeft: Row(
+          children: [
+            Text('\$40', style: HomeTextStyleConstant.budgetCardTitle),
+            SizedBox(width: 6),
+            Text('Left', style: HomeTextStyleConstant.medium),
+          ],
+        ),
+        topRight: Row(
+          children: [
+            Text('out of', style: HomeTextStyleConstant.medium),
+            SizedBox(width: 6),
+            Text('\$50', style: HomeTextStyleConstant.budgetCardTitle),
+          ],
+        ),
+        bottomLeft: Text('Today', style: HomeTextStyleConstant.medium),
+        bottomRight:
+            Text('January 24, 2024', style: HomeTextStyleConstant.medium),
+        total: 10,
+        spent: 5,
       ),
     );
   }

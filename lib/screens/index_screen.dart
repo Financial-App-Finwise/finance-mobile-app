@@ -1,6 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
+import 'package:finwise/modules/user/profile_screen.dart';
+import 'package:finwise/screens/unimplemented_screen.dart';
 import 'package:flutter/material.dart';
 
 // combine all screens
@@ -12,7 +14,6 @@ class IndexScreen extends StatefulWidget {
 }
 
 class _IndexScreenState extends State<IndexScreen> {
-
   PageController _pageController = PageController();
   List _isSelectedList = [true, false, false, false, false];
   int _currentIndex = 0;
@@ -48,10 +49,8 @@ class _IndexScreenState extends State<IndexScreen> {
       controller: _pageController,
       children: [
         HomeScreen(),
-        Container(child: Text('Page2')),
         SizedBox(),
-        Container(child: Text('Page3')),
-        Container(child: Text('Page4')),
+        ProfileScreen(),
       ],
     );
   }
@@ -63,39 +62,45 @@ class _IndexScreenState extends State<IndexScreen> {
         highlightColor: Colors.transparent,
       ),
       child: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
         onTap: (index) {
-          if (index != 2) {
+          if (index != 1) {
             setState(() {
-            _isSelectedList = [false, false, false, false, false];
-            _isSelectedList[index] = true;
-            _currentIndex = index;
-            _pageController.jumpToPage(index);
-          });
+              _isSelectedList = [false, false, false];
+              _isSelectedList[index] = true;
+              _currentIndex = index;
+              _pageController.jumpToPage(index);
+            });
           }
         },
+        type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
+        selectedFontSize: 14,
+        unselectedFontSize: 14,
+        selectedItemColor: Color(0xff00A6FB),
+        unselectedItemColor: Color(0xff464255),
         items: [
           BottomNavigationBarItem(
-            icon: IconConstant.getHome(isSelected: _isSelectedList[0]),
+            icon: SizedBox(
+              height: 24,
+              child: IconConstant.getHome(
+                color: _isSelectedList[0]
+                    ? Color(0xff00A6FB)
+                    : ColorConstant.mainText,
+              ),
+            ),
             label: 'Home',
           ),
+          BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
           BottomNavigationBarItem(
-            icon: IconConstant.getHome(isSelected: _isSelectedList[1]),
-            label: 'Home',
-          ),
-          // empty
-          BottomNavigationBarItem(
-            icon: SizedBox.shrink(),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: IconConstant.getHome(isSelected: _isSelectedList[3]),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: IconConstant.getHome(isSelected: _isSelectedList[4]),
-            label: 'Home',
+            icon: SizedBox(
+              height: 24,
+              child: IconConstant.getBottomUser(
+                color: _isSelectedList[2]
+                    ? Color(0xff00A6FB)
+                    : ColorConstant.mainText,
+              ),
+            ),
+            label: 'Profile',
           ),
         ],
       ),
