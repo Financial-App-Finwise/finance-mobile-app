@@ -20,35 +20,40 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            children: [
-              _titleContent(),
-              const SizedBox(
-                height: 10,
-              ),
-              AnimatedSwitcher(
-                duration: const Duration(seconds: 1),
-                child: _currentWidgetIndex == 0
-                    ? _mainContent()
-                    : _currentWidgetIndex == 1
-                        ? OneTimeBudget(
-                            backToMain: () => setState(() {
-                              _currentWidgetIndex = 0;
-                              _progressBar = 0.5;
-                            }),
-                          )
-                        : MonthlyBudget(
-                            backToMain: () => setState(() {
-                              _currentWidgetIndex = 0;
-                              _progressBar = 0.5;
-                            }),
-                          ),
-              ),
-            ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SafeArea(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                _titleContent(),
+                const SizedBox(
+                  height: 10,
+                ),
+                AnimatedSwitcher(
+                  duration: const Duration(seconds: 1),
+                  child: _currentWidgetIndex == 0
+                      ? _mainContent()
+                      : _currentWidgetIndex == 1
+                          ? OneTimeBudget(
+                              backToMain: () => setState(() {
+                                _currentWidgetIndex = 0;
+                                _progressBar = 0.5;
+                              }),
+                            )
+                          : MonthlyBudget(
+                              backToMain: () => setState(() {
+                                _currentWidgetIndex = 0;
+                                _progressBar = 0.5;
+                              }),
+                            ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,7 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/budget_plan/helper.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SixMonthChart extends StatelessWidget {
@@ -72,6 +71,21 @@ class SixMonthChart extends StatelessWidget {
               ),
             ),
           ),
+          barTouchData: BarTouchData(
+              touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: Colors.transparent,
+            tooltipPadding: EdgeInsets.zero,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              return BarTooltipItem(
+                '${rod.toY.toInt()}',
+                TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  color: ColorConstant.expense,
+                ),
+              );
+            },
+          )),
           barGroups: _createBarGroups(),
           borderData: FlBorderData(show: false),
           gridData: const FlGridData(show: false),
