@@ -35,6 +35,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             _gridView = !_gridView;
           },
         ),
+        gridView: _gridView,
       ),
     );
   }

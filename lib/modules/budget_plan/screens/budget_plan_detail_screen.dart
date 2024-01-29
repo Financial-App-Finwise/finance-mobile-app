@@ -1,6 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
-import 'package:finwise/modules/budget_plan/widgets/bar_graph/bar_graph.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/six_month_chart.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/this_month_content.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/transaction_content.dart';
@@ -14,6 +14,15 @@ class BudgetPlanDetailScreen extends StatefulWidget {
 }
 
 class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
+  final Map<String, dynamic> data = {
+    "06": 10,
+    "07": 20,
+    "08": 50,
+    "09": 30,
+    "10": 20,
+    "11": 40,
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,16 +151,10 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                           ),
                         );
                       },
-                      icon: const Icon(
-                        Icons.edit_outlined,
-                        size: 24,
-                      ),
+                      icon: IconConstant.edit,
                       style: ButtonStyle(
                         padding:
                             MaterialStateProperty.all(const EdgeInsets.all(0)),
-                        iconColor: MaterialStateProperty.all(
-                          const Color(0xFFFFFFFF),
-                        ),
                       ),
                     ),
                   ),
@@ -165,17 +168,13 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     width: 24,
                     height: 24,
                     child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        size: 24,
-                      ),
+                      onPressed: () {
+                        _showModal(context);
+                      },
+                      icon: IconConstant.delete,
                       style: ButtonStyle(
                         padding:
                             MaterialStateProperty.all(const EdgeInsets.all(0)),
-                        iconColor: MaterialStateProperty.all(
-                          const Color(0xFFFFFFFF),
-                        ),
                       ),
                     ),
                   ),
@@ -192,28 +191,141 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
     return Container(
       color: const Color(0xFFF5F7F8),
       padding: const EdgeInsets.all(16),
-      child: const Column(
+      child: Column(
         children: [
-          ThisMonthContent(transaction: 7, total: 50, remain: 40, spent: 10),
-          SizedBox(
+          const ThisMonthContent(
+              transaction: 7, total: 50, remain: 40, spent: 10),
+          const SizedBox(
             height: 16,
           ),
           SixMonthChart(
-            sixMonthBudget: [
-              10.0,
-              10.0,
-              10.0,
-              10.0,
-              10.0,
-              10.0,
-            ],
+            sixMonthBudget: data,
+            average: 10,
+            thisMonth: 50,
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
-          TransactionContent(),
+          const TransactionContent(),
         ],
       ),
+    );
+  }
+
+// Popup delete warning
+  void _showModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: ColorConstant.white,
+          elevation: 0,
+          contentPadding: const EdgeInsets.all(16),
+          content: IntrinsicHeight(
+            child: SizedBox(
+              child: Column(children: [
+                SizedBox(
+                  width: 125,
+                  height: 125,
+                  child: IconConstant.myBudget(color: Colors.red),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  'Are you sure you want to delete this SMART gaol?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    height: 1.5,
+                    letterSpacing: 1,
+                    color: ColorConstant.black,
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  'You will delete every transaction added to this goal.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    height: 1.5,
+                    letterSpacing: 0.5,
+                    color: ColorConstant.mainText,
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFE9EAF1),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              letterSpacing: 1,
+                              color: ColorConstant.thin,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: ColorConstant.expense,
+                          ),
+                          child: Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              letterSpacing: 1,
+                              color: ColorConstant.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ]),
+            ),
+          ),
+        );
+      },
     );
   }
 }

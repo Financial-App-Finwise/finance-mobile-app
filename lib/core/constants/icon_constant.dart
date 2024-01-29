@@ -52,6 +52,10 @@ class IconConstant {
 
   static SvgPicture close = SvgPicture.asset('${_svgPath}close.svg');
 
+  static SvgPicture delete = SvgPicture.asset('${_svgPath}delete.svg');
+
+  static SvgPicture edit = SvgPicture.asset('${_svgPath}edit.svg');
+
   // methods
 
   static SvgPicture getUpcomingBill({Color color = Colors.white}) =>
@@ -77,8 +81,7 @@ class IconConstant {
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  static SvgPicture getUser({Color color = Colors.white}) =>
-      SvgPicture.asset(
+  static SvgPicture getUser({Color color = Colors.white}) => SvgPicture.asset(
         '${_svgPath}user.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
@@ -95,8 +98,7 @@ class IconConstant {
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  static SvgPicture getMore({Color color = Colors.black}) =>
-      SvgPicture.asset(
+  static SvgPicture getMore({Color color = Colors.black}) => SvgPicture.asset(
         '${_svgPath}more.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );

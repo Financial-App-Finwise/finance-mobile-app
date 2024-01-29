@@ -10,6 +10,7 @@ class CalendarHeaderLayout extends StatefulWidget {
   final Color firstColor;
   final Color secondColor;
   final VoidCallback? changeView;
+  final bool? gridView;
 
   const CalendarHeaderLayout({
     super.key,
@@ -20,6 +21,7 @@ class CalendarHeaderLayout extends StatefulWidget {
     required this.firstColor,
     required this.secondColor,
     this.changeView,
+    this.gridView,
   });
 
   @override
@@ -194,9 +196,6 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
               icon: IconConstant.contentManagerDashboard,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                iconColor: MaterialStateProperty.all(
-                  const Color(0xFF191B29),
-                ),
               ),
             ),
           ),
@@ -216,9 +215,6 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
               icon: IconConstant.addSquare,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                iconColor: MaterialStateProperty.all(
-                  const Color(0xFF0ABDE3),
-                ),
               ),
             ),
           ),

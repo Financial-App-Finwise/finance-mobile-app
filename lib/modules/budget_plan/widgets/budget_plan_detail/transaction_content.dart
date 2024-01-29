@@ -35,52 +35,13 @@ class TransactionContent extends StatelessWidget {
   }
 
   Widget _title() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
-          'Transaction',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF191B29),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFFFF),
-              border: Border.all(
-                color: const Color(0xFF25CBEB),
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Row(
-              children: [
-                Icon(
-                  Icons.add,
-                  color: Color(0xFF0ABDE3),
-                  size: 20,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  'Add',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF0B8AAF),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
+    return const Text(
+      'Transaction',
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF191B29),
+      ),
     );
   }
 
