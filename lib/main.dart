@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         // debugShowCheckedModeBanner: ,
         theme: appTheme,
         routes: appRoutes,
-        home: const IndexScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

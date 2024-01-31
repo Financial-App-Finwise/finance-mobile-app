@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
+import 'package:finwise/core/widgets/income_expense_barchart.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/route.dart';
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void deactivate() {
     debugPrint('--> START: home screen deactivate');
-    debugPrint('--> END: home screen deactivate');
+    debugPrint('<-- END: home screen deactivate');
     super.deactivate();
   }
 
@@ -94,10 +95,10 @@ class _HomeScreenState extends State<HomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Welcome Back,', style: HomeTextStyleConstant.welcome),
-                  // Text(authStore.user!.userData.name,
-                  //     style: HomeTextStyleConstant.profileName),
-                  Text('User',
+                  Text(authStore.user!.userData.name,
                       style: HomeTextStyleConstant.profileName),
+                  // Text('User',
+                  //     style: HomeTextStyleConstant.profileName),
                 ],
               ),
             ],
@@ -145,13 +146,18 @@ class _HomeScreenState extends State<HomeScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('My Finance', style: HomeTextStyleConstant.header),
-              Row(
-                children: [
-                  Text('View More',
-                      style: HomeTextStyleConstant.headerBoldLink),
-                  SizedBox(width: 6),
-                  Icon(Icons.arrow_forward, color: ColorConstant.totalIcon),
-                ],
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, RouteName.finance);
+                },
+                child: Row(
+                  children: [
+                    Text('View More',
+                        style: HomeTextStyleConstant.headerBoldLink),
+                    SizedBox(width: 6),
+                    Icon(Icons.arrow_forward, color: ColorConstant.totalIcon),
+                  ],
+                ),
               ),
             ],
           ),
@@ -346,23 +352,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Spending and Income'),
-          _roundedContainer(
-            child: Column(
-              children: [
-                Row(children: [
-                  Expanded(child: SizedBox()),
-                  _buildDurationButton(
-                    text: 'Last 4 months',
-                    onPressed: () {},
-                  ),
-                ]),
-                SizedBox(height: 24),
-                _buildBarChart(),
-                SizedBox(height: 24),
-                _buildBarChartLegend(),
-              ],
-            ),
-          ),
+          IncomeExpenseBarChart(),
         ],
       ),
     );

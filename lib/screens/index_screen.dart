@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
+import 'package:finwise/route.dart';
 import 'package:finwise/screens/unimplemented_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -28,17 +29,10 @@ class _IndexScreenState extends State<IndexScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _buildBody(),
       bottomNavigationBar: _buildBottom(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // go to transaction screen
-        },
-        elevation: 0,
-        backgroundColor: Color(0xff00A6FB),
-        shape: CircleBorder(),
-        child: Icon(Icons.add, color: Colors.white),
-      ),
+      floatingActionButton: _buildFloating(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -106,6 +100,19 @@ class _IndexScreenState extends State<IndexScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFloating() {
+    return FloatingActionButton(
+      onPressed: () {
+        // go to transaction screen
+        Navigator.pushNamed(context, RouteName.transaction);
+      },
+      elevation: 0,
+      backgroundColor: Color(0xff00A6FB),
+      shape: CircleBorder(),
+      child: Icon(Icons.add, color: Colors.white),
     );
   }
 }

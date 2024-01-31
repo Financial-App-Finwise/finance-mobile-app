@@ -7,7 +7,7 @@ class CacheService {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  void write(String value) {
+  void write(String? value) {
     _storage.write(key: key, value: value);
   }
 
