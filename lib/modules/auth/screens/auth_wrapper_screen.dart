@@ -15,6 +15,7 @@ class _AuthWrapperScreenState extends State<AuthWrapperScreen> {
   Widget build(BuildContext context) {
     print('--> START: build auth screen');
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _buildBody(),
     );
   }

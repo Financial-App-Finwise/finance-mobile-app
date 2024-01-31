@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
 import 'package:finwise/core/services/api_service.dart';
@@ -22,11 +24,17 @@ abstract class _AuthStoreBase with Store {
   @observable
   LoadingStatus loadingStatus = LoadingStatus.none;
 
+  @observable
+  bool rememberMe = false;
+
   @computed
   bool get isLoading => loadingStatus == LoadingStatus.loading;
 
   @action
   void setLoadingStatus(LoadingStatus status) => loadingStatus = status;
+
+  @action
+  void toggleRememberMe() => rememberMe = !rememberMe;
 
   @action
   Future<bool> signUp(UserPost userPost) async {
@@ -41,26 +49,20 @@ abstract class _AuthStoreBase with Store {
         setLoadingStatus(LoadingStatus.done);
         debugPrint('--> successfully signed up');
         debugPrint('--> data: ${response.data}');
-
-        // user = await compute(
-        //   getUserModel,
-        //   response.data as Map<String, dynamic>,
-        // );
         email = userPost.email;
-        debugPrint('<-- END: signUp');
         return true;
       } else {
         setLoadingStatus(LoadingStatus.error);
         debugPrint(
             '--> Error! Something went wrong, code: ${response.statusCode}');
-        debugPrint('<-- END: signUp');
         return false;
       }
     } catch (e) {
       setLoadingStatus(LoadingStatus.error);
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
-      debugPrint('<-- END: signUp');
       return false;
+    } finally {
+      debugPrint('<-- END: signUp');
     }
   }
 
@@ -74,19 +76,18 @@ abstract class _AuthStoreBase with Store {
       );
       if (response.statusCode == 200) {
         setLoadingStatus(LoadingStatus.done);
-        debugPrint('<-- END: verifyEmail');
         return true;
       } else {
         setLoadingStatus(LoadingStatus.error);
         debugPrint('Something went wrong, code: ${response.statusCode}');
-        debugPrint('<-- END: verifyEmail');
         return false;
       }
     } catch (e) {
       setLoadingStatus(LoadingStatus.error);
       debugPrint('${e.runtimeType}: ${e.toString()}');
-      debugPrint('<-- END: verifyEmail');
       return false;
+    } finally {
+      debugPrint('<-- END: verifyEmail');
     }
   }
 
@@ -107,49 +108,58 @@ abstract class _AuthStoreBase with Store {
         setLoadingStatus(LoadingStatus.done);
         debugPrint('--> successfully signed In');
         debugPrint('--> data: ${response.data}');
-        debugPrint('<-- END: signIn');
+        if (rememberMe) _writeCache();
         return true;
       } else {
         setLoadingStatus(LoadingStatus.error);
-        debugPrint(
-            '--> Error! Something went wrong, code: ${response.statusCode}');
-        debugPrint('<-- END: signIn');
+        debugPrint('--> Something went wrong, code: ${response.statusCode}');
         return false;
       }
     } catch (e) {
       setLoadingStatus(LoadingStatus.error);
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
-      debugPrint('<-- END: signIn');
       return false;
+    } finally {
+      debugPrint('<-- END: signIn');
     }
   }
 
   void signOut() {
     user = null;
+    _writeCache();
   }
 
+  // Save value to cache
   CacheService _cacheService = CacheService(key: 'AuthStore');
-
-  // void writeCache() {
-  //   String? value;
-  //   if (user != null) {
-  //     Map<String, dynamic> map = user!.toJson();
-  //     try {
-  //       value = jsonEncode(map);
-  //     } catch (e) {
-  //       debugPrint('${e.runtimeType}: ${e.toString()}');
-  //     }
-  //   }
-  //   debugPrint('Written cache value: ${value}');
-  //   // _cacheService.write(value);
-  // }
+  void _writeCache() {
+    debugPrint('--> START: write cache, AuthStore');
+    String? value;
+    if (user != null) {
+      Map<String, dynamic> map = user!.toJson();
+      try {
+        value = jsonEncode(map);
+      } catch (e) {
+        debugPrint('${e.runtimeType}: ${e.toString()}');
+      }
+    }
+    _cacheService.write(value);
+    debugPrint('--> Written cache value: ${value}');
+    debugPrint('<-- END: write cache, AuthStore');
+  }
 
   Future readCache() async {
+    debugPrint('--> START: read cache, AuthStore');
     String? value = await _cacheService.read();
+    debugPrint('--> read value: $value');
     if (value != null) {
-      print(value);
-      // TODO
-      // user = User.fromMap();
+      try {
+        Map<String, dynamic> json = jsonDecode(value);
+        debugPrint('--> read value: ${json}');
+        user = UserModel.fromJson(json);
+      } catch (e) {
+        debugPrint('${e.runtimeType}: ${e.toString()}');
+      }
     }
+    debugPrint('<-- END: read cache, AuthStore');
   }
 }

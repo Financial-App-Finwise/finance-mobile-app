@@ -63,6 +63,22 @@ mixin _$AuthStore on _AuthStoreBase, Store {
     });
   }
 
+  late final _$rememberMeAtom =
+      Atom(name: '_AuthStoreBase.rememberMe', context: context);
+
+  @override
+  bool get rememberMe {
+    _$rememberMeAtom.reportRead();
+    return super.rememberMe;
+  }
+
+  @override
+  set rememberMe(bool value) {
+    _$rememberMeAtom.reportWrite(value, super.rememberMe, () {
+      super.rememberMe = value;
+    });
+  }
+
   late final _$signUpAsyncAction =
       AsyncAction('_AuthStoreBase.signUp', context: context);
 
@@ -94,11 +110,23 @@ mixin _$AuthStore on _AuthStoreBase, Store {
   }
 
   @override
+  void toggleRememberMe() {
+    final _$actionInfo = _$_AuthStoreBaseActionController.startAction(
+        name: '_AuthStoreBase.toggleRememberMe');
+    try {
+      return super.toggleRememberMe();
+    } finally {
+      _$_AuthStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 user: ${user},
 email: ${email},
 loadingStatus: ${loadingStatus},
+rememberMe: ${rememberMe},
 isLoading: ${isLoading}
     ''';
   }

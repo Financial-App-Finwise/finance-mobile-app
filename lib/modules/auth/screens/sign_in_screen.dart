@@ -31,8 +31,17 @@ class _SignInScreenState extends State<SignInScreen> {
   // }
 
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      authStore = context.read<AuthStore>();
+    }
+  }
+
+  late AuthStore authStore;
+
+  @override
   Widget build(BuildContext context) {
-    AuthStore authStore = context.read<AuthStore>();
     return Observer(builder: (context) {
       return authStore.isLoading
           ? SignLoadingWidget()
@@ -45,7 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
               isFormFilled: _isFormFilled,
               formArea: _buildTextFields(),
               onButtonTap: () async {
-                print(_emailController.text);
+                debugPrint(_emailController.text);
                 bool success = await authStore.signIn(
                   UserSignIn(
                     email: _emailController.text,
@@ -107,8 +116,6 @@ class _SignInScreenState extends State<SignInScreen> {
       _emailController.value.text.isNotEmpty &&
       _passwordController.value.text.isNotEmpty;
 
-  bool _remember = false;
-
   Widget _buildBottomContent() {
     return Container(
       alignment: Alignment.center,
@@ -121,15 +128,14 @@ class _SignInScreenState extends State<SignInScreen> {
             children: [
               Row(
                 children: [
-                  Checkbox(
-                      value: _remember,
-                      onChanged: (value) {
-                        setState(() {
-                          _remember = !_remember;
-                          // TODO
-                          // save to cache
-                        });
-                      }),
+                  Observer(
+                    builder: (context) {
+                      return Checkbox(
+                        value: authStore.rememberMe,
+                        onChanged: (value) => authStore.toggleRememberMe(),
+                      );
+                    },
+                  ),
                   Text(
                     'Remember me',
                     style: AuthScreenTextStyle.medium,
