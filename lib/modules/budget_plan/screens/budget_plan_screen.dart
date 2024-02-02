@@ -28,14 +28,14 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             'Effortlessly manage your finance with a powerful simple tool in FinWise',
         firstColor: const Color(0xFF0ABDE3),
         secondColor: const Color(0xFF0B8AAF),
-        // child: _noContentView(),
-        child: _gridView ? _mainContentGridView() : _mainContentListView(),
         changeView: () => setState(
           () {
             _gridView = !_gridView;
           },
         ),
         gridView: _gridView,
+        // child: _noContentView(),
+        child: _gridView ? _mainContentGridView() : _mainContentListView(),
       ),
     );
   }
@@ -152,6 +152,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
                 color: ColorConstant.mainText,
+                height: 2,
               ),
             ),
             const SizedBox(

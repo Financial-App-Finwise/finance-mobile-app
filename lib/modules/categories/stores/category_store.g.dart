@@ -25,6 +25,22 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
     });
   }
 
+  late final _$statusAtom =
+      Atom(name: '_CategoryStoreBase.status', context: context);
+
+  @override
+  LoadingStatus get status {
+    _$statusAtom.reportRead();
+    return super.status;
+  }
+
+  @override
+  set status(LoadingStatus value) {
+    _$statusAtom.reportWrite(value, super.status, () {
+      super.status = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_CategoryStoreBase.read', context: context);
 
@@ -36,7 +52,8 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
   @override
   String toString() {
     return '''
-categoryModel: ${categoryModel}
+categoryModel: ${categoryModel},
+status: ${status}
     ''';
   }
 }

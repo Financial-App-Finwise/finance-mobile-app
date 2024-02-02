@@ -42,6 +42,18 @@ class MainContentListView extends StatelessWidget {
             height: 16,
           ),
           _upcomingBillCard(),
+          const SizedBox(
+            height: 16,
+          ),
+          _upcomingBillCard(),
+          const SizedBox(
+            height: 16,
+          ),
+          _upcomingBillCard(),
+          const SizedBox(
+            height: 16,
+          ),
+          _upcomingBillCard(),
         ],
       ),
     );
@@ -109,36 +121,64 @@ class MainContentListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: ColorConstant.white,
       ),
-      child: Column(children: [
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: ColorConstant.overbudgetIcon,
-                borderRadius: BorderRadius.circular(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: ColorConstant.overbudgetIcon,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: IconConstant.internet,
               ),
-              child: IconConstant.internet,
-            ),
-            const SizedBox(
-              width: 11,
-            ),
-            Text(
-              "Today",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                letterSpacing: 1,
-                color: ColorConstant.black,
+              const SizedBox(
+                width: 11,
               ),
-            ),
-          ],
-        ),
-        const Divider(
-          color: Color(0xFFF2F2F2),
-        ),
-        Column(children: [Text(category,),],)
-      ]),
+              Text(
+                "Today",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  letterSpacing: 1,
+                  color: ColorConstant.black,
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            color: Color(0xFFF2F2F2),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                category,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  letterSpacing: 0.75,
+                  color: ColorConstant.mainText,
+                ),
+              ),
+              const SizedBox(
+                height: 1,
+              ),
+              Text(
+                '\$$amount',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 24,
+                  letterSpacing: 1,
+                  color: ColorConstant.black,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
