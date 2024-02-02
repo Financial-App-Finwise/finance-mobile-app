@@ -2,7 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/widgets/title_progress_card.dart';
 import 'package:finwise/modules/budget_plan/models/budget_card.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
-import 'package:finwise/modules/budget_plan/widgets/filter_bar.dart';
+import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:flutter/material.dart';
 
 class FilteredBudget extends StatefulWidget {

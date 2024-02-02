@@ -287,9 +287,13 @@ class _HomeScreenState extends State<HomeScreen>
                     }),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
-                    text: 'Upcoming Bill',
-                    amount: '3',
-                    icon: IconConstant.getUpcomingBill()),
+                  text: 'Upcoming Bill',
+                  amount: '3',
+                  icon: IconConstant.getUpcomingBill(),
+                  onPressed: () {Navigator.pushNamed(
+                          context, RouteName.upcomingBill);
+                    }
+                ),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
                     text: 'Smart Goal',

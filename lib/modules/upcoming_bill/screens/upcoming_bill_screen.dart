@@ -1,21 +1,19 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/calendar_header_layout.dart';
-import 'package:finwise/modules/budget_plan/models/budget_card.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
-import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
-import 'package:finwise/modules/budget_plan/widgets/budget_plan/filtered_budget.dart';
+import 'package:finwise/modules/upcoming_bill/widgets/upcoming_bill_screen/main_content_list_view.dart';
 import 'package:flutter/material.dart';
 
-class BudgetPlanScreen extends StatefulWidget {
-  const BudgetPlanScreen({super.key});
+class UpcomingBillScreen extends StatefulWidget {
+  const UpcomingBillScreen({super.key});
 
   @override
-  State<BudgetPlanScreen> createState() => _BudgetPlanScreenState();
+  State<UpcomingBillScreen> createState() => _UpcomingBillScreenState();
 }
 
-class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
+class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
   bool _gridView = false;
 
   @override
@@ -23,75 +21,25 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     return Scaffold(
       body: CalendarHeaderLayout(
         addScreen: const AddBudgetPlanScreen(),
-        title: 'My budget plan',
+        title: 'My upcoming bill',
         description:
-            'Effortlessly manage your finance with a powerful simple tool in FinWise',
+            'Effortlessly manage your upcoming bill with a powerful simple tool in Finwise.',
         firstColor: const Color(0xFF0ABDE3),
         secondColor: const Color(0xFF0B8AAF),
-        changeView: () => setState(
-          () {
-            _gridView = !_gridView;
-          },
-        ),
-        gridView: _gridView,
+        changeView: () => setState(() {
+          _gridView = !_gridView;
+        }),
         // child: _noContentView(),
         child: _gridView ? _mainContentGridView() : _mainContentListView(),
       ),
     );
   }
 
-// Main content list view
   Widget _mainContentListView() {
-    return Container(
-      color: const Color(0xFFF5F7F8),
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 77,
-        bottom: 16,
-      ),
-      child: const Column(
-        children: [
-          BudgetOverview(
-              totalBudget: 3,
-              available: 130,
-              spend: 30,
-              overBudget: 0,
-              plannedBudget: 150),
-          SizedBox(
-            height: 16,
-          ),
-          FilteredBudget(
-            filterTitles: [
-              'All',
-              'One-time budget',
-              'Monthly budget',
-              'Monthly budget',
-              'Monthly budget'
-            ],
-            budgetCards: [
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-            ],
-          )
-        ],
-      ),
+    return const MainContentListView(
+      totalUpcomingBill: 3,
+      category: "Netflex",
+      amount: 12.2,
     );
   }
 
@@ -119,7 +67,6 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     );
   }
 
-// No content
   Widget _noContentView() {
     return Container(
       alignment: Alignment.center,
@@ -133,21 +80,17 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
         ),
         child: Column(
           children: [
-            // Icon(
-            //   Icons.circle,
-            //   color: ColorConstant.primary,
-            //   size: 100,
-            // ),
             SizedBox(
               height: 100,
               width: 100,
-              child: IconConstant.myBudget(color: const Color(0xFFA4A7C6)),
+              child:
+                  IconConstant.getUpcomingBill(color: const Color(0xFFA4A7C6)),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
-              'You have no budget plan for this month.',
+              'You have no upcoming bill for this month.',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
@@ -170,7 +113,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                 color: ColorConstant.secondary,
               ),
               child: Text(
-                'Add Budget Plan',
+                'Add Upcoming Bill',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
