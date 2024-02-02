@@ -18,10 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
     debugPrint('--> START: splash screen initState');
     Future.delayed(Duration(seconds: 1), () async {
       await context.read<AuthStore>().readCache();
+      await context.read<SmartGoalStore>().read();
 
-      // get smart goal list
-      // await context.read<>
-      // await SmartGoalStore().read();
       debugPrint('<-- END: splash screen initState');
 
       // if the state object is mounted
