@@ -61,32 +61,35 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
           SizedBox(
             height: 16,
           ),
-          FilteredBudget(filterTitles: [
-            'All',
-            'One-time budget',
-            'Monthly budget',
-            'Monthly budget',
-            'Monthly budget'
-          ], budgetCards: [
-            BudgetCardModel(
-                title: 'Transportation',
-                transaction: 7,
-                remain: 40,
-                spent: 10,
-                total: 50),
-            BudgetCardModel(
-                title: 'Transportation',
-                transaction: 7,
-                remain: 40,
-                spent: 10,
-                total: 50),
-            BudgetCardModel(
-                title: 'Transportation',
-                transaction: 7,
-                remain: 40,
-                spent: 10,
-                total: 50),
-          ])
+          FilteredBudget(
+            filterTitles: [
+              'All',
+              'One-time budget',
+              'Monthly budget',
+              'Monthly budget',
+              'Monthly budget'
+            ],
+            budgetCards: [
+              BudgetCardModel(
+                  title: 'Transportation',
+                  transaction: 7,
+                  remain: 40,
+                  spent: 10,
+                  total: 50),
+              BudgetCardModel(
+                  title: 'Transportation',
+                  transaction: 7,
+                  remain: 40,
+                  spent: 10,
+                  total: 50),
+              BudgetCardModel(
+                  title: 'Transportation',
+                  transaction: 7,
+                  remain: 40,
+                  spent: 10,
+                  total: 50),
+            ],
+          )
         ],
       ),
     );

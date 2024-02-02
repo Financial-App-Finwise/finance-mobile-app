@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/budget_plan/screens/test_category.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
@@ -61,13 +62,19 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
         const SizedBox(
           height: 12,
         ),
-        Text(
-          'Edit budget',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 32,
-            letterSpacing: 1,
-            color: ColorConstant.black,
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => TestCategory()));
+          },
+          child: Text(
+            'Edit budget',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 32,
+              letterSpacing: 1,
+              color: ColorConstant.black,
+            ),
           ),
         ),
         const SizedBox(

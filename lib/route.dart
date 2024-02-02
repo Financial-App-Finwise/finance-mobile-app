@@ -7,6 +7,7 @@ import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_screen.dart';
+import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_screen.dart';
 import 'package:finwise/screens/index_screen.dart';
 import 'package:finwise/screens/splash_screen.dart';
 import 'package:finwise/screens/wrapper_screen.dart';
@@ -25,6 +26,7 @@ abstract class RouteName {
   static String finance = '/finance';
   static String transaction = '/transaction';
   static String smartGoal = '/smart_gaol';
+  static String upcomingBill = "/upcomingBill";
 }
 
 var appRoutes = {
@@ -40,4 +42,5 @@ var appRoutes = {
   RouteName.finance: (BuildContext context) => FinanceScreen(),
   RouteName.transaction: (BuildContext context) => TransactionScreen(),
   RouteName.smartGoal: (BuildContext context) => SmartGoalScreen(),
+  RouteName.upcomingBill: (BuildContext context) => UpcomingBillScreen(),
 };

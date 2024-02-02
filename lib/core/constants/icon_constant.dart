@@ -56,6 +56,8 @@ class IconConstant {
 
   static SvgPicture edit = SvgPicture.asset('${_svgPath}edit.svg');
 
+  static SvgPicture internet = SvgPicture.asset('${_svgPath}internet.svg');
+
   // methods
 
   static SvgPicture getUpcomingBill({Color color = Colors.white}) =>

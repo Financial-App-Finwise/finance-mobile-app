@@ -1,5 +1,6 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
