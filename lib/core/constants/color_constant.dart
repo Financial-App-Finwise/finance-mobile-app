@@ -36,4 +36,12 @@ class ColorConstant {
 
   // divider
   static Color divider = const Color(0xffF2F2F2);
+
+  // smart goal
+  static Color smartGoalLight = const Color(0xff6FE6C0);
+  static Color smartGoalThick = const Color(0xff10AC84);
+
+  // no name
+
+  static Color colorE9EAF1 = const Color(0xffE9EAF1);
 }
