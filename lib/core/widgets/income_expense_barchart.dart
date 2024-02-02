@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/widgets/duration_drop_down.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
@@ -26,10 +27,7 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
           children: [
             Row(children: [
               Expanded(child: SizedBox()),
-              _buildDurationButton(
-                text: 'Last 4 months',
-                onPressed: () {},
-              ),
+              DurationDropDown(),
             ]),
             SizedBox(height: 24),
             _buildBarChart(),
@@ -205,5 +203,4 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
       ]),
     );
   }
-
 }
