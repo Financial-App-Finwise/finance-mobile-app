@@ -9,6 +9,21 @@ part of 'smart_goal_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
+  Computed<ObservableList<SmartGoalData>>? _$inProgressComputed;
+
+  @override
+  ObservableList<SmartGoalData> get inProgress => (_$inProgressComputed ??=
+          Computed<ObservableList<SmartGoalData>>(() => super.inProgress,
+              name: '_SmartGoalStoreBase.inProgress'))
+      .value;
+  Computed<ObservableList<SmartGoalData>>? _$achievedComputed;
+
+  @override
+  ObservableList<SmartGoalData> get achieved => (_$achievedComputed ??=
+          Computed<ObservableList<SmartGoalData>>(() => super.achieved,
+              name: '_SmartGoalStoreBase.achieved'))
+      .value;
+
   late final _$smartGoalAtom =
       Atom(name: '_SmartGoalStoreBase.smartGoal', context: context);
 
@@ -67,7 +82,9 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   String toString() {
     return '''
 smartGoal: ${smartGoal},
-status: ${status}
+status: ${status},
+inProgress: ${inProgress},
+achieved: ${achieved}
     ''';
   }
 }
