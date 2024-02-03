@@ -13,6 +13,13 @@ abstract class _SmartGoalStoreBase with Store {
   @observable
   SmartGoal smartGoal = SmartGoal(data: []);
 
+  @computed
+  ObservableList<SmartGoalData> get inProgress => ObservableList.of(
+      smartGoal.data.where((data) => data.currentSave < data.amount).toList());
+
+  @computed
+  ObservableList<SmartGoalData> get achieved => ObservableList.of(smartGoal.data.where((data) => data.currentSave == data.amount).toList());
+
   @observable
   LoadingStatus status = LoadingStatus.none;
 
@@ -25,12 +32,11 @@ abstract class _SmartGoalStoreBase with Store {
     try {
       Response response = await ApiService.dio.get('goals');
       if (response.statusCode == 200) {
-        debugPrint('--> success');
+        debugPrint('--> successfully fetched');
         smartGoal = await compute(
           getSmartGoal,
           response.data as Map<String, dynamic>,
         );
-        print(smartGoal.data[0].toJson());
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
       }

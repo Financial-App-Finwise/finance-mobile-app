@@ -177,9 +177,7 @@ class BudgetOverview extends StatelessWidget {
       child: Row(
         children: [
           icon,
-          const SizedBox(
-            width: 12,
-          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

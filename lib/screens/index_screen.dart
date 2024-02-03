@@ -1,10 +1,10 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/screens/unimplemented_screen.dart';
 import 'package:flutter/material.dart';
 
 // combine all screens
@@ -19,6 +19,13 @@ class _IndexScreenState extends State<IndexScreen> {
   PageController _pageController = PageController();
   List _isSelectedList = [true, false, false, false, false];
   int _currentIndex = 0;
+
+  // @override
+  // void initState() {
+  //   debugPrint('--> START: initState, index screen');
+  //   super.initState();
+  //   debugPrint('<-- END: initState, index screen');
+  // }
 
   // @override
   // void deactivate() {
@@ -47,6 +54,7 @@ class _IndexScreenState extends State<IndexScreen> {
         HomeScreen(),
         SizedBox(),
         ProfileScreen(),
+        FinanceScreen(),
       ],
     );
   }
@@ -109,7 +117,7 @@ class _IndexScreenState extends State<IndexScreen> {
     return FloatingActionButton(
       onPressed: () {
         // go to transaction screen
-        Navigator.pushNamed(context, RouteName.transaction);
+        Navigator.pushNamed(context, RouteName.addTransaction);
       },
       elevation: 0,
       backgroundColor: Color(0xff00A6FB),

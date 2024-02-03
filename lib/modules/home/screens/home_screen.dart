@@ -1,12 +1,20 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
+import 'package:finwise/core/widgets/duration_drop_down.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
+import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
+import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/route.dart';
+import 'package:finwise/screens/index_screen.dart';
+import 'package:finwise/test/test_drop_down.dart';
+import 'package:finwise/test/test_drop_down2.dart';
+import 'package:finwise/test/test_show_drop_down.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
@@ -25,6 +33,12 @@ class _HomeScreenState extends State<HomeScreen>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    _currentIndex = 0;
+  }
+
+  @override
   void deactivate() {
     debugPrint('--> START: home screen deactivate');
     debugPrint('<-- END: home screen deactivate');
@@ -33,10 +47,12 @@ class _HomeScreenState extends State<HomeScreen>
 
   late AuthStore authStore = context.read<AuthStore>();
 
+  late int _currentIndex;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    print('--> START: build home screen');
+    debugPrint('--> START: build home screen');
     return Scaffold(
       // appBar: _buildAppBar(),
 
@@ -136,92 +152,87 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildFinance() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('My Finance', style: HomeTextStyleConstant.header),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, RouteName.finance);
-                },
-                child: Row(
-                  children: [
-                    Text('View More',
-                        style: HomeTextStyleConstant.headerBoldLink),
-                    SizedBox(width: 6),
-                    Icon(Icons.arrow_forward, color: ColorConstant.totalIcon),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // build content
-          _roundedContainer(
-            child: Column(
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RouteName.finance);
+      },
+      child: Container(
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Total balance
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      // color: Colors.amber,
-                      child: _buildFinanceItem(
-                        text: 'Total Balance',
-                        amount: '\$1000',
-                        color: ColorConstant.primary,
-                        icon: IconConstant.piggyBank,
-                      ),
-                    ),
-                    Container(
-                        child: _buildDurationButton(
-                            text: 'Last 7 days',
-                            onPressed: () {
-                              print('Total Balance');
-                            })),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  child: Divider(color: Color(0xfff2f2f2)),
-                ),
-                // Income and Expense
-                IntrinsicHeight(
-                  child: Row(
+                Text('My Finance', style: HomeTextStyleConstant.header),
+                ViewMoreTextButton(onPressed: () {
+                  Navigator.pushNamed(context, RouteName.finance);
+                })
+              ],
+            ),
+            const SizedBox(height: 12),
+            // build content
+            _roundedContainer(
+              child: Column(
+                children: [
+                  // Total balance
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
+                      Container(
+                        // color: Colors.amber,
                         child: _buildFinanceItem(
-                          text: 'Income',
-                          amount: '\$100',
-                          color: ColorConstant.income,
-                          icon: IconConstant.earn,
+                          text: 'Total Balance',
+                          amount: '\$1000',
+                          color: ColorConstant.primary,
+                          icon: IconConstant.piggyBank,
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: VerticalDivider(color: Color(0xfff2f2f2)),
-                      ),
-                      Expanded(
-                        child: _buildFinanceItem(
-                          text: 'Expense',
-                          amount: '\$50',
-                          color: ColorConstant.expense,
-                          icon: IconConstant.expense,
-                        ),
-                      ),
+                          child: _buildDurationButton(
+                              text: 'Last 7 days',
+                              onPressed: () {
+                                print('Total Balance');
+                              })),
                     ],
                   ),
-                ),
-              ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Divider(color: Color(0xfff2f2f2)),
+                  ),
+                  // Income and Expense
+                  IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildFinanceItem(
+                            text: 'Income',
+                            amount: '\$100',
+                            color: ColorConstant.income,
+                            icon: IconConstant.earn,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: VerticalDivider(color: Color(0xfff2f2f2)),
+                        ),
+                        Expanded(
+                          child: _buildFinanceItem(
+                            text: 'Expense',
+                            amount: '\$50',
+                            color: ColorConstant.expense,
+                            icon: IconConstant.expense,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -285,10 +296,12 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
-                  text: 'Smart Goal',
-                  amount: '3',
-                  icon: IconConstant.getSmartGoal(color: Colors.white),
-                ),
+                    text: 'Smart Goal',
+                    amount: '3',
+                    icon: IconConstant.getSmartGoal(color: Colors.white),
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouteName.smartGoal);
+                    }),
               ]),
             ),
           ),
@@ -569,7 +582,7 @@ class _HomeScreenState extends State<HomeScreen>
           ]),
         ),
         SizedBox(width: 12),
-        _buildDurationButton(text: buttonText, onPressed: onButtonPressed),
+        DurationDropDown(),
       ],
     );
   }
@@ -579,8 +592,51 @@ class _HomeScreenState extends State<HomeScreen>
     VoidCallback? onPressed,
     String text = 'Button',
   }) {
+    return DurationDropDown();
+    // List items = [
+    //   'This Week',
+    //   'This Month',
+    //   'Last Month',
+    //   'Last 3 Months',
+    //   'Last 6 Months'
+    // ];
+    // return Center(
+    //   child: DropdownButton2(
+    //     items: items
+    //         .map((e) => DropdownMenuItem(
+    //               value: e,
+    //               child: Text(e),
+    //             ))
+    //         .toList(),
+    //     onChanged: (_) {},
+    //     value: 'This Week',
+    //     style: HomeTextStyleConstant.small,
+    //     isDense: true,
+    //     underline: SizedBox(),
+    //     buttonStyleData: ButtonStyleData(
+    //       height: 36,
+    //       // width: 100,
+    //       // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(8),
+    //         border: Border.fromBorderSide(BorderSide(color: Color(0xffD3D5E4))),
+    //       ),
+    //     ),
+    //     dropdownStyleData: DropdownStyleData(
+    //       maxHeight: 150,
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(8),
+    //       ),
+    //     ),
+    //   ),
+    // );
+
     return TextButton(
-      onPressed: onPressed,
+      // onPressed: onPressed,
+      onPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => TestDropdown2()));
+      },
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
             const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
@@ -644,17 +700,6 @@ class _HomeScreenState extends State<HomeScreen>
                   debugPrint('${response.touchedSection!.touchedSectionIndex}');
                   _showMorePieChartInfo = true;
                 });
-                // showDialog(
-                //     context: context,
-                //     builder: (ctx) {
-                //       return AlertDialog(
-
-                //         content: Container(
-                //           height: 200,
-                //           color: Colors.white,
-                //         ),
-                //       );
-                //     });
               },
             ),
             sectionsSpace: 0,
@@ -780,7 +825,11 @@ class _HomeScreenState extends State<HomeScreen>
             child: Column(
               children: [
                 _buildBudgetPlanHeader(),
-                _buildBudgetOverview(),
+                InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(context, RouteName.budgetPlan),
+                  child: _buildBudgetOverview(),
+                ),
                 _buildBudgetCards(),
               ],
             ),
@@ -932,7 +981,12 @@ class _HomeScreenState extends State<HomeScreen>
       physics: NeverScrollableScrollPhysics(),
       itemCount: 2,
       itemBuilder: (context, index) {
-        return _buildTransactionItem(color: color);
+        return InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, RouteName.transaction);
+          },
+          child: _buildTransactionItem(color: color),
+        );
       },
       separatorBuilder: (context, index) {
         return Divider(color: ColorConstant.divider);

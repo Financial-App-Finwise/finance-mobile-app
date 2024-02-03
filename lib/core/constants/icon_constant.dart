@@ -59,6 +59,19 @@ class IconConstant {
   static SvgPicture internet = SvgPicture.asset('${_svgPath}internet.svg');
 
   // methods
+  ////
+  ///
+
+  // income, expense
+  static SvgPicture getEarn({Color color = Colors.white}) => SvgPicture.asset(
+        '${_svgPath}earn.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getExpense({Color color = Colors.white}) => SvgPicture.asset(
+        '${_svgPath}expense.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 
   static SvgPicture getUpcomingBill({Color color = Colors.white}) =>
       SvgPicture.asset(
@@ -105,5 +118,26 @@ class IconConstant {
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  // static
+  // Smart Goal
+  static SvgPicture getAward({Color color = Colors.black}) => SvgPicture.asset(
+        '${_svgPath}award.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getSave({Color color = Colors.black}) => SvgPicture.asset(
+        '${_svgPath}save.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getTargetAmount({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}target_amount.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getHourGlass({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}hour_glass.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 }

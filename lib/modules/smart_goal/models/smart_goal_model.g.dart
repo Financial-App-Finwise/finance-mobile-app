@@ -35,8 +35,10 @@ SmartGoalData _$SmartGoalDataFromJson(Map<String, dynamic> json) =>
           : SmartGoalData._intToBool(json['setDate'] as int),
       startDate: json['startDate'] as String? ?? 'no date',
       endDate: json['endDate'] as String? ?? 'no date',
-      monthlyContribution:
-          (json['monthlyContribution'] as num?)?.toDouble() ?? 0.0,
+      monthlyContribution: json['monthlyContribution'] == null
+          ? 0.0
+          : SmartGoalData._stringToDouble(
+              json['monthlyContribution'] as String),
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
     );

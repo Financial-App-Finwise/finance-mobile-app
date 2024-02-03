@@ -1,7 +1,7 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/screens/index_screen.dart';
 import 'package:finwise/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/themes/app_theme.dart';
@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (context) => AuthStore()),
+        Provider(create: (context) => SmartGoalStore()),
         Provider(create: (context) => CategoryStore()),
       ],
       child: MaterialApp(

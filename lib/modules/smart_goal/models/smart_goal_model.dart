@@ -36,9 +36,13 @@ class SmartGoalData {
 
   late String startDate;
   late String endDate;
+
+  @JsonKey(fromJson: _stringToDouble)
   late double monthlyContribution;
+
   @JsonKey(name: 'created_at')
   late String createdAt;
+  
   @JsonKey(name: 'updated_at')
   late String updatedAt;
 

@@ -54,6 +54,7 @@ dependencies:
   simple_circular_progress_bar: ^1.0.2
   custom_circular_progress: ^1.0.1
   simple_progress_indicators: ^0.2.0
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
