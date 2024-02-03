@@ -89,7 +89,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                   spent: 10,
                   total: 50),
             ],
-          )
+          ),
         ],
       ),
     );

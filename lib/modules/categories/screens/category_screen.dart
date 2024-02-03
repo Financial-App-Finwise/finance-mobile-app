@@ -113,23 +113,50 @@ class _CategoryScreenState extends State<CategoryScreen> {
           color: ColorConstant.white,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          children: [
-            Text('Search'),
-            categoryList(),
-          ],
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              Text('Search'),
+              const SizedBox(
+                height: 16,
+              ),
+              for (int index = 0;
+                  index < categoryModel.categoryDataList.length;
+                  index++)
+                Column(
+                  children: [
+                    mainCategoryTile(categoryModel.categoryDataList[index].name)
+                  ],
+                )
+            ],
+          ),
         ));
   }
 
-  Widget categoryList() {
-    return ListView.builder(
-        itemCount: categoryModel.categoryDataList.length,
-        itemBuilder: (context, index) {
-          CategoryData category = categoryModel.categoryDataList[index];
-
-          return ListTile(
-            title: Text(category.name),
-          );
-        });
+  Widget mainCategoryTile(String name) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          CustomIconButton(
+            onPressed: () {},
+            icon: IconConstant.close,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            name,
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              letterSpacing: 0.75,
+              color: ColorConstant.black,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
