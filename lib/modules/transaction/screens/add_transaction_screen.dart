@@ -1,4 +1,4 @@
-import 'package:finwise/modules/budget_plan/widgets/filter_bar.dart';
+import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:flutter/material.dart';
 
 class AddTransactionScreen extends StatefulWidget {
