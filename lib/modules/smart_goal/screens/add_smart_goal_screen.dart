@@ -71,7 +71,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                     Navigator.pop(context);
                     // Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestGradientSVG()));
                   },
-                  icon: IconHelper.getSVG(SVGName.close, color: Colors.red),
+                  icon: IconHelper.getSVG(SVGName.close),
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(
                       const EdgeInsets.all(0),

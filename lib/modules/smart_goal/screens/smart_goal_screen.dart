@@ -1,7 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/smart_goal_text_style_constant.dart';
-import 'package:finwise/core/widgets/calendar_header_layout.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/widgets/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
@@ -43,8 +43,9 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         ColorConstant.smartGoalThick,
       ]),
       centerContent: GeneralDatePicker(
-        prefix: IconConstant.getContentManagerDashboard(),
-        suffix: IconConstant.getAddSquare(),
+        prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+        suffix: IconHelper.getSVG(SVGName.addSquare,
+            color: ColorConstant.secondary),
         onSuffix: () => Navigator.pushNamed(context, RouteName.addSmartGoal),
         onPreffix: () => setState(() => _isGrid = !_isGrid),
       ),
@@ -101,7 +102,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           SizedBox(
             width: 36,
             height: 36,
-            child: IconConstant.getSmartGoal(color: ColorConstant.income),
+            child: IconHelper.getSVG(SVGName.smartGoal,
+                color: ColorConstant.income),
           ),
           SizedBox(width: 12),
           Column(
@@ -183,7 +185,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               SmallRoundedSquare(
                 color: ColorConstant.incomeIcon,
                 icon: SizedBox(
-                  child: IconConstant.getSmartGoal(color: Colors.white),
+                  child:
+                      IconHelper.getSVG(SVGName.smartGoal, color: Colors.white),
                 ),
               ),
               SizedBox(width: 12),
