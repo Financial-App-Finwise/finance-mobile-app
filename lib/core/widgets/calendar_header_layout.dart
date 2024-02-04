@@ -1,5 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class CalendarHeaderLayout extends StatefulWidget {
@@ -92,23 +95,13 @@ class _CalendarHeaderLayoutState extends State<CalendarHeaderLayout> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Icon
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                size: 24,
-              ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                iconColor: MaterialStateProperty.all(
-                  const Color(0xFFFFFFFF),
-                ),
-              ),
+          CustomIconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: IconHelper.getSVG(
+              SVGName.arrowBack,
+              color: ColorConstant.white,
             ),
           ),
 

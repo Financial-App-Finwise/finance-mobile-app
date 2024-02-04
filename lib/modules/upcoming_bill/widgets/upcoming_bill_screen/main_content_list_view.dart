@@ -1,9 +1,10 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
+import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:flutter/material.dart';
 
-class MainContentListView extends StatelessWidget {
+class MainContentListView extends StatefulWidget {
   final int totalUpcomingBill;
   final String category;
   final double amount;
@@ -15,6 +16,11 @@ class MainContentListView extends StatelessWidget {
     required this.amount,
   });
 
+  @override
+  State<MainContentListView> createState() => _MainContentListViewState();
+}
+
+class _MainContentListViewState extends State<MainContentListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -96,7 +102,7 @@ class MainContentListView extends StatelessWidget {
                   height: 1,
                 ),
                 Text(
-                  '$totalUpcomingBill',
+                  '${widget.totalUpcomingBill}',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w500,
@@ -112,72 +118,80 @@ class MainContentListView extends StatelessWidget {
   }
 
   Widget _upcomingBillCard() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 16,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: ColorConstant.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: ColorConstant.overbudgetIcon,
-                  borderRadius: BorderRadius.circular(4),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => UpcomingBillDetailScreen()));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: ColorConstant.white,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ColorConstant.overbudgetIcon,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconConstant.internet,
                 ),
-                child: IconConstant.internet,
-              ),
-              const SizedBox(
-                width: 11,
-              ),
-              Text(
-                "Today",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  letterSpacing: 1,
-                  color: ColorConstant.black,
+                const SizedBox(
+                  width: 11,
                 ),
-              ),
-            ],
-          ),
-          const Divider(
-            color: Color(0xFFF2F2F2),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                category,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  letterSpacing: 0.75,
-                  color: ColorConstant.mainText,
+                Text(
+                  "Today",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    letterSpacing: 1,
+                    color: ColorConstant.black,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 1,
-              ),
-              Text(
-                '\$$amount',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24,
-                  letterSpacing: 1,
-                  color: ColorConstant.black,
+              ],
+            ),
+            const Divider(
+              color: Color(0xFFF2F2F2),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.category,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    letterSpacing: 0.75,
+                    color: ColorConstant.mainText,
+                  ),
                 ),
-              ),
-            ],
-          )
-        ],
+                const SizedBox(
+                  height: 1,
+                ),
+                Text(
+                  '\$${widget.amount}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    letterSpacing: 1,
+                    color: ColorConstant.black,
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

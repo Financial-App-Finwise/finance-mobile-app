@@ -1,5 +1,6 @@
 class SVGName {
   static String addSquare = 'add_square.svg';
+  static String arrowBack = 'arrow_back.svg';
   static String arrowLeft = 'arrow_left.svg';
   static String arrowRight = 'arrow_right.svg';
   static String available = 'available.svg';
@@ -7,6 +8,7 @@ class SVGName {
   static String award = 'award.svg';
   static String bottomNavUser = 'bottom_nav_user.svg';
   static String budgetPlan = 'budget_plan.svg';
+  static String calendarTick = 'calendar_tick.svg';
   static String close = 'close.svg';
   static String contentManagerDashboard = 'content_manager_dashboard.svg';
   static String delete = 'delete.svg';
