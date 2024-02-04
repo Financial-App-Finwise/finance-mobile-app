@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:flutter/material.dart';
 
 class SmartGoalOverview extends StatelessWidget {
@@ -37,7 +38,8 @@ class SmartGoalOverview extends StatelessWidget {
               children: [
                 Expanded(
                   child: _budgetOverviewCardSection(
-                    IconConstant.getAward(color: ColorConstant.income),
+                    IconHelper.getSVG(SVGName.award,
+                        color: ColorConstant.income),
                     'Achieved',
                     achieved,
                     ColorConstant.black,
@@ -48,7 +50,8 @@ class SmartGoalOverview extends StatelessWidget {
                 const SizedBox(width: 4),
                 Expanded(
                   child: _budgetOverviewCardSection(
-                    IconConstant.getSave(color: ColorConstant.income),
+                    IconHelper.getSVG(SVGName.save,
+                        color: ColorConstant.income),
                     'Saved',
                     saved,
                     ColorConstant.black,
@@ -63,7 +66,8 @@ class SmartGoalOverview extends StatelessWidget {
               children: [
                 Expanded(
                   child: _budgetOverviewCardSection(
-                    IconConstant.getHourGlass(color: ColorConstant.income),
+                    IconHelper.getSVG(SVGName.hourGlass,
+                        color: ColorConstant.income),
                     'Left to Save',
                     leftToSave,
                     ColorConstant.black,
@@ -74,7 +78,8 @@ class SmartGoalOverview extends StatelessWidget {
                 const SizedBox(width: 4),
                 Expanded(
                   child: _budgetOverviewCardSection(
-                    IconConstant.getTargetAmount(color: ColorConstant.income),
+                    IconHelper.getSVG(SVGName.targetAmount,
+                        color: ColorConstant.income),
                     'Target Amount',
                     targetAmount,
                     ColorConstant.black,

@@ -65,7 +65,9 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     return Container(
       // padding: const EdgeInsets.only(left: 16, right: 16),
       child: RefreshIndicator(
-        onRefresh: () async {},
+        onRefresh: () async {
+          await context.read<SmartGoalStore>().read();
+        },
         child: SingleChildScrollView(
           child: Column(
             children: [

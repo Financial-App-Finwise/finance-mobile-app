@@ -1,6 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:flutter/material.dart';
 
 class SmartGoalPrediction extends StatelessWidget {
@@ -26,7 +27,7 @@ class SmartGoalPrediction extends StatelessWidget {
       ),
       child: Row(
         children: [
-          IconConstant.infoALert,
+          IconHelper.getSVG(SVGName.infoAlert, color: ColorConstant.secondary),
           const SizedBox(
             width: 12,
           ),
