@@ -1,10 +1,10 @@
-import 'package:finwise/core/constants/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 const _svgPath = 'assets/images/svg/';
 
 class IconConstant {
+  // -------------------------- old way -------------------------------
   static SvgPicture arrowLeft = SvgPicture.asset('${_svgPath}arrow_left.svg');
 
   static SvgPicture arrowRight = SvgPicture.asset('${_svgPath}arrow_right.svg');
@@ -31,12 +31,6 @@ class IconConstant {
 
   static SvgPicture piggyBank2 = SvgPicture.asset('${_svgPath}piggy_bank.svg');
 
-  static SvgPicture getSmartGoal({Color color = Colors.black}) =>
-      SvgPicture.asset(
-        '${_svgPath}smart_goal.svg',
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      );
-
   static SvgPicture warning = SvgPicture.asset('${_svgPath}warning.svg');
 
   static SvgPicture available = SvgPicture.asset('${_svgPath}available.svg');
@@ -58,9 +52,19 @@ class IconConstant {
 
   static SvgPicture internet = SvgPicture.asset('${_svgPath}internet.svg');
 
-  // methods
-  ////
-  ///
+  // ------------------------ methods --------------------------
+
+  static SvgPicture getAddSquare({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}add_square.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getContentManagerDashboard({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}content_manager_dashboard.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 
   // income, expense
   static SvgPicture getEarn({Color color = Colors.white}) => SvgPicture.asset(
@@ -68,7 +72,8 @@ class IconConstant {
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  static SvgPicture getExpense({Color color = Colors.white}) => SvgPicture.asset(
+  static SvgPicture getExpense({Color color = Colors.white}) =>
+      SvgPicture.asset(
         '${_svgPath}expense.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
@@ -93,6 +98,12 @@ class IconConstant {
   static SvgPicture getSchoolBus({Color color = Colors.white}) =>
       SvgPicture.asset(
         '${_svgPath}school_bus.svg',
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+
+  static SvgPicture getSmartGoal({Color color = Colors.black}) =>
+      SvgPicture.asset(
+        '${_svgPath}smart_goal.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
@@ -140,4 +151,7 @@ class IconConstant {
         '${_svgPath}hour_glass.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
+
+  // ------------------------ new way of getting icon -----------------------
+  // go to icon_helper.dart
 }
