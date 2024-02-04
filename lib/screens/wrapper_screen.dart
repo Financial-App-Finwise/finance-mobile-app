@@ -14,6 +14,22 @@ class WrapperScreen extends StatefulWidget {
 }
 
 class _WrapperScreenState extends State<WrapperScreen> {
+  // @override
+  // void dispose() {
+  //   debugPrint('--> START: dispose, wrapper screen');
+  //   Future.delayed(Duration.zero, () async {
+  //     if (context.read<AuthStore>().user != null) {
+  //       if (!context.read<AuthStore>().rememberMe) {
+  //         // if not remember me
+  //         // sign out to remove the token
+  //         await context.read<AuthStore>().signOut();
+  //       }
+  //     }
+  //   });
+  //   super.dispose();
+  //   debugPrint('<-- END: dispose, wrapper screen');
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
