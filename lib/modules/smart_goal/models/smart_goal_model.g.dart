@@ -45,7 +45,6 @@ SmartGoalData _$SmartGoalDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SmartGoalDataToJson(SmartGoalData instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'userID': instance.userID,
       'name': instance.name,
       'amount': instance.amount,
@@ -55,6 +54,4 @@ Map<String, dynamic> _$SmartGoalDataToJson(SmartGoalData instance) =>
       'startDate': instance.startDate,
       'endDate': instance.endDate,
       'monthlyContribution': instance.monthlyContribution,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
     };

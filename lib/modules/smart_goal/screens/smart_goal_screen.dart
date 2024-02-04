@@ -42,18 +42,29 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         ColorConstant.smartGoalLight,
         ColorConstant.smartGoalThick,
       ]),
-      centerContent: GeneralDatePicker(),
-      mainContent: _isGrid ? SmartGoalGridView() : _buildContent(),
+      centerContent: GeneralDatePicker(
+        prefix: IconConstant.getContentManagerDashboard(),
+        suffix: IconConstant.getAddSquare(),
+        onSuffix: () => Navigator.pushNamed(context, RouteName.addSmartGoal),
+        onPreffix: () => setState(() => _isGrid = !_isGrid),
+      ),
+      mainContent: _buildContent(),
       centerContentPadding: EdgeInsets.all(16),
     );
   }
 
   Widget _buildContent() {
     return Container(
+      padding: EdgeInsets.only(top: 20),
+      child: _isGrid ? SmartGoalGridView() : _buildColumnContent(),
+    );
+  }
+
+  Widget _buildColumnContent() {
+    return Container(
       // padding: const EdgeInsets.only(left: 16, right: 16),
       child: RefreshIndicator(
-        onRefresh: () async {
-        },
+        onRefresh: () async {},
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -71,7 +82,6 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildSummary() {
     return Column(
       children: [
-        SizedBox(height: 20),
         _buildTotalSummary(),
         SizedBox(height: 12),
         _buildStatusSummary(),
@@ -126,8 +136,10 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             filterTitles: ['All', 'In Progress', 'Achieved'],
             children: [
               _buildFilteredSmartGoals(smartGoal.data),
-              _buildFilteredSmartGoals(context.watch<SmartGoalStore>().inProgress),
-              _buildFilteredSmartGoals(context.watch<SmartGoalStore>().achieved),
+              _buildFilteredSmartGoals(
+                  context.watch<SmartGoalStore>().inProgress),
+              _buildFilteredSmartGoals(
+                  context.watch<SmartGoalStore>().achieved),
             ],
           ),
           SizedBox(height: 16),

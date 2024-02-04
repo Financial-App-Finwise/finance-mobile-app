@@ -20,12 +20,6 @@ class _SmartGoalGridViewState extends State<SmartGoalGridView> {
   Widget _mainContentGridView() {
     return Container(
       color: const Color(0xFFF5F7F8),
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 77,
-        bottom: 16,
-      ),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

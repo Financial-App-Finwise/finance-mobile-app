@@ -18,7 +18,9 @@ class SmartGoal {
 
 @JsonSerializable()
 class SmartGoalData {
+  @JsonKey(includeToJson: false)
   late int id;
+
   late int userID;
   late String name;
 
@@ -40,10 +42,10 @@ class SmartGoalData {
   @JsonKey(fromJson: _stringToDouble)
   late double monthlyContribution;
 
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;
   
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updated_at', includeToJson: false)
   late String updatedAt;
 
   SmartGoalData({
@@ -70,6 +72,19 @@ class SmartGoalData {
 
   static bool _intToBool(int value) => 1 == value;
 }
+
+// to map:
+// {
+//     "userID": 2,
+//     "name": "New Learning Course",
+//     "amount": 150.00,
+//     "currentSave": 50.00,
+//     "remainingSave": 100.00,
+//     "setDate": true,
+//     "startDate": "2024-01-01",
+//     "endDate": "2024-01-28",
+//     "monthlyContribution": 20.00
+// }
 
 // {
 //     "data": [

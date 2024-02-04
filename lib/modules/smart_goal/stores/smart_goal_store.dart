@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
 import 'package:finwise/core/services/api_service.dart';
+import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,13 @@ import 'package:mobx/mobx.dart';
 part 'smart_goal_store.g.dart';
 
 class SmartGoalStore = _SmartGoalStoreBase with _$SmartGoalStore;
-
 abstract class _SmartGoalStoreBase with Store {
+  late AuthStore authStore;
+
+  _SmartGoalStoreBase({required this.authStore});
+
+  int get userID => authStore.user!.userData.id;
+
   @observable
   SmartGoal smartGoal = SmartGoal(data: []);
 
@@ -44,6 +50,18 @@ abstract class _SmartGoalStoreBase with Store {
       debugPrint('${e.runtimeType}: ${e.toString()}');
     } finally {
       debugPrint('<-- END: read smart goal');
+    }
+  }
+
+  Future<bool> post(SmartGoalData smartGoalData) async {
+    debugPrint('--> START: post, smart goal');
+    bool success = false;
+    try {
+      debugPrint('${smartGoalData.toJson()}');
+    } catch (e) {
+
+    } finally {
+      return success;
     }
   }
 }
