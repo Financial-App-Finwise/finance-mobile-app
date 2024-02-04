@@ -91,6 +91,11 @@ abstract class _AuthStoreBase with Store {
     }
   }
 
+  void _attachToken() {
+    ApiService.dio
+      ..options.headers['Authorization'] = 'Bearer ${user!.apiToken}';
+  }
+
   @action
   Future<bool> signIn(UserSignIn userSignIn) async {
     debugPrint('--> START: signIn');
@@ -105,10 +110,11 @@ abstract class _AuthStoreBase with Store {
           getUserModel,
           response.data as Map<String, dynamic>,
         );
-        setLoadingStatus(LoadingStatus.done);
         debugPrint('--> successfully signed In');
         debugPrint('--> data: ${response.data}');
+        _attachToken();
         if (rememberMe) _writeCache();
+        setLoadingStatus(LoadingStatus.done);
         return true;
       } else {
         setLoadingStatus(LoadingStatus.error);
@@ -124,9 +130,23 @@ abstract class _AuthStoreBase with Store {
     }
   }
 
-  void signOut() {
-    user = null;
-    _writeCache();
+  Future<void> signOut() async {
+    debugPrint('--> START: signOut');
+    try {
+      Response response = await ApiService.dio.post('auth/logout');
+      if (response.statusCode == 200) {
+        user = null;
+        _writeCache();
+        debugPrint('--> successfully signed out');
+      } else {
+        debugPrint('--> Something went wrong, code: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+    } finally {
+      debugPrint('<-- END: signOut');
+    }
+    // https://finwise-api-test.up.railway.app/api/auth/logout
   }
 
   // Save value to cache
@@ -156,6 +176,7 @@ abstract class _AuthStoreBase with Store {
         Map<String, dynamic> json = jsonDecode(value);
         debugPrint('--> read value: ${json}');
         user = UserModel.fromJson(json);
+        _attachToken();
       } catch (e) {
         debugPrint('${e.runtimeType}: ${e.toString()}');
       }
