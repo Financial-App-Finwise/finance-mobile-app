@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/categories/models/final_category_model.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -16,11 +17,13 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
+  List<FinalCategoryData> categories = [];
+
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(Duration(seconds: 0), () async {
       if (mounted) {
         await context.read<CategoryStore>().read();
       }
@@ -34,6 +37,47 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Adding subcategory to every index and store in new list
+    for (int index = 0;
+        index < categoryModel.categoryDataList.length;
+        index++) {
+      CategoryData category = categoryModel.categoryDataList[index];
+      FinalCategoryData finalCategory;
+      if (category.level == 2) {
+        finalCategory = FinalCategoryData(
+          id: category.id,
+          userID: category.userID,
+          name: category.name,
+          isIncome: category.isIncome,
+          parentID: category.parentID,
+          level: category.level,
+          isOnboarding: category.isOnboarding,
+          createdAt: category.createdAt,
+          updatedAt: category.updatedAt,
+          subcategory: [],
+        );
+
+        categories.add(finalCategory);
+      }
+    }
+
+    // Adding the category level 1 to parent subcategory
+    for (int i = 0; i < categories.length; i++) {
+      FinalCategoryData parentCategory = categories[i];
+
+      for (int j = 0; j < categoryModel.categoryDataList.length; j++) {
+        CategoryData subcategory = categoryModel.categoryDataList[j];
+
+        if (subcategory.parentID == parentCategory.id) {
+          debugPrint('Statse ll ${parentCategory.id}');
+          // Add subcategory to the subcategory list of the parent category
+          parentCategory.subcategory.add(subcategory);
+        }
+      }
+    }
+
+    debugPrint('Statse ${categories[9].subcategory[0].name}');
+
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       body: SafeArea(
@@ -121,12 +165,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
               const SizedBox(
                 height: 16,
               ),
-              for (int index = 0;
-                  index < categoryModel.categoryDataList.length;
-                  index++)
+              for (int i = 0; i < categories.length; i++)
                 Column(
                   children: [
-                    mainCategoryTile(categoryModel.categoryDataList[index].name)
+                    mainCategoryTile(categories[i].name),
+                    if (categories[i].subcategory.isNotEmpty)
+                      for (int j = 0; j < categories[i].subcategory.length; j++)
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 32),
+                              child: mainCategoryTile(
+                                  categories[i].subcategory[j].name),
+                            ),
+                          ],
+                        )
                   ],
                 )
             ],

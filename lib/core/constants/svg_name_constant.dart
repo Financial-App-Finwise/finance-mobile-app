@@ -1,5 +1,6 @@
 class SVGName {
   static const String addSquare = 'add_square.svg';
+  static const String arrowBack = 'arrow_back.svg';
   static const String arrowLeft = 'arrow_left.svg';
   static const String arrowRight = 'arrow_right.svg';
   static const String available = 'available.svg';
@@ -7,6 +8,7 @@ class SVGName {
   static const String award = 'award.svg';
   static const String bottomNavUser = 'bottom_nav_user.svg';
   static const String budgetPlan = 'budget_plan.svg';
+  static const String calendarTick = 'calendar_tick.svg';
   static const String close = 'close.svg';
   static const String contentManagerDashboard = 'content_manager_dashboard.svg';
   static const String delete = 'delete.svg';

@@ -1,14 +1,25 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
 import 'package:flutter/material.dart';
 
 class DetailHeaderLayout extends StatefulWidget {
   final Widget child;
+  final Color gradient1;
+  final Color gradient2;
+  final String title;
+  final String description;
 
   const DetailHeaderLayout({
     super.key,
     required this.child,
+    required this.gradient1,
+    required this.gradient2,
+    required this.title,
+    required this.description,
   });
 
   @override
@@ -19,7 +30,32 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: topContent(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [widget.gradient1, widget.gradient2],
+            stops: const [0.2, 0.8],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              topContent(),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  color: ColorConstant.backgroundColor,
+                  padding: const EdgeInsets.all(16),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: widget.child,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -27,37 +63,29 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
     return Container(
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [Color(0xFFFBA6A6), Color(0xFFEE5353)], stops: [0.2, 0.8]),
+          colors: [widget.gradient1, widget.gradient2],
+          stops: const [0.2, 0.8],
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Icon
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                size: 24,
-              ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                iconColor: MaterialStateProperty.all(
-                  const Color(0xFFFFFFFF),
-                ),
-              ),
+          CustomIconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: IconHelper.getSVG(
+              SVGName.arrowBack,
+              color: ColorConstant.white,
             ),
           ),
 
           const SizedBox(
-            height: 12,
+            height: 24,
           ),
 
           Row(
@@ -79,19 +107,19 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                   const SizedBox(
                     width: 8,
                   ),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Transportation',
-                        style: TextStyle(
+                        widget.title,
+                        style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 24,
                             color: Color(0xFFFFFFFF)),
                       ),
                       Text(
-                        'Budget Category',
-                        style: TextStyle(
+                        widget.description,
+                        style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             color: Color(0xFFFFFFFF)),
