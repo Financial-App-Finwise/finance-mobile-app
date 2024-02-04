@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SmallRoundedSquare extends StatefulWidget {
-  SmallRoundedSquare({
+  const SmallRoundedSquare({
     super.key,
     this.color = Colors.black,
     this.icon
   });
 
-  late Color color;
-  late Widget? icon;
+  final Color color;
+  final Widget? icon;
 
   @override
   State<SmallRoundedSquare> createState() => _SmallRoundedSquareState();

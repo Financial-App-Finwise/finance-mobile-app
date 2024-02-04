@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneralDatePicker extends StatefulWidget {
-  GeneralDatePicker({
+  const GeneralDatePicker({
     super.key,
     this.prefix,
     this.suffix,
@@ -63,7 +63,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
               ),
-              child: widget.prefix ?? SizedBox(),
+              child: widget.prefix ?? const SizedBox(),
             ),
             // child: IconButton(
             //   onPressed: () {},
@@ -82,7 +82,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
               ),
-              child: widget.suffix ?? SizedBox(),
+              child: widget.suffix ?? const SizedBox(),
             ),
             // child: IconButton(
             //   onPressed: () {
@@ -118,7 +118,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
         const SizedBox(width: 12),
         Text(
           '${monthNames[currentDate.month - 1]} ${currentDate.year}',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 18,
             letterSpacing: 1,

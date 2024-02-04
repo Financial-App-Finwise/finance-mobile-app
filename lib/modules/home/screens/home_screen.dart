@@ -1,4 +1,3 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
@@ -6,18 +5,13 @@ import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
 import 'package:finwise/core/widgets/duration_drop_down.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
+import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
-import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/screens/index_screen.dart';
-import 'package:finwise/test/test_drop_down.dart';
-import 'package:finwise/test/test_drop_down2.dart';
-import 'package:finwise/test/test_show_drop_down.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,11 +26,10 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = 0;
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
 
   @override
   void deactivate() {
@@ -47,15 +40,12 @@ class _HomeScreenState extends State<HomeScreen>
 
   late AuthStore authStore = context.read<AuthStore>();
 
-  late int _currentIndex;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
     debugPrint('--> START: build home screen');
     return Scaffold(
       // appBar: _buildAppBar(),
-
       body: _buildBody(),
       backgroundColor: ColorConstant.backgroundColor,
       // backgroundColor: Colors.blue,
@@ -66,25 +56,24 @@ class _HomeScreenState extends State<HomeScreen>
     return SafeArea(
       child: Container(
         alignment: Alignment.topRight,
-        // color: Colors.yellow[200],
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: SingleChildScrollView(
           child: Column(
             children: [
               ListView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
-                  _buildProfile(), // almost
-                  _buildFinance(), // almost
-                  _buildMainFeatures(), // almost
+                  _buildProfile(),
+                  _buildFinance(),
+                  _buildMainFeatures(),
                   _buildSpendingIncome(),
                   _buildTopSpending(),
                   _buildBudgetPlan(),
                   _buildTotalSpend(),
                   _buildTotalEarn(),
                   _buildUpcomingBill(),
-                  SizedBox(height: 48),
+                  const SizedBox(height: 48),
                 ],
               ),
             ],
@@ -94,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  // ---------- user profile ----------
   Widget _buildProfile() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -113,8 +103,6 @@ class _HomeScreenState extends State<HomeScreen>
                   Text('Welcome Back,', style: HomeTextStyleConstant.welcome),
                   Text(authStore.user!.userData.name,
                       style: HomeTextStyleConstant.profileName),
-                  // Text('User',
-                  //     style: HomeTextStyleConstant.profileName),
                 ],
               ),
             ],
@@ -132,30 +120,62 @@ class _HomeScreenState extends State<HomeScreen>
   /// if there is no data, indicate that the user has no data
   /// and needs to add transaction
 
-  Widget _buildNoDataDisplay() {
-    return Container();
-  }
+  // Widget _buildNoDataDisplay() {
+  //   return Container();
+  // }
 
-  Widget _buildEmptyBarChart() {
-    return Container();
-  }
+  // Widget _buildEmptyBarChart() {
+  //   return Container();
+  // }
 
-  Widget _buildEmptyPieChart() {
-    return Container();
-  }
+  // Widget _buildEmptyPieChart() {
+  //   return Container();
+  // }
 
+  // ---------- general ----------
   Widget _buildGeneralTitle(String text) {
     return Container(
-      padding: EdgeInsets.only(top: 20, bottom: 12),
+      padding: const EdgeInsets.only(top: 20, bottom: 12),
       child: Text(text, style: HomeTextStyleConstant.header),
     );
   }
 
+  Widget _buildGeneralContentHeading({
+    String title = 'title',
+    String amount = 'amount',
+    Color color = Colors.black,
+    Widget? icon,
+    String buttonText = 'button',
+    void Function()? onButtonPressed,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: Row(children: [
+            icon ?? const SizedBox(),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: HomeTextStyleConstant.medium),
+                  Text(amount,
+                      style: HomeTextStyleConstant.numberFocus(color: color)),
+                ],
+              ),
+            )
+          ]),
+        ),
+        const SizedBox(width: 12),
+        const DurationDropDown(),
+      ],
+    );
+  }
+
+  // ---------- finance ----------
   Widget _buildFinance() {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RouteName.finance);
-      },
+      onTap: () => Navigator.pushNamed(context, RouteName.finance),
       child: Container(
         alignment: Alignment.topLeft,
         child: Column(
@@ -166,14 +186,14 @@ class _HomeScreenState extends State<HomeScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('My Finance', style: HomeTextStyleConstant.header),
-                ViewMoreTextButton(onPressed: () {
-                  Navigator.pushNamed(context, RouteName.finance);
-                })
+                ViewMoreTextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, RouteName.finance))
               ],
             ),
             const SizedBox(height: 12),
             // build content
-            _roundedContainer(
+            RoundedContainer(
               child: Column(
                 children: [
                   // Total balance
@@ -189,17 +209,12 @@ class _HomeScreenState extends State<HomeScreen>
                           icon: IconConstant.piggyBank,
                         ),
                       ),
-                      Container(
-                          child: _buildDurationButton(
-                              text: 'Last 7 days',
-                              onPressed: () {
-                                print('Total Balance');
-                              })),
+                      const DurationDropDown(),
                     ],
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    child: Divider(color: Color(0xfff2f2f2)),
+                    child: const Divider(color: Color(0xfff2f2f2)),
                   ),
                   // Income and Expense
                   IntrinsicHeight(
@@ -215,7 +230,8 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: VerticalDivider(color: Color(0xfff2f2f2)),
+                          child:
+                              const VerticalDivider(color: Color(0xfff2f2f2)),
                         ),
                         Expanded(
                           child: _buildFinanceItem(
@@ -258,21 +274,19 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ----------------------------------------------------------------------
-
-  // Other Features
+  // ---------- other features ----------
   Widget _buildMainFeatures() {
     return Container(
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             'Other Features',
             style: HomeTextStyleConstant.header,
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Center(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -287,13 +301,12 @@ class _HomeScreenState extends State<HomeScreen>
                     }),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
-                  text: 'Upcoming Bill',
-                  amount: '3',
-                  icon: IconConstant.getUpcomingBill(),
-                  onPressed: () {Navigator.pushNamed(
-                          context, RouteName.upcomingBill);
-                    }
-                ),
+                    text: 'Upcoming Bill',
+                    amount: '3',
+                    icon: IconConstant.getUpcomingBill(),
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouteName.upcomingBill);
+                    }),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
                     text: 'Smart Goal',
@@ -326,9 +339,10 @@ class _HomeScreenState extends State<HomeScreen>
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [ColorConstant.primary, ColorConstant.secondary],
-              stops: const [0, 0.8]),
+          gradient: const LinearGradient(
+            colors: [ColorConstant.primary, ColorConstant.secondary],
+            stops: [0, 0.8],
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -350,20 +364,16 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
             ),
-            icon ?? SizedBox(),
+            icon ?? const SizedBox(),
           ],
         ),
       ),
     );
   }
 
-  // ------------------------------------------------------------------------
-
-  // ------------------------------------------------------------
-
+  // ----- spending income -----
   Widget _buildSpendingIncome() {
     return Container(
-      // color: Colors.green[100],
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,152 +385,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _roundedContainer({Widget? child}) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-      ),
-      padding: EdgeInsets.all(16),
-      child: child,
-    );
-  }
-
-  Widget _buildBarChart() {
-    return Container(
-      height: 200,
-      child: BarChart(
-        BarChartData(
-          titlesData: FlTitlesData(
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                reservedSize: 32,
-                showTitles: true,
-                getTitlesWidget: (value, meta) =>
-                    _barChartBottomTitles(value, meta),
-              ),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                reservedSize: 48,
-                showTitles: true,
-                interval: 1000,
-                getTitlesWidget: (value, meta) {
-                  return _barChartleftTitles(value, meta);
-                },
-              ),
-            ),
-          ),
-          gridData: FlGridData(
-            getDrawingVerticalLine: (value) {
-              return FlLine(
-                color: Color(0xfff2f2f2),
-                dashArray: [4],
-                strokeWidth: 1,
-              );
-            },
-            getDrawingHorizontalLine: (value) {
-              return FlLine(
-                color: Color(0xfff2f2f2),
-                dashArray: [4],
-                strokeWidth: 1,
-              );
-            },
-            verticalInterval: 0.25,
-            horizontalInterval: 1000,
-          ),
-          borderData: FlBorderData(
-            border: DashedBorder.fromBorderSide(
-              side: BorderSide(color: Color(0xfff2f2f2)),
-              dashLength: 4,
-            ),
-          ),
-          alignment: BarChartAlignment.spaceAround,
-          barGroups: [
-            _buildBarChartGroup(x: 0, income: 6000, expense: 4000),
-            _buildBarChartGroup(x: 1, income: 4000, expense: 2000),
-            _buildBarChartGroup(x: 2, income: 8000, expense: 6000),
-            _buildBarChartGroup(x: 3, income: 7000, expense: 3000),
-          ],
-        ),
-      ),
-    );
-  }
-
-  BarChartGroupData _buildBarChartGroup({
-    required int x,
-    double income = 0,
-    double expense = 0,
-  }) {
-    return BarChartGroupData(x: x, barRods: [
-      _buildBarRod(isIncome: true, toY: income),
-      _buildBarRod(toY: expense),
-    ]);
-  }
-
-  BarChartRodData _buildBarRod({
-    bool isIncome = false,
-    double toY = 0,
-  }) {
-    return BarChartRodData(
-      toY: toY,
-      width: 7,
-      color: isIncome ? ColorConstant.income : ColorConstant.expense,
-      borderRadius: BorderRadius.zero,
-    );
-  }
-
-  Widget _barChartBottomTitles(double value, TitleMeta meta) {
-    final titles = ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'];
-    return SideTitleWidget(
-      child: Text(titles[value.toInt()],
-          style: HomeTextStyleConstant.barChartBottomTitle),
-      axisSide: meta.axisSide,
-    );
-  }
-
-  Widget _barChartleftTitles(double value, TitleMeta meta) {
-    return SideTitleWidget(
-      child: Text('\$${value.toInt()}',
-          style: HomeTextStyleConstant.barChartLeftTitle),
-      axisSide: meta.axisSide,
-    );
-  }
-
-  Widget _buildBarChartLegend() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(child: _buildLegendItem('Income', ColorConstant.income)),
-        Expanded(child: _buildLegendItem('Expense', ColorConstant.expense)),
-      ],
-    );
-  }
-
-  Widget _buildLegendItem(String text, Color color) {
-    return Row(
-      children: [
-        Container(
-          height: 16,
-          width: 16,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
-        ),
-        SizedBox(width: 8),
-        Text(text, style: HomeTextStyleConstant.barChartLegend),
-      ],
-    );
-  }
-
-  // ------------------------------------------------------------------
-
-  // --------------------------------------------------------------------
-
+  // ----- top spending -----
   Widget _buildTopSpending() {
     List values = [40.0, 20.0, 30.0, 10.0];
     values.sort((a, b) => b.compareTo(a));
@@ -532,7 +397,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Top Spending Categories'),
-          _roundedContainer(
+          RoundedContainer(
             child: Column(
               children: [
                 _buildGeneralContentHeading(
@@ -554,152 +419,34 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // General
-  Widget _buildGeneralContentHeading({
-    String title = 'title',
-    String amount = 'amount',
-    Color color = Colors.black,
-    Widget? icon,
-    String buttonText = 'button',
-    void Function()? onButtonPressed,
-  }) {
-    return Row(
-      children: [
-        Expanded(
-          child: Row(children: [
-            icon ?? SizedBox(),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: HomeTextStyleConstant.medium),
-                  Text(amount,
-                      style: HomeTextStyleConstant.numberFocus(color: color)),
-                ],
-              ),
-            )
-          ]),
-        ),
-        SizedBox(width: 12),
-        DurationDropDown(),
-      ],
-    );
-  }
-
-  // General
-  Widget _buildDurationButton({
-    VoidCallback? onPressed,
-    String text = 'Button',
-  }) {
-    return DurationDropDown();
-    // List items = [
-    //   'This Week',
-    //   'This Month',
-    //   'Last Month',
-    //   'Last 3 Months',
-    //   'Last 6 Months'
-    // ];
-    // return Center(
-    //   child: DropdownButton2(
-    //     items: items
-    //         .map((e) => DropdownMenuItem(
-    //               value: e,
-    //               child: Text(e),
-    //             ))
-    //         .toList(),
-    //     onChanged: (_) {},
-    //     value: 'This Week',
-    //     style: HomeTextStyleConstant.small,
-    //     isDense: true,
-    //     underline: SizedBox(),
-    //     buttonStyleData: ButtonStyleData(
-    //       height: 36,
-    //       // width: 100,
-    //       // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.circular(8),
-    //         border: Border.fromBorderSide(BorderSide(color: Color(0xffD3D5E4))),
-    //       ),
-    //     ),
-    //     dropdownStyleData: DropdownStyleData(
-    //       maxHeight: 150,
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.circular(8),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    return TextButton(
-      // onPressed: onPressed,
-      onPressed: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => TestDropdown2()));
-      },
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: const BorderSide(color: Color(0xffD3D5E4)),
-          ),
-        ),
-      ),
-      child: Row(children: [
-        Text(text, style: HomeTextStyleConstant.small),
-        const Icon(Icons.arrow_drop_down, color: Color(0xff292D32)),
-      ]),
-    );
-  }
-
-  bool _showMorePieChartInfo = false;
-  int _touchedIndex = -1;
-
-  /// Pie Chart Section
-  Widget _buildMorePieChartInfo({int touchedIndex = 0}) {
-    return Container(
-      constraints: BoxConstraints(maxHeight: 200),
-      child: ListView.builder(
-        physics: BouncingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: 4,
-        itemBuilder: (context, index) => Card(
-          elevation: 0,
-          child: ListTile(
-            leading: _buildSmallCircle(Colors.orange),
-            title: Text('Other'),
-          ),
-        ),
-      ),
-    );
-  }
+  // pie chart section
+  // bool _showMorePieChartInfo = false;
+  // int _touchedIndex = -1;
 
   Widget _buildPieChart(values, opacities) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.symmetric(vertical: 30),
       child: SizedBox.fromSize(
-        size: Size(140, 140),
+        size: const Size(140, 140),
         child: PieChart(
           PieChartData(
             pieTouchData: PieTouchData(
               // enabled: true,
-              longPressDuration: Duration(seconds: 3),
+              longPressDuration: const Duration(seconds: 3),
               touchCallback: (event, response) {
                 // handle the long press on the same section
                 // preventing it from printing the same value many times
-                setState(() {
-                  if (event.isInterestedForInteractions ||
-                      response == null ||
-                      response.touchedSection == null) {
-                    _touchedIndex = -1;
-                    return;
-                  }
-                  _touchedIndex = 0;
-                  debugPrint('${response.touchedSection!.touchedSectionIndex}');
-                  _showMorePieChartInfo = true;
-                });
+                // setState(() {
+                //   if (event.isInterestedForInteractions ||
+                //       response == null ||
+                //       response.touchedSection == null) {
+                //     _touchedIndex = -1;
+                //     return;
+                //   }
+                //   _touchedIndex = 0;
+                //   debugPrint('${response.touchedSection!.touchedSectionIndex}');
+                //   _showMorePieChartInfo = true;
+                // });
               },
             ),
             sectionsSpace: 0,
@@ -711,7 +458,7 @@ class _HomeScreenState extends State<HomeScreen>
               _buildPieChartItem(value: values[3], opacity: opacities[3]),
             ],
           ),
-          swapAnimationDuration: Duration(seconds: 1),
+          swapAnimationDuration: const Duration(seconds: 1),
         ),
       ),
     );
@@ -724,7 +471,7 @@ class _HomeScreenState extends State<HomeScreen>
     return PieChartSectionData(
       value: value,
       // title: '$value',
-      titleStyle: TextStyle(
+      titleStyle: const TextStyle(
         color: Colors.white,
         fontSize: 10,
       ),
@@ -786,7 +533,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Row(
       children: [
         _buildSmallCircle(color),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -809,11 +556,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // --------------------------------------------------------------------
-
-  ////
-  ///
-
+  // ----- budget plan -----
   Widget _buildBudgetPlan() {
     return Container(
       alignment: Alignment.topLeft,
@@ -821,7 +564,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('My Budget Plan'),
-          _roundedContainer(
+          RoundedContainer(
             child: Column(
               children: [
                 _buildBudgetPlanHeader(),
@@ -840,38 +583,32 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetPlanHeader() {
-    return Container(
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        _buildBudgetPlanDate(),
-        _buildAddButton(),
-      ]),
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      _buildBudgetPlanDate(),
+      _buildAddButton(),
+    ]);
   }
 
   Widget _buildBudgetPlanDate() {
-    return Container(
-      child: _datePicker(),
-    );
+    return _datePicker();
   }
 
   Widget _buildAddButton() {
     return ElevatedButton(
-      onPressed: () {
-        Navigator.pushNamed(context, RouteName.addBudget);
-      },
+      onPressed: () => Navigator.pushNamed(context, RouteName.addBudget),
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         backgroundColor: MaterialStateProperty.all(ColorConstant.secondary),
         shape: MaterialStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
         padding: MaterialStateProperty.all(
-          EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         ),
       ),
       child: Row(
         children: [
-          Icon(Icons.add, color: Colors.white),
-          SizedBox(width: 8),
+          const Icon(Icons.add, color: Colors.white),
+          const SizedBox(width: 8),
           Text('Add New', style: HomeTextStyleConstant.smallAddButton),
         ],
       ),
@@ -879,7 +616,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetOverview() {
-    return BudgetOverview(
+    return const BudgetOverview(
       totalBudget: 130,
       available: 30,
       spend: 0,
@@ -892,14 +629,14 @@ class _HomeScreenState extends State<HomeScreen>
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
             _buildBudgetCardItem(),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             _buildBudgetCardItem(),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             _buildBudgetCardItem(),
           ],
         ),
@@ -908,38 +645,33 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetCardItem() {
-    return Container(
-      child: BudgetCard(
-        screen: BudgetPlanDetailScreen(),
-        title: 'Transportation',
-        color: ColorConstant.expense,
-        topLeft: Row(
-          children: [
-            Text('\$40', style: HomeTextStyleConstant.budgetCardTitle),
-            SizedBox(width: 6),
-            Text('Left', style: HomeTextStyleConstant.medium),
-          ],
-        ),
-        topRight: Row(
-          children: [
-            Text('out of', style: HomeTextStyleConstant.medium),
-            SizedBox(width: 6),
-            Text('\$50', style: HomeTextStyleConstant.budgetCardTitle),
-          ],
-        ),
-        bottomLeft: Text('Today', style: HomeTextStyleConstant.medium),
-        bottomRight:
-            Text('January 24, 2024', style: HomeTextStyleConstant.medium),
-        total: 10,
-        spent: 5,
+    return BudgetCard(
+      screen: const BudgetPlanDetailScreen(),
+      title: 'Transportation',
+      color: ColorConstant.expense,
+      topLeft: Row(
+        children: [
+          Text('\$40', style: HomeTextStyleConstant.budgetCardTitle),
+          const SizedBox(width: 6),
+          Text('Left', style: HomeTextStyleConstant.medium),
+        ],
       ),
+      topRight: Row(
+        children: [
+          Text('out of', style: HomeTextStyleConstant.medium),
+          const SizedBox(width: 6),
+          Text('\$50', style: HomeTextStyleConstant.budgetCardTitle),
+        ],
+      ),
+      bottomLeft: Text('Today', style: HomeTextStyleConstant.medium),
+      bottomRight:
+          Text('January 24, 2024', style: HomeTextStyleConstant.medium),
+      total: 10,
+      spent: 5,
     );
   }
 
-  // --------------------------------------------------------------------------
-
-  //----------------------------------------------------------------------------
-
+  // ---------- totally spent ----------
   Widget _buildTotalSpend() {
     return Container(
       alignment: Alignment.topLeft,
@@ -947,7 +679,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Totally Spent'),
-          _roundedContainer(
+          RoundedContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -959,11 +691,11 @@ class _HomeScreenState extends State<HomeScreen>
                   buttonText: 'Last 7 days',
                   onButtonPressed: () {},
                 ),
-                Divider(color: ColorConstant.divider),
-                SizedBox(height: 16),
+                const Divider(color: ColorConstant.divider),
+                const SizedBox(height: 16),
                 Text('Recent Transactions',
                     style: HomeTextStyleConstant.medium),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 _buildTransactions(color: ColorConstant.expense),
               ],
             ),
@@ -972,9 +704,42 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
-  // --------------------------------------------------------------------------
 
-  // --------- General ------------
+  // ---------- totally earned -----------
+  Widget _buildTotalEarn() {
+    return Container(
+      alignment: Alignment.topLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGeneralTitle('Totally Earned'),
+          RoundedContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildGeneralContentHeading(
+                  title: 'Totally Earned',
+                  amount: '\$356',
+                  color: ColorConstant.income,
+                  icon: IconConstant.earn,
+                  buttonText: 'Last 7 days',
+                  onButtonPressed: () {},
+                ),
+                const Divider(color: ColorConstant.divider),
+                const SizedBox(height: 16),
+                Text('Recent Transactions',
+                    style: HomeTextStyleConstant.medium),
+                const SizedBox(height: 12),
+                _buildTransactions(color: ColorConstant.income),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // -------------- transaction -----------------
   Widget _buildTransactions({Color color = Colors.black}) {
     return ListView.separated(
       shrinkWrap: true,
@@ -1046,44 +811,8 @@ class _HomeScreenState extends State<HomeScreen>
       child: IconConstant.getSchoolBus(),
     );
   }
-  // --------- General ------------
 
-  //----------------------------------------------------------------------------
-  Widget _buildTotalEarn() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildGeneralTitle('Totally Earned'),
-          _roundedContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildGeneralContentHeading(
-                  title: 'Totally Earned',
-                  amount: '\$356',
-                  color: ColorConstant.income,
-                  icon: IconConstant.earn,
-                  buttonText: 'Last 7 days',
-                  onButtonPressed: () {},
-                ),
-                Divider(color: ColorConstant.divider),
-                SizedBox(height: 16),
-                Text('Recent Transactions',
-                    style: HomeTextStyleConstant.medium),
-                SizedBox(height: 12),
-                _buildTransactions(color: ColorConstant.income),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  // --------------------------------------------------------------------------
-
-  //----------------------------------------------------------------------------
+  // ---------- upcoming bill ----------
   Widget _buildUpcomingBill() {
     return Container(
       alignment: Alignment.topLeft,
@@ -1091,7 +820,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Upcoming Bill'),
-          _roundedContainer(
+          RoundedContainer(
             child: Column(
               children: [
                 _buildGeneralContentHeading(
@@ -1102,8 +831,8 @@ class _HomeScreenState extends State<HomeScreen>
                   buttonText: 'This month',
                   onButtonPressed: () {},
                 ),
-                Divider(color: ColorConstant.divider),
-                SizedBox(height: 16),
+                const Divider(color: ColorConstant.divider),
+                const SizedBox(height: 16),
                 _buildBills(),
               ],
             ),
@@ -1115,14 +844,14 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildBills() {
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
           _buildBillItem(),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           _buildBillItem(),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           _buildBillItem(),
         ],
       ),
@@ -1132,7 +861,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildBillItem() {
     return Container(
       width: 200,
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border.all(color: ColorConstant.divider),
@@ -1147,21 +876,21 @@ class _HomeScreenState extends State<HomeScreen>
               Row(
                 children: [
                   _buildSmallRoundedSquare(color: ColorConstant.bill),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Text('Today', style: HomeTextStyleConstant.budgetCardTitle),
                 ],
               ),
-              IconConstant.getMore(color: Color(0xffBABCD4)),
+              IconConstant.getMore(color: const Color(0xffBABCD4)),
             ],
           ),
-          SizedBox(height: 8),
-          Divider(color: ColorConstant.divider),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
+          const Divider(color: ColorConstant.divider),
+          const SizedBox(height: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Netflix', style: HomeTextStyleConstant.medium),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text('\$2.5',
                   style: HomeTextStyleConstant.numberFocus(
                     color: ColorConstant.black,
@@ -1173,6 +902,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  // ---------- General ----------
   DateTime currentDate = DateTime.now();
 
   List<String> monthNames = [
@@ -1206,7 +936,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         Text(
           '${monthNames[currentDate.month - 1]} ${currentDate.year}',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 18,
             letterSpacing: 1,
@@ -1243,6 +973,4 @@ class _HomeScreenState extends State<HomeScreen>
     // Add the days in the current month to the current date
     return date.add(Duration(days: daysInCurrentMonth));
   }
-
-// ------------------
 }

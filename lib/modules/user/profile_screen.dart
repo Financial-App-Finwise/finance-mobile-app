@@ -16,14 +16,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Expanded(child: UnimplementedScreen()),
+          const Expanded(child: UnimplementedScreen()),
           ElevatedButton(
             onPressed: () async {
               await context.read<AuthStore>().signOut();
             },
-            child: Text('Log out'),
+            child: const Text('Log out'),
           ),
-          SizedBox(height: 48),
+          const SizedBox(height: 48),
         ],
       ),
     );

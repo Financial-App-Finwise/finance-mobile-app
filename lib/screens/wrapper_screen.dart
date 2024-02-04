@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+// handle between the authentication part and the index screen
 class WrapperScreen extends StatefulWidget {
   const WrapperScreen({super.key});
 
@@ -35,9 +36,9 @@ class _WrapperScreenState extends State<WrapperScreen> {
     return Observer(builder: (context) {
       UserModel? user = context.watch<AuthStore>().user;
       if (user == null) {
-        return AuthWrapperScreen();
+        return const AuthWrapperScreen();
       }
-      return IndexScreen();
+      return const IndexScreen();
     });
   }
 }

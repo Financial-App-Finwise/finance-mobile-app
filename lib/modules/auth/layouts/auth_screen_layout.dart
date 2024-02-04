@@ -43,13 +43,13 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      foregroundColor: Colors.black,
-    );
-  }
+  // AppBar _buildAppBar() {
+  //   return AppBar(
+  //     backgroundColor: Colors.white,
+  //     elevation: 0,
+  //     foregroundColor: Colors.black,
+  //   );
+  // }
 
   Widget _buildBody() {
     return Container(
@@ -57,18 +57,15 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
       child: Column(
         children: [
           Expanded(
-            child: Container(
-              // color: Colors.green[200],
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildArrow(),
-                    _buildTopContent(),
-                    // _buildTextFields(),
-                    widget.formArea,
-                    widget.bottomContent,
-                  ],
-                ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildArrow(),
+                  _buildTopContent(),
+                  // _buildTextFields(),
+                  widget.formArea,
+                  widget.bottomContent,
+                ],
               ),
             ),
           ),
@@ -85,7 +82,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
         padding: const EdgeInsets.symmetric(vertical: 14),
         height: 50,
         alignment: Alignment.topLeft,
-        child: hide ? SizedBox() : const Icon(Icons.arrow_back),
+        child: hide ? const SizedBox() : const Icon(Icons.arrow_back),
       ),
     );
   }

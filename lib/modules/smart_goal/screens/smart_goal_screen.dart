@@ -38,7 +38,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
       title: 'My Smart Goal',
       description:
           'Effortlessly manage your finance with a powerful simple tool in FinWise.',
-      gradient: LinearGradient(colors: [
+      gradient: const LinearGradient(colors: [
         ColorConstant.smartGoalLight,
         ColorConstant.smartGoalThick,
       ]),
@@ -50,33 +50,30 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         onPreffix: () => setState(() => _isGrid = !_isGrid),
       ),
       mainContent: _buildContent(),
-      centerContentPadding: EdgeInsets.all(16),
+      centerContentPadding: const EdgeInsets.all(16),
     );
   }
 
   Widget _buildContent() {
     return Container(
-      padding: EdgeInsets.only(top: 20),
-      child: _isGrid ? SmartGoalGridView() : _buildColumnContent(),
+      padding: const EdgeInsets.only(top: 20),
+      child: _isGrid ? const SmartGoalGridView() : _buildColumnContent(),
     );
   }
 
   Widget _buildColumnContent() {
-    return Container(
-      // padding: const EdgeInsets.only(left: 16, right: 16),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          await context.read<SmartGoalStore>().read();
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildSummary(),
-              SizedBox(height: 16),
-              _buildSmartGoals(),
-              SizedBox(height: 48),
-            ],
-          ),
+    return RefreshIndicator(
+      onRefresh: () async {
+        await context.read<SmartGoalStore>().read();
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildSummary(),
+            const SizedBox(height: 16),
+            _buildSmartGoals(),
+            const SizedBox(height: 48),
+          ],
         ),
       ),
     );
@@ -86,7 +83,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     return Column(
       children: [
         _buildTotalSummary(),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _buildStatusSummary(),
       ],
     );
@@ -98,7 +95,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       child: Row(
         children: [
           SizedBox(
@@ -107,7 +104,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             child: IconHelper.getSVG(SVGName.smartGoal,
                 color: ColorConstant.income),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,13 +118,11 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   }
 
   Widget _buildStatusSummary() {
-    return Container(
-      child: SmartGoalOverview(
-        achieved: '0',
-        saved: '0',
-        leftToSave: '0',
-        targetAmount: '0',
-      ),
+    return const SmartGoalOverview(
+      achieved: '0',
+      saved: '0',
+      leftToSave: '0',
+      targetAmount: '0',
     );
   }
 
@@ -137,7 +132,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
       return Column(
         children: [
           GeneralFilterBar(
-            filterTitles: ['All', 'In Progress', 'Achieved'],
+            filterTitles: const ['All', 'In Progress', 'Achieved'],
             children: [
               _buildFilteredSmartGoals(smartGoal.data),
               _buildFilteredSmartGoals(
@@ -146,7 +141,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                   context.watch<SmartGoalStore>().achieved),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       );
     });
@@ -154,7 +149,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   Widget _buildFilteredSmartGoals(List<SmartGoalData> data) {
     return ListView.separated(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: data.length,
       itemBuilder: (context, index) {
@@ -166,7 +161,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         );
       },
       separatorBuilder: (context, index) {
-        return SizedBox(height: 8);
+        return const SizedBox(height: 8);
       },
     );
   }
@@ -174,10 +169,10 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildSmartGoalItem(SmartGoalData item) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Color(0xffE9EAF1)),
+        border: Border.all(color: const Color(0xffE9EAF1)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -191,11 +186,11 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                       IconHelper.getSVG(SVGName.smartGoal, color: Colors.white),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${item.name}',
+                  Text(item.name,
                       style: SmartGoalTextStyle.getCardTitle()),
                   Text('Due Date: ${item.endDate}',
                       style: SmartGoalTextStyle.cardSubTitle),
@@ -203,10 +198,10 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               ),
             ],
           ),
-          Divider(color: ColorConstant.divider),
+          const Divider(color: ColorConstant.divider),
           GeneralProgressWidget(
             current: item.currentSave,
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [
                 ColorConstant.smartGoalLight,
                 ColorConstant.smartGoalThick,
@@ -219,7 +214,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 Text('7',
                     style: SmartGoalTextStyle.getCardTitle(
                         color: ColorConstant.black)),
-                SizedBox(width: 2),
+                const SizedBox(width: 2),
                 Text('transactions', style: SmartGoalTextStyle.cardSubTitle),
               ],
             ),
@@ -228,7 +223,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             bottomRight: Row(
               children: [
                 Text('out of ', style: SmartGoalTextStyle.cardSubTitle),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 Text('${item.amount}',
                     style: SmartGoalTextStyle.getCardTitle(
                         color: ColorConstant.black)),

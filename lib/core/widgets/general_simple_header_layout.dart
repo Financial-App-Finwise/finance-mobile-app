@@ -3,7 +3,7 @@ import 'package:finwise/core/widgets/top_back_arrow.dart';
 import 'package:flutter/material.dart';
 
 class GeneralSimpleHeaderLayout extends StatefulWidget {
-  GeneralSimpleHeaderLayout({
+  const GeneralSimpleHeaderLayout({
     super.key,
     this.title = '',
     this.description = '',
@@ -37,15 +37,15 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
               // header
               Container(
                 padding:
-                    EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
+                    const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
                 decoration: BoxDecoration(
                   gradient: widget.gradient,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TopBackArrow(),
-                    SizedBox(height: 12),
+                    const TopBackArrow(),
+                    const SizedBox(height: 12),
                     Text(
                       widget.title,
                       style: const TextStyle(
@@ -70,9 +70,9 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
               Expanded(
                 child: Container(
                   alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   color: ColorConstant.backgroundColor,
-                  child: widget.child ?? SizedBox(),
+                  child: widget.child ?? const SizedBox(),
                 ),
               ),
             ],

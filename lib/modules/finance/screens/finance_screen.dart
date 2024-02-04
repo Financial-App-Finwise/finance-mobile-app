@@ -5,7 +5,6 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:finwise/core/widgets/duration_drop_down.dart';
 import 'package:finwise/core/widgets/general_filter_bar.dart';
-import 'package:finwise/core/widgets/general_header_layout.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/income_expense_pie_chart.dart';
@@ -36,7 +35,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
       title: 'My Finance',
       description:
           'Effortlessly manage your finance with a powerful simple tool in FinWise',
-      gradient: LinearGradient(
+      gradient: const LinearGradient(
         colors: [
           ColorConstant.secondary,
           ColorConstant.primary,
@@ -45,7 +44,8 @@ class _FinanceScreenState extends State<FinanceScreen> {
       ),
       centerContent: _buildCenterContent(),
       mainContent: _buildContent(),
-      centerContentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      centerContentPadding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
     // return GeneralHeaderLayout(
     //   title: 'My Finance',
@@ -70,12 +70,12 @@ class _FinanceScreenState extends State<FinanceScreen> {
         Row(
           children: [
             IconConstant.piggyBank,
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Total Balance', style: GeneralTextStyle.getSize(20)),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   '\$9645.50',
                   style:
@@ -88,7 +88,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
             ),
           ],
         ),
-        Divider(color: ColorConstant.divider),
+        const Divider(color: ColorConstant.divider),
         // SizedBox(height: 10),
         TextButton(
           onPressed: () {
@@ -97,7 +97,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
           },
           style: ButtonStyle(
             padding: MaterialStateProperty.all(
-              EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             ),
           ),
           child: Text(
@@ -113,29 +113,25 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Widget _buildContent() {
-    return Container(
-      child: RefreshIndicator(
-        onRefresh: () async {
-          
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ListView(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  SizedBox(height: 20),
-                  _buildBarChart(),
-                  SizedBox(height: 12),
-                  _buildIncomeExpense(),
-                  SizedBox(height: 16),
-                  _buildIncomeExpenseFilter(),
-                  SizedBox(height: 48),
-                ],
-              ),
-            ],
-          ),
+    return RefreshIndicator(
+      onRefresh: () async {},
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                const SizedBox(height: 20),
+                _buildBarChart(),
+                const SizedBox(height: 12),
+                _buildIncomeExpense(),
+                const SizedBox(height: 16),
+                _buildIncomeExpenseFilter(),
+                const SizedBox(height: 48),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -172,7 +168,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
     Color color = Colors.black,
   }) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -193,25 +189,25 @@ class _FinanceScreenState extends State<FinanceScreen> {
     );
   }
 
-  int _incomeIndex = 0;
+  // int _incomeIndex = 0;
 
   Widget _buildIncomeExpenseFilter() {
     return Column(
       children: [
         GeneralFilterBar(
-          filterTitles: ['Income', 'Expense'],
+          filterTitles: const ['Income', 'Expense'],
           children: [
             Column(
               children: [
                 _buildIncomeExpensePieChart(),
-                SizedBox(),
+                const SizedBox(),
                 _buildTransactionItems(),
               ],
             ),
             Column(
               children: [
                 _buildIncomeExpensePieChart(isIncome: false),
-                SizedBox(),
+                const SizedBox(),
                 _buildTransactionItems(isIncome: false),
               ],
             ),
@@ -232,11 +228,11 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return RoundedContainer(
       child: Column(
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [SizedBox(), DurationDropDown()],
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           IncomeExpensePieChart(
             data: getIncomeExpenseList(json),
             color: isIncome ? ColorConstant.income : ColorConstant.expense,
@@ -249,7 +245,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
   Widget _buildTransactionItems({bool isIncome = true}) {
     return Column(
       children: [
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -262,9 +258,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
             ),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _buildTransactionItemsDays(isIncome: isIncome),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildTransactionItemsDays(day: 'Yesterday', isIncome: isIncome),
       ],
     );
@@ -278,13 +274,13 @@ class _FinanceScreenState extends State<FinanceScreen> {
       children: [
         Row(children: [
           Text(day ?? 'Today', style: GeneralTextStyle.getSize(14)),
-          SizedBox(width: 12),
-          Expanded(child: Divider(color: ColorConstant.divider))
+          const SizedBox(width: 12),
+          const Expanded(child: Divider(color: ColorConstant.divider))
         ]),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         RoundedContainer(
           child: ListView.separated(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: 2,
             itemBuilder: ((context, index) {
@@ -296,7 +292,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
               );
             }),
             separatorBuilder: (context, index) {
-              return Divider(color: ColorConstant.divider);
+              return const Divider(color: ColorConstant.divider);
             },
           ),
         ),

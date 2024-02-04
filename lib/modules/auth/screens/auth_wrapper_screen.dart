@@ -13,18 +13,18 @@ class AuthWrapperScreen extends StatefulWidget {
 class _AuthWrapperScreenState extends State<AuthWrapperScreen> {
   @override
   Widget build(BuildContext context) {
-    print('--> START: build auth screen');
+    debugPrint('--> START: build auth screen');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: _buildBody(),
     );
   }
 
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   Widget _buildBody() {
     return PageView(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,
       children: [
         SignInScreen(changeScreen: () {

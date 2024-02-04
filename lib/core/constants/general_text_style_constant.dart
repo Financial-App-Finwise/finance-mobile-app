@@ -10,7 +10,7 @@ class GeneralTextStyle {
         color: color ?? ColorConstant.mainText,
       );
 
-  static TextStyle getHeader() => TextStyle(
+  static TextStyle getHeader() => const TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 20,
     fontWeight: FontWeight.w600,

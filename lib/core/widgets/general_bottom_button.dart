@@ -1,10 +1,9 @@
-import 'package:finwise/core/constants/auth_text_style_constant.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/general_text_style_constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneralBottomButton extends StatefulWidget {
-  GeneralBottomButton({
+  const GeneralBottomButton({
     super.key,
     this.buttonLabel = 'Button',
     this.onButtonTap,
@@ -28,7 +27,7 @@ class _GeneralBottomButtonState extends State<GeneralBottomButton> {
       onPressed: widget.onButtonTap,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(ColorConstant.secondary),
-        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 16)),
+        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 16)),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

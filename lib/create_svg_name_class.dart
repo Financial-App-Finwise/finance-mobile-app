@@ -15,7 +15,7 @@ void main() {
   List<String> filenames = files.map((e) => e.uri.pathSegments.last).toList();
 
   List<String> fieldnames = filenames
-      .map((e) => "static String ${_snakeToCamel(e).split('.')[0]} = '${e}';")
+      .map((e) => "static const String ${_snakeToCamel(e).split('.')[0]} = '$e';")
       .toList();
 
   fieldnames.sort((a, b) => a.compareTo(b));

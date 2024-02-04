@@ -36,7 +36,7 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     return Container(
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
             ColorConstant.smartGoalLight,

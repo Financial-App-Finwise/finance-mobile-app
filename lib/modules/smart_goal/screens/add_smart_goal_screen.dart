@@ -1,7 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/general_text_style_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
@@ -22,7 +21,7 @@ class AddSmartGoalScreen extends StatefulWidget {
 
 class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
   int _currentWidgetIndex = 0;
-  double _progressBar = 0.5;
+  final double _progressBar = 0.5;
 
   @override
   void initState() {
@@ -45,7 +44,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 _titleContent(),
                 const SizedBox(height: 10),
                 _mainContentDescription(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Expanded(child: _buildForm()),
               ],
             ),
@@ -97,7 +96,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Add Smart Goal',
           style: TextStyle(
             fontWeight: FontWeight.w600,
@@ -106,9 +105,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
             color: ColorConstant.black,
           ),
         ),
-        const SizedBox(
-          height: 32,
-        ),
+        const SizedBox(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -116,15 +113,13 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
               width: 72,
               height: 72,
               child: IconHelper.getGradientSVG(SVGName.smartGoal,
-                  gradient: LinearGradient(colors: [
+                  gradient: const LinearGradient(colors: [
                     ColorConstant.smartGoalLight,
                     ColorConstant.smartGoalThick,
                   ])),
             ),
-            const SizedBox(
-              width: 12,
-            ),
-            Expanded(
+            const SizedBox(width: 12),
+            const Expanded(
               child: Text(
                 'Setup and track your smart goal to achieve your saving and stress free.',
                 style: TextStyle(
@@ -138,10 +133,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 12,
-        ),
-        Text(
+        const SizedBox(height: 12),
+        const Text(
           'Input below information',
           style: TextStyle(
             fontWeight: FontWeight.w600,
@@ -154,10 +147,10 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     );
   }
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
-  TextEditingController _currentSaveController = TextEditingController();
-  TextEditingController _contributionController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _currentSaveController = TextEditingController();
+  final TextEditingController _contributionController = TextEditingController();
 
   bool _setDue = true;
 
@@ -184,7 +177,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                     label: 'Name you goal',
                     controller: _nameController,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
@@ -193,7 +186,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                         controller: _amountController,
                         isNumber: true,
                       )),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Expanded(
                           child: _buildFormItem(
                         label: 'Saved so far',
@@ -202,17 +195,17 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                       )),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
                         child: _buildFormItem(
-                            color: Color(0xffD3D5E4),
+                            color: const Color(0xffD3D5E4),
                             label: 'Monthly Contribution',
                             controller: _contributionController,
                             readOnly: true),
                       ),
-                      Expanded(child: SizedBox()),
+                      const Expanded(child: SizedBox()),
                     ],
                   ),
                 ],
@@ -236,7 +229,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     Color color = Colors.white,
   }) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(12),
@@ -258,7 +251,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 : null,
             style: GeneralTextStyle.getSize(14),
             decoration: InputDecoration(
-              prefix: isNumber ? Text('\$') : SizedBox(),
+              prefix: isNumber ? const Text('\$') : const SizedBox(),
               isDense: true,
               border: InputBorder.none,
               // hintText: '0',
@@ -288,7 +281,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                       value: true,
                       groupValue: _setDue,
                       onChanged: (value) => setState(() => _setDue = true),
-                      child: Text('Set'),
+                      child: const Text('Set'),
                     ),
                   ),
                   Expanded(
@@ -296,18 +289,18 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                       value: false,
                       groupValue: _setDue,
                       onChanged: (value) => setState(() => _setDue = false),
-                      child: Text("Don't Set"),
+                      child: const Text("Don't Set"),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Visibility(
                 visible: _setDue,
                 child: Row(
                   children: [
                     Expanded(child: _buildDropDown()),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(child: _buildDropDown()),
                   ],
                 ),
@@ -320,8 +313,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                       label: 'Monthly Contribution',
                       isNumber: true,
                     ),
-                    SizedBox(height: 20),
-                    SmartGoalPrediction(),
+                    const SizedBox(height: 20),
+                    const SmartGoalPrediction(),
                   ],
                 ),
               ),
@@ -336,7 +329,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 buttonLabel: 'Back',
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Expanded(
               child: GeneralBottomButton(
                 onButtonTap: () {
@@ -377,11 +370,11 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 12,
               horizontal: 20,
             )),
-        items: [],
+        items: const [],
         onChanged: (value) {},
       ),
     );

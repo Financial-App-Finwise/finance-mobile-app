@@ -21,7 +21,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       title: 'All transactions',
       description:
           'Explore a detailed breakdown of your financial transactions.',
-      gradient: LinearGradient(
+      gradient: const LinearGradient(
         colors: [
           ColorConstant.secondary,
           ColorConstant.primary,
@@ -31,7 +31,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(child: _buildRectangle('All', isFocused: true)),
@@ -39,9 +39,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 Expanded(child: _buildRectangle('Expense')),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             GeneralFilterBar(
-              filterTitles: [
+              filterTitles: const [
                 'All',
                 'Recently',
                 'Earliest',
@@ -50,13 +50,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ],
               children: [
                 _buildFilteredTransactions(),
-                SizedBox(),
-                SizedBox(),
-                SizedBox(),
-                SizedBox(),
+                const SizedBox(),
+                const SizedBox(),
+                const SizedBox(),
+                const SizedBox(),
               ],
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
           ],
         ),
       ),
@@ -70,7 +70,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         padding: MaterialStateProperty.all(EdgeInsets.zero),
       ),
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           border: Border(
@@ -91,7 +91,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   Widget _buildFilteredTransactions() {
     return ListView.separated(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: 3,
       itemBuilder: (context, index) {
@@ -103,7 +103,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         );
       },
       separatorBuilder: (context, index) {
-        return SizedBox(height: 8);
+        return const SizedBox(height: 8);
       },
     );
   }
@@ -140,13 +140,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
       children: [
         Row(children: [
           Text(day ?? 'Today', style: GeneralTextStyle.getSize(14)),
-          SizedBox(width: 12),
-          Expanded(child: Divider(color: ColorConstant.divider))
+          const SizedBox(width: 12),
+          const Expanded(child: Divider(color: ColorConstant.divider))
         ]),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         RoundedContainer(
           child: ListView.separated(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: 2,
             itemBuilder: ((context, index) {
@@ -158,7 +158,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               );
             }),
             separatorBuilder: (context, index) {
-              return Divider(color: ColorConstant.divider);
+              return const Divider(color: ColorConstant.divider);
             },
           ),
         ),

@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:flutter/material.dart';
 
 class ViewMoreTextButton extends StatefulWidget {
-  ViewMoreTextButton({
+  const ViewMoreTextButton({
     super.key,
     required this.onPressed,
   });
@@ -21,10 +21,10 @@ class _ViewMoreTextButtonState extends State<ViewMoreTextButton> {
       onPressed: widget.onPressed,
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
-          EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+          const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
         ),
       ),
-      child: Row(
+      child: const Row(
         children: [
           Text('View More', style: HomeTextStyleConstant.headerBoldLink),
           SizedBox(width: 6),

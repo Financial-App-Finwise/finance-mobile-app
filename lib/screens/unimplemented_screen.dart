@@ -1,7 +1,6 @@
 import 'package:finwise/core/constants/auth_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class UnimplementedScreen extends StatelessWidget {
   const UnimplementedScreen({super.key});
@@ -19,7 +18,7 @@ class UnimplementedScreen extends StatelessWidget {
               alignment: Alignment.center,
               width: 190,
               height: 190,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
@@ -31,10 +30,10 @@ class UnimplementedScreen extends StatelessWidget {
                   )),
               child: IconConstant.getBottomUser(),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Text('Just a moment', style: AuthScreenTextStyle.loadingTitle),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'This function has not been developed yet.',
               textAlign: TextAlign.center,
               style: AuthScreenTextStyle.formLabel,

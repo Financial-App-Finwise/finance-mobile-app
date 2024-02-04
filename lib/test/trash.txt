@@ -1,0 +1,107 @@
+// List items = [
+    //   'This Week',
+    //   'This Month',
+    //   'Last Month',
+    //   'Last 3 Months',
+    //   'Last 6 Months'
+    // ];
+    // return Center(
+    //   child: DropdownButton2(
+    //     items: items
+    //         .map((e) => DropdownMenuItem(
+    //               value: e,
+    //               child: Text(e),
+    //             ))
+    //         .toList(),
+    //     onChanged: (_) {},
+    //     value: 'This Week',
+    //     style: HomeTextStyleConstant.small,
+    //     isDense: true,
+    //     underline: SizedBox(),
+    //     buttonStyleData: ButtonStyleData(
+    //       height: 36,
+    //       // width: 100,
+    //       // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(8),
+    //         border: Border.fromBorderSide(BorderSide(color: Color(0xffD3D5E4))),
+    //       ),
+    //     ),
+    //     dropdownStyleData: DropdownStyleData(
+    //       maxHeight: 150,
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(8),
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+    return TextButton(
+      // onPressed: onPressed,
+      onPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => TestDropdown2()));
+      },
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: const BorderSide(color: Color(0xffD3D5E4)),
+          ),
+        ),
+      ),
+      child: Row(children: [
+        Text(text, style: HomeTextStyleConstant.small),
+        const Icon(Icons.arrow_drop_down, color: Color(0xff292D32)),
+      ]),
+    );
+
+      Widget _buildDurationButton({
+    VoidCallback? onPressed,
+    String text = 'Button',
+  }) {
+    return DurationDropDown();
+  }
+
+    Widget _buildCenterContent() {
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        Row(
+          children: [
+            IconConstant.piggyBank,
+            SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Total Balance', style: GeneralTextStyle.getSize(20)),
+                SizedBox(height: 2),
+                Text(
+                  '\$9645.50',
+                  style:
+                      GeneralTextStyle.getSize(32, color: ColorConstant.primary)
+                          .copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Divider(color: ColorConstant.divider),
+        // SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            // Navigator.of(context).push(
+            //     MaterialPageRoute(builder: (context) => TestStickyContainer()));
+          },
+          child: Text(
+            'Update your net worth',
+            style: GeneralTextStyle.getSize(16, color: ColorConstant.primary),
+          ),
+        ),
+      ],
+    );
+  }

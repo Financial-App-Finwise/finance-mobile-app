@@ -3,41 +3,41 @@ import 'package:finwise/core/constants/font_constant.dart';
 import 'package:flutter/material.dart';
 
 abstract class HomeTextStyleConstant {
-  static TextStyle welcome = TextStyle(
+  static const TextStyle welcome = TextStyle(
     color: ColorConstant.mainText,
     fontFamily: FontConstant.poppinsRegular,
     fontWeight: FontWeight.w400,
   );
 
-  static TextStyle profileName = TextStyle(
+  static const TextStyle profileName = TextStyle(
     fontSize: 20,
     color: ColorConstant.mainText,
     fontFamily: FontConstant.poppinsRegular,
     fontWeight: FontWeight.w500,
   );
 
-  static TextStyle header = TextStyle(
+  static const TextStyle header = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: ColorConstant.black,
   );
 
-  static TextStyle headerBoldLink = TextStyle(
+  static const TextStyle headerBoldLink = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: ColorConstant.primary,
   );
 
-  static TextStyle medium = TextStyle(
+  static const TextStyle medium = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: ColorConstant.mainText,
   );
 
-  static TextStyle small = TextStyle(
+  static const TextStyle small = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 12,
     fontWeight: FontWeight.w600,
@@ -51,70 +51,70 @@ abstract class HomeTextStyleConstant {
         color: color,
       );
 
-  static TextStyle barChartBottomTitle = TextStyle(
+  static const TextStyle barChartBottomTitle = TextStyle(
     fontFamily: FontConstant.interRegular,
     fontSize: 8,
     fontWeight: FontWeight.w400,
     color: Color(0xff4F4F4F),
   );
 
-  static TextStyle barChartLeftTitle = TextStyle(
+  static const TextStyle barChartLeftTitle = TextStyle(
     fontFamily: FontConstant.interRegular,
     fontSize: 9,
     fontWeight: FontWeight.w400,
     color: Color(0xff4F4F4F),
   );
 
-  static TextStyle barChartLegend = TextStyle(
+  static const TextStyle barChartLegend = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
 
-  static TextStyle pieChartLegendSmall = TextStyle(
+  static const TextStyle pieChartLegendSmall = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 12,
     fontWeight: FontWeight.w500,
     color: ColorConstant.mainText,
   );
 
-  static TextStyle pieChartLegendBig = TextStyle(
+  static const TextStyle pieChartLegendBig = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: Colors.black,
   );
 
-  static TextStyle budgetCardTitle = TextStyle(
+  static const TextStyle budgetCardTitle = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: Colors.black,
   );
 
-  static TextStyle smallAddButton = TextStyle(
+  static const TextStyle smallAddButton = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
 
-  static TextStyle transactionItemTitle = TextStyle(
+  static const TextStyle transactionItemTitle = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: ColorConstant.black,
   );
 
-  static TextStyle transactionItemSubtitle = TextStyle(
+  static const TextStyle transactionItemSubtitle = TextStyle(
     fontFamily: FontConstant.balooThambi2Medium,
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: ColorConstant.thin,
   );
 
-  static TextStyle getTransactionItemSuffix({Color color = Colors.black}) =>
+  static  TextStyle getTransactionItemSuffix({Color color = Colors.black}) =>
       TextStyle(
         fontFamily: FontConstant.balooThambi2Medium,
         fontSize: 20,

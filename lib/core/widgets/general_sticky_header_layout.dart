@@ -1,10 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/general_text_style_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneralStickyHeaderLayout extends StatefulWidget {
-  GeneralStickyHeaderLayout({
+  const GeneralStickyHeaderLayout({
     super.key,
     this.title = '',
     this.description = '',
@@ -33,7 +31,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
   double centerContainerHeight = 0;
   double headerContainerHeight = 0;
   double expandedHeight = 0;
-  double _depth = 32;
+  final double _depth = 32;
 
   @override
   void initState() {
@@ -66,7 +64,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
       body: Container(
         decoration: BoxDecoration(
             gradient: widget.gradient ??
-                LinearGradient(
+                const LinearGradient(
                   colors: [
                     Colors.blueAccent,
                     Colors.greenAccent,
@@ -85,7 +83,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
 
   Widget _buildNestedScrollView() {
     return NestedScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           SliverAppBar(
@@ -104,7 +102,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   gradient: widget.gradient ??
-                      LinearGradient(
+                      const LinearGradient(
                         colors: [
                           Colors.blueAccent,
                           Colors.greenAccent,
@@ -138,7 +136,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
                         ),
                         decoration: BoxDecoration(
                           gradient: widget.gradient ??
-                              LinearGradient(
+                              const LinearGradient(
                                 colors: [
                                   Colors.blueAccent,
                                   Colors.greenAccent,
@@ -183,12 +181,12 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
 
                     // center overview container
                     Container(
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         left: 16,
                         right: 16,
                         // bottom: 20,
                       ),
-                      padding: widget.centerContentPadding ?? EdgeInsets.symmetric(
+                      padding: widget.centerContentPadding ?? const EdgeInsets.symmetric(
                         vertical: 10,
                         horizontal: 12,
                       ),
@@ -208,7 +206,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
         ];
       },
       body: Container(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 16,
           right: 16,
           // top: 16,
@@ -218,46 +216,6 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
     );
   }
 
-  Widget _buildCenterContent() {
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        Row(
-          children: [
-            IconConstant.piggyBank,
-            SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Total Balance', style: GeneralTextStyle.getSize(20)),
-                SizedBox(height: 2),
-                Text(
-                  '\$9645.50',
-                  style:
-                      GeneralTextStyle.getSize(32, color: ColorConstant.primary)
-                          .copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        Divider(color: ColorConstant.divider),
-        // SizedBox(height: 10),
-        TextButton(
-          onPressed: () {
-            // Navigator.of(context).push(
-            //     MaterialPageRoute(builder: (context) => TestStickyContainer()));
-          },
-          child: Text(
-            'Update your net worth',
-            style: GeneralTextStyle.getSize(16, color: ColorConstant.primary),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildBackArrow() {
     return SizedBox(

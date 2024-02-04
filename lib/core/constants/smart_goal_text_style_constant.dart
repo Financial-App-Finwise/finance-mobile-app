@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class SmartGoalTextStyle {
   static TextStyle totalNumber =
-      GeneralTextStyle.getSize(32, color: Color(0xff35D2A5));
+      GeneralTextStyle.getSize(32, color: const Color(0xff35D2A5));
 
   static TextStyle totalTitle = GeneralTextStyle.getSize(20);
 

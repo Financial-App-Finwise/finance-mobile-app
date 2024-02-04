@@ -28,9 +28,7 @@ class _DurationDropDownState extends State<DurationDropDown> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton2(
           onChanged: (value) {
-            setState(() {
-              _selectedValue = value;
-            });
+            setState(() => _selectedValue = value);
           },
           value: _selectedValue,
           items: _getItem(),
@@ -41,11 +39,11 @@ class _DurationDropDownState extends State<DurationDropDown> {
                 MaterialStateProperty.all(Colors.black.withOpacity(0.5)),
             height: 36,
             // width: 128,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border:
-                  Border.fromBorderSide(BorderSide(color: Color(0xffD3D5E4))),
+              border: const Border.fromBorderSide(
+                  BorderSide(color: Color(0xffD3D5E4))),
             ),
           ),
           dropdownStyleData: DropdownStyleData(
@@ -55,10 +53,10 @@ class _DurationDropDownState extends State<DurationDropDown> {
             ),
           ),
           menuItemStyleData: MenuItemStyleData(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             customHeights: _getCustomHeights(),
           ),
-          iconStyleData: IconStyleData(
+          iconStyleData: const IconStyleData(
             openMenuIcon: Icon(Icons.arrow_drop_up),
             iconSize: 20,
           ),
@@ -73,8 +71,8 @@ class _DurationDropDownState extends State<DurationDropDown> {
       menuItems.addAll(
         [
           DropdownMenuItem(
-            child: Text(item),
             value: item,
+            child: Text(item),
           ),
           if (item != _items.last)
             DropdownMenuItem(

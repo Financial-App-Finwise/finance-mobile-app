@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class GeneralHeaderLayout extends StatefulWidget {
-  GeneralHeaderLayout({
+  const GeneralHeaderLayout({
     super.key,
     this.title = '',
     this.description = '',
@@ -48,7 +48,7 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
       body: Container(
         decoration: BoxDecoration(
           gradient: widget.gradient ??
-              LinearGradient(
+              const LinearGradient(
                 colors: [
                   Colors.blueAccent,
                   Colors.greenAccent,
@@ -59,7 +59,7 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
         child: SafeArea(
           child: Container(
             alignment: Alignment.topLeft,
-            color: Color(0xffF5F7F8),
+            color: const Color(0xffF5F7F8),
             child: _buildHeaderLayout(),
           ),
         ),
@@ -67,7 +67,7 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
     );
   }
 
-  double _depth = 32;
+  final double _depth = 32;
 
   Widget _buildHeaderLayout() {
     return Container(
@@ -91,7 +91,7 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         gradient: widget.gradient ??
-                            LinearGradient(
+                            const LinearGradient(
                               colors: [
                                 Colors.blueAccent,
                                 Colors.greenAccent,
@@ -114,7 +114,7 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
                           right: 16,
                         ),
                         alignment: Alignment.topLeft,
-                        color: Color(0xffF5F7F8),
+                        color: const Color(0xffF5F7F8),
                         child: widget.mainContent,
                       ),
                     ),
@@ -130,8 +130,8 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
                   child: Container(
                     alignment: Alignment.center,
                     key: _centerContainerKey,
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    padding: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
                       vertical: 16,
                       horizontal: 20,
                     ),
@@ -139,7 +139,7 @@ class _GeneralHeaderLayoutState extends State<GeneralHeaderLayout> {
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
                     ),
-                    child: widget.centerContent ?? SizedBox(),
+                    child: widget.centerContent ?? const SizedBox(),
                   ),
                 ),
               ],

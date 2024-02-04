@@ -19,22 +19,18 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
   }
 
   Widget _buildSpendingIncome() {
-    return Container(
-      // color: Colors.green[100],
-      alignment: Alignment.topLeft,
-      child: _roundedContainer(
-        child: Column(
-          children: [
-            Row(children: [
-              Expanded(child: SizedBox()),
-              DurationDropDown(),
-            ]),
-            SizedBox(height: 24),
-            _buildBarChart(),
-            SizedBox(height: 24),
-            _buildBarChartLegend(),
-          ],
-        ),
+    return _roundedContainer(
+      child: Column(
+        children: [
+          const Row(children: [
+            Expanded(child: SizedBox()),
+            DurationDropDown(),
+          ]),
+          const SizedBox(height: 24),
+          _buildBarChart(),
+          const SizedBox(height: 24),
+          _buildBarChartLegend(),
+        ],
       ),
     );
   }
@@ -46,19 +42,19 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: child,
     );
   }
 
   Widget _buildBarChart() {
-    return Container(
+    return SizedBox(
       height: 200,
       child: BarChart(
         BarChartData(
           titlesData: FlTitlesData(
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 reservedSize: 32,
@@ -80,14 +76,14 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
           ),
           gridData: FlGridData(
             getDrawingVerticalLine: (value) {
-              return FlLine(
+              return const FlLine(
                 color: Color(0xfff2f2f2),
                 dashArray: [4],
                 strokeWidth: 1,
               );
             },
             getDrawingHorizontalLine: (value) {
-              return FlLine(
+              return const FlLine(
                 color: Color(0xfff2f2f2),
                 dashArray: [4],
                 strokeWidth: 1,
@@ -97,7 +93,7 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
             horizontalInterval: 1000,
           ),
           borderData: FlBorderData(
-            border: DashedBorder.fromBorderSide(
+            border: const DashedBorder.fromBorderSide(
               side: BorderSide(color: Color(0xfff2f2f2)),
               dashLength: 4,
             ),
@@ -140,17 +136,17 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
   Widget _barChartBottomTitles(double value, TitleMeta meta) {
     final titles = ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'];
     return SideTitleWidget(
+      axisSide: meta.axisSide,
       child: Text(titles[value.toInt()],
           style: HomeTextStyleConstant.barChartBottomTitle),
-      axisSide: meta.axisSide,
     );
   }
 
   Widget _barChartleftTitles(double value, TitleMeta meta) {
     return SideTitleWidget(
+      axisSide: meta.axisSide,
       child: Text('\$${value.toInt()}',
           style: HomeTextStyleConstant.barChartLeftTitle),
-      axisSide: meta.axisSide,
     );
   }
 
@@ -175,32 +171,10 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
             color: color,
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Text(text, style: HomeTextStyleConstant.barChartLegend),
       ],
     );
   }
 
-  Widget _buildDurationButton({
-    VoidCallback? onPressed,
-    String text = 'Button',
-  }) {
-    return TextButton(
-      onPressed: onPressed,
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: const BorderSide(color: Color(0xffD3D5E4)),
-          ),
-        ),
-      ),
-      child: Row(children: [
-        Text(text, style: HomeTextStyleConstant.small),
-        const Icon(Icons.arrow_drop_down, color: Color(0xff292D32)),
-      ]),
-    );
-  }
 }

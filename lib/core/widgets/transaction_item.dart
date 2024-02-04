@@ -6,7 +6,7 @@ import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 
 class TransactionItem extends StatefulWidget {
-  TransactionItem({
+  const TransactionItem({
     super.key,
     this.color,
     this.icon,
@@ -43,7 +43,7 @@ class _TransactionItemState extends State<TransactionItem> {
         ),
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 6),
         alignment: Alignment.center,
         child: Row(
           children: [
@@ -54,8 +54,8 @@ class _TransactionItemState extends State<TransactionItem> {
                     color: widget.color ?? ColorConstant.income,
                     icon: widget.icon,
                   ),
-                  SizedBox(width: 12),
-                  Column(
+                  const SizedBox(width: 12),
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Transportation',
@@ -75,8 +75,8 @@ class _TransactionItemState extends State<TransactionItem> {
                   style: HomeTextStyleConstant.getTransactionItemSuffix(
                       color: widget.color ?? ColorConstant.income),
                 ),
-                SizedBox(width: 12),
-                IconConstant.getArrowRight(color: Color(0xff292D32)),
+                const SizedBox(width: 12),
+                IconConstant.getArrowRight(color: const Color(0xff292D32)),
               ],
             ),
           ],

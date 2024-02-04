@@ -16,8 +16,8 @@ class SmartGoalPrediction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFECFDFF),
+      decoration: const BoxDecoration(
+        color: Color(0xFFECFDFF),
         border: Border(
           left: BorderSide(
             color: ColorConstant.primary,
@@ -31,7 +31,7 @@ class SmartGoalPrediction extends StatelessWidget {
           const SizedBox(
             width: 12,
           ),
-          Expanded(
+          const Expanded(
             child: Text(
               'You will achieve this goal by May 2023.',
               style: TextStyle(

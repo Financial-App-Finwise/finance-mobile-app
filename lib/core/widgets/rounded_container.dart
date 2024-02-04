@@ -21,8 +21,8 @@ class _RoundedContainerState extends State<RoundedContainer> {
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
       ),
-      padding: EdgeInsets.all(16),
-      child: widget.child ?? SizedBox(),
+      padding: const EdgeInsets.all(16),
+      child: widget.child ?? const SizedBox(),
     );
   }
 }

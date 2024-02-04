@@ -3,7 +3,6 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart';
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
-import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:finwise/route.dart';
@@ -12,12 +11,12 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class SignInScreen extends StatefulWidget {
-  SignInScreen({
+  const SignInScreen({
     super.key,
     this.changeScreen,
   });
 
-  void Function()? changeScreen;
+  final void Function()? changeScreen;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -44,7 +43,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       return authStore.isLoading
-          ? SignLoadingWidget()
+          ? const SignLoadingWidget()
           : AuthScreenLayout(
               // appBar: ,
               title: 'Welcome Back',
@@ -72,32 +71,30 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
 
   Widget _buildTextFields() {
-    return Container(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextLabel(text: 'Email'),
-            FormWidget(
-              hintText: 'Email',
-              controller: _emailController,
-              prefixIcon:
-                  Icon(Icons.email_outlined, color: ColorConstant.mainText),
-              onChanged: (value) => setState(() => _isFormFilled),
-            ),
-            const SizedBox(height: 24),
-            _buildTextLabel(text: 'Password'),
-            FormWidget(
-              obscureText: true,
-              hintText: 'Password',
-              prefixIcon:
-                  Icon(Icons.lock_outline, color: ColorConstant.mainText),
-              controller: _passwordController,
-              onChanged: (value) => setState(() => _isFormFilled),
-            ),
-          ],
-        ),
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTextLabel(text: 'Email'),
+          FormWidget(
+            hintText: 'Email',
+            controller: _emailController,
+            prefixIcon:
+                const Icon(Icons.email_outlined, color: ColorConstant.mainText),
+            onChanged: (value) => setState(() => _isFormFilled),
+          ),
+          const SizedBox(height: 24),
+          _buildTextLabel(text: 'Password'),
+          FormWidget(
+            obscureText: true,
+            hintText: 'Password',
+            prefixIcon:
+                const Icon(Icons.lock_outline, color: ColorConstant.mainText),
+            controller: _passwordController,
+            onChanged: (value) => setState(() => _isFormFilled),
+          ),
+        ],
       ),
     );
   }

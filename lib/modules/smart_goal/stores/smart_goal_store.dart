@@ -4,11 +4,11 @@ import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 part 'smart_goal_store.g.dart';
 
 class SmartGoalStore = _SmartGoalStoreBase with _$SmartGoalStore;
+
 abstract class _SmartGoalStoreBase with Store {
   late AuthStore authStore;
 
@@ -24,7 +24,8 @@ abstract class _SmartGoalStoreBase with Store {
       smartGoal.data.where((data) => data.currentSave < data.amount).toList());
 
   @computed
-  ObservableList<SmartGoalData> get achieved => ObservableList.of(smartGoal.data.where((data) => data.currentSave == data.amount).toList());
+  ObservableList<SmartGoalData> get achieved => ObservableList.of(
+      smartGoal.data.where((data) => data.currentSave == data.amount).toList());
 
   @observable
   LoadingStatus status = LoadingStatus.none;
@@ -59,9 +60,7 @@ abstract class _SmartGoalStoreBase with Store {
     try {
       debugPrint('${smartGoalData.toJson()}');
     } catch (e) {
-
-    } finally {
-      return success;
-    }
+    } finally {}
+    return success;
   }
 }

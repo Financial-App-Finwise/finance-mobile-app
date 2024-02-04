@@ -32,7 +32,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                 child: Container(
                   alignment: Alignment.topLeft,
                   color: ColorConstant.backgroundColor,
-                  child: widget.mainContent ?? SizedBox(),
+                  child: widget.mainContent ?? const SizedBox(),
                 ),
               ),
             ],
@@ -184,7 +184,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                 const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   'Are you sure you want to delete this SMART gaol?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -198,7 +198,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                 const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   'You will delete every transaction added to this goal.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -229,7 +229,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                             borderRadius: BorderRadius.circular(12),
                             color: const Color(0xFFE9EAF1),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Cancel',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -259,7 +259,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                             borderRadius: BorderRadius.circular(12),
                             color: ColorConstant.expense,
                           ),
-                          child: Text(
+                          child: const Text(
                             'Delete',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,

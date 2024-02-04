@@ -1,47 +1,46 @@
 import 'package:flutter/material.dart';
 
-class ColorConstant {
+abstract class ColorConstant {
   // main color
-  static Color primary = const Color(0xff0B8AAF);
-  static Color secondary = const Color(0xff0ABDE3);
-  static Color backgroundColor = const Color(0xffF5F6F7);
+  static const Color primary = Color(0xff0B8AAF);
+  static const Color secondary = Color(0xff0ABDE3);
+  static const Color backgroundColor = Color(0xffF5F6F7);
 
   // finance
-  static Color total = primary;
-  static Color totalIcon = secondary;
-  static Color income = const Color(0xff10AC84);
-  static Color incomeIcon = const Color(0xff10AC84);
-  static Color expense = const Color(0xffEE5353);
-  static Color expenseIcon = const Color(0xffEE5353);
-  static Color overbudget = const Color(0xffEF6007);
-  static Color overbudgetIcon = const Color(0xffFE7B11);
+  static const Color total = primary;
+  static const Color totalIcon = secondary;
+  static const Color income = Color(0xff10AC84);
+  static const Color incomeIcon = Color(0xff10AC84);
+  static const Color expense = Color(0xffEE5353);
+  static const Color expenseIcon = Color(0xffEE5353);
+  static const Color overbudget = Color(0xffEF6007);
+  static const Color overbudgetIcon = Color(0xffFE7B11);
 
   // main features
   // static Color
-  static Color bill = const Color(0xffFE7B11);
+  static const Color bill = Color(0xffFE7B11);
 
   // text
-  static Color black = const Color(0xff191B29);
-  static Color lightBlack = const Color(0xff333652);
-  static Color mainDark = const Color(0xff165a74);
-  static Color white = const Color(0xffffffff);
-  static Color mainText = const Color(0xff333652);
-  static Color thin = const Color(0xff656B9F);
+  static const Color black = Color(0xff191B29);
+  static const Color lightBlack = Color(0xff333652);
+  static const Color mainDark = Color(0xff165a74);
+  static const Color white = Color(0xffffffff);
+  static const Color mainText = Color(0xff333652);
+  static const Color thin = Color(0xff656B9F);
 
   // sign up
-  static Color boldLink = const Color(0xff165A74);
+  static const Color boldLink = Color(0xff165A74);
 
   // pie chart
-  static Color topSpending = const Color(0xffB71E1E);
+  static const Color topSpending = Color(0xffB71E1E);
 
   // divider
-  static Color divider = const Color(0xffF2F2F2);
+  static const Color divider = Color(0xffF2F2F2);
 
   // smart goal
-  static Color smartGoalLight = const Color(0xff6FE6C0);
-  static Color smartGoalThick = const Color(0xff10AC84);
+  static const Color smartGoalLight = Color(0xff6FE6C0);
+  static const Color smartGoalThick = Color(0xff10AC84);
 
   // no name
-
-  static Color colorE9EAF1 = const Color(0xffE9EAF1);
+  static const Color colorE9EAF1 = Color(0xffE9EAF1);
 }

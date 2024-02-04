@@ -29,7 +29,7 @@ class FormWidget extends StatefulWidget {
 }
 
 class _FormWidgetState extends State<FormWidget> {
-  late bool _isPassword = widget.obscureText;
+  late final bool _isPassword = widget.obscureText;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,7 +63,7 @@ class _FormWidgetState extends State<FormWidget> {
                         size: 10,
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
           border: InputBorder.none,
           contentPadding: EdgeInsets.zero,
         ),

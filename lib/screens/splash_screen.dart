@@ -17,14 +17,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     debugPrint('--> START: splash screen initState');
-    Future.delayed(Duration(seconds: 1), () async {
-      await context.read<AuthStore>().readCache();
-      await context.read<SmartGoalStore>().read();
-
+    Future.delayed(const Duration(seconds: 1), () async {
       debugPrint('<-- END: splash screen initState');
-
       // if the state object is mounted
       if (mounted) {
+        await context.read<AuthStore>().readCache();
+        await context.read<SmartGoalStore>().read();
         Navigator.of(context).pushReplacementNamed(RouteName.wrapper);
       }
     });
@@ -39,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(child: Text('Splash Screen')),
     );
   }

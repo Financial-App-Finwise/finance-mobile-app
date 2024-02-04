@@ -26,7 +26,7 @@ class SmartGoalGridTile extends StatelessWidget {
         children: [
           Text(
             month,
-            style: TextStyle(
+            style: const TextStyle(
               letterSpacing: 0.75,
               color: ColorConstant.primary,
               fontWeight: FontWeight.w600,
@@ -38,7 +38,7 @@ class SmartGoalGridTile extends StatelessWidget {
           ),
           Text(
             '$amount $budgetString',
-            style: TextStyle(
+            style: const TextStyle(
               letterSpacing: 0.75,
               fontSize: 14,
               fontWeight: FontWeight.w600,

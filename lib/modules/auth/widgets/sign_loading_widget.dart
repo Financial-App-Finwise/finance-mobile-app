@@ -1,7 +1,4 @@
-import 'package:custom_circular_progress/custom_circular_progress.dart';
-import 'package:custom_circular_progress/utils.dart';
 import 'package:finwise/core/constants/auth_text_style_constant.dart';
-import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
@@ -27,7 +24,7 @@ class _SignLoadingWidgetState extends State<SignLoadingWidget> {
               alignment: Alignment.center,
               width: 190,
               height: 190,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
@@ -39,16 +36,16 @@ class _SignLoadingWidgetState extends State<SignLoadingWidget> {
                   )),
               child: IconConstant.getUser(),
             ),
-            SizedBox(height: 16),
-            Text('Just a moment', style: AuthScreenTextStyle.loadingTitle),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text('Just a moment', style: AuthScreenTextStyle.loadingTitle),
+            const SizedBox(height: 16),
+            const Text(
               'Please wait...\nWe are preparing for you...',
               textAlign: TextAlign.center,
               style: AuthScreenTextStyle.formLabel,
             ),
-            SizedBox(height: 16),
-            SimpleCircularProgressBar(
+            const SizedBox(height: 16),
+            const SimpleCircularProgressBar(
               size: 50,
               progressStrokeWidth: 12,
               animationDuration: 3,

@@ -1,15 +1,12 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
-import 'package:finwise/modules/auth/stores/auth_store.dart';
-import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-// combine all screens
+// combine bottom navigation bar with its associated screens
 class IndexScreen extends StatefulWidget {
   const IndexScreen({super.key});
 
@@ -18,7 +15,7 @@ class IndexScreen extends StatefulWidget {
 }
 
 class _IndexScreenState extends State<IndexScreen> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   List _isSelectedList = [true, false, false, false, false];
   int _currentIndex = 0;
 
@@ -50,13 +47,12 @@ class _IndexScreenState extends State<IndexScreen> {
 
   Widget _buildBody() {
     return PageView(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,
-      children: [
+      children: const [
         HomeScreen(),
         SizedBox(),
         ProfileScreen(),
-        FinanceScreen(),
       ],
     );
   }
@@ -84,27 +80,27 @@ class _IndexScreenState extends State<IndexScreen> {
         currentIndex: _currentIndex,
         selectedFontSize: 14,
         unselectedFontSize: 14,
-        selectedItemColor: Color(0xff00A6FB),
-        unselectedItemColor: Color(0xff464255),
+        selectedItemColor: const Color(0xff00A6FB),
+        unselectedItemColor: const Color(0xff464255),
         items: [
           BottomNavigationBarItem(
             icon: SizedBox(
               height: 24,
               child: IconConstant.getHome(
                 color: _isSelectedList[0]
-                    ? Color(0xff00A6FB)
+                    ? const Color(0xff00A6FB)
                     : ColorConstant.mainText,
               ),
             ),
             label: 'Home',
           ),
-          BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
+          const BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
           BottomNavigationBarItem(
             icon: SizedBox(
               height: 24,
               child: IconConstant.getBottomUser(
                 color: _isSelectedList[2]
-                    ? Color(0xff00A6FB)
+                    ? const Color(0xff00A6FB)
                     : ColorConstant.mainText,
               ),
             ),
@@ -117,14 +113,11 @@ class _IndexScreenState extends State<IndexScreen> {
 
   Widget _buildFloating() {
     return FloatingActionButton(
-      onPressed: () {
-        // go to transaction screen
-        Navigator.pushNamed(context, RouteName.addTransaction);
-      },
+      onPressed: () => Navigator.pushNamed(context, RouteName.addTransaction),
       elevation: 0,
-      backgroundColor: Color(0xff00A6FB),
-      shape: CircleBorder(),
-      child: Icon(Icons.add, color: Colors.white),
+      backgroundColor: const Color(0xff00A6FB),
+      shape: const CircleBorder(),
+      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 }
