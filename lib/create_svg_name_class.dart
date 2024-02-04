@@ -18,6 +18,8 @@ void main() {
       .map((e) => "static String ${_snakeToCamel(e).split('.')[0]} = '${e}';")
       .toList();
 
+  fieldnames.sort((a, b) => a.compareTo(b));
+
   String svgClassContent = "class SVGName {" + "\n";
 
   for (String name in fieldnames) {
