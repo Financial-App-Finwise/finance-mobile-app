@@ -85,6 +85,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
 
   Widget _buildNestedScrollView() {
     return NestedScrollView(
+      physics: BouncingScrollPhysics(),
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           SliverAppBar(

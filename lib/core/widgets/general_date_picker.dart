@@ -3,7 +3,18 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneralDatePicker extends StatefulWidget {
-  const GeneralDatePicker({super.key});
+  GeneralDatePicker({
+    super.key,
+    this.prefix,
+    this.suffix,
+    this.onPreffix,
+    this.onSuffix,
+  });
+
+  final Widget? prefix;
+  final Widget? suffix;
+  final void Function()? onSuffix;
+  final void Function()? onPreffix;
 
   @override
   State<GeneralDatePicker> createState() => _GeneralDatePickerState();
@@ -47,32 +58,46 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
           SizedBox(
             width: 24,
             height: 24,
-            child: IconButton(
-              onPressed: () {},
-              icon: IconConstant.contentManagerDashboard,
+            child: TextButton(
+              onPressed: widget.onPreffix,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
               ),
+              child: widget.prefix ?? SizedBox(),
             ),
+            // child: IconButton(
+            //   onPressed: () {},
+            //   icon: IconConstant.contentManagerDashboard,
+            //   style: ButtonStyle(
+            //     padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+            //   ),
+            // ),
           ),
           _datePicker(),
           SizedBox(
             width: 24,
             height: 24,
-            child: IconButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => widget.addScreen,
-                //   ),
-                // );
-              },
-              icon: IconConstant.addSquare,
+            child: TextButton(
+              onPressed: widget.onSuffix,
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
               ),
+              child: widget.suffix ?? SizedBox(),
             ),
+            // child: IconButton(
+            //   onPressed: () {
+            //     // Navigator.push(
+            //     //   context,
+            //     //   MaterialPageRoute(
+            //     //     builder: (context) => widget.addScreen,
+            //     //   ),
+            //     // );
+            //   },
+            //   icon: IconConstant.addSquare,
+            //   style: ButtonStyle(
+            //     padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+            //   ),
+            // ),
           ),
         ],
       ),

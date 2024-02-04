@@ -19,9 +19,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (context) => AuthStore()),
-        Provider(create: (context) => SmartGoalStore()),
         Provider(create: (context) => CategoryStore()),
+
+        // proxy provider
+        ProxyProvider<AuthStore, SmartGoalStore>(update: (_, auth, smartGoal) => SmartGoalStore(authStore: auth)),
       ],
+      
       child: MaterialApp(
         // debugShowCheckedModeBanner: ,
         theme: appTheme,

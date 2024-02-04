@@ -121,13 +121,19 @@ class _FinanceScreenState extends State<FinanceScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20),
-              _buildBarChart(),
-              SizedBox(height: 12),
-              _buildIncomeExpense(),
-              SizedBox(height: 16),
-              _buildIncomeExpenseFilter(),
-              SizedBox(height: 48),
+              ListView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  SizedBox(height: 20),
+                  _buildBarChart(),
+                  SizedBox(height: 12),
+                  _buildIncomeExpense(),
+                  SizedBox(height: 16),
+                  _buildIncomeExpenseFilter(),
+                  SizedBox(height: 48),
+                ],
+              ),
             ],
           ),
         ),
