@@ -17,7 +17,7 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  List<FinalCategoryData> categories = [];
+  // List<FinalCategoryData> categories = [];
 
   @override
   void initState() {
@@ -38,45 +38,45 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     // Adding subcategory to every index and store in new list
-    for (int index = 0;
-        index < categoryModel.categoryDataList.length;
-        index++) {
-      CategoryData category = categoryModel.categoryDataList[index];
-      FinalCategoryData finalCategory;
-      if (category.level == 2) {
-        finalCategory = FinalCategoryData(
-          id: category.id,
-          userID: category.userID,
-          name: category.name,
-          isIncome: category.isIncome,
-          parentID: category.parentID,
-          level: category.level,
-          isOnboarding: category.isOnboarding,
-          createdAt: category.createdAt,
-          updatedAt: category.updatedAt,
-          subcategory: [],
-        );
+    // for (int index = 0;
+    //     index < categoryModel.categoryDataList.length;
+    //     index++) {
+    //   CategoryData category = categoryModel.categoryDataList[index];
+    //   FinalCategoryData finalCategory;
+    //   if (category.level == 2) {
+    //     finalCategory = FinalCategoryData(
+    //       id: category.id,
+    //       userID: category.userID,
+    //       name: category.name,
+    //       isIncome: category.isIncome,
+    //       parentID: category.parentID,
+    //       level: category.level,
+    //       isOnboarding: category.isOnboarding,
+    //       createdAt: category.createdAt,
+    //       updatedAt: category.updatedAt,
+    //       subcategory: [],
+    //     );
 
-        categories.add(finalCategory);
-      }
-    }
+    //     categories.add(finalCategory);
+    //   }
+    // }
 
-    // Adding the category level 1 to parent subcategory
-    for (int i = 0; i < categories.length; i++) {
-      FinalCategoryData parentCategory = categories[i];
+    // // Adding the category level 1 to parent subcategory
+    // for (int i = 0; i < categories.length; i++) {
+    //   FinalCategoryData parentCategory = categories[i];
 
-      for (int j = 0; j < categoryModel.categoryDataList.length; j++) {
-        CategoryData subcategory = categoryModel.categoryDataList[j];
+    //   for (int j = 0; j < categoryModel.categoryDataList.length; j++) {
+    //     CategoryData subcategory = categoryModel.categoryDataList[j];
 
-        if (subcategory.parentID == parentCategory.id) {
-          debugPrint('Statse ll ${parentCategory.id}');
-          // Add subcategory to the subcategory list of the parent category
-          parentCategory.subcategory.add(subcategory);
-        }
-      }
-    }
+    //     if (subcategory.parentID == parentCategory.id) {
+    //       debugPrint('Statse ll ${parentCategory.id}');
+    //       // Add subcategory to the subcategory list of the parent category
+    //       parentCategory.subcategory.add(subcategory);
+    //     }
+    //   }
+    // }
 
-    debugPrint('Statse ${categories[9].subcategory[0].name}');
+    // debugPrint('Statse ${categories[9].subcategory[0].name}');
 
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
@@ -165,23 +165,37 @@ class _CategoryScreenState extends State<CategoryScreen> {
               const SizedBox(
                 height: 16,
               ),
-              for (int i = 0; i < categories.length; i++)
-                Column(
-                  children: [
-                    mainCategoryTile(categories[i].name),
-                    if (categories[i].subcategory.isNotEmpty)
-                      for (int j = 0; j < categories[i].subcategory.length; j++)
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 32),
-                              child: mainCategoryTile(
-                                  categories[i].subcategory[j].name),
-                            ),
-                          ],
-                        )
-                  ],
-                )
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemCount: categoryModel.categoryDataList.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      if (categoryModel.categoryDataList[index].level == 2)
+                        mainCategoryTile(
+                            categoryModel.categoryDataList[index].name),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: categoryModel
+                              .categoryDataList[index].subcategory?.length,
+                          itemBuilder: (context, innerIndex) {
+                            if (categoryModel
+                                    .categoryDataList[index].subcategory !=
+                                null) {
+                              return Container(
+                                padding: const EdgeInsets.only(left: 32),
+                                child: mainCategoryTile(categoryModel
+                                    .categoryDataList[index]
+                                    .subcategory![innerIndex]
+                                    .name),
+                              );
+                            }
+                          })
+                    ],
+                  );
+                },
+              )
             ],
           ),
         ));
@@ -201,7 +215,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
           Text(
             name,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
               letterSpacing: 0.75,
