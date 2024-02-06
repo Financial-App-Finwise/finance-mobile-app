@@ -51,13 +51,13 @@ mixin _$AuthStore on _AuthStoreBase, Store {
       Atom(name: '_AuthStoreBase.loadingStatus', context: context);
 
   @override
-  LoadingStatus get loadingStatus {
+  LoadingStatusEnum get loadingStatus {
     _$loadingStatusAtom.reportRead();
     return super.loadingStatus;
   }
 
   @override
-  set loadingStatus(LoadingStatus value) {
+  set loadingStatus(LoadingStatusEnum value) {
     _$loadingStatusAtom.reportWrite(value, super.loadingStatus, () {
       super.loadingStatus = value;
     });
@@ -99,7 +99,7 @@ mixin _$AuthStore on _AuthStoreBase, Store {
       ActionController(name: '_AuthStoreBase', context: context);
 
   @override
-  void setLoadingStatus(LoadingStatus status) {
+  void setLoadingStatus(LoadingStatusEnum status) {
     final _$actionInfo = _$_AuthStoreBaseActionController.startAction(
         name: '_AuthStoreBase.setLoadingStatus');
     try {

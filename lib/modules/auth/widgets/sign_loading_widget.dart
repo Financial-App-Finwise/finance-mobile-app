@@ -1,4 +1,4 @@
-import 'package:finwise/core/constants/auth_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/auth_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';

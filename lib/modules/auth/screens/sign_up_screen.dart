@@ -1,5 +1,5 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:finwise/core/constants/auth_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/auth_text_style_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart';
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
