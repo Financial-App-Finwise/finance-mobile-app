@@ -1,4 +1,5 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/route.dart';
@@ -20,11 +21,12 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(create: (context) => AuthStore()),
         Provider(create: (context) => CategoryStore()),
+        Provider(create: (context) => BudgetPlanStore()),
 
         // proxy provider
-        ProxyProvider<AuthStore, SmartGoalStore>(update: (_, auth, smartGoal) => SmartGoalStore(authStore: auth)),
+        ProxyProvider<AuthStore, SmartGoalStore>(
+            update: (_, auth, smartGoal) => SmartGoalStore(authStore: auth)),
       ],
-      
       child: MaterialApp(
         // debugShowCheckedModeBanner: ,
         theme: appTheme,

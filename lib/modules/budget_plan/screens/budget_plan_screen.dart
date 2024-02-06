@@ -1,12 +1,22 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/loading_status_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/calendar_header_layout.dart';
+import 'package:finwise/core/widgets/general_date_picker.dart';
+import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_card.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/filtered_budget.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class BudgetPlanScreen extends StatefulWidget {
   const BudgetPlanScreen({super.key});
@@ -16,94 +26,119 @@ class BudgetPlanScreen extends StatefulWidget {
 }
 
 class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
-  bool _gridView = false;
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 0), () async {
+      if (mounted) {
+        await context.read<BudgetPlanStore>().read();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarHeaderLayout(
-        addScreen: const AddBudgetPlanScreen(),
-        title: 'My budget plan',
-        description:
-            'Effortlessly manage your finance with a powerful simple tool in FinWise',
-        firstColor: const Color(0xFF0ABDE3),
-        secondColor: const Color(0xFF0B8AAF),
-        changeView: () => setState(
-          () {
-            _gridView = !_gridView;
-          },
+      body: _buildBody(),
+    );
+  }
+
+  bool _isGrid = false;
+
+  Widget _buildBody() {
+    return GeneralStickyHeaderLayout(
+      title: 'My budget plan',
+      description:
+          'Effortlessly manage your finance with a powerful simple tool in FinWise',
+      gradient: const LinearGradient(colors: [
+        Color(0xFF0ABDE3),
+        Color(0xFF0B8AAF),
+      ]),
+      centerContent: GeneralDatePicker(
+        prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+        suffix: IconHelper.getSVG(SVGName.addSquare,
+            color: ColorConstant.secondary),
+        onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
+        onPreffix: () => setState(() => _isGrid = !_isGrid),
+      ),
+      mainContent: _buildContent(),
+      centerContentPadding: const EdgeInsets.all(16),
+    );
+  }
+
+  Widget _buildContent() {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Container(
+        padding: const EdgeInsets.only(
+          top: 20,
+          bottom: 16,
         ),
-        gridView: _gridView,
-        // child: _noContentView(),
-        child: _gridView ? _mainContentGridView() : _mainContentListView(),
+        child: _isGrid ? _mainContentGridView() : _mainContentListView(),
       ),
     );
   }
 
 // Main content list view
   Widget _mainContentListView() {
-    return Container(
-      color: const Color(0xFFF5F7F8),
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 77,
-        bottom: 16,
-      ),
-      child: const Column(
-        children: [
-          BudgetOverview(
-              totalBudget: 3,
-              available: 130,
-              spend: 30,
-              overBudget: 0,
-              plannedBudget: 150),
-          SizedBox(
-            height: 16,
-          ),
-          FilteredBudget(
-            filterTitles: [
-              'All',
-              'One-time budget',
-              'Monthly budget',
-              'Monthly budget',
-              'Monthly budget'
-            ],
-            budgetCards: [
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-            ],
-          ),
-        ],
-      ),
-    );
+    return Observer(builder: (context) {
+      BudgetPlan budgetPlan = context.watch<BudgetPlanStore>().budgetPlan;
+
+      debugPrint('statoose ${budgetPlan.data.length}');
+
+      return Container(
+        color: const Color(0xFFF5F7F8),
+        child: const Column(
+          children: [
+            BudgetOverview(
+                totalBudget: 3,
+                available: 130,
+                spend: 30,
+                overBudget: 0,
+                plannedBudget: 150),
+            SizedBox(
+              height: 16,
+            ),
+            FilteredBudget(
+              filterTitles: [
+                'All',
+                'One-time budget',
+                'Monthly budget',
+                'Monthly budget',
+                'Monthly budget'
+              ],
+              budgetCards: [
+                BudgetCardModel(
+                    title: 'Transportation',
+                    transaction: 7,
+                    remain: 40,
+                    spent: 10,
+                    total: 50),
+                BudgetCardModel(
+                    title: 'Transportation',
+                    transaction: 7,
+                    remain: 40,
+                    spent: 10,
+                    total: 50),
+                BudgetCardModel(
+                    title: 'Transportation',
+                    transaction: 7,
+                    remain: 40,
+                    spent: 10,
+                    total: 50),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 
+// Main content grid view
   Widget _mainContentGridView() {
     return Container(
       color: const Color(0xFFF5F7F8),
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 77,
-        bottom: 16,
-      ),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

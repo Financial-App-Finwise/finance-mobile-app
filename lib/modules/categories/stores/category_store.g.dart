@@ -9,6 +9,14 @@ part of 'category_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$CategoryStore on _CategoryStoreBase, Store {
+  Computed<ObservableList<CategoryData>>? _$filterCategoryComputed;
+
+  @override
+  ObservableList<CategoryData> get filterCategory =>
+      (_$filterCategoryComputed ??= Computed<ObservableList<CategoryData>>(
+              () => super.filterCategory,
+              name: '_CategoryStoreBase.filterCategory'))
+          .value;
   Computed<ObservableList<CategoryData>>? _$searchCategoryComputed;
 
   @override
@@ -50,6 +58,22 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
     });
   }
 
+  late final _$isIncomeAtom =
+      Atom(name: '_CategoryStoreBase.isIncome', context: context);
+
+  @override
+  bool get isIncome {
+    _$isIncomeAtom.reportRead();
+    return super.isIncome;
+  }
+
+  @override
+  set isIncome(bool value) {
+    _$isIncomeAtom.reportWrite(value, super.isIncome, () {
+      super.isIncome = value;
+    });
+  }
+
   late final _$searchTextAtom =
       Atom(name: '_CategoryStoreBase.searchText', context: context);
 
@@ -74,12 +98,39 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
     return _$readAsyncAction.run(() => super.read());
   }
 
+  late final _$_CategoryStoreBaseActionController =
+      ActionController(name: '_CategoryStoreBase', context: context);
+
+  @override
+  void setIsIncome(bool filter) {
+    final _$actionInfo = _$_CategoryStoreBaseActionController.startAction(
+        name: '_CategoryStoreBase.setIsIncome');
+    try {
+      return super.setIsIncome(filter);
+    } finally {
+      _$_CategoryStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSearchText(String query) {
+    final _$actionInfo = _$_CategoryStoreBaseActionController.startAction(
+        name: '_CategoryStoreBase.setSearchText');
+    try {
+      return super.setSearchText(query);
+    } finally {
+      _$_CategoryStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 categoryModel: ${categoryModel},
 status: ${status},
+isIncome: ${isIncome},
 searchText: ${searchText},
+filterCategory: ${filterCategory},
 searchCategory: ${searchCategory}
     ''';
   }
