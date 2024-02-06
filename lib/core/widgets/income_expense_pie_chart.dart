@@ -3,7 +3,7 @@ import 'package:finwise/core/models/income_expense_model/income_expense_model.da
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class IncomeExpensePieChart extends StatefulWidget {
+class IncomeExpensePieChart extends StatelessWidget {
   const IncomeExpensePieChart({
     super.key,
     required this.data,
@@ -16,24 +16,17 @@ class IncomeExpensePieChart extends StatefulWidget {
   final Color color;
 
   @override
-  State<IncomeExpensePieChart> createState() => _IncomeExpensePieChartState();
-}
-
-class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildPieChart(widget.data),
+        _buildPieChart(data),
         const SizedBox(height: 30),
-        _buildPieChartLegend(widget.data),
+        _buildPieChartLegend(data),
       ],
     );
   }
 
   // bool _showMorePieChartInfo = false;
-  // int _touchedIndex = -1;
-
   Widget _buildPieChart(List<IncomeExpense> values) {
     return SizedBox.fromSize(
       size: const Size(140, 140),
@@ -61,10 +54,10 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
           sectionsSpace: 0,
           startDegreeOffset: 180,
           sections: [
-            _buildPieChartItem(value: values[0].amount, opacity: 0.8),
-            _buildPieChartItem(value: values[1].amount, opacity: 0.5),
-            _buildPieChartItem(value: values[2].amount, opacity: 0.4),
-            _buildPieChartItem(value: values[3].amount, opacity: 0.2),
+            _buildPieChartItem(value: values[0].amount, opacity: 0.95),
+            _buildPieChartItem(value: values[1].amount, opacity: 0.60),
+            _buildPieChartItem(value: values[2].amount, opacity: 0.40),
+            _buildPieChartItem(value: values[3].amount, opacity: 0.30),
           ],
         ),
         swapAnimationDuration: const Duration(seconds: 1),
@@ -83,7 +76,7 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
         color: Colors.white,
         fontSize: 10,
       ),
-      color: widget.color.withOpacity(opacity),
+      color: color.withOpacity(opacity),
       showTitle: false,
       radius: 25,
     );
@@ -100,14 +93,14 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
                   child: _buildPieChartLegendItem(
                     category: values[0].category,
                     amount: '\$${values[0].amount}',
-                    color: widget.color.withOpacity(0.8),
+                    color: color.withOpacity(0.8),
                   ),
                 ),
                 Expanded(
                   child: _buildPieChartLegendItem(
                     category: values[1].category,
                     amount: '\$${values[1].amount}',
-                    color: widget.color.withOpacity(0.5),
+                    color: color.withOpacity(0.5),
                   ),
                 ),
               ],
@@ -118,14 +111,14 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
                   child: _buildPieChartLegendItem(
                     category: values[2].category,
                     amount: '\$${values[2].amount}',
-                    color: widget.color.withOpacity(0.2),
+                    color: color.withOpacity(0.2),
                   ),
                 ),
                 Expanded(
                   child: _buildPieChartLegendItem(
                     category: values[3].category,
                     amount: '\$${values[3].amount}',
-                    color: widget.color.withOpacity(0.1),
+                    color: color.withOpacity(0.1),
                   ),
                 ),
               ],

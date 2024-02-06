@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class RoundedContainer extends StatefulWidget {
+class RoundedContainer extends StatelessWidget {
   const RoundedContainer({
     super.key,
     this.child,
@@ -8,11 +8,6 @@ class RoundedContainer extends StatefulWidget {
 
   final Widget? child;
 
-  @override
-  State<RoundedContainer> createState() => _RoundedContainerState();
-}
-
-class _RoundedContainerState extends State<RoundedContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +17,7 @@ class _RoundedContainerState extends State<RoundedContainer> {
         color: Colors.white,
       ),
       padding: const EdgeInsets.all(16),
-      child: widget.child ?? const SizedBox(),
+      child: child ?? const SizedBox(),
     );
   }
 }

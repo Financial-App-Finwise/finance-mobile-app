@@ -2,7 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/widgets/top_back_arrow.dart';
 import 'package:flutter/material.dart';
 
-class GeneralSimpleHeaderLayout extends StatefulWidget {
+class GeneralSimpleHeaderLayout extends StatelessWidget {
   const GeneralSimpleHeaderLayout({
     super.key,
     this.title = '',
@@ -19,17 +19,11 @@ class GeneralSimpleHeaderLayout extends StatefulWidget {
   final Widget? child;
 
   @override
-  State<GeneralSimpleHeaderLayout> createState() =>
-      _GeneralSimpleHeaderLayoutState();
-}
-
-class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: widget.gradient,
+          gradient: gradient,
         ),
         child: SafeArea(
           child: Column(
@@ -39,7 +33,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
                 padding:
                     const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
                 decoration: BoxDecoration(
-                  gradient: widget.gradient,
+                  gradient: gradient,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +41,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
                     const TopBackArrow(),
                     const SizedBox(height: 12),
                     Text(
-                      widget.title,
+                      title,
                       style: const TextStyle(
                           color: Color(0xFFFFFFFF),
                           fontSize: 32,
@@ -55,7 +49,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      widget.description,
+                      description,
                       style: const TextStyle(
                         color: Color(0xFFFFFFFF),
                         fontSize: 14,
@@ -72,7 +66,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   color: ColorConstant.backgroundColor,
-                  child: widget.child ?? const SizedBox(),
+                  child: child ?? const SizedBox(),
                 ),
               ),
             ],

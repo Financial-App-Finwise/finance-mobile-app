@@ -1,25 +1,21 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
-import 'package:finwise/core/widgets/duration_drop_down.dart';
+import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 
-class IncomeExpenseBarChart extends StatefulWidget {
+class IncomeExpenseBarChart extends StatelessWidget {
   const IncomeExpenseBarChart({super.key});
 
-  @override
-  State<IncomeExpenseBarChart> createState() => _IncomeExpenseBarChartState();
-}
-
-class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
   @override
   Widget build(BuildContext context) {
     return _buildSpendingIncome();
   }
 
   Widget _buildSpendingIncome() {
-    return _roundedContainer(
+    return RoundedContainer(
       child: Column(
         children: [
           const Row(children: [
@@ -176,5 +172,4 @@ class _IncomeExpenseBarChartState extends State<IncomeExpenseBarChart> {
       ],
     );
   }
-
 }

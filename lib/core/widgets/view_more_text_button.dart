@@ -2,7 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/home_text_style_constant.dart';
 import 'package:flutter/material.dart';
 
-class ViewMoreTextButton extends StatefulWidget {
+class ViewMoreTextButton extends StatelessWidget {
   const ViewMoreTextButton({
     super.key,
     required this.onPressed,
@@ -11,14 +11,9 @@ class ViewMoreTextButton extends StatefulWidget {
   final void Function() onPressed;
 
   @override
-  State<ViewMoreTextButton> createState() => _ViewMoreTextButtonState();
-}
-
-class _ViewMoreTextButtonState extends State<ViewMoreTextButton> {
-  @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: widget.onPressed,
+      onPressed: onPressed,
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
           const EdgeInsets.symmetric(vertical: 0, horizontal: 8),

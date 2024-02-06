@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 
 class GeneralDetailLayout extends StatefulWidget {
   const GeneralDetailLayout({
+    this.title = '',
+    this.subTitle = '',
     super.key,
     this.mainContent,
     this.gradient,
     this.themeColor,
   });
 
+  final String title;
+  final String subTitle;
   final Widget? mainContent;
   final LinearGradient? gradient;
   final Color? themeColor;
@@ -78,43 +82,47 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Title
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: const Color(0xFFFFFFFF),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Icon(
-                      Icons.car_rental_outlined,
-                      color: widget.themeColor,
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFFFFFFF),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Icon(
+                        Icons.car_rental_outlined,
+                        color: widget.themeColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Transportation',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
-                            color: Color(0xFFFFFFFF)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                              color: Color(0xFFFFFFFF),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            widget.subTitle,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Color(0xFFFFFFFF)),
+                          ),
+                        ],
                       ),
-                      Text(
-                        'Budget Category',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Color(0xFFFFFFFF)),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-
+              SizedBox(width: 12),
               // Action Icon Buttons
               Row(
                 children: [
