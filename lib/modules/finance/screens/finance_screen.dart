@@ -1,10 +1,13 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/general_text_style_constant.dart';
-import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/financial_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
-import 'package:finwise/core/widgets/duration_drop_down.dart';
-import 'package:finwise/core/widgets/general_filter_bar.dart';
+import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/income_expense_pie_chart.dart';
@@ -47,20 +50,6 @@ class _FinanceScreenState extends State<FinanceScreen> {
       centerContentPadding:
           const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
-    // return GeneralHeaderLayout(
-    //   title: 'My Finance',
-    //   description:
-    //       'Effortlessly manage your finance with a powerful simple tool in FinWise',
-    //   gradient: LinearGradient(
-    //     colors: [
-    //       ColorConstant.secondary,
-    //       ColorConstant.primary,
-    //     ],
-    //     stops: [0, 1],
-    //   ),
-    //   centerContent: _buildCenterContent(),
-    //   mainContent: _buildContent(),
-    // );
   }
 
   Widget _buildCenterContent() {
@@ -69,20 +58,20 @@ class _FinanceScreenState extends State<FinanceScreen> {
       children: [
         Row(
           children: [
-            IconConstant.piggyBank,
+            IconHelper.getSVG(
+              SVGName.piggyBank,
+              color: ColorConstant.secondary,
+            ),
             const SizedBox(width: 12),
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Total Balance', style: GeneralTextStyle.getSize(20)),
-                const SizedBox(height: 4),
+                Text('Total Balance',
+                    style: FiancialTextStyle.totalBalanceTitle),
+                SizedBox(height: 4),
                 Text(
                   '\$9645.50',
-                  style:
-                      GeneralTextStyle.getSize(28, color: ColorConstant.primary)
-                          .copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: FiancialTextStyle.totalBalance,
                 ),
               ],
             ),
@@ -91,21 +80,16 @@ class _FinanceScreenState extends State<FinanceScreen> {
         const Divider(color: ColorConstant.divider),
         // SizedBox(height: 10),
         TextButton(
-          onPressed: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => TestStickyContainer()));
-          },
+          onPressed: () =>
+              Navigator.of(context).pushNamed(RouteName.financeUpdate),
           style: ButtonStyle(
             padding: MaterialStateProperty.all(
               const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             ),
           ),
-          child: Text(
-            'Update your net worth',
-            style: GeneralTextStyle.getSize(
-              16,
-              color: ColorConstant.primary,
-            ),
+          child: const Text(
+            'Update your balance',
+            style: FiancialTextStyle.updateBalance,
           ),
         ),
       ],
