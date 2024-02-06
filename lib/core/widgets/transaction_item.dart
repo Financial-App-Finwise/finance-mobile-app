@@ -1,6 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/home_text_style_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -29,18 +31,12 @@ class _TransactionItemState extends State<TransactionItem> {
 
   Widget _buildTransactionItem() {
     return TextButton(
-      onPressed: () {
-        Navigator.pushNamed(context, RouteName.transactionDetail);
-      },
+      onPressed: () =>
+          Navigator.pushNamed(context, RouteName.transactionDetail),
       style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-          EdgeInsets.zero,
-        ),
+        padding: MaterialStateProperty.all(EdgeInsets.zero),
         shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6),
@@ -72,11 +68,12 @@ class _TransactionItemState extends State<TransactionItem> {
               children: [
                 Text(
                   '\$10',
-                  style: HomeTextStyleConstant.getTransactionItemSuffix(
+                  style: TextStyleHelper.getw500size(20,
                       color: widget.color ?? ColorConstant.income),
                 ),
                 const SizedBox(width: 12),
-                IconConstant.getArrowRight(color: const Color(0xff292D32)),
+                IconHelper.getSVG(SVGName.arrowRight,
+                    color: const Color(0xff292D32)),
               ],
             ),
           ],

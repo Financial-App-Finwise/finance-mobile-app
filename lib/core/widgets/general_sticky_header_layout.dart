@@ -1,4 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/font_constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneralStickyHeaderLayout extends StatefulWidget {
@@ -158,9 +159,12 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
                                 Text(
                                   widget.title,
                                   style: const TextStyle(
-                                      color: Color(0xFFFFFFFF),
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w600),
+                                    fontFamily: FontConstant.balooThambi2,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -168,8 +172,9 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
                                   style: const TextStyle(
                                     color: Color(0xFFFFFFFF),
                                     fontSize: 14,
-                                    height: 1.7,
+                                    height: 1.5,
                                     fontWeight: FontWeight.w500,
+                                    letterSpacing: 0.75,
                                   ),
                                 ),
                               ],
@@ -186,16 +191,16 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
                         right: 16,
                         // bottom: 20,
                       ),
-                      padding: widget.centerContentPadding ?? const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 12,
-                      ),
+                      padding: widget.centerContentPadding ??
+                          const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
                       key: _centerContainerKey,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                        border: Border.all(color: ColorConstant.colorE9EAF1)
-                      ),
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white,
+                          border: Border.all(color: ColorConstant.colorE9EAF1)),
                       child: widget.centerContent,
                     ),
                   ],
@@ -215,7 +220,6 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
       ),
     );
   }
-
 
   Widget _buildBackArrow() {
     return SizedBox(

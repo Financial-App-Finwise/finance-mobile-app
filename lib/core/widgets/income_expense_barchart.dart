@@ -1,5 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:fl_chart/fl_chart.dart';

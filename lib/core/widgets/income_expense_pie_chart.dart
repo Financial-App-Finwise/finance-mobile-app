@@ -1,4 +1,4 @@
-import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
