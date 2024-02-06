@@ -1,12 +1,14 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
-import 'package:finwise/modules/categories/models/final_category_model.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -17,13 +19,11 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  // List<FinalCategoryData> categories = [];
-
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 0), () async {
+    Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
         await context.read<CategoryStore>().read();
       }
@@ -33,51 +33,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   late CategoryModel categoryModel =
       context.watch<CategoryStore>().categoryModel;
 
-  // late LoadingStatus status = context.watch<CategoryStore>().status;
-
   @override
   Widget build(BuildContext context) {
-    // Adding subcategory to every index and store in new list
-    // for (int index = 0;
-    //     index < categoryModel.categoryDataList.length;
-    //     index++) {
-    //   CategoryData category = categoryModel.categoryDataList[index];
-    //   FinalCategoryData finalCategory;
-    //   if (category.level == 2) {
-    //     finalCategory = FinalCategoryData(
-    //       id: category.id,
-    //       userID: category.userID,
-    //       name: category.name,
-    //       isIncome: category.isIncome,
-    //       parentID: category.parentID,
-    //       level: category.level,
-    //       isOnboarding: category.isOnboarding,
-    //       createdAt: category.createdAt,
-    //       updatedAt: category.updatedAt,
-    //       subcategory: [],
-    //     );
-
-    //     categories.add(finalCategory);
-    //   }
-    // }
-
-    // // Adding the category level 1 to parent subcategory
-    // for (int i = 0; i < categories.length; i++) {
-    //   FinalCategoryData parentCategory = categories[i];
-
-    //   for (int j = 0; j < categoryModel.categoryDataList.length; j++) {
-    //     CategoryData subcategory = categoryModel.categoryDataList[j];
-
-    //     if (subcategory.parentID == parentCategory.id) {
-    //       debugPrint('Statse ll ${parentCategory.id}');
-    //       // Add subcategory to the subcategory list of the parent category
-    //       parentCategory.subcategory.add(subcategory);
-    //     }
-    //   }
-    // }
-
-    // debugPrint('Statse ${categories[9].subcategory[0].name}');
-
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       body: SafeArea(
@@ -86,13 +43,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Column(
             children: [
               categoryHeader(),
+              headerFilter(),
               const SizedBox(
                 height: 16,
               ),
               Observer(
                 builder: (context) {
                   LoadingStatus status = context.watch<CategoryStore>().status;
-                  debugPrint('Statoose: $status');
 
                   switch (status) {
                     case LoadingStatus.loading:
@@ -120,29 +77,95 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   Widget categoryHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        CustomIconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: IconConstant.close,
-        ),
-        Text(
-          'Select Category',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            letterSpacing: 1,
-            color: ColorConstant.black,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CustomIconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: IconHelper.getSVG(
+              SVGName.arrowBack,
+              color: ColorConstant.black,
+            ),
+          ),
+          const Text(
+            'Select Category',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              letterSpacing: 1,
+              color: ColorConstant.black,
+            ),
+          ),
+          CustomIconButton(
+            onPressed: () {},
+            icon: IconHelper.getSVG(
+              SVGName.plus,
+              color: ColorConstant.secondary,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget headerFilter() {
+    return Observer(
+      builder: (context) {
+        bool isIncome = context.watch<CategoryStore>().isIncome;
+
+        return Row(
+          children: [
+            filterButton(
+                'Expense',
+                isIncome ? const Color(0xFFA4A7C6) : ColorConstant.secondary,
+                isIncome ? ColorConstant.colorE9EAF1 : ColorConstant.secondary,
+                () {
+              context.read<CategoryStore>().setIsIncome(false);
+            }),
+            filterButton(
+                'Income',
+                isIncome ? ColorConstant.secondary : const Color(0xFFA4A7C6),
+                isIncome ? ColorConstant.secondary : ColorConstant.colorE9EAF1,
+                () {
+              context.read<CategoryStore>().setIsIncome(true);
+            }),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget filterButton(
+      String title, Color textColor, Color buttonColor, VoidCallback action) {
+    return Expanded(
+      child: InkWell(
+        onTap: action,
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: buttonColor,
+                width: 2,
+              ),
+            ),
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              letterSpacing: 1,
+              color: textColor,
+            ),
           ),
         ),
-        CustomIconButton(
-          onPressed: () {},
-          icon: IconConstant.addSquare,
-        )
-      ],
+      ),
     );
   }
 
@@ -161,44 +184,51 @@ class _CategoryScreenState extends State<CategoryScreen> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              Text('Search'),
+              searchInput(),
               const SizedBox(
                 height: 16,
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                itemCount: categoryModel.categoryDataList.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      if (categoryModel.categoryDataList[index].level == 2)
-                        mainCategoryTile(
-                            categoryModel.categoryDataList[index].name),
-                      ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: categoryModel
-                              .categoryDataList[index].subcategory?.length,
-                          itemBuilder: (context, innerIndex) {
-                            if (categoryModel
-                                    .categoryDataList[index].subcategory !=
-                                null) {
-                              return Container(
-                                padding: const EdgeInsets.only(left: 32),
-                                child: mainCategoryTile(categoryModel
-                                    .categoryDataList[index]
-                                    .subcategory![innerIndex]
-                                    .name),
-                              );
-                            }
-                          })
-                    ],
-                  );
-                },
-              )
+              categoryList(),
             ],
           ),
         ));
+  }
+
+  Widget categoryList() {
+    return Observer(builder: (context) {
+      ObservableList<CategoryData> categories =
+          context.read<CategoryStore>().searchCategory;
+
+      String searchText = context.watch<CategoryStore>().searchText;
+
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              if (categories[index].level == 2 ||
+                  (categories[index].level == 1 && searchText != ''))
+                mainCategoryTile(categories[index].name),
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: categories[index].subcategory?.length,
+                  itemBuilder: (context, innerIndex) {
+                    if (categories[index].subcategory != null) {
+                      return Container(
+                        padding: const EdgeInsets.only(left: 32),
+                        child: mainCategoryTile(
+                            categories[index].subcategory![innerIndex].name),
+                      );
+                    }
+                  })
+            ],
+          );
+        },
+      );
+    });
   }
 
   Widget mainCategoryTile(String name) {
@@ -223,6 +253,32 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget searchInput() {
+    return TextField(
+      onChanged: context.read<CategoryStore>().setSearchText,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: ColorConstant.backgroundColor,
+        hintText: 'Search category',
+        hintStyle: const TextStyle(
+          fontWeight: FontWeight.w400,
+          fontSize: 14,
+          letterSpacing: 0.5,
+          color: ColorConstant.thin,
+        ),
+        prefixIcon: const Icon(
+          Icons.search,
+          size: 24,
+          color: ColorConstant.thin,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
       ),
     );
   }
