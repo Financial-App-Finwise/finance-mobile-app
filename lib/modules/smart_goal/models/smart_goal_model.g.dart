@@ -10,6 +10,7 @@ SmartGoal _$SmartGoalFromJson(Map<String, dynamic> json) => SmartGoal(
       data: (json['data'] as List<dynamic>)
           .map((e) => SmartGoalData.fromJson(e as Map<String, dynamic>))
           .toList(),
+      meta: SmartGoalMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SmartGoalToJson(SmartGoal instance) => <String, dynamic>{
@@ -54,4 +55,14 @@ Map<String, dynamic> _$SmartGoalDataToJson(SmartGoalData instance) =>
       'startDate': instance.startDate,
       'endDate': instance.endDate,
       'monthlyContribution': instance.monthlyContribution,
+    };
+
+SmartGoalMeta _$SmartGoalMetaFromJson(Map<String, dynamic> json) =>
+    SmartGoalMeta(
+      total: json['total'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$SmartGoalMetaToJson(SmartGoalMeta instance) =>
+    <String, dynamic>{
+      'total': instance.total,
     };

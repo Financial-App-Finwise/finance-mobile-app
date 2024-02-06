@@ -17,7 +17,7 @@ abstract class _SmartGoalStoreBase with Store {
   int get userID => authStore.user!.userData.id;
 
   @observable
-  SmartGoal smartGoal = SmartGoal(data: []);
+  SmartGoal smartGoal = SmartGoal(data: [], meta: SmartGoalMeta());
 
   @computed
   ObservableList<SmartGoalData> get inProgress => ObservableList.of(

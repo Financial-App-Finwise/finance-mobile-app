@@ -13,7 +13,7 @@ class SmartGoalGridTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String budgetString = amount > 1 ? 'goals' : 'goal';
+    String goalString = amount > 1 ? 'goals' : 'goal';
 
     return Container(
       width: 103.67,
@@ -37,7 +37,7 @@ class SmartGoalGridTile extends StatelessWidget {
             height: 8,
           ),
           Text(
-            '$amount $budgetString',
+            '$amount $goalString',
             style: const TextStyle(
               letterSpacing: 0.75,
               fontSize: 14,

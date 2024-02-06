@@ -8,7 +8,13 @@ SmartGoal getSmartGoal(Map<String, dynamic> json) => SmartGoal.fromJson(json);
 class SmartGoal {
   late List<SmartGoalData> data;
 
-  SmartGoal({required this.data});
+  @JsonKey(includeToJson: false)
+  SmartGoalMeta meta;
+
+  SmartGoal({
+    required this.data,
+    required this.meta,
+  });
 
   factory SmartGoal.fromJson(Map<String, dynamic> json) =>
       _$SmartGoalFromJson(json);
@@ -44,7 +50,7 @@ class SmartGoalData {
 
   @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;
-  
+
   @JsonKey(name: 'updated_at', includeToJson: false)
   late String updatedAt;
 
@@ -71,6 +77,18 @@ class SmartGoalData {
   static double _stringToDouble(String value) => double.parse(value);
 
   static bool _intToBool(int value) => 1 == value;
+}
+
+@JsonSerializable()
+class SmartGoalMeta {
+  late int total;
+
+  SmartGoalMeta({
+    this.total = 0,
+  });
+
+  factory SmartGoalMeta.fromJson(Map<String, dynamic> json) =>
+      _$SmartGoalMetaFromJson(json);
 }
 
 // to map:

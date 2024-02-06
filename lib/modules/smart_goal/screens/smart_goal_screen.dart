@@ -1,14 +1,17 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/smart_goal_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/smart_goal_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
-import 'package:finwise/core/widgets/general_filter_bar.dart';
+import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
+import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_content.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
@@ -24,6 +27,8 @@ class SmartGoalScreen extends StatefulWidget {
 }
 
 class _SmartGoalScreenState extends State<SmartGoalScreen> {
+  late SmartGoalUIStore uiStore = SmartGoalUIStore();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,33 +36,77 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     );
   }
 
-  bool _isGrid = false;
-
   Widget _buildBody() {
-    return GeneralStickyHeaderLayout(
-      title: 'My Smart Goal',
-      description:
-          'Effortlessly manage your finance with a powerful simple tool in FinWise.',
-      gradient: const LinearGradient(colors: [
-        ColorConstant.smartGoalLight,
-        ColorConstant.smartGoalThick,
-      ]),
-      centerContent: GeneralDatePicker(
-        prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
-        suffix: IconHelper.getSVG(SVGName.addSquare,
-            color: ColorConstant.secondary),
-        onSuffix: () => Navigator.pushNamed(context, RouteName.addSmartGoal),
-        onPreffix: () => setState(() => _isGrid = !_isGrid),
-      ),
-      mainContent: _buildContent(),
-      centerContentPadding: const EdgeInsets.all(16),
+    return Observer(
+        builder: (context) => GeneralStickyHeaderLayout(
+              title: 'My Smart Goal',
+              description:
+                  'Effortlessly manage your finance with a powerful simple tool in FinWise.',
+              gradient: const LinearGradient(colors: [
+                ColorConstant.smartGoalLight,
+                ColorConstant.smartGoalThick,
+              ]),
+              centerContent: _buildCenterContent(),
+              mainContent: _buildContent(),
+              centerContentPadding: const EdgeInsets.all(16),
+            ));
+  }
+
+  Widget _buildCenterContent() {
+    return uiStore.showGrid
+        ? _buildCenterOfGrid()
+        : GeneralDatePicker(
+            prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+            suffix: IconHelper.getSVG(SVGName.addSquare,
+                color: ColorConstant.secondary),
+            onSuffix: () =>
+                Navigator.pushNamed(context, RouteName.smartGoalCreate),
+            onPreffix: () => uiStore.toggleShowGrid(),
+          );
+  }
+
+  Widget _buildCenterOfGrid() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: TextButton(
+                onPressed: () => uiStore.toggleShowGrid(),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                ),
+                child: IconHelper.getSVG(SVGName.burgerMenu),
+              ),
+            ),
+            SizedBox(width: 24),
+            Text(
+              '2024',
+              style: GeneralTextStyle.getSize(18).copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(Icons.keyboard_arrow_left),
+            Icon(Icons.keyboard_arrow_right),
+          ],
+        )
+      ],
     );
   }
 
   Widget _buildContent() {
     return Container(
       padding: const EdgeInsets.only(top: 20),
-      child: _isGrid ? const SmartGoalGridView() : _buildColumnContent(),
+      child:
+          uiStore.showGrid ? const SmartGoalGridView() : _buildColumnContent(),
     );
   }
 
@@ -109,7 +158,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Total SMART Goal', style: SmartGoalTextStyle.totalTitle),
-              Text('3', style: SmartGoalTextStyle.totalNumber),
+              Text('${context.watch<SmartGoalStore>().smartGoal.meta.total}',
+                  style: SmartGoalTextStyle.totalNumber),
             ],
           ),
         ],
@@ -153,12 +203,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
       shrinkWrap: true,
       itemCount: data.length,
       itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, RouteName.smartGoalDetail);
-          },
-          child: _buildSmartGoalItem(data[index]),
-        );
+        return _buildSmartGoalItem(data[index]);
       },
       separatorBuilder: (context, index) {
         return const SizedBox(height: 8);
@@ -169,68 +214,83 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildSmartGoalItem(SmartGoalData item) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: const Color(0xffE9EAF1)),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        children: [
-          Row(
+      child: TextButton(
+        onPressed: () => Navigator.pushNamed(
+          context,
+          RouteName.smartGoalDetail,
+          arguments: item,
+        ),
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          child: Column(
             children: [
-              SmallRoundedSquare(
-                color: ColorConstant.incomeIcon,
-                icon: SizedBox(
-                  child:
-                      IconHelper.getSVG(SVGName.smartGoal, color: Colors.white),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(item.name,
-                      style: SmartGoalTextStyle.getCardTitle()),
-                  Text('Due Date: ${item.endDate}',
-                      style: SmartGoalTextStyle.cardSubTitle),
+                  SmallRoundedSquare(
+                    color: ColorConstant.incomeIcon,
+                    icon: SizedBox(
+                      child: IconHelper.getSVG(SVGName.smartGoal,
+                          color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.name, style: SmartGoalTextStyle.getCardTitle()),
+                      Text(
+                          'Due Date: ${UIHelper.getFormattedDate(item.endDate)}',
+                          style: SmartGoalTextStyle.cardSubTitle),
+                    ],
+                  ),
                 ],
+              ),
+              const Divider(color: ColorConstant.divider),
+              GeneralProgressWidget(
+                current: item.currentSave,
+                gradient: const LinearGradient(
+                  colors: [
+                    ColorConstant.smartGoalLight,
+                    ColorConstant.smartGoalThick,
+                  ],
+                  stops: [0, 1],
+                ),
+                total: item.amount,
+                topLeft: Row(
+                  children: [
+                    Text('7',
+                        style: SmartGoalTextStyle.getCardTitle(
+                            color: ColorConstant.black)),
+                    const SizedBox(width: 2),
+                    Text('transactions',
+                        style: SmartGoalTextStyle.cardSubTitle),
+                  ],
+                ),
+                bottomLeft: Text('${item.currentSave}',
+                    style: SmartGoalTextStyle.cardSubTitle),
+                bottomRight: Row(
+                  children: [
+                    Text('out of ', style: SmartGoalTextStyle.cardSubTitle),
+                    const SizedBox(width: 6),
+                    Text('${item.amount}',
+                        style: SmartGoalTextStyle.getCardTitle(
+                            color: ColorConstant.black)),
+                  ],
+                ),
               ),
             ],
           ),
-          const Divider(color: ColorConstant.divider),
-          GeneralProgressWidget(
-            current: item.currentSave,
-            gradient: const LinearGradient(
-              colors: [
-                ColorConstant.smartGoalLight,
-                ColorConstant.smartGoalThick,
-              ],
-              stops: [0, 1],
-            ),
-            total: item.amount,
-            topLeft: Row(
-              children: [
-                Text('7',
-                    style: SmartGoalTextStyle.getCardTitle(
-                        color: ColorConstant.black)),
-                const SizedBox(width: 2),
-                Text('transactions', style: SmartGoalTextStyle.cardSubTitle),
-              ],
-            ),
-            bottomLeft: Text('${item.currentSave}',
-                style: SmartGoalTextStyle.cardSubTitle),
-            bottomRight: Row(
-              children: [
-                Text('out of ', style: SmartGoalTextStyle.cardSubTitle),
-                const SizedBox(width: 6),
-                Text('${item.amount}',
-                    style: SmartGoalTextStyle.getCardTitle(
-                        color: ColorConstant.black)),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

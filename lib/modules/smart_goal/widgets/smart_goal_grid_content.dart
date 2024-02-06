@@ -1,4 +1,5 @@
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
+import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_tile.dart';
 import 'package:flutter/material.dart';
 
 class SmartGoalGridView extends StatefulWidget {
@@ -16,7 +17,6 @@ class _SmartGoalGridViewState extends State<SmartGoalGridView> {
     );
   }
 
-
   Widget _mainContentGridView() {
     return Container(
       color: const Color(0xFFF5F7F8),
@@ -30,9 +30,8 @@ class _SmartGoalGridViewState extends State<SmartGoalGridView> {
           crossAxisCount: 3,
         ),
         itemBuilder: (context, index) =>
-            const BudgetGridTile(month: 'January', budget: 3),
+            const SmartGoalGridTile(month: 'January', amount: 3),
       ),
     );
   }
-
 }

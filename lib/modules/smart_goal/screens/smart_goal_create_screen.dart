@@ -1,6 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/general_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
@@ -20,7 +20,6 @@ class AddSmartGoalScreen extends StatefulWidget {
 }
 
 class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
-  int _currentWidgetIndex = 0;
   final double _progressBar = 0.5;
 
   @override
@@ -335,7 +334,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 onButtonTap: () {
                   context.read<SmartGoalStore>().post(
                         SmartGoalData(
-                          userID: context.watch<SmartGoalStore>().userID,
+                          userID: context.read<SmartGoalStore>().userID,
                           name: _nameController.text,
                           amount: double.parse(_amountController.text),
                           currentSave:
