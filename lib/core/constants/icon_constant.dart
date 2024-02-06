@@ -3,7 +3,8 @@ import 'package:flutter_svg/svg.dart';
 
 const _svgPath = 'assets/images/svg/';
 
-class IconConstant {
+@Deprecated('Use the Icon Helper instead')
+abstract class IconConstant {
   // -------------------------- old way -------------------------------
   static SvgPicture arrowLeft = SvgPicture.asset('${_svgPath}arrow_left.svg');
 

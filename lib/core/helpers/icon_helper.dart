@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 const _svgPath = 'assets/images/svg/';
 
-class IconHelper {
+abstract class IconHelper {
   // ------------------------ normal color --------
   static SvgPicture getSVG(String svgName, {Color color = Colors.black}) =>
       SvgPicture.asset(

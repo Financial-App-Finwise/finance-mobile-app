@@ -4,8 +4,9 @@ import 'package:finwise/modules/auth/screens/verify_email_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_screen.dart';
+import 'package:finwise/modules/finance/screens/finance_update_screen.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
-import 'package:finwise/modules/smart_goal/screens/add_smart_goal_screen.dart';
+import 'package:finwise/modules/smart_goal/screens/smart_goal_create_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_detail_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_screen.dart';
 import 'package:finwise/modules/transaction/screens/add_transaction_screen.dart';
@@ -34,16 +35,17 @@ abstract class RouteName {
 
   // ----- finance -----
   static const String finance = '/finance';
+  static const String financeUpdate = '/finance/update';
 
   // ----- transaction -----
   static const String transaction = '/transaction';
   static const String transactionDetail = 'transaction/show';
-  static const String addTransaction = 'transaction/create';
+  static const String transactionCreate = 'transaction/create';
 
   // ----- smart goal -----
   static const String smartGoal = '/smart_goal';
   static const String smartGoalDetail = '/smart_goal/show';
-  static const String addSmartGoal = '/smart_goal/create';
+  static const String smartGoalCreate = '/smart_goal/create';
 
   // ----- upcoming bill -----
   static const String upcomingBill = "/upcomingBill";
@@ -66,17 +68,21 @@ var appRoutes = {
 
   // ----- finance -----
   RouteName.finance: (BuildContext context) => const FinanceScreen(),
+  RouteName.financeUpdate: (BuildContext context) =>
+      const FinanceUpdateScreen(),
 
   // ----- transaction -----
   RouteName.transaction: (BuildContext context) => const TransactionScreen(),
-  RouteName.transactionDetail: (BuildContext context) => const
-      TransactionDetailScreen(),
-  RouteName.addTransaction: (BuildContext context) => const AddTransactionScreen(),
+  RouteName.transactionDetail: (BuildContext context) =>
+      const TransactionDetailScreen(),
+  RouteName.transactionCreate: (BuildContext context) =>
+      const AddTransactionScreen(),
 
   // ----- smart goal -----
   RouteName.smartGoal: (BuildContext context) => const SmartGoalScreen(),
-  RouteName.addSmartGoal: (BuildContext context) => const AddSmartGoalScreen(),
-  RouteName.smartGoalDetail: (BuildContext context) => const SmartGoalDetailScreen(),
+  RouteName.smartGoalCreate: (BuildContext context) => const AddSmartGoalScreen(),
+  RouteName.smartGoalDetail: (BuildContext context) =>
+      const SmartGoalDetailScreen(),
 
   // ----- upcoming bill -----
   RouteName.upcomingBill: (BuildContext context) => const UpcomingBillScreen(),

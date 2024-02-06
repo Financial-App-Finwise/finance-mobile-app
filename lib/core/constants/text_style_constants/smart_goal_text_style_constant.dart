@@ -1,9 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
-import 'package:finwise/core/constants/general_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:flutter/material.dart';
 
-class SmartGoalTextStyle {
+abstract class SmartGoalTextStyle {
   static TextStyle totalNumber =
       GeneralTextStyle.getSize(32, color: const Color(0xff35D2A5));
 

@@ -113,7 +113,7 @@ class _IndexScreenState extends State<IndexScreen> {
 
   Widget _buildFloating() {
     return FloatingActionButton(
-      onPressed: () => Navigator.pushNamed(context, RouteName.addTransaction),
+      onPressed: () => Navigator.pushNamed(context, RouteName.transactionCreate),
       elevation: 0,
       backgroundColor: const Color(0xff00A6FB),
       shape: const CircleBorder(),

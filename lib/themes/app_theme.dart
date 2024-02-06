@@ -4,9 +4,9 @@ import 'package:finwise/core/constants/font_constant.dart';
 
 ThemeData appTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
-  fontFamily: FontConstant.primary,
+  fontFamily: FontConstant.balooThambi2Medium,
   primaryColor: ColorConstant.primary,
-  textTheme: TextTheme(
+  textTheme: const TextTheme(
     headlineMedium: TextStyle(fontFamily: FontConstant.balooThambi2Medium, color: ColorConstant.black, fontSize: 32),
     bodyMedium: TextStyle(color: ColorConstant.mainText, fontSize: 14),
   ),

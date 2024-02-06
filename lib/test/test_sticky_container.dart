@@ -1,6 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/general_text_style_constant.dart';
-import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:flutter/material.dart';

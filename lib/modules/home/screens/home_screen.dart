@@ -1,11 +1,17 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/home_text_style_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
-import 'package:finwise/core/widgets/duration_drop_down.dart';
+import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
+import 'package:finwise/core/widgets/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
+import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
@@ -185,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('My Finance', style: HomeTextStyleConstant.header),
+                const Text('My Finance', style: HomeTextStyleConstant.header),
                 ViewMoreTextButton(
                     onPressed: () =>
                         Navigator.pushNamed(context, RouteName.finance))
@@ -266,8 +272,10 @@ class _HomeScreenState extends State<HomeScreen>
         Column(
           children: [
             Text(text, style: HomeTextStyleConstant.medium),
-            Text(amount,
-                style: HomeTextStyleConstant.numberFocus(color: color)),
+            Text(
+              amount,
+              style: TextStyleHelper.getw600size(24, color: color),
+            ),
           ],
         ),
       ],
@@ -282,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text(
+          const Text(
             'Other Features',
             style: HomeTextStyleConstant.header,
           ),
@@ -329,43 +337,46 @@ class _HomeScreenState extends State<HomeScreen>
     Widget? icon,
     void Function()? onPressed,
   }) {
-    return TextButton(
-      onPressed: onPressed,
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
-      ),
-      child: Container(
-        width: 165.5,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [ColorConstant.primary, ColorConstant.secondary],
-            stops: [0, 0.8],
-          ),
-          borderRadius: BorderRadius.circular(12),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [ColorConstant.primary, ColorConstant.secondary],
+          stops: [0, 0.8],
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    text,
-                    style: HomeTextStyleConstant.medium
-                        .copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    amount,
-                    style:
-                        HomeTextStyleConstant.numberFocus(color: Colors.white),
-                  ),
-                ],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+            padding: MaterialStateProperty.all(EdgeInsets.zero),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)))),
+        child: Container(
+          width: 165.5,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: HomeTextStyleConstant.medium
+                          .copyWith(color: Colors.white),
+                    ),
+                    Text(
+                      amount,
+                      style: HomeTextStyleConstant.numberFocus(
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            icon ?? const SizedBox(),
-          ],
+              icon ?? const SizedBox(),
+            ],
+          ),
         ),
       ),
     );
@@ -408,9 +419,17 @@ class _HomeScreenState extends State<HomeScreen>
                   buttonText: 'This month',
                   onButtonPressed: () {},
                 ),
-                _buildPieChart(values, opacities),
-                _buildPieChartLegend(values, opacities),
-                // _showMorePieChartInfo ? _buildMorePieChartInfo() : SizedBox(),
+                const SizedBox(height: 30),
+                IncomeExpensePieChart(
+                  color: ColorConstant.expense,
+                  data: [
+                    IncomeExpense(category: 'Transportation', amount: 40),
+                    IncomeExpense(category: 'Groceries', amount: 40),
+                    IncomeExpense(category: 'Utilities', amount: 40),
+                    IncomeExpense(category: 'Entertainment', amount: 40),
+                  ],
+                ),
+                // const SizedBox(height: 30),
               ],
             ),
           ),
@@ -750,52 +769,17 @@ class _HomeScreenState extends State<HomeScreen>
           onTap: () {
             Navigator.pushNamed(context, RouteName.transaction);
           },
-          child: _buildTransactionItem(color: color),
+          child: TransactionItem(
+              color: color,
+              icon: IconHelper.getSVG(
+                SVGName.schoolBus,
+                color: Colors.white,
+              )),
         );
       },
       separatorBuilder: (context, index) {
         return Divider(color: ColorConstant.divider);
       },
-    );
-  }
-
-  Widget _buildTransactionItem({Color color = Colors.black}) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 6),
-      alignment: Alignment.center,
-      child: Row(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                _buildSmallRoundedSquare(color: color),
-                SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Transportation',
-                        style: HomeTextStyleConstant.transactionItemTitle),
-                    SizedBox(height: 1),
-                    Text('12 December, 2023',
-                        style: HomeTextStyleConstant.transactionItemSubtitle),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              Text(
-                '\$10',
-                style: HomeTextStyleConstant.getTransactionItemSuffix(
-                    color: color),
-              ),
-              SizedBox(width: 12),
-              IconConstant.getArrowRight(color: Color(0xff292D32)),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
