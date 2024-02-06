@@ -1,4 +1,4 @@
-abstract class SVGName {
+class SVGName {
   static const String addSquare = 'add_square.svg';
   static const String arrowBack = 'arrow_back.svg';
   static const String arrowLeft = 'arrow_left.svg';
@@ -13,6 +13,8 @@ abstract class SVGName {
   static const String close = 'close.svg';
   static const String contentManagerDashboard = 'content_manager_dashboard.svg';
   static const String delete = 'delete.svg';
+  static const String dollar = 'dollar.svg';
+  static const String dollarCurrency = 'dollar_currency.svg';
   static const String earn = 'earn.svg';
   static const String edit = 'edit.svg';
   static const String expense = 'expense.svg';
@@ -26,8 +28,10 @@ abstract class SVGName {
   static const String overBudget = 'over_budget.svg';
   static const String piggyBank = 'piggy_bank.svg';
   static const String report = 'report.svg';
+  static const String rielCurrency = 'riel_currency.svg';
   static const String save = 'save.svg';
   static const String schoolBus = 'school_bus.svg';
+  static const String search = 'search.svg';
   static const String smartGoal = 'smart_goal.svg';
   static const String spend = 'spend.svg';
   static const String targetAmount = 'target_amount.svg';

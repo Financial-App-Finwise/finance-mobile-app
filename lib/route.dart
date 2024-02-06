@@ -3,6 +3,7 @@ import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
 import 'package:finwise/modules/auth/screens/verify_email_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
+import 'package:finwise/modules/currency/screens/currency_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_update_screen.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
@@ -49,6 +50,9 @@ abstract class RouteName {
 
   // ----- upcoming bill -----
   static const String upcomingBill = "/upcomingBill";
+
+  // ----- currency -----
+  static const String currency = '/currency';
 }
 
 // map from route names to screens
@@ -86,4 +90,7 @@ var appRoutes = {
 
   // ----- upcoming bill -----
   RouteName.upcomingBill: (BuildContext context) => const UpcomingBillScreen(),
+
+  // ----- currency -----
+  RouteName.currency: (BuildContext context) => const CurrencyScreen(),
 };
