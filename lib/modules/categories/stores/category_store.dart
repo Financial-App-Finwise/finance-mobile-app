@@ -27,7 +27,8 @@ abstract class _CategoryStoreBase with Store {
         categoryModel = await compute(
             getCategoryModel, response.data as Map<String, dynamic>);
         status = LoadingStatus.done;
-        debugPrint('$status');
+        debugPrint(
+            'llll ${categoryModel.categoryDataList[9].subcategory?.length}');
       }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
@@ -35,4 +36,15 @@ abstract class _CategoryStoreBase with Store {
       debugPrint('<-- End: fetching category');
     }
   }
+  @observable
+  String searchText = '';
+
+  @computed
+  ObservableList<CategoryData> get searchCategory {
+    
+    return 
+    ObservableList.of(
+        categoryModel.categoryDataList.where((e) => e.name == searchText));
+  }
+    
 }

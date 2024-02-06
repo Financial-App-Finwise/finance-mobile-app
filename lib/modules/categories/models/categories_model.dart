@@ -2,8 +2,21 @@ import "package:json_annotation/json_annotation.dart";
 
 part 'categories_model.g.dart';
 
-CategoryModel getCategoryModel(Map<String, dynamic> json) =>
-    CategoryModel.fromJson(json);
+CategoryModel getCategoryModel(Map<String, dynamic> json) {
+  CategoryModel category = CategoryModel.fromJson(json);
+  category.categoryDataList = category.categoryDataList.map((e) {
+    if (e.level == 2) {
+      e.subcategory = getSubCategory(e.id, category.categoryDataList);
+    }
+    return e;
+  }).toList();
+
+  return category;
+}
+
+List<CategoryData> getSubCategory(int parentId, List<CategoryData> list) {
+  return list.where((e) => e.parentID != 0 && e.parentID == parentId).toList();
+}
 
 @JsonSerializable()
 class CategoryModel {
@@ -40,6 +53,9 @@ class CategoryData {
   @JsonKey(name: "updated_at")
   late String updatedAt;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<CategoryData>? subcategory = [];
+
   CategoryData({
     this.id = 0,
     this.userID = 0,
@@ -50,6 +66,7 @@ class CategoryData {
     this.isOnboarding = false,
     this.createdAt = "no date",
     this.updatedAt = "no date",
+    this.subcategory,
   });
 
   factory CategoryData.fromJson(Map<String, dynamic> json) =>
