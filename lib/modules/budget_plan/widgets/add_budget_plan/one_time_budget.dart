@@ -1,10 +1,13 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class OneTimeBudget extends StatefulWidget {
   final VoidCallback backToMain;
@@ -99,7 +102,7 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'Amount needed to be spent in this category.',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -125,7 +128,7 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'Category name will be used if no custom name is set.',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -144,9 +147,30 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
   Widget _buttons() {
     return Row(
       children: [
-        GestureDetector(
-          onTap: () => widget.backToMain(),
-          child: _backButton(),
+        Expanded(
+          child: InkWell(
+            onTap: () => widget.backToMain(),
+            child: _backButton(),
+          ),
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              context.read<BudgetPlanStore>().post(
+                    BudgetPlanData(
+                      userID: 1,
+                      categoryID: 1,
+                      isMonthly: false,
+                      name: _expenseNameController.text,
+                      amount: double.parse(_budgetAmountController.text),
+                    ),
+                  );
+            },
+            child: _createButton(),
+          ),
         ),
       ],
     );
@@ -154,6 +178,7 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
 
   Widget _backButton() {
     return Container(
+      alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(
         vertical: 16,
         horizontal: 24,
@@ -165,13 +190,40 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
           width: 1,
         ),
       ),
-      child: Text(
+      child: const Text(
         'Back',
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 16,
           letterSpacing: 1,
           color: ColorConstant.primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _createButton() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(
+        vertical: 16,
+        horizontal: 24,
+      ),
+      decoration: BoxDecoration(
+        color: ColorConstant.secondary,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: ColorConstant.secondary,
+          width: 1,
+        ),
+      ),
+      child: const Text(
+        'Create',
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          letterSpacing: 1,
+          color: ColorConstant.white,
         ),
       ),
     );

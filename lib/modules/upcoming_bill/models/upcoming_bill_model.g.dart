@@ -1,43 +1,43 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'budget_plan_model.dart';
+part of 'upcoming_bill_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-BudgetPlan _$BudgetPlanFromJson(Map<String, dynamic> json) => BudgetPlan(
+UpcomingBill _$UpcomingBillFromJson(Map<String, dynamic> json) => UpcomingBill(
       data: (json['data'] as List<dynamic>)
-          .map((e) => BudgetPlanData.fromJson(e as Map<String, dynamic>))
+          .map((e) => UpcomingBillData.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$BudgetPlanToJson(BudgetPlan instance) =>
+Map<String, dynamic> _$UpcomingBillToJson(UpcomingBill instance) =>
     <String, dynamic>{
       'data': instance.data,
     };
 
-BudgetPlanData _$BudgetPlanDataFromJson(Map<String, dynamic> json) =>
-    BudgetPlanData(
+UpcomingBillData _$UpcomingBillDataFromJson(Map<String, dynamic> json) =>
+    UpcomingBillData(
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
       categoryID: json['categoryID'] as int? ?? 0,
-      isMonthly: json['isMonthly'] == null
-          ? false
-          : BudgetPlanData._intToBool(json['isMonthly'] as int),
-      name: json['name'] as String? ?? 'no name',
       amount: json['amount'] == null
           ? 0.0
-          : BudgetPlanData._stringToDouble(json['amount'] as String),
+          : UpcomingBillData._stringToDouble(json['amount'] as String),
+      date: json['date'] as String? ?? 'no date',
+      name: json['name'] as String? ?? 'no name',
+      note: json['note'] as String? ?? 'no note',
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
     );
 
-Map<String, dynamic> _$BudgetPlanDataToJson(BudgetPlanData instance) =>
+Map<String, dynamic> _$UpcomingBillDataToJson(UpcomingBillData instance) =>
     <String, dynamic>{
       'userID': instance.userID,
       'categoryID': instance.categoryID,
-      'isMonthly': BudgetPlanData._boolToInt(instance.isMonthly),
-      'name': instance.name,
       'amount': instance.amount,
+      'date': instance.date,
+      'name': instance.name,
+      'note': instance.note,
     };

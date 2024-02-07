@@ -1,19 +1,18 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainContentListView extends StatefulWidget {
   final int totalUpcomingBill;
-  final String category;
-  final double amount;
+  final List<UpcomingBillData> upcomingBillList;
 
   const MainContentListView({
     super.key,
     required this.totalUpcomingBill,
-    required this.category,
-    required this.amount,
+    required this.upcomingBillList,
   });
 
   @override
@@ -24,12 +23,6 @@ class _MainContentListViewState extends State<MainContentListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 77,
-        bottom: 16,
-      ),
       child: Column(
         children: [
           _totalBudget(),
@@ -47,19 +40,28 @@ class _MainContentListViewState extends State<MainContentListView> {
           const SizedBox(
             height: 16,
           ),
-          _upcomingBillCard(),
-          const SizedBox(
-            height: 16,
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: widget.upcomingBillList.length,
+            itemBuilder: (context, index) {
+              List<UpcomingBillData> data = widget.upcomingBillList;
+
+              return Column(
+                children: [
+                  _upcomingBillCard(
+                    data[index].date,
+                    data[index].amount,
+                    data[index].name,
+                  ),
+                  if (index < data.length - 1)
+                    const SizedBox(
+                      height: 16,
+                    ),
+                ],
+              );
+            },
           ),
-          _upcomingBillCard(),
-          const SizedBox(
-            height: 16,
-          ),
-          _upcomingBillCard(),
-          const SizedBox(
-            height: 16,
-          ),
-          _upcomingBillCard(),
         ],
       ),
     );
@@ -117,7 +119,7 @@ class _MainContentListViewState extends State<MainContentListView> {
     );
   }
 
-  Widget _upcomingBillCard() {
+  Widget _upcomingBillCard(String date, double amount, String name) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -151,8 +153,8 @@ class _MainContentListViewState extends State<MainContentListView> {
                   width: 11,
                 ),
                 Text(
-                  "Today",
-                  style: TextStyle(
+                  date,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
                     letterSpacing: 1,
@@ -168,8 +170,8 @@ class _MainContentListViewState extends State<MainContentListView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.category,
-                  style: TextStyle(
+                  name,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     letterSpacing: 0.75,
@@ -180,8 +182,8 @@ class _MainContentListViewState extends State<MainContentListView> {
                   height: 1,
                 ),
                 Text(
-                  '\$${widget.amount}',
-                  style: TextStyle(
+                  '\$$amount',
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 24,
                     letterSpacing: 1,

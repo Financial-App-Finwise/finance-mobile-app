@@ -23,10 +23,9 @@ abstract class _BudgetPlanStoreBase with Store {
 
     try {
       Response response = await ApiService.dio.get('budgetplans');
-      debugPrint('llll ${response.data['data']}');
       if (response.statusCode == 200) {
-        // budgetPlan =
-        //     await compute(getBudgetPlan, response.data as Map<String, dynamic>);
+        budgetPlan =
+            await compute(getBudgetPlan, response.data as Map<String, dynamic>);
         status = LoadingStatus.done;
       }
     } catch (e) {
@@ -34,5 +33,27 @@ abstract class _BudgetPlanStoreBase with Store {
     } finally {
       debugPrint('<-- End: fetching budget plan');
     }
+  }
+
+  @action
+  Future<bool> post(BudgetPlanData budgetPlanData) async {
+    debugPrint('--> START: post, budget plan');
+    bool success = false;
+    try {
+      Map<String, dynamic> jsonData = budgetPlanData.toJson();
+      debugPrint('$jsonData');
+      Response response =
+          await ApiService.dio.post('budgetplans', data: jsonData);
+      if (response.statusCode == 201) {
+        success = true;
+      }
+    } catch (e) {
+      debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+    } finally {
+      debugPrint('$success');
+      debugPrint('<-- End: posting budget plan');
+    }
+
+    return success;
   }
 }

@@ -141,7 +141,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Add budget plan',
           style: TextStyle(
             fontWeight: FontWeight.w600,
@@ -166,7 +166,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
             const SizedBox(
               width: 12,
             ),
-            Expanded(
+            const Expanded(
               child: Text(
                 'Setup and track your budget plan to avoid over budget and stress free.',
                 style: TextStyle(
@@ -183,7 +183,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
         const SizedBox(
           height: 12,
         ),
-        Text(
+        const Text(
           'Choose type of budget plan',
           style: TextStyle(
             fontWeight: FontWeight.w600,
@@ -213,7 +213,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 20,
                 letterSpacing: 1,
@@ -224,7 +224,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
           ),
           Text(
             description,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 14,
               height: 1.5,

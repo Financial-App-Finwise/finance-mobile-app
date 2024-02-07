@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'budget_plan_model.g.dart';
 
 BudgetPlan getBudgetPlan(Map<String, dynamic> json) {
-  debugPrint('lllll ${json['data']}');
   return BudgetPlan.fromJson(json);
 }
 
 @JsonSerializable()
 class BudgetPlan {
-  late List<BudgetPlan> data;
+  late List<BudgetPlanData> data;
 
   BudgetPlan({required this.data});
 
@@ -27,6 +25,8 @@ class BudgetPlanData {
 
   late int userID;
   late int categoryID;
+
+  @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
   late bool isMonthly;
   late String name;
 
@@ -56,6 +56,10 @@ class BudgetPlanData {
   Map<String, dynamic> toJson() => _$BudgetPlanDataToJson(this);
 
   static double _stringToDouble(String value) => double.parse(value);
+
+  static bool _intToBool(int value) => 1 == value;
+
+  static int _boolToInt(bool value) => value ? 1 : 0;
 }
 
 // {

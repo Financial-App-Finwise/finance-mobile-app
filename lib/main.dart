@@ -2,6 +2,7 @@ import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
+import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:finwise/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (context) => AuthStore()),
         Provider(create: (context) => CategoryStore()),
         Provider(create: (context) => BudgetPlanStore()),
+        Provider(create: (context) => UpcomingBillStore()),
 
         // proxy provider
         ProxyProvider<AuthStore, SmartGoalStore>(
