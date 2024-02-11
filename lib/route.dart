@@ -2,7 +2,9 @@ import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
 import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
 import 'package:finwise/modules/auth/screens/verify_email_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
+import 'package:finwise/modules/categories/screens/category_screen.dart';
 import 'package:finwise/modules/currency/screens/currency_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_update_screen.dart';
@@ -10,9 +12,10 @@ import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_create_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_detail_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_screen.dart';
-import 'package:finwise/modules/transaction/screens/add_transaction_screen.dart';
+import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_detail_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_screen.dart';
+import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_screen.dart';
 import 'package:finwise/screens/index_screen.dart';
 import 'package:finwise/screens/splash_screen.dart';
@@ -32,6 +35,7 @@ abstract class RouteName {
 
   // ----- budget plan
   static const String budgetPlan = '/budget_plan';
+  static const String budgetPlanDetail = '/budget_plan/show';
   static const String addBudget = '/budget_plan/create';
 
   // ----- finance -----
@@ -50,9 +54,13 @@ abstract class RouteName {
 
   // ----- upcoming bill -----
   static const String upcomingBill = "/upcomingBill";
+  static const String upcomingBillDetail = '/upcoming_bill/show';
 
   // ----- currency -----
   static const String currency = '/currency';
+
+  // ----- category -----
+  static const String category = '/category';
 }
 
 // map from route names to screens
@@ -68,6 +76,7 @@ var appRoutes = {
 
   // ----- budget plan -----
   RouteName.budgetPlan: (BuildContext context) => const BudgetPlanScreen(),
+  RouteName.budgetPlanDetail: (BuildContext context) => const BudgetPlanDetailScreen(),
   RouteName.addBudget: (BuildContext context) => const AddBudgetPlanScreen(),
 
   // ----- finance -----
@@ -84,13 +93,19 @@ var appRoutes = {
 
   // ----- smart goal -----
   RouteName.smartGoal: (BuildContext context) => const SmartGoalScreen(),
-  RouteName.smartGoalCreate: (BuildContext context) => const AddSmartGoalScreen(),
+  RouteName.smartGoalCreate: (BuildContext context) =>
+      const AddSmartGoalScreen(),
   RouteName.smartGoalDetail: (BuildContext context) =>
       const SmartGoalDetailScreen(),
 
   // ----- upcoming bill -----
   RouteName.upcomingBill: (BuildContext context) => const UpcomingBillScreen(),
+  RouteName.upcomingBillDetail: (BuildContext context) =>
+      UpcomingBillDetailScreen(),
 
   // ----- currency -----
   RouteName.currency: (BuildContext context) => const CurrencyScreen(),
+
+  // ----- category -----
+  RouteName.category: (BuildContext context) => const CategoryScreen(),
 };

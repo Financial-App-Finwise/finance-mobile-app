@@ -1,5 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:flutter/material.dart';
 
 class GeneralStickyHeaderLayout extends StatefulWidget {
@@ -11,6 +13,7 @@ class GeneralStickyHeaderLayout extends StatefulWidget {
     this.mainContent,
     this.gradient,
     this.centerContentPadding,
+    this.onNotification,
   });
 
   final String title;
@@ -19,6 +22,7 @@ class GeneralStickyHeaderLayout extends StatefulWidget {
   final Widget? mainContent;
   final LinearGradient? gradient;
   final EdgeInsets? centerContentPadding;
+  final bool Function(Notification)? onNotification;
 
   @override
   State<GeneralStickyHeaderLayout> createState() =>
@@ -210,13 +214,16 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
           ),
         ];
       },
-      body: Container(
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-          // top: 16,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: widget.onNotification, 
+        child: Container(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            // top: 16,
+          ),
+          child: widget.mainContent,
         ),
-        child: widget.mainContent,
       ),
     );
   }
@@ -227,7 +234,10 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
       height: 24,
       child: IconButton(
         onPressed: () => Navigator.pop(context),
-        icon: const Icon(Icons.arrow_back, size: 24),
+        // icon: const Icon(IconHelper, size: 24),
+        icon: SizedBox(
+          child: IconHelper.getSVG(SVGName.arrowBack, color: Colors.white),
+        ),
         style: ButtonStyle(
           padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
           iconColor: MaterialStateProperty.all(const Color(0xFFFFFFFF)),

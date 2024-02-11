@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // if the state object is mounted
       if (mounted) {
         await context.read<AuthStore>().readCache();
-        await context.read<SmartGoalStore>().read();
+        // await context.read<SmartGoalStore>().read();
         Navigator.of(context).pushReplacementNamed(RouteName.wrapper);
       }
     });

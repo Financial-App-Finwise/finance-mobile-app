@@ -7,12 +7,14 @@ class GeneralFilterBar extends StatefulWidget {
   final List<String> filterTitles;
   late List<Widget>? children;
   final double topSpace;
+  final ScrollPhysics? physics;
 
   GeneralFilterBar({
     super.key,
     required this.filterTitles,
     this.children,
     this.topSpace = 12,
+    this.physics,
   });
 
   @override
@@ -27,7 +29,7 @@ class _GeneralFilterBarState extends State<GeneralFilterBar> {
     return Observer(builder: (context) {
       return ListView(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        physics: widget.physics ?? NeverScrollableScrollPhysics(),
         children: [
           Container(
             alignment: Alignment.topLeft,

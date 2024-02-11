@@ -20,7 +20,7 @@ void main() {
 
   fieldnames.sort((a, b) => a.compareTo(b));
 
-  String svgClassContent = "class SVGName {" + "\n";
+  String svgClassContent = "abstract class SVGName {" + "\n";
 
   for (String name in fieldnames) {
     svgClassContent = svgClassContent + "  $name\n";

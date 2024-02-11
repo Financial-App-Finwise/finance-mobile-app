@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/font_constant.dart';
 import 'package:flutter/material.dart';
 
 abstract class TextStyleHelper {
-  static TextStyle getw400size(double? size, Color? color) => TextStyle(
+  static TextStyle getw400size(double? size, {Color? color}) => TextStyle(
         fontSize: size ?? 14,
         fontWeight: FontWeight.w400,
         color: color ?? ColorConstant.mainText,

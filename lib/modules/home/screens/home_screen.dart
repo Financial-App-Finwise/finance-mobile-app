@@ -8,6 +8,7 @@ import 'package:finwise/core/models/income_expense_model/income_expense_model.da
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
@@ -577,26 +578,29 @@ class _HomeScreenState extends State<HomeScreen>
 
   // ----- budget plan -----
   Widget _buildBudgetPlan() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildGeneralTitle('My Budget Plan'),
-          RoundedContainer(
-            child: Column(
-              children: [
-                _buildBudgetPlanHeader(),
-                InkWell(
-                  onTap: () =>
-                      Navigator.pushNamed(context, RouteName.budgetPlan),
-                  child: _buildBudgetOverview(),
-                ),
-                _buildBudgetCards(),
-              ],
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, RouteName.budgetPlan),
+      child: Container(
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildGeneralTitle('My Budget Plan'),
+            RoundedContainer(
+              child: Column(
+                children: [
+                  _buildBudgetPlanHeader(),
+                  InkWell(
+                    onTap: () =>
+                        Navigator.pushNamed(context, RouteName.budgetPlan),
+                    child: _buildBudgetOverview(),
+                  ),
+                  _buildBudgetCards(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -609,7 +613,11 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetPlanDate() {
-    return _datePicker();
+    return Container(
+      padding: const EdgeInsets.all(2.0),
+      // color: Colors.green,
+      child: _buildDatePicker(),
+    );
   }
 
   Widget _buildAddButton() {
@@ -798,30 +806,34 @@ class _HomeScreenState extends State<HomeScreen>
 
   // ---------- upcoming bill ----------
   Widget _buildUpcomingBill() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildGeneralTitle('Upcoming Bill'),
-          RoundedContainer(
-            child: Column(
-              children: [
-                _buildGeneralContentHeading(
-                  title: 'Total Upcoming Bills',
-                  amount: '4',
-                  color: ColorConstant.bill,
-                  icon: IconConstant.getUpcomingBill(color: ColorConstant.bill),
-                  buttonText: 'This month',
-                  onButtonPressed: () {},
-                ),
-                const Divider(color: ColorConstant.divider),
-                const SizedBox(height: 16),
-                _buildBills(),
-              ],
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, RouteName.upcomingBill),
+      child: Container(
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildGeneralTitle('Upcoming Bill'),
+            RoundedContainer(
+              child: Column(
+                children: [
+                  _buildGeneralContentHeading(
+                    title: 'Total Upcoming Bills',
+                    amount: '4',
+                    color: ColorConstant.bill,
+                    icon:
+                        IconConstant.getUpcomingBill(color: ColorConstant.bill),
+                    buttonText: 'This month',
+                    onButtonPressed: () {},
+                  ),
+                  const Divider(color: ColorConstant.divider),
+                  const SizedBox(height: 16),
+                  _buildBills(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -845,43 +857,52 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildBillItem() {
     return Container(
       width: 200,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border.all(color: ColorConstant.divider),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  _buildSmallRoundedSquare(color: ColorConstant.bill),
-                  const SizedBox(width: 12),
-                  Text('Today', style: HomeTextStyleConstant.budgetCardTitle),
-                ],
-              ),
-              IconConstant.getMore(color: const Color(0xffBABCD4)),
-            ],
+      child: TextButton(
+        onPressed: () => Navigator.pushNamed(context, RouteName.upcomingBillDetail),
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all(
+            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           ),
-          const SizedBox(height: 8),
-          const Divider(color: ColorConstant.divider),
-          const SizedBox(height: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Netflix', style: HomeTextStyleConstant.medium),
-              const SizedBox(height: 2),
-              Text('\$2.5',
-                  style: HomeTextStyleConstant.numberFocus(
-                    color: ColorConstant.black,
-                  )),
-            ],
-          ),
-        ],
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    _buildSmallRoundedSquare(color: ColorConstant.bill),
+                    const SizedBox(width: 12),
+                    Text('Today', style: HomeTextStyleConstant.budgetCardTitle),
+                  ],
+                ),
+                IconConstant.getMore(color: const Color(0xffBABCD4)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Divider(color: ColorConstant.divider),
+            const SizedBox(height: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Netflix', style: HomeTextStyleConstant.medium),
+                const SizedBox(height: 2),
+                Text('\$2.5',
+                    style: HomeTextStyleConstant.numberFocus(
+                      color: ColorConstant.black,
+                    )),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -904,7 +925,7 @@ class _HomeScreenState extends State<HomeScreen>
     'Dec',
   ];
 
-  Widget _datePicker() {
+  Widget _buildDatePicker() {
     return Row(
       children: [
         GestureDetector(
@@ -913,10 +934,16 @@ class _HomeScreenState extends State<HomeScreen>
               currentDate = subtractMonth(currentDate);
             });
           },
-          child: IconConstant.arrowLeft,
-        ),
-        const SizedBox(
-          width: 12,
+          child: Container(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              // color: Colors.amber,
+              child: Row(
+                children: [
+                  const SizedBox(width: 6),
+                  IconConstant.arrowLeft,
+                  const SizedBox(width: 12),
+                ],
+              )),
         ),
         Text(
           '${monthNames[currentDate.month - 1]} ${currentDate.year}',
@@ -927,16 +954,22 @@ class _HomeScreenState extends State<HomeScreen>
             color: ColorConstant.black,
           ),
         ),
-        const SizedBox(
-          width: 12,
-        ),
         GestureDetector(
           onTap: () {
             setState(() {
               currentDate = addMonth(currentDate);
             });
           },
-          child: IconConstant.arrowRight,
+          child: Container(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              // color: Colors.amber,
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  IconConstant.arrowRight,
+                  const SizedBox(width: 6),
+                ],
+              )),
         ),
       ],
     );
