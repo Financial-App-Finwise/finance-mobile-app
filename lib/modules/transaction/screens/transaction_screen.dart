@@ -33,11 +33,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
         child: Column(
           children: [
             const SizedBox(height: 8),
-            RectFilterBar(filterTitles: const [
-              'All',
-              'Income',
-              'Expense',
-            ], topSpace: 0),
+            RectFilterBar(
+              filterTitles: const [
+                'All',
+                'Income',
+                'Expense',
+              ],
+              topSpace: 0,
+              fontSize: 16,
+            ),
             const SizedBox(height: 16),
             GeneralFilterBar(
               filterTitles: const [
