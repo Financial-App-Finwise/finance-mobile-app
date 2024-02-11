@@ -44,15 +44,47 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       Atom(name: '_SmartGoalStoreBase.status', context: context);
 
   @override
-  LoadingStatus get status {
+  LoadingStatusEnum get status {
     _$statusAtom.reportRead();
     return super.status;
   }
 
   @override
-  set status(LoadingStatus value) {
+  set status(LoadingStatusEnum value) {
     _$statusAtom.reportWrite(value, super.status, () {
       super.status = value;
+    });
+  }
+
+  late final _$currentPageAtom =
+      Atom(name: '_SmartGoalStoreBase.currentPage', context: context);
+
+  @override
+  int get currentPage {
+    _$currentPageAtom.reportRead();
+    return super.currentPage;
+  }
+
+  @override
+  set currentPage(int value) {
+    _$currentPageAtom.reportWrite(value, super.currentPage, () {
+      super.currentPage = value;
+    });
+  }
+
+  late final _$paginatedGoalsAtom =
+      Atom(name: '_SmartGoalStoreBase.paginatedGoals', context: context);
+
+  @override
+  ObservableList<SmartGoalData> get paginatedGoals {
+    _$paginatedGoalsAtom.reportRead();
+    return super.paginatedGoals;
+  }
+
+  @override
+  set paginatedGoals(ObservableList<SmartGoalData> value) {
+    _$paginatedGoalsAtom.reportWrite(value, super.paginatedGoals, () {
+      super.paginatedGoals = value;
     });
   }
 
@@ -64,11 +96,20 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     return _$readAsyncAction.run(() => super.read());
   }
 
+  late final _$readByPageAsyncAction =
+      AsyncAction('_SmartGoalStoreBase.readByPage', context: context);
+
+  @override
+  Future<dynamic> readByPage({bool refreshed = false}) {
+    return _$readByPageAsyncAction
+        .run(() => super.readByPage(refreshed: refreshed));
+  }
+
   late final _$_SmartGoalStoreBaseActionController =
       ActionController(name: '_SmartGoalStoreBase', context: context);
 
   @override
-  void setStatus(LoadingStatus status) {
+  void setStatus(LoadingStatusEnum status) {
     final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
         name: '_SmartGoalStoreBase.setStatus');
     try {
@@ -83,6 +124,8 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     return '''
 smartGoal: ${smartGoal},
 status: ${status},
+currentPage: ${currentPage},
+paginatedGoals: ${paginatedGoals},
 inProgress: ${inProgress},
 achieved: ${achieved}
     ''';

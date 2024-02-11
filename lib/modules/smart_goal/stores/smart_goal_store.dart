@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:finwise/core/constants/loading_status_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
@@ -28,10 +28,10 @@ abstract class _SmartGoalStoreBase with Store {
       smartGoal.data.where((data) => data.currentSave == data.amount).toList());
 
   @observable
-  LoadingStatus status = LoadingStatus.none;
+  LoadingStatusEnum status = LoadingStatusEnum.none;
 
   @action
-  void setStatus(LoadingStatus status) => this.status = status;
+  void setStatus(LoadingStatusEnum status) => this.status = status;
 
   @action
   Future read() async {
@@ -44,6 +44,46 @@ abstract class _SmartGoalStoreBase with Store {
           getSmartGoal,
           response.data as Map<String, dynamic>,
         );
+      } else {
+        debugPrint('--> Something went wrong, code: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+    } finally {
+      debugPrint('<-- END: read smart goal');
+    }
+  }
+
+  // ---------- Pagination ----------
+  final int _perPage = 10;
+
+  @observable
+  int currentPage = 1;
+
+  @observable
+  ObservableList<SmartGoalData> paginatedGoals = ObservableList();
+
+  @action
+  Future readByPage({bool refreshed = false}) async {
+    debugPrint('--> START: read smart goal');
+    if (refreshed) {
+      currentPage = 1;
+      paginatedGoals = ObservableList();
+    }
+    try {
+      Response response =
+          await ApiService.dio.get('goals/?page=${currentPage}');
+      if (response.statusCode == 200) {
+        debugPrint('--> successfully fetched');
+        smartGoal = await compute(
+          getSmartGoal,
+          response.data as Map<String, dynamic>,
+        );
+
+        if (paginatedGoals.length < smartGoal.meta.total) {
+          paginatedGoals.addAll(smartGoal.data);
+          // --- TODO: check if the page exceeds the last page
+        }
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
       }

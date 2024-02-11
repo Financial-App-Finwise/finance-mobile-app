@@ -28,6 +28,24 @@ class SmartGoalScreen extends StatefulWidget {
 
 class _SmartGoalScreenState extends State<SmartGoalScreen> {
   late SmartGoalUIStore uiStore = SmartGoalUIStore();
+  final ScrollController _pageController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      _pageController.addListener(() async {
+        if (_pageController.position.pixels ==
+            _pageController.position.maxScrollExtent) {
+          await context.read<SmartGoalStore>().readByPage();
+        }
+      });
+      if (mounted) {
+        await context.read<SmartGoalStore>().read();
+        await context.read<SmartGoalStore>().readByPage();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +67,16 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               centerContent: _buildCenterContent(),
               mainContent: _buildContent(),
               centerContentPadding: const EdgeInsets.all(16),
+              onNotification: (notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels ==
+                      notification.metrics.maxScrollExtent) {
+                    context.read<SmartGoalStore>().readByPage();
+                    return true;
+                  }
+                }
+                return true;
+              },
             ));
   }
 
@@ -114,6 +142,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     return RefreshIndicator(
       onRefresh: () async {
         await context.read<SmartGoalStore>().read();
+        await context.read<SmartGoalStore>().readByPage(refreshed: true);
       },
       child: SingleChildScrollView(
         child: Column(
@@ -178,13 +207,14 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   Widget _buildSmartGoals() {
     return Observer(builder: (context) {
-      SmartGoal smartGoal = context.watch<SmartGoalStore>().smartGoal;
       return Column(
         children: [
           GeneralFilterBar(
             filterTitles: const ['All', 'In Progress', 'Achieved'],
             children: [
-              _buildFilteredSmartGoals(smartGoal.data),
+              _buildFilteredSmartGoals(
+                context.watch<SmartGoalStore>().paginatedGoals,
+              ),
               _buildFilteredSmartGoals(
                   context.watch<SmartGoalStore>().inProgress),
               _buildFilteredSmartGoals(
@@ -197,17 +227,32 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     });
   }
 
+  // NotificationListener<ScrollNotification>(
+  //           onNotification: (notification) {
+  //            if (notification is ScrollEndNotification) {
+  //              if (notification.metrics.pixels ==
+  //                  notification.metrics.maxScrollExtent) {
+  //                final tempList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  //                setState(() => _list.addAll(tempList));
+  //                return true;
+  //              }
+  //            }
+  //            return true;
+  //          },
+
   Widget _buildFilteredSmartGoals(List<SmartGoalData> data) {
-    return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        return _buildSmartGoalItem(data[index]);
-      },
-      separatorBuilder: (context, index) {
-        return const SizedBox(height: 8);
-      },
+    return SingleChildScrollView(
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return _buildSmartGoalItem(data[index]);
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 8);
+        },
+      ),
     );
   }
 
