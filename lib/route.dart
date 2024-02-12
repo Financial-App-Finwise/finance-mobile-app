@@ -106,6 +106,4 @@ var appRoutes = {
   // ----- currency -----
   RouteName.currency: (BuildContext context) => const CurrencyScreen(),
 
-  // ----- category -----
-  RouteName.category: (BuildContext context) => const CategoryScreen(),
 };

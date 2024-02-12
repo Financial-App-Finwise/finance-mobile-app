@@ -5,6 +5,7 @@ import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
 import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -94,7 +95,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             const SizedBox(
               width: 12,
             ),
-            Expanded(
+            const Expanded(
               child: Text(
                 'Budget plan in specific category for this month only.',
                 style: TextStyle(
@@ -116,21 +117,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
     return Column(
       children: [
         // Category
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CategoryScreen(),
-              ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.white,
-            child: Text('category'),
-          ),
-        ),
+        // CategoryButton(setCategory: () {}),
 
         // Amount input
         Column(
@@ -140,7 +127,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'Amount needed to be spent in this category.',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -167,7 +154,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'Category name will be used if no custom name is set.',
               style: TextStyle(
                 fontWeight: FontWeight.w500,

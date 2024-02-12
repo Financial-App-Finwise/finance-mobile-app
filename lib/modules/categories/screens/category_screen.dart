@@ -12,7 +12,11 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({super.key});
+  final void Function(CategoryData) setCategory;
+  const CategoryScreen({
+    super.key,
+    required this.setCategory,
+  });
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -210,7 +214,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             children: [
               if (categories[index].level == 2 ||
                   (categories[index].level == 1 && searchText != ''))
-                mainCategoryTile(categories[index].name),
+                categoryTile(categories[index]),
               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -219,8 +223,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     if (categories[index].subcategory != null) {
                       return Container(
                         padding: const EdgeInsets.only(left: 32),
-                        child: mainCategoryTile(
-                            categories[index].subcategory![innerIndex].name),
+                        child: categoryTile(
+                            categories[index].subcategory![innerIndex]),
                       );
                     }
                   })
@@ -231,28 +235,34 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  Widget mainCategoryTile(String name) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          CustomIconButton(
-            onPressed: () {},
-            icon: IconConstant.close,
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            name,
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-              letterSpacing: 0.75,
-              color: ColorConstant.black,
+  Widget categoryTile(CategoryData category) {
+    return InkWell(
+      onTap: () {
+        widget.setCategory(category);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            CustomIconButton(
+              onPressed: () {},
+              icon: IconConstant.close,
             ),
-          ),
-        ],
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              category.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                letterSpacing: 0.75,
+                color: ColorConstant.black,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
