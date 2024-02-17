@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class CategoryButton extends StatefulWidget {
   final void Function(CategoryData) setCategory;
   CategoryData? category;
+  bool? showTip;
 
   CategoryButton({
     super.key,
     required this.setCategory,
     this.category,
+    this.showTip = true,
   });
 
   @override
@@ -42,55 +44,53 @@ class _CategoryButtonState extends State<CategoryButton> {
                 color: ColorConstant.white,
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  widget.category?.name == 'no name'
-                      ? _unpickCategoryIcon()
-                      : _pickedCategoryIcon(),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      const Text(
-                        'Category',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          letterSpacing: 0.75,
-                          color: ColorConstant.mainText,
-                        ),
+                      widget.category?.name == 'no name'
+                          ? _unpickCategoryIcon()
+                          : _pickedCategoryIcon(),
+                      const SizedBox(
+                        width: 8,
                       ),
-                      Text(
-                        widget.category?.name == 'no name'
-                            ? 'Select one of the category'
-                            : widget.category!.name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          letterSpacing: 0.75,
-                          color: widget.category?.name == 'no name'
-                              ? const Color(0xFF656B9F)
-                              : ColorConstant.mainText,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Category',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              letterSpacing: 0.75,
+                              color: ColorConstant.mainText,
+                            ),
+                          ),
+                          Text(
+                            widget.category?.name == 'no name'
+                                ? 'Select one of the category'
+                                : widget.category!.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              letterSpacing: 0.75,
+                              color: widget.category?.name == 'no name'
+                                  ? const Color(0xFF656B9F)
+                                  : ColorConstant.mainText,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
+                  ),
+                  IconHelper.getSVG(
+                    SVGName.arrowRight,
+                    color: ColorConstant.thin,
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              'Spending in this category and sub-category will be accounted to this plan.',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 12,
-                letterSpacing: 0.5,
-                color: ColorConstant.mainText,
-              ),
-            )
+            widget.showTip! ? _tip() : Container(),
           ],
         ));
   }
@@ -126,6 +126,25 @@ class _CategoryButtonState extends State<CategoryButton> {
         SVGName.schoolBus,
         color: ColorConstant.white,
       ),
+    );
+  }
+
+  Widget _tip() {
+    return const Column(
+      children: [
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          'Spending in this category and sub-category will be accounted to this plan.',
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 12,
+            letterSpacing: 0.5,
+            color: ColorConstant.mainText,
+          ),
+        ),
+      ],
     );
   }
 }

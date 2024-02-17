@@ -3,12 +3,20 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/detail_header_layout.dart';
+import 'package:finwise/core/widgets/switch_input.dart';
+import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class UpcomingBillDetailScreen extends StatelessWidget {
+class UpcomingBillDetailScreen extends StatefulWidget {
   UpcomingBillDetailScreen({super.key});
 
+  @override
+  State<UpcomingBillDetailScreen> createState() =>
+      _UpcomingBillDetailScreenState();
+}
+
+class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return DetailHeaderLayout(
@@ -16,10 +24,11 @@ class UpcomingBillDetailScreen extends StatelessWidget {
       gradient2: const Color(0xFFEE5353),
       title: 'Netflex',
       description: 'Upcoming Bill',
+      editScreen: const EditUpcomingBuildScreen(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Overview',
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -32,6 +41,10 @@ class UpcomingBillDetailScreen extends StatelessWidget {
             height: 16,
           ),
           overviewContent(),
+          const SizedBox(
+            height: 16,
+          ),
+          recurrringMonth(),
         ],
       ),
     );
@@ -108,7 +121,7 @@ class UpcomingBillDetailScreen extends StatelessWidget {
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
                 letterSpacing: 0.75,
@@ -128,14 +141,14 @@ class UpcomingBillDetailScreen extends StatelessWidget {
     );
   }
 
-  TextStyle defaultStyle = TextStyle(
+  TextStyle defaultStyle = const TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 24,
     letterSpacing: 1,
     color: ColorConstant.black,
   );
 
-  TextStyle noteStyle = TextStyle(
+  TextStyle noteStyle = const TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16,
     letterSpacing: 0.5,
@@ -156,6 +169,53 @@ class UpcomingBillDetailScreen extends StatelessWidget {
           height: 17,
         ),
       ],
+    );
+  }
+
+  Widget recurrringMonth() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 16,
+      ),
+      decoration: BoxDecoration(
+        color: ColorConstant.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Recurring every month',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    letterSpacing: 1,
+                    color: ColorConstant.mainText,
+                  ),
+                ),
+                SizedBox(
+                  height: 2,
+                ),
+                Text(
+                  'This upcoming bill will carry forward to future months as well.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    height: 2,
+                    letterSpacing: 0.75,
+                    color: ColorConstant.thin,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SwitchInput(),
+        ],
+      ),
     );
   }
 }

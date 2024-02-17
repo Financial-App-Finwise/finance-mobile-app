@@ -13,7 +13,7 @@ import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.dart';
-import 'package:finwise/modules/smart_goal/widgets/date_text_field_widget.dart';
+// import 'package:finwise/modules/smart_goal/widgets/date_text_field_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_content.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
@@ -106,30 +106,30 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildCenterContent() {
     return Row(
       children: [
-        Expanded(
-          child: DateTextFieldWidget(
-            onDaySelected: ((selectedDay, focusedDay) {
-              setState(() {
-                _startDayController.text =
-                    UIHelper.getInputDate(selectedDay.toString());
-              });
-            }),
-            hintText: 'Start Date',
-            controller: _startDayController,
-          ),
-        ),
-        Expanded(
-          child: DateTextFieldWidget(
-            onDaySelected: ((selectedDay, focusedDay) {
-              setState(() {
-                _endDayController.text =
-                    UIHelper.getInputDate(selectedDay.toString());
-              });
-            }),
-            hintText: 'End Date',
-            controller: _endDayController,
-          ),
-        ),
+        // Expanded(
+        //   child: DateTextFieldWidget(
+        //     onDaySelected: ((selectedDay, focusedDay) {
+        //       setState(() {
+        //         _startDayController.text =
+        //             UIHelper.getInputDate(selectedDay.toString());
+        //       });
+        //     }),
+        //     hintText: 'Start Date',
+        //     controller: _startDayController,
+        //   ),
+        // ),
+        // Expanded(
+        //   child: DateTextFieldWidget(
+        //     onDaySelected: ((selectedDay, focusedDay) {
+        //       setState(() {
+        //         _endDayController.text =
+        //             UIHelper.getInputDate(selectedDay.toString());
+        //       });
+        //     }),
+        //     hintText: 'End Date',
+        //     controller: _endDayController,
+        //   ),
+        // ),
         IconButton(
           onPressed: () =>
               Navigator.pushNamed(context, RouteName.smartGoalCreate),

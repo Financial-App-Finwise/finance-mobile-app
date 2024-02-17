@@ -73,7 +73,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
         prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
         suffix: IconHelper.getSVG(SVGName.addSquare,
             color: ColorConstant.secondary),
-        onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
+        onSuffix: () => Navigator.pushNamed(context, RouteName.addUpcomingBill),
         onPreffix: () => setState(() => _isGrid = !_isGrid),
       ),
       mainContent: _buildContent(),
@@ -105,7 +105,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
           context.watch<UpcomingBillStore>().upcomingBill;
 
       return MainContentListView(
-        totalUpcomingBill: 3,
+        totalUpcomingBill: 4,
         upcomingBillList: upcomingBill.data,
       );
     });

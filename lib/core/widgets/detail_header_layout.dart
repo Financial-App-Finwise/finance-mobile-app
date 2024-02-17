@@ -12,6 +12,7 @@ class DetailHeaderLayout extends StatefulWidget {
   final Color gradient2;
   final String title;
   final String description;
+  final Widget editScreen;
 
   const DetailHeaderLayout({
     super.key,
@@ -20,6 +21,7 @@ class DetailHeaderLayout extends StatefulWidget {
     required this.gradient2,
     required this.title,
     required this.description,
+    required this.editScreen,
   });
 
   @override
@@ -141,7 +143,7 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const EditBudgetPlanScreen(),
+                            builder: (context) => widget.editScreen,
                           ),
                         );
                       },
