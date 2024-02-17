@@ -3,6 +3,8 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
+import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:flutter/material.dart';
 
 class MonthlyBudget extends StatefulWidget {
@@ -66,7 +68,7 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
             const SizedBox(
               width: 12,
             ),
-            Expanded(
+            const Expanded(
               child: Text(
                 'Budget plan in specific category that recurs every month.',
                 style: TextStyle(
@@ -92,6 +94,8 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
     );
   }
 
+  CategoryData _selectedCategory = CategoryData();
+
   Widget _form() {
     return Column(
       children: [
@@ -99,11 +103,24 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            CategoryButton(
+              setCategory: (category) {
+                // debugPrint('${category.id}');
+                setState(() {
+                  _selectedCategory = category;
+                });
+                debugPrint(_selectedCategory.name);
+              },
+              category: _selectedCategory,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             AmountInput(controller: _budgetAmountController),
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'Amount needed to be spent in this category.',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -129,7 +146,7 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'Category name will be used if no custom name is set.',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -148,9 +165,17 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
   Widget _buttons() {
     return Row(
       children: [
-        GestureDetector(
-          onTap: () => widget.backToMain(),
-          child: _backButton(),
+        Expanded(
+          child: InkWell(
+            onTap: () => widget.backToMain(),
+            child: _backButton(),
+          ),
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        Expanded(
+          child: _createButton(),
         ),
       ],
     );
@@ -158,6 +183,7 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
 
   Widget _backButton() {
     return Container(
+      alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(
         vertical: 16,
         horizontal: 24,
@@ -169,13 +195,40 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
           width: 1,
         ),
       ),
-      child: Text(
+      child: const Text(
         'Back',
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 16,
           letterSpacing: 1,
           color: ColorConstant.primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _createButton() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(
+        vertical: 16,
+        horizontal: 24,
+      ),
+      decoration: BoxDecoration(
+        color: ColorConstant.secondary,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: ColorConstant.secondary,
+          width: 1,
+        ),
+      ),
+      child: const Text(
+        'Create',
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          letterSpacing: 1,
+          color: ColorConstant.white,
         ),
       ),
     );

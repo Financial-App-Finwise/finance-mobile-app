@@ -5,6 +5,9 @@ import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
+import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -91,6 +94,8 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
     );
   }
 
+  CategoryData _selectedCategory = CategoryData();
+
   Widget _form() {
     return Column(
       children: [
@@ -98,6 +103,32 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            CategoryButton(
+              setCategory: (category) {
+                // debugPrint('${category.id}');
+                setState(() {
+                  _selectedCategory = category;
+                });
+                debugPrint(_selectedCategory.name);
+              },
+              category: _selectedCategory,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            // InkWell(
+            //   onTap: () => Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => CategoryScreen(setCategory: (category) {
+            //         // debugPrint('${category.id}');
+            //         _selectedCategory = category;
+            //         debugPrint(_selectedCategory.name);
+            //       }),
+            //     ),
+            //   ),
+            //   child: Text('category'),
+            // ),
             AmountInput(controller: _budgetAmountController),
             const SizedBox(
               height: 8,
@@ -162,7 +193,7 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
               context.read<BudgetPlanStore>().post(
                     BudgetPlanData(
                       userID: 1,
-                      categoryID: 1,
+                      categoryID: _selectedCategory.id,
                       isMonthly: false,
                       name: _expenseNameController.text,
                       amount: double.parse(_budgetAmountController.text),
