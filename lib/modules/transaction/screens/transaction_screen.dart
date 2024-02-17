@@ -1,12 +1,18 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
-import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
-import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
+import 'package:finwise/core/enums/transaction_period_enum.dart';
+import 'package:finwise/core/enums/transaction_type_enum.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_simple_header_layout.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
@@ -16,6 +22,8 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
+  final store = TransactionStore();
+
   @override
   Widget build(BuildContext context) {
     return GeneralSimpleHeaderLayout(
@@ -30,35 +38,25 @@ class _TransactionScreenState extends State<TransactionScreen> {
         stops: [0, 1],
       ),
       child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             const SizedBox(height: 8),
-            RectFilterBar(
-              filterTitles: const [
-                'All',
-                'Income',
-                'Expense',
-              ],
-              topSpace: 0,
+            RectFilterBarHeader(
+              type: RectFilterBarHeaderType.expanded,
+              currentValue: TransactionTypeEnum.all,
               fontSize: 16,
-            ),
-            const SizedBox(height: 16),
-            GeneralFilterBar(
-              filterTitles: const [
-                'All',
-                'Recently',
-                'Earliest',
-                'Lowest',
-                'Highest',
+              items: [
+                FilterBarHeaderItem(
+                    title: 'All', value: TransactionTypeEnum.all),
+                FilterBarHeaderItem(
+                    title: 'Income', value: TransactionTypeEnum.income),
+                FilterBarHeaderItem(
+                    title: 'Expense', value: TransactionTypeEnum.expense),
               ],
-              children: [
-                _buildFilteredTransactions(),
-                const SizedBox(),
-                const SizedBox(),
-                const SizedBox(),
-                const SizedBox(),
-              ],
+              onTap: (value) => store.changeFilteredType(value),
             ),
+            _buildTypeTransactions(type: TransactionTypeEnum.all),
             const SizedBox(height: 48),
           ],
         ),
@@ -66,18 +64,44 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 
-  Widget _buildFilteredTransactions() {
+  // ---------- All, Income or Expense ----------
+  Widget _buildTypeTransactions({
+    TransactionTypeEnum type = TransactionTypeEnum.all,
+  }) {
+    return Column(
+      children: [
+        GeneralFilterBarHeader(
+          currentValue: TransactionPeriodEnum.all,
+          physics: const BouncingScrollPhysics(),
+          items: [
+            FilterBarHeaderItem(
+                title: 'All', value: TransactionPeriodEnum.all),
+            FilterBarHeaderItem(
+                title: 'Recently', value: TransactionPeriodEnum.recently),
+            FilterBarHeaderItem(
+                title: 'Earliest', value: TransactionPeriodEnum.earliest),
+            FilterBarHeaderItem(
+                title: 'Lowest', value: TransactionPeriodEnum.lowest),
+            FilterBarHeaderItem(
+                title: 'Highest', value: TransactionPeriodEnum.hightest),
+          ],
+          onTap: (value) {},
+        ),
+        _buildPeriodTransactions(),
+      ],
+    );
+  }
+
+  // test
+  List<String> _periods = ['Today', 'Yesterday', 'Previously'];
+
+  Widget _buildPeriodTransactions() {
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: 3,
       itemBuilder: (context, index) {
-        return InkWell(
-          // onTap: () {
-          //   Navigator.pushNamed(context, RouteName.smartGoalDetail);
-          // },
-          child: _buildTransactionItemsDays(),
-        );
+        return _buildPeriodTransactionItems(index, day: _periods[index]);
       },
       separatorBuilder: (context, index) {
         return const SizedBox(height: 8);
@@ -85,33 +109,35 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 
-  // Widget _buildTransactionItems({bool isIncome = true}) {
+  // Widget _buildTodayTranscations({bool isIncome = true}) {
   //   return Column(
   //     children: [
-  //       SizedBox(height: 12),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           Text('All Transactions', style: GeneralTextStyle.getHeader()),
-  //           ViewMoreTextButton(
-  //             onPressed: () {
-  //               // go to transaction screens
-  //               Navigator.pushNamed(context, RouteName.transaction);
-  //             },
-  //           ),
-  //         ],
+  //       Row(children: [
+  //         Text('Today', style: GeneralTextStyle.getSize(14)),
+  //         const SizedBox(width: 12),
+  //         const Expanded(child: Divider(color: ColorConstant.divider))
+  //       ]),
+  //       const SizedBox(height: 12),
+  //       RoundedContainer(
+  //         child: ListView.separated(
+  //           physics: const NeverScrollableScrollPhysics(),
+  //           shrinkWrap: true,
+  //           itemCount: 2, // example
+  //           itemBuilder: ((context, index) {
+  //             return _buildTransactionItem();
+  //           }),
+  //           separatorBuilder: (context, index) {
+  //             return const Divider(color: ColorConstant.divider);
+  //           },
+  //         ),
   //       ),
-  //       SizedBox(height: 12),
-  //       _buildTransactionItemsDays(isIncome: isIncome),
-  //       SizedBox(height: 16),
-  //       _buildTransactionItemsDays(day: 'Yesterday', isIncome: isIncome),
   //     ],
   //   );
   // }
 
-  Widget _buildTransactionItemsDays({
+  Widget _buildPeriodTransactionItems(
+    int periodIndex, {
     String? day,
-    bool isIncome = true,
   }) {
     return Column(
       children: [
@@ -125,14 +151,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
           child: ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: 2,
+            itemCount: 2, // example
             itemBuilder: ((context, index) {
-              return TransactionItem(
-                icon: isIncome
-                    ? IconConstant.getEarn()
-                    : IconConstant.getExpense(),
-                color: isIncome ? ColorConstant.income : ColorConstant.expense,
-              );
+              return Observer(builder: (context) {
+                if (store.typeFilteredTransactions.length >
+                    index + (periodIndex * 2)) {
+                  return _buildTransactionItem(store
+                      .typeFilteredTransactions[index + (periodIndex * 2)]);
+                }
+                return SizedBox();
+              });
             }),
             separatorBuilder: (context, index) {
               return const Divider(color: ColorConstant.divider);
@@ -140,6 +168,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildTransactionItem(TransactionData item) {
+    return TransactionItem(
+      icon: item.isIncome ? IconConstant.getEarn() : IconConstant.getExpense(),
+      color: item.isIncome ? ColorConstant.income : ColorConstant.expense,
     );
   }
 }

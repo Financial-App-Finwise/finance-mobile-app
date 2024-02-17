@@ -3,9 +3,12 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_prediction.dart';
 import 'package:flutter/material.dart';
@@ -31,18 +34,18 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: ColorConstant.backgroundColor,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: SafeArea(
           child: Container(
             padding: const EdgeInsets.all(16),
+            color: Colors.transparent,
             child: Column(
               children: [
-                _titleContent(),
+                _buildTitleContent(),
                 const SizedBox(height: 10),
-                _mainContentDescription(),
+                _buildMainContentDescription(),
                 const SizedBox(height: 20),
                 Expanded(child: _buildForm()),
               ],
@@ -53,7 +56,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     );
   }
 
-  Widget _titleContent() {
+  Widget _buildTitleContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -91,7 +94,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     );
   }
 
-  Widget _mainContentDescription() {
+  Widget _buildMainContentDescription() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -168,8 +171,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
       child: Column(
         children: [
           Expanded(
-            child: Container(
-              color: ColorConstant.backgroundColor,
+            child: SingleChildScrollView(
               child: Column(
                 children: [
                   _buildFormItem(
@@ -207,6 +209,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                       const Expanded(child: SizedBox()),
                     ],
                   ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -267,6 +270,11 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     );
   }
 
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
+  DateTime _selectedStartDate = DateTime.now(); // save value for posting
+  DateTime _selectedEndDate = DateTime.now();
+
   Widget _buildTargetGoalPart() {
     return Column(
       children: [
@@ -298,9 +306,31 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 visible: _setDue,
                 child: Row(
                   children: [
-                    Expanded(child: _buildDropDown()),
+                    Expanded(
+                        child: _buildDate(
+                      hintText: 'Start Date',
+                      controller: _startDateController,
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          _startDateController.text =
+                              UIHelper.getInputDate(selectedDay.toString());
+                          _selectedStartDate = selectedDay;
+                        });
+                      },
+                    )),
                     const SizedBox(width: 8),
-                    Expanded(child: _buildDropDown()),
+                    Expanded(
+                        child: _buildDate(
+                      hintText: 'End Date',
+                      controller: _endDateController,
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          _endDateController.text =
+                              UIHelper.getInputDate(selectedDay.toString());
+                          _selectedEndDate = selectedDay;
+                        });
+                      },
+                    )),
                   ],
                 ),
               ),
@@ -331,17 +361,27 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: GeneralBottomButton(
-                onButtonTap: () {
-                  context.read<SmartGoalStore>().post(
+                onButtonTap: () async {
+                  bool success = await context.read<SmartGoalStore>().post(
                         SmartGoalData(
                           userID: context.read<SmartGoalStore>().userID,
                           name: _nameController.text,
                           amount: double.parse(_amountController.text),
                           currentSave:
                               double.parse(_currentSaveController.text),
+                          remainingSave: double.parse(_amountController.text) -
+                              double.parse(_currentSaveController.text),
                           setDate: _setDue,
+                          startDate: UIHelper.getYYYYMMDD(
+                              _selectedStartDate.toString()),
+                          endDate:
+                              UIHelper.getYYYYMMDD(_selectedEndDate.toString()),
+                          monthlyContribution: 10,
                         ),
                       );
+                  if (success) {
+                    await context.read<SmartGoalStore>().readByPage(refreshed: true);
+                  }
                 },
                 buttonLabel: 'Create',
               ),
@@ -352,29 +392,43 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     );
   }
 
-  Widget _buildDropDown() {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton2(
-        hint: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Month',
-                style: GeneralTextStyle.getSize(12, color: ColorConstant.thin)
-                    .copyWith(fontWeight: FontWeight.w400)),
-            Text('Nov', style: GeneralTextStyle.getSize(14)),
-          ],
-        ),
-        buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+  Widget _buildDate({
+    String hintText = '',
+    TextEditingController? controller,
+    required void Function(DateTime selectedDay, DateTime focusedDay)
+        onDaySelected,
+  }) {
+    return TextFormField(
+      controller: controller,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CalendarWidget(
+              onDaySelected: onDaySelected,
             ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 20,
-            )),
-        items: const [],
-        onChanged: (value) {},
+          ),
+        );
+      },
+      style: TextStyleHelper.getw500size(14),
+      readOnly: true,
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none),
+        fillColor: Colors.white,
+        filled: true,
+        prefixIcon: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: IconHelper.getSVG(
+            SVGName.calendar,
+            color: ColorConstant.mainText,
+          ),
+        ),
+        hintText: hintText,
+        hintStyle: GeneralTextStyle.getSize(12, color: ColorConstant.thin),
       ),
     );
   }

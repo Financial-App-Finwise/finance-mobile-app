@@ -23,6 +23,38 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
           Computed<ObservableList<SmartGoalData>>(() => super.achieved,
               name: '_SmartGoalStoreBase.achieved'))
       .value;
+  Computed<ObservableList<SmartGoalData>>? _$filteredGoalsComputed;
+
+  @override
+  ObservableList<SmartGoalData> get filteredGoals =>
+      (_$filteredGoalsComputed ??= Computed<ObservableList<SmartGoalData>>(
+              () => super.filteredGoals,
+              name: '_SmartGoalStoreBase.filteredGoals'))
+          .value;
+  Computed<bool>? _$isLoadingComputed;
+
+  @override
+  bool get isLoading =>
+      (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
+              name: '_SmartGoalStoreBase.isLoading'))
+          .value;
+
+  late final _$currentProgressStatusAtom =
+      Atom(name: '_SmartGoalStoreBase.currentProgressStatus', context: context);
+
+  @override
+  SmartGoalStatusEnum get currentProgressStatus {
+    _$currentProgressStatusAtom.reportRead();
+    return super.currentProgressStatus;
+  }
+
+  @override
+  set currentProgressStatus(SmartGoalStatusEnum value) {
+    _$currentProgressStatusAtom.reportWrite(value, super.currentProgressStatus,
+        () {
+      super.currentProgressStatus = value;
+    });
+  }
 
   late final _$smartGoalAtom =
       Atom(name: '_SmartGoalStoreBase.smartGoal', context: context);
@@ -40,19 +72,19 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
-  late final _$statusAtom =
-      Atom(name: '_SmartGoalStoreBase.status', context: context);
+  late final _$loadingStatusAtom =
+      Atom(name: '_SmartGoalStoreBase.loadingStatus', context: context);
 
   @override
-  LoadingStatusEnum get status {
-    _$statusAtom.reportRead();
-    return super.status;
+  LoadingStatusEnum get loadingStatus {
+    _$loadingStatusAtom.reportRead();
+    return super.loadingStatus;
   }
 
   @override
-  set status(LoadingStatusEnum value) {
-    _$statusAtom.reportWrite(value, super.status, () {
-      super.status = value;
+  set loadingStatus(LoadingStatusEnum value) {
+    _$loadingStatusAtom.reportWrite(value, super.loadingStatus, () {
+      super.loadingStatus = value;
     });
   }
 
@@ -109,6 +141,17 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       ActionController(name: '_SmartGoalStoreBase', context: context);
 
   @override
+  void changeProgressStatus(SmartGoalStatusEnum status) {
+    final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
+        name: '_SmartGoalStoreBase.changeProgressStatus');
+    try {
+      return super.changeProgressStatus(status);
+    } finally {
+      _$_SmartGoalStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setStatus(LoadingStatusEnum status) {
     final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
         name: '_SmartGoalStoreBase.setStatus');
@@ -120,14 +163,28 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   }
 
   @override
+  void dispose() {
+    final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
+        name: '_SmartGoalStoreBase.dispose');
+    try {
+      return super.dispose();
+    } finally {
+      _$_SmartGoalStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+currentProgressStatus: ${currentProgressStatus},
 smartGoal: ${smartGoal},
-status: ${status},
+loadingStatus: ${loadingStatus},
 currentPage: ${currentPage},
 paginatedGoals: ${paginatedGoals},
 inProgress: ${inProgress},
-achieved: ${achieved}
+achieved: ${achieved},
+filteredGoals: ${filteredGoals},
+isLoading: ${isLoading}
     ''';
   }
 }
