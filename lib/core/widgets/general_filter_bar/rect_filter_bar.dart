@@ -1,5 +1,4 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/general_filter_bar/stores/general_filter_bar_store.dart';
 import 'package:flutter/material.dart';
