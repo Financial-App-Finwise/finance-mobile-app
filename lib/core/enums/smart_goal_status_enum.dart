@@ -1,0 +1,1 @@
+enum SmartGoalStatusEnum {all, inProgress, achieved}
