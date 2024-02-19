@@ -3,8 +3,9 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
-import 'package:finwise/modules/upcoming_bill/widgets/edit_upcoming_bill_screen/amount_input.dart';
-import 'package:finwise/modules/upcoming_bill/widgets/edit_upcoming_bill_screen/expenses_name_input.dart';
+import 'package:finwise/modules/upcoming_bill/widgets/amount_input.dart';
+import 'package:finwise/modules/upcoming_bill/widgets/expenses_name_input.dart';
+import 'package:finwise/modules/upcoming_bill/widgets/note_input.dart';
 import 'package:flutter/material.dart';
 
 class AddUpcomingBillScreen extends StatefulWidget {
@@ -129,7 +130,7 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
         const SizedBox(
           height: 20,
         ),
-        ExpenseNameInput(controller: _noteController),
+        NoteInput(controller: _noteController),
       ],
     );
   }

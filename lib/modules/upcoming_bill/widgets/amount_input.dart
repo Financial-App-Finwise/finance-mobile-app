@@ -1,4 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,33 +19,31 @@ class AmountInput extends StatelessWidget {
       ],
       style: const TextStyle(
         fontWeight: FontWeight.w600,
-        fontSize: 14,
-        letterSpacing: 0.75,
-        color: ColorConstant.mainText,
+        fontSize: 20,
+        letterSpacing: 1,
+        color: ColorConstant.expenseIcon,
       ),
       decoration: InputDecoration(
-          alignLabelWithHint: true,
-          label: const Text(
-            'Amount',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              letterSpacing: 0.75,
-              color: ColorConstant.mainText,
+          hintText: "Total Amount",
+          hintStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+            letterSpacing: 1,
+            color: Color(0xFFA4A7C6),
+          ),
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 6,
+            ),
+            child: IconHelper.getSVG(
+              SVGName.dollarSquare,
+              color: ColorConstant.expenseIcon,
             ),
           ),
-          prefixText: '\$',
-          prefixStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            letterSpacing: 0.75,
-            color: ColorConstant.mainText,
-          ),
-          hintStyle: const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-            letterSpacing: 0.75,
-            color: ColorConstant.thin,
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 24,
+            minHeight: 24,
           ),
           contentPadding: const EdgeInsets.all(20),
           border: InputBorder.none,

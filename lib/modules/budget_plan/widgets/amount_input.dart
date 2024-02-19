@@ -15,7 +15,7 @@ class AmountInput extends StatelessWidget {
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
       ],
-      style: TextStyle(
+      style: const TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 14,
         letterSpacing: 0.75,
@@ -23,7 +23,7 @@ class AmountInput extends StatelessWidget {
       ),
       decoration: InputDecoration(
           alignLabelWithHint: true,
-          label: Text(
+          label: const Text(
             'Amount',
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -33,13 +33,13 @@ class AmountInput extends StatelessWidget {
             ),
           ),
           prefixText: '\$',
-          prefixStyle: TextStyle(
+          prefixStyle: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 14,
             letterSpacing: 0.75,
             color: ColorConstant.mainText,
           ),
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 14,
             letterSpacing: 0.75,
