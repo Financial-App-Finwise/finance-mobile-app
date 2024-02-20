@@ -18,9 +18,11 @@ abstract class TextStyleHelper {
       );
 
   static TextStyle getw600size(double? size, {Color? color}) => TextStyle(
+        fontFamily: FontConstant.balooThambi2,
         fontSize: size ?? 14,
         fontWeight: FontWeight.w600,
         color: color ?? ColorConstant.mainText,
+        letterSpacing: 1,
       );
 
   static TextStyle getw700size(double? size, {Color? color}) => TextStyle(

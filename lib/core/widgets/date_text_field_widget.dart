@@ -51,13 +51,16 @@ class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
             borderSide: BorderSide.none),
         fillColor: Colors.white,
         filled: true,
-        prefixIcon: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: IconHelper.getSVG(
-            SVGName.calendar,
-            color: ColorConstant.mainText,
+        prefixIcon: Container(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: IconHelper.getSVG(
+              SVGName.calendar,
+              color: ColorConstant.mainText,
+            ),
           ),
         ),
+        prefixIconConstraints: BoxConstraints(maxHeight: 24),
         hintText: widget.hintText,
         hintStyle: TextStyleHelper.getw500size(12, color: ColorConstant.thin),
       ),

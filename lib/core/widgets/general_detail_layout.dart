@@ -10,6 +10,7 @@ class GeneralDetailLayout extends StatefulWidget {
     this.mainContent,
     this.gradient,
     this.themeColor,
+    this.iconTitle,
   });
 
   final String title;
@@ -17,6 +18,7 @@ class GeneralDetailLayout extends StatefulWidget {
   final Widget? mainContent;
   final LinearGradient? gradient;
   final Color? themeColor;
+  final Widget? iconTitle;
 
   @override
   State<GeneralDetailLayout> createState() => _GeneralDetailLayoutState();
@@ -90,10 +92,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                       decoration: BoxDecoration(
                           color: const Color(0xFFFFFFFF),
                           borderRadius: BorderRadius.circular(4)),
-                      child: Icon(
-                        Icons.car_rental_outlined,
-                        color: widget.themeColor,
-                      ),
+                      child: widget.iconTitle,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -102,7 +101,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                         children: [
                           Text(
                             widget.title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 24,
                               color: Color(0xFFFFFFFF),
@@ -122,7 +121,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                   ],
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               // Action Icon Buttons
               Row(
                 children: [

@@ -6,6 +6,7 @@ import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
+import 'package:finwise/modules/categories/screens/category_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -240,7 +241,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       children: [
         _buildTotalTextField(color: ColorConstant.expense),
         const SizedBox(height: 24),
-        _buildCategorySection(color: ColorConstant.expense, svgName: SVGName.expense),
+        _buildCategorySection(
+            color: ColorConstant.expense, svgName: SVGName.expense),
         const SizedBox(height: 24),
         _buildDateField(),
         const SizedBox(height: 24),
@@ -288,7 +290,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     String svgName = SVGName.earn,
   }) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, RouteName.category),
+      onTap: () {},
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         decoration: BoxDecoration(

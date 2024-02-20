@@ -1,15 +1,19 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/smart_goal_text_style_constant.dart';
+import 'package:finwise/core/enums/transaction_period_enum.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/charts/general_six_month_bar_chart.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_detail_layout.dart';
-import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
-import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +41,10 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     return GeneralDetailLayout(
       title: args.name,
       subTitle: 'Created on: ${UIHelper.getFormattedDate(args.startDate)}',
+      iconTitle: IconHelper.getSVG(
+        SVGName.smartGoal,
+        color: ColorConstant.income,
+      ),
       gradient: const LinearGradient(
         colors: [
           ColorConstant.smartGoalLight,
@@ -50,27 +58,138 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
 
   Widget _buildContent() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          _buildOverview(),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SingleChildScrollView(
+        child: ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            const SizedBox(height: 16),
+            _buildOverview(),
+            const SizedBox(height: 20),
+            _buildContribution(),
+            const SizedBox(height: 20),
+            _buildTransactions(),
+            const SizedBox(height: 48),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildOverview() {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: [
-        Text('Overview', style: GeneralTextStyle.getHeader()),
+        Text('Overview', style: TextStyleHelper.getw600size(20)),
         const SizedBox(height: 12),
         _buildProgress(),
         const SizedBox(height: 12),
-        RoundedContainer(),
-        _buildContribution(),
-        _buildTransactions(),
-        const SizedBox(height: 48),
+        RoundedContainer(
+          child: Column(
+            children: [
+              _buildOverviewItem(
+                title: 'Target Goal',
+                subTitle: '\$${args.amount}',
+                subTitleColor: ColorConstant.primary,
+                icon: IconHelper.getSVG(
+                  SVGName.targetAmount,
+                  color: ColorConstant.income,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(color: ColorConstant.divider),
+              const SizedBox(height: 16),
+              IntrinsicHeight(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildOverviewItem(
+                        title: 'Saved so far',
+                        subTitle: '\$${args.currentSave}',
+                        subTitleColor: ColorConstant.income,
+                        icon: IconHelper.getSVG(
+                          SVGName.save,
+                          color: ColorConstant.income,
+                        ),
+                      ),
+                    ),
+                    const VerticalDivider(color: ColorConstant.divider),
+                    Expanded(
+                      child: _buildOverviewItem(
+                        title: 'Left to Save',
+                        subTitle: '\$${args.remainingSave}',
+                        subTitleColor: ColorConstant.expense,
+                        icon: IconHelper.getSVG(
+                          SVGName.hourGlass,
+                          color: ColorConstant.income,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(color: ColorConstant.divider),
+              const SizedBox(height: 16),
+              _buildOverviewItem(
+                title: 'Monthly Contribution',
+                subTitle: '+\$${args.monthlyContribution}',
+                subTitleColor: ColorConstant.black,
+                icon: IconHelper.getSVG(
+                  SVGName.pie,
+                  color: ColorConstant.income,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(color: ColorConstant.divider),
+              const SizedBox(height: 16),
+              _buildOverviewItem(
+                title: 'Target Date',
+                subTitle: UIHelper.getDateFormat(args.endDate, 'MMM dd, yyyy'),
+                subTitleColor: ColorConstant.black,
+                icon: IconHelper.getSVG(
+                  SVGName.calendarTick,
+                  color: ColorConstant.income,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOverviewItem({
+    String title = '',
+    String subTitle = '',
+    Color subTitleColor = Colors.black,
+    Widget? icon,
+  }) {
+    return Row(
+      children: [
+        SizedBox(width: 24, child: icon),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
+                  style: TextStyleHelper.getw500size(14).copyWith(
+                    letterSpacing: 0.75,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+              Text(
+                subTitle,
+                style: TextStyleHelper.getw600size(24, color: subTitleColor)
+                    .copyWith(
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -111,19 +230,23 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     );
   }
 
-  final Map<String, dynamic> data = {
-    "06": 10,
-    "07": 20,
-    "08": 50,
-    "09": 30,
-    "10": 20,
-    "11": 40,
-  };
-
   Widget _buildContribution() {
+    DateTime current = DateTime.now();
+
+    final Map<String, dynamic> data = {
+      "${(current.month - 5 + 12) % 12}": 10,
+      "${(current.month - 4 + 12) % 12}": 20,
+      "${(current.month - 3 + 12) % 12}": 50,
+      "${(current.month - 2 + 12) % 12}": 30,
+      "${(current.month - 1 + 12) % 12}": 20,
+      "${current.month}": 40,
+    };
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Last 6 month contribution', style: GeneralTextStyle.getHeader()),
+        Text('Last 6 month contribution',
+            style: TextStyleHelper.getw600size(20)),
+        const SizedBox(height: 12),
         GeneralSixMonthBarChart(
           sixMonthBudget: data,
           average: 10,
@@ -133,33 +256,77 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     );
   }
 
+  late TransactionPeriodEnum _current = TransactionPeriodEnum.all;
+
   Widget _buildTransactions({bool isIncome = true}) {
     return Column(
       children: [
-        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Transactions', style: GeneralTextStyle.getHeader()),
+            Text('Transactions', style: TextStyleHelper.getw600size(20)),
+            _buildAddButton(),
           ],
         ),
         const SizedBox(height: 16),
-        GeneralFilterBar(
-          topSpace: 0,
-          filterTitles: [
-            'All',
-            'Recently',
-            'Earliest',
-            'Lowest',
-            'Highest',
+        GeneralFilterBarHeader(
+          padding: EdgeInsets.zero,
+          physics: const BouncingScrollPhysics(),
+          items: [
+            FilterBarHeaderItem(title: 'All', value: TransactionPeriodEnum.all),
+            FilterBarHeaderItem(
+                title: 'Recently', value: TransactionPeriodEnum.recently),
+            FilterBarHeaderItem(
+                title: 'Earliest', value: TransactionPeriodEnum.earliest),
+            FilterBarHeaderItem(
+                title: 'Lowest', value: TransactionPeriodEnum.lowest),
+            FilterBarHeaderItem(
+                title: 'Highest', value: TransactionPeriodEnum.hightest),
           ],
-          // children: [],
+          currentValue: _current,
+          onTap: (value) {
+            setState(() {
+              _current = value;
+            });
+          },
         ),
         const SizedBox(height: 16),
         _buildTransactionItemsDays(isIncome: isIncome),
         const SizedBox(height: 16),
         _buildTransactionItemsDays(day: 'Yesterday', isIncome: isIncome),
       ],
+    );
+  }
+
+  Widget _buildAddButton() {
+    return TextButton(
+      onPressed: () =>
+          Navigator.pushNamed(context, RouteName.transactionCreate),
+      style: ButtonStyle(
+        elevation: MaterialStateProperty.all(0),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+              color: ColorConstant.color25CBEB,
+            ),
+          ),
+        ),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.add, color: ColorConstant.color25CBEB),
+          const SizedBox(width: 8),
+          Text(
+            'Add',
+            style:
+                TextStyleHelper.getw600size(12, color: ColorConstant.primary),
+          ),
+        ],
+      ),
     );
   }
 

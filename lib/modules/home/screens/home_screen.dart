@@ -65,24 +65,20 @@ class _HomeScreenState extends State<HomeScreen>
         alignment: Alignment.topRight,
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: SingleChildScrollView(
-          child: Column(
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
             children: [
-              ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: [
-                  _buildProfile(),
-                  _buildFinance(),
-                  _buildMainFeatures(),
-                  _buildSpendingIncome(),
-                  _buildTopSpending(),
-                  _buildBudgetPlan(),
-                  _buildTotalSpend(),
-                  _buildTotalEarn(),
-                  _buildUpcomingBill(),
-                  const SizedBox(height: 48),
-                ],
-              ),
+              _buildProfile(),
+              _buildFinance(),
+              _buildMainFeatures(),
+              _buildSpendingIncome(),
+              _buildTopSpending(),
+              _buildBudgetPlan(),
+              _buildTotalSpend(),
+              _buildTotalEarn(),
+              _buildUpcomingBill(),
+              const SizedBox(height: 48),
             ],
           ),
         ),
@@ -863,7 +859,8 @@ class _HomeScreenState extends State<HomeScreen>
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextButton(
-        onPressed: () => Navigator.pushNamed(context, RouteName.upcomingBillDetail),
+        onPressed: () =>
+            Navigator.pushNamed(context, RouteName.upcomingBillDetail),
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
             EdgeInsets.symmetric(vertical: 12, horizontal: 16),

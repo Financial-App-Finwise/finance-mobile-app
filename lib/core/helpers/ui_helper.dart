@@ -27,4 +27,13 @@ abstract class UIHelper {
     }
     return date;
   }
+
+  static getDateFormat(String date, String format) {
+    if (DateTime.tryParse(date) != null) {
+      DateTime parsedDate = DateTime.parse(date);
+      String formattedDate = DateFormat(format).format(parsedDate);
+      return formattedDate;
+    }
+    return date;
+  }
 }

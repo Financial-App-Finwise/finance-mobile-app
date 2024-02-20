@@ -5,7 +5,6 @@ import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 part 'smart_goal_store.g.dart';
 
@@ -55,7 +54,7 @@ abstract class _SmartGoalStoreBase with Store {
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
   @action
-  void setStatus(LoadingStatusEnum status) => loadingStatus = status;
+  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
 
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
@@ -97,11 +96,16 @@ abstract class _SmartGoalStoreBase with Store {
   @action
   Future readByPage({bool refreshed = false}) async {
     debugPrint('--> START: read smart goal');
+    setLoadingStatus(LoadingStatusEnum.loading);
+
+    // check if the page is refreshed
     if (refreshed) {
       currentPage = 0;
       paginatedGoals = ObservableList();
     }
     currentPage = currentPage + 1;
+
+    // try getting the data
     try {
       Response response =
           await ApiService.dio.get('goals/?page=${currentPage}');
@@ -113,15 +117,18 @@ abstract class _SmartGoalStoreBase with Store {
         );
 
         // --- TODO: check if the page exceeds the last page
-        print('length = ${paginatedGoals.length}');
+        debugPrint('length = ${paginatedGoals.length}');
         if (paginatedGoals.length < smartGoal.meta.total) {
           paginatedGoals.addAll(smartGoal.data);
           // paginatedGoals.sort((a, b) => b.id.compareTo(a.id));
         }
+        setLoadingStatus(LoadingStatusEnum.done);
       } else {
+        setLoadingStatus(LoadingStatusEnum.error);
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
       }
     } catch (e) {
+      setLoadingStatus(LoadingStatusEnum.error);
       debugPrint('${e.runtimeType}: ${e.toString()}');
     } finally {
       debugPrint('<-- END: read smart goal');

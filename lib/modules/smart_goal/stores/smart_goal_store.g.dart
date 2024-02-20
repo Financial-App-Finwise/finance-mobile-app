@@ -152,11 +152,11 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   }
 
   @override
-  void setStatus(LoadingStatusEnum status) {
+  void setLoadingStatus(LoadingStatusEnum status) {
     final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
         name: '_SmartGoalStoreBase.setStatus');
     try {
-      return super.setStatus(status);
+      return super.setLoadingStatus(status);
     } finally {
       _$_SmartGoalStoreBaseActionController.endAction(_$actionInfo);
     }

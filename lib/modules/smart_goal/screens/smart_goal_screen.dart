@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/smart_goal_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
@@ -13,13 +14,13 @@ import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.dart';
-import 'package:finwise/modules/smart_goal/widgets/date_text_field_widget.dart';
-import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_content.dart';
+import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class SmartGoalScreen extends StatefulWidget {
   const SmartGoalScreen({super.key});
@@ -30,18 +31,11 @@ class SmartGoalScreen extends StatefulWidget {
 
 class _SmartGoalScreenState extends State<SmartGoalScreen> {
   late SmartGoalUIStore uiStore = SmartGoalUIStore();
-  final ScrollController _pageController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      _pageController.addListener(() async {
-        if (_pageController.position.pixels ==
-            _pageController.position.maxScrollExtent) {
-          await context.read<SmartGoalStore>().readByPage();
-        }
-      });
       if (mounted) {
         await context.read<SmartGoalStore>().read();
         await context.read<SmartGoalStore>().readByPage();
@@ -71,31 +65,34 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   Widget _buildBody() {
     return Observer(
-        builder: (context) => GeneralStickyHeaderLayout(
-              title: 'My Smart Goal',
-              description:
-                  'Effortlessly manage your finance with a powerful simple tool in FinWise.',
-              gradient: const LinearGradient(colors: [
-                ColorConstant.smartGoalLight,
-                ColorConstant.smartGoalThick,
-              ]),
-              centerContent: _buildCenterContent(),
-              mainContent: _buildContent(),
-              centerContentPadding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 16,
-              ),
-              onNotification: (notification) {
-                if (notification is ScrollEndNotification) {
-                  if (notification.metrics.pixels ==
-                      notification.metrics.maxScrollExtent) {
-                    context.read<SmartGoalStore>().readByPage();
-                    return true;
-                  }
-                }
-                return true;
-              },
-            ));
+      builder: (context) => GeneralStickyHeaderLayout(
+        title: 'My Smart Goal',
+        description:
+            'Effortlessly manage your finance with a powerful simple tool in FinWise.',
+        gradient: const LinearGradient(colors: [
+          ColorConstant.smartGoalLight,
+          ColorConstant.smartGoalThick,
+        ]),
+        centerContentPadding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 14,
+        ),
+        onNotification: (notification) {
+          if (notification is ScrollEndNotification) {
+            if (notification.metrics.pixels ==
+                notification.metrics.maxScrollExtent) {
+              context.read<SmartGoalStore>().readByPage();
+              return true;
+            }
+          }
+          return true;
+        },
+        centerContent: _buildCenterContent(),
+        // mainContent: _buildContent(),
+        mainContent: _buildLoadingData(),
+        // mainContent: _buildNestedScrollView(),
+      ),
+    );
   }
 
   DateTime _startDay = DateTime.now();
@@ -111,7 +108,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             onDaySelected: ((selectedDay, focusedDay) {
               setState(() {
                 _startDayController.text =
-                    UIHelper.getInputDate(selectedDay.toString());
+                    UIHelper.getDateFormat(selectedDay.toString(), 'MMM dd, yyyy');
               });
             }),
             hintText: 'Start Date',
@@ -123,7 +120,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             onDaySelected: ((selectedDay, focusedDay) {
               setState(() {
                 _endDayController.text =
-                    UIHelper.getInputDate(selectedDay.toString());
+                    UIHelper.getDateFormat(selectedDay.toString(), 'MMM dd, yyyy');
               });
             }),
             hintText: 'End Date',
@@ -150,48 +147,104 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     //       );
   }
 
-  Widget _buildCenterOfGrid() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: TextButton(
-                onPressed: () => uiStore.toggleShowGrid(),
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                ),
-                child: IconHelper.getSVG(SVGName.burgerMenu),
-              ),
-            ),
-            SizedBox(width: 24),
-            Text(
-              '2024',
-              style: GeneralTextStyle.getSize(18).copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Icon(Icons.keyboard_arrow_down),
-          ],
-        ),
-        Row(
-          children: [
-            Icon(Icons.keyboard_arrow_left),
-            Icon(Icons.keyboard_arrow_right),
-          ],
-        )
-      ],
-    );
+  // Widget _buildNestedScrollView() {
+  //   return Column(
+  //     children: [
+  //       Expanded(
+  //         child: NestedScrollView(
+  //           physics: ScrollPhysics(parent: BouncingScrollPhysics()),
+  //           headerSliverBuilder:
+  //               (BuildContext context, bool innerBoxIsScrolled) {
+  //             return <Widget>[
+  //               SliverAppBar(
+  //                 automaticallyImplyLeading: false,
+  //                 backgroundColor: Colors.amber,
+  //                 toolbarHeight: 150,
+  //                 expandedHeight: 300,
+  //                 pinned: true,
+  //                 flexibleSpace: FlexibleSpaceBar(
+  //                   expandedTitleScale: 1,
+  //                   titlePadding: EdgeInsets.zero,
+  //                   title: _buildSummary(),
+  //                 ),
+  //               ),
+  //             ];
+  //           },
+  //           body: Column(
+  //             children: [
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //               Text('hello'),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // Widget _buildCenterOfGrid() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Row(
+  //         children: [
+  //           SizedBox(
+  //             width: 24,
+  //             height: 24,
+  //             child: TextButton(
+  //               onPressed: () => uiStore.toggleShowGrid(),
+  //               style: ButtonStyle(
+  //                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+  //               ),
+  //               child: IconHelper.getSVG(SVGName.burgerMenu),
+  //             ),
+  //           ),
+  //           SizedBox(width: 24),
+  //           Text(
+  //             '2024',
+  //             style: GeneralTextStyle.getSize(18).copyWith(
+  //               fontWeight: FontWeight.w700,
+  //             ),
+  //           ),
+  //           Icon(Icons.keyboard_arrow_down),
+  //         ],
+  //       ),
+  //       Row(
+  //         children: [
+  //           Icon(Icons.keyboard_arrow_left),
+  //           Icon(Icons.keyboard_arrow_right),
+  //         ],
+  //       )
+  //     ],
+  //   );
+  // }
+
+  Widget _buildLoadingData() {
+    LoadingStatusEnum status = context.watch<SmartGoalStore>().loadingStatus;
+    return Observer(builder: (_) {
+      switch (status) {
+        case LoadingStatusEnum.loading:
+        case LoadingStatusEnum.none:
+          return Center(child: CircularProgressIndicator());
+        case LoadingStatusEnum.error:
+          return Icon(Icons.error);
+        case LoadingStatusEnum.done:
+          return _buildContent();
+      }
+    });
   }
 
   Widget _buildContent() {
     return Container(
       padding: const EdgeInsets.only(top: 20),
-      child:
-          uiStore.showGrid ? const SmartGoalGridView() : _buildColumnContent(),
+      child: _buildColumnContent(),
     );
   }
 
@@ -216,7 +269,9 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   }
 
   Widget _buildSummary() {
-    return Column(
+    return ListView(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       children: [
         _buildTotalSummary(),
         const SizedBox(height: 12),
@@ -287,11 +342,9 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             onTap: (value) =>
                 context.read<SmartGoalStore>().changeProgressStatus(value),
           ),
-          context.watch<SmartGoalStore>().isLoading
-              ? CircularProgressIndicator()
-              : _buildFilteredSmartGoals(
-                  context.watch<SmartGoalStore>().paginatedGoals,
-                ),
+          _buildFilteredSmartGoals(
+            context.watch<SmartGoalStore>().paginatedGoals,
+          ),
           const SizedBox(height: 16),
         ],
       );

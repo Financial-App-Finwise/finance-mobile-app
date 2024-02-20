@@ -29,6 +29,7 @@ abstract class SVGName {
   static const String myBudget = 'my_budget.svg';
   static const String notification = 'notification.svg';
   static const String overBudget = 'over_budget.svg';
+  static const String pie = 'pie.svg';
   static const String piggyBank = 'piggy_bank.svg';
   static const String plus = 'plus.svg';
   static const String report = 'report.svg';

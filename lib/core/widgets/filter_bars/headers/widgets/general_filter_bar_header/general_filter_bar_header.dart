@@ -36,7 +36,7 @@ class _GeneralFilterBarHeaderState extends State<GeneralFilterBarHeader> {
     store.currentValue = widget.currentValue;
     return Observer(builder: (context) {
       return Container(
-        alignment: Alignment.topLeft,
+        // color: Colors.red,
         padding: widget.padding ?? const EdgeInsets.all(8),
         child: widget.physics != null
             ? SingleChildScrollView(
