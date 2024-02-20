@@ -11,6 +11,7 @@ class GeneralDetailLayout extends StatefulWidget {
     this.gradient,
     this.themeColor,
     this.iconTitle,
+    this.onEdit,
   });
 
   final String title;
@@ -19,6 +20,7 @@ class GeneralDetailLayout extends StatefulWidget {
   final LinearGradient? gradient;
   final Color? themeColor;
   final Widget? iconTitle;
+  final void Function()? onEdit;
 
   @override
   State<GeneralDetailLayout> createState() => _GeneralDetailLayoutState();
@@ -130,14 +132,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                     width: 24,
                     height: 24,
                     child: IconButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const EditBudgetPlanScreen(),
-                        //   ),
-                        // );
-                      },
+                      onPressed: widget.onEdit,
                       icon: IconConstant.edit,
                       style: ButtonStyle(
                         padding:

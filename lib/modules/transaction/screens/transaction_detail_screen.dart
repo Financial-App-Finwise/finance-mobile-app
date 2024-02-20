@@ -15,6 +15,7 @@ class TransactionDetailScreen extends StatefulWidget {
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
+
   @override
   Widget build(BuildContext context) {
     return GeneralDetailLayout(
@@ -27,6 +28,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
       ),
       title: 'CADT Salary',
       subTitle: 'My Income',
+      iconTitle: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
       mainContent: _buildContent(),
     );
   }

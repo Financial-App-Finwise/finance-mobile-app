@@ -21,6 +21,7 @@ abstract class SVGName {
   static const String earn = 'earn.svg';
   static const String edit = 'edit.svg';
   static const String expense = 'expense.svg';
+  static const String finwise = 'finwise.svg';
   static const String home = 'home.svg';
   static const String hourGlass = 'hour_glass.svg';
   static const String infoAlert = 'info_alert.svg';

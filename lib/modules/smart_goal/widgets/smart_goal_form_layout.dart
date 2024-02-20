@@ -14,14 +14,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class AddSmartGoalScreen extends StatefulWidget {
-  const AddSmartGoalScreen({super.key});
+class SmartGoalFormLayout extends StatefulWidget {
+  late final String title;
+  final Widget? formSection;
+  late bool showTopProgress;
+
+  SmartGoalFormLayout({
+    super.key,
+    this.title = '',
+    this.formSection,
+    this.showTopProgress = false,
+  });
 
   @override
-  State<AddSmartGoalScreen> createState() => _AddSmartGoalScreenState();
+  State<SmartGoalFormLayout> createState() => _SmartGoalFormLayoutState();
 }
 
-class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
+class _SmartGoalFormLayoutState extends State<SmartGoalFormLayout> {
   final double _progressBar = 0.5;
 
   @override
@@ -69,7 +78,6 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 child: IconButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestGradientSVG()));
                   },
                   icon: IconHelper.getSVG(SVGName.close),
                   style: ButtonStyle(
@@ -81,9 +89,12 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: CustomProgressBar(
-                  value: _progressBar,
-                  color: ColorConstant.primary,
+                child: Visibility(
+                  visible: widget.showTopProgress,
+                  child: CustomProgressBar(
+                    value: _progressBar,
+                    color: ColorConstant.primary,
+                  ),
                 ),
               ),
             ],
@@ -97,8 +108,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Add Smart Goal',
+        Text(
+          widget.title,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 32,
@@ -158,11 +169,12 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
   int _sectionIndex = 0;
 
   Widget _buildForm() {
-    List sections = [
-      _buildBasicInfoPart(),
-      _buildTargetGoalPart(),
-    ];
-    return sections[_sectionIndex];
+    return widget.formSection ?? const SizedBox();
+    // List sections = [
+    //   _buildBasicInfoPart(),
+    //   _buildTargetGoalPart(),
+    // ];
+    // return sections[_sectionIndex];
   }
 
   Widget _buildBasicInfoPart() {

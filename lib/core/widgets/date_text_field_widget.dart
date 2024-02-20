@@ -10,10 +10,12 @@ class DateTextFieldWidget extends StatefulWidget {
   late final void Function(DateTime selectedDay, DateTime focusedDay)
       onDaySelected;
   final TextEditingController? controller;
+  final TextStyle? hintStyle;
 
   DateTextFieldWidget({
     super.key,
     this.hintText = '',
+    this.hintStyle,
     required this.onDaySelected,
     this.controller,
   });
@@ -62,7 +64,7 @@ class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
         ),
         prefixIconConstraints: BoxConstraints(maxHeight: 24),
         hintText: widget.hintText,
-        hintStyle: TextStyleHelper.getw500size(12, color: ColorConstant.thin),
+        hintStyle: widget.hintStyle ?? TextStyleHelper.getw500size(12, color: ColorConstant.thin),
       ),
     );
   }

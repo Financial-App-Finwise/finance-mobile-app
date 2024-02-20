@@ -45,6 +45,11 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
         SVGName.smartGoal,
         color: ColorConstant.income,
       ),
+      onEdit: () => Navigator.pushNamed(
+        context,
+        RouteName.smartGoalEdit,
+        arguments: args,
+      ),
       gradient: const LinearGradient(
         colors: [
           ColorConstant.smartGoalLight,
@@ -211,19 +216,40 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
             Text('7',
                 style: SmartGoalTextStyle.getCardTitle(
                     color: ColorConstant.black)),
-            const SizedBox(width: 2),
+            const SizedBox(width: 6),
             Text('transactions', style: SmartGoalTextStyle.cardSubTitle),
           ],
         ),
-        bottomLeft:
-            Text('${args.currentSave}', style: SmartGoalTextStyle.cardSubTitle),
-        bottomRight: Row(
+        topRight: Row(
           children: [
-            Text('out of ', style: SmartGoalTextStyle.cardSubTitle),
-            const SizedBox(width: 6),
-            Text('${args.amount}',
+            Text('\$${args.remainingSave}',
                 style: SmartGoalTextStyle.getCardTitle(
                     color: ColorConstant.black)),
+            const SizedBox(width: 6),
+            Text('left', style: SmartGoalTextStyle.cardSubTitle),
+          ],
+        ),
+        bottomLeft: Row(
+          children: [
+            Text('\$${args.currentSave}',
+                style: SmartGoalTextStyle.cardSubTitle),
+            const SizedBox(width: 6),
+            Text(
+              'saved so far',
+              style:
+                  SmartGoalTextStyle.getCardTitle(color: ColorConstant.black),
+            ),
+          ],
+        ),
+        bottomRight: Row(
+          children: [
+            Text('out of', style: SmartGoalTextStyle.cardSubTitle),
+            const SizedBox(width: 6),
+            Text(
+              '\$${args.amount}',
+              style:
+                  SmartGoalTextStyle.getCardTitle(color: ColorConstant.black),
+            ),
           ],
         ),
       ),

@@ -46,4 +46,5 @@ abstract class ColorConstant {
   static const Color colorA4A7C6 = Color(0xffA4A7C6);
   static const Color color292D32 = Color(0xff292D32);
   static const Color color25CBEB = Color(0xff25CBEB);
+  static const Color color211F32 = Color(0xff211F32);
 }

@@ -24,4 +24,9 @@ abstract class IconHelper {
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
         ),
       );
+
+    // ------------------------- svg with default color --------------------------
+  static SvgPicture getSVGDefault(String svgName) {
+    return SvgPicture.asset('$_svgPath$svgName');
+  }
 }

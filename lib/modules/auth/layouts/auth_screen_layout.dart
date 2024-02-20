@@ -30,8 +30,6 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      // appBar: _buildAppBar(),
       body: SafeArea(
         child: GestureDetector(
           child: _buildBody(),
@@ -113,7 +111,7 @@ class _AuthScreenLayoutState extends State<AuthScreenLayout> {
       // color: Colors.blue[200],
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(
-        vertical: 50,
+        vertical: 16,
         // horizontal: 16,
       ),
       child: InkWell(

@@ -3,10 +3,13 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
+import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -284,33 +287,21 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
+  late CategoryData _selectedCategory = CategoryData();
+
   // ---------- Category Field ----------
   Widget _buildCategorySection({
     Color color = ColorConstant.income,
     String svgName = SVGName.earn,
   }) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildCategoryFieldIcon(color: color, svgName: svgName),
-                const SizedBox(width: 8),
-                _buildCategoryFieldTitle(),
-              ],
-            ),
-          ),
-          _buildCategoryFieldSuffix(),
-        ]),
-      ),
+    return CategoryButton(
+      setCategory: (categoryData) {
+        setState(() {
+          _selectedCategory = categoryData;
+        });
+      },
+      category: _selectedCategory,
+      showTip: false,
     );
   }
 
@@ -352,23 +343,33 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   DateTime currentDate = DateTime.now();
 
   Widget _buildDateField() {
+    // return DateTextFieldWidget(
+    //   onDaySelected: ((selectedDay, focusedDay) => null),
+    // );
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
-        children: [
-          IconHelper.getSVG(SVGName.calendar, color: ColorConstant.mainText),
-          const SizedBox(width: 8),
-          Text(
-            UIHelper.getFormattedDate(currentDate.toString()),
-            style:
-                TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
-          ),
-        ],
+      child: DateTextFieldWidget(
+        hintText:
+            UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMMM, yyyy'),
+        hintStyle:
+            TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
+        onDaySelected: ((selectedDay, focusedDay) => null),
       ),
+      // child: Row(
+      //   children: [
+      //     IconHelper.getSVG(SVGName.calendar, color: ColorConstant.mainText),
+      //     const SizedBox(width: 8),
+      //     Text(
+      //       UIHelper.getFormattedDate(currentDate.toString()),
+      //       style:
+      //           TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
+      //     ),
+      //   ],
+      // ),
     );
   }
 

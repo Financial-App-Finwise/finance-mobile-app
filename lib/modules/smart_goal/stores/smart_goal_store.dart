@@ -96,12 +96,11 @@ abstract class _SmartGoalStoreBase with Store {
   @action
   Future readByPage({bool refreshed = false}) async {
     debugPrint('--> START: read smart goal');
-    setLoadingStatus(LoadingStatusEnum.loading);
-
     // check if the page is refreshed
     if (refreshed) {
       currentPage = 0;
       paginatedGoals = ObservableList();
+      setLoadingStatus(LoadingStatusEnum.loading);
     }
     currentPage = currentPage + 1;
 

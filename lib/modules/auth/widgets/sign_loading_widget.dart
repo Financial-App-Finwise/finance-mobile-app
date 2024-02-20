@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/text_style_constants/auth_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
@@ -45,17 +46,18 @@ class _SignLoadingWidgetState extends State<SignLoadingWidget> {
               style: AuthScreenTextStyle.formLabel,
             ),
             const SizedBox(height: 16),
-            const SimpleCircularProgressBar(
-              size: 50,
-              progressStrokeWidth: 12,
-              animationDuration: 3,
-              backColor: Colors.white,
-              progressColors: [
-                Color(0xff75DBFF),
-                Color(0xff22BAF4),
-                Color(0xff00ADEF),
-              ],
-            ),
+            // const SimpleCircularProgressBar(
+            //   size: 50,
+            //   progressStrokeWidth: 12,
+            //   animationDuration: 3,
+            //   backColor: Colors.white,
+            //   progressColors: [
+            //     Color(0xff75DBFF),
+            //     Color(0xff22BAF4),
+            //     Color(0xff00ADEF),
+            //   ],
+            // ),
+            CircularProgressIndicatorTwoArcs(),
           ],
         ),
       ),

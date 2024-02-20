@@ -8,7 +8,6 @@ import 'package:finwise/core/models/income_expense_model/income_expense_model.da
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
-import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/widgets/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
@@ -64,22 +63,25 @@ class _HomeScreenState extends State<HomeScreen>
       child: Container(
         alignment: Alignment.topRight,
         padding: const EdgeInsets.only(left: 16, right: 16),
-        child: SingleChildScrollView(
-          child: ListView(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-              _buildProfile(),
-              _buildFinance(),
-              _buildMainFeatures(),
-              _buildSpendingIncome(),
-              _buildTopSpending(),
-              _buildBudgetPlan(),
-              _buildTotalSpend(),
-              _buildTotalEarn(),
-              _buildUpcomingBill(),
-              const SizedBox(height: 48),
-            ],
+        child: RefreshIndicator(
+          onRefresh: () async {},
+          child: SingleChildScrollView(
+            child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                _buildProfile(),
+                _buildFinance(),
+                _buildMainFeatures(),
+                _buildSpendingIncome(),
+                _buildTopSpending(),
+                _buildBudgetPlan(),
+                _buildTotalSpend(),
+                _buildTotalEarn(),
+                _buildUpcomingBill(),
+                const SizedBox(height: 48),
+              ],
+            ),
           ),
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
@@ -17,8 +18,10 @@ import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
+import 'package:finwise/test/test_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
@@ -75,7 +78,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         ]),
         centerContentPadding: const EdgeInsets.symmetric(
           vertical: 12,
-          horizontal: 14,
+          horizontal: 16,
         ),
         onNotification: (notification) {
           if (notification is ScrollEndNotification) {
@@ -107,8 +110,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           child: DateTextFieldWidget(
             onDaySelected: ((selectedDay, focusedDay) {
               setState(() {
-                _startDayController.text =
-                    UIHelper.getDateFormat(selectedDay.toString(), 'MMM dd, yyyy');
+                _startDayController.text = UIHelper.getDateFormat(
+                    selectedDay.toString(), 'MMM dd, yyyy');
               });
             }),
             hintText: 'Start Date',
@@ -119,8 +122,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           child: DateTextFieldWidget(
             onDaySelected: ((selectedDay, focusedDay) {
               setState(() {
-                _endDayController.text =
-                    UIHelper.getDateFormat(selectedDay.toString(), 'MMM dd, yyyy');
+                _endDayController.text = UIHelper.getDateFormat(
+                    selectedDay.toString(), 'MMM dd, yyyy');
               });
             }),
             hintText: 'End Date',
@@ -232,7 +235,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
       switch (status) {
         case LoadingStatusEnum.loading:
         case LoadingStatusEnum.none:
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicatorTwoArcs());
         case LoadingStatusEnum.error:
           return Icon(Icons.error);
         case LoadingStatusEnum.done:
@@ -250,6 +253,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   Widget _buildColumnContent() {
     return RefreshIndicator(
+      color: ColorConstant.primary,
       onRefresh: () async {
         await context.read<SmartGoalStore>().read();
         await context.read<SmartGoalStore>().readByPage(refreshed: true);
