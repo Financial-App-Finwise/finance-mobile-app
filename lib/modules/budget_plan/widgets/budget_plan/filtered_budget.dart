@@ -34,7 +34,8 @@ class _FilteredBudgetState extends State<FilteredBudget> {
               TitleProgressCard(
                 screen: const BudgetPlanDetailScreen(),
                 title: widget.budgetCards[index].name,
-                color: ColorConstant.expense,
+                gradient1: const Color(0xFFFBA6A6),
+                gradient2 : ColorConstant.expense,
                 transaction: widget.budgetCards[index].userID,
                 remain: widget.budgetCards[index].amount.toInt(),
                 total: widget.budgetCards[index].amount.toInt(),

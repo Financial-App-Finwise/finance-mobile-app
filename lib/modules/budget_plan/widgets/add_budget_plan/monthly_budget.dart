@@ -27,7 +27,7 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
   void initState() {
     super.initState();
 
-    _budgetAmountController.text = '0';
+    _budgetAmountController.text = '';
   }
 
   @override

@@ -36,7 +36,8 @@ class ThisMonthContent extends StatelessWidget {
           color: const Color(0xFFFFFFFF),
           padding: const EdgeInsets.all(16),
           child: ProgressCard(
-              color: ColorConstant.expense,
+              gradient1: const Color(0xFFFBA6A6),
+              gradient2: ColorConstant.expense,
               transaction: transaction,
               remain: remain,
               total: total,

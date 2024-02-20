@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 class TitleProgressCard extends StatelessWidget {
   final Widget screen;
   final String title;
-  final Color color;
+  final Color gradient1;
+  final Color gradient2;
   final int transaction;
   final int remain;
   final int total;
@@ -15,7 +16,8 @@ class TitleProgressCard extends StatelessWidget {
     super.key,
     required this.screen,
     required this.title,
-    required this.color,
+    required this.gradient1,
+    required this.gradient2,
     required this.transaction,
     required this.remain,
     required this.total,
@@ -46,7 +48,7 @@ class TitleProgressCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                      color: color, borderRadius: BorderRadius.circular(4)),
+                      color: gradient2, borderRadius: BorderRadius.circular(4)),
                   child: Icon(
                     Icons.car_rental_outlined,
                     color: ColorConstant.white,
@@ -139,7 +141,8 @@ class TitleProgressCard extends StatelessWidget {
           ),
           CustomProgressBar(
             value: ((spent * 10) / total) / 10,
-            color: color,
+            gradient1: gradient1,
+            gradient2: gradient2,
           ),
           const SizedBox(
             height: 6,

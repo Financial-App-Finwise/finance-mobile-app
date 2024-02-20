@@ -84,7 +84,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
               Expanded(
                 child: CustomProgressBar(
                   value: _progressBar,
-                  color: ColorConstant.primary,
+                  gradient1: ColorConstant.secondary,
+                  gradient2: ColorConstant.primary,
                 ),
               ),
             ],
@@ -380,7 +381,9 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                         ),
                       );
                   if (success) {
-                    await context.read<SmartGoalStore>().readByPage(refreshed: true);
+                    await context
+                        .read<SmartGoalStore>()
+                        .readByPage(refreshed: true);
                   }
                 },
                 buttonLabel: 'Create',

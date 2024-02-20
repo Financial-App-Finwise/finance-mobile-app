@@ -35,7 +35,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
                   height: 10,
                 ),
                 AnimatedSwitcher(
-                  duration: const Duration(seconds: 1),
+                  duration: const Duration(microseconds: 200),
                   child: _currentWidgetIndex == 0
                       ? _mainContent()
                       : _currentWidgetIndex == 1
@@ -89,7 +89,8 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
               Expanded(
                 child: CustomProgressBar(
                   value: _progressBar,
-                  color: ColorConstant.primary,
+                  gradient1: ColorConstant.secondary,
+                  gradient2: ColorConstant.primary,
                 ),
               ),
             ],
@@ -106,7 +107,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
         const SizedBox(
           height: 16,
         ),
-        GestureDetector(
+        InkWell(
           onTap: () {
             setState(() {
               _currentWidgetIndex = 1;
@@ -121,7 +122,7 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
         const SizedBox(
           height: 16,
         ),
-        GestureDetector(
+        InkWell(
           onTap: () {
             setState(() {
               _currentWidgetIndex = 2;
