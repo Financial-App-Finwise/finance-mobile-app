@@ -93,7 +93,8 @@ class _SmartGoalFormLayoutState extends State<SmartGoalFormLayout> {
                   visible: widget.showTopProgress,
                   child: CustomProgressBar(
                     value: _progressBar,
-                    color: ColorConstant.primary,
+                    gradient1: ColorConstant.primary,
+                    gradient2: ColorConstant.secondary,
                   ),
                 ),
               ),
