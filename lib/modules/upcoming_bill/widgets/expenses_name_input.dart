@@ -1,20 +1,15 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class AmountInput extends StatelessWidget {
+class ExpenseNameInput extends StatelessWidget {
   final TextEditingController controller;
 
-  const AmountInput({super.key, required this.controller});
+  const ExpenseNameInput({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-      ],
       style: const TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 14,
@@ -22,23 +17,7 @@ class AmountInput extends StatelessWidget {
         color: ColorConstant.mainText,
       ),
       decoration: InputDecoration(
-          alignLabelWithHint: true,
-          label: const Text(
-            'Amount',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              letterSpacing: 0.75,
-              color: ColorConstant.mainText,
-            ),
-          ),
-          prefixText: '\$',
-          prefixStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            letterSpacing: 0.75,
-            color: ColorConstant.mainText,
-          ),
+          hintText: "Expense name (Optional)",
           hintStyle: const TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 14,

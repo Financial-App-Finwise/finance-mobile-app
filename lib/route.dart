@@ -15,6 +15,7 @@ import 'package:finwise/modules/smart_goal/screens/smart_goal_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_detail_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_screen.dart';
+import 'package:finwise/modules/upcoming_bill/screens/add_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_screen.dart';
 import 'package:finwise/screens/index_screen.dart';
@@ -55,6 +56,7 @@ abstract class RouteName {
   // ----- upcoming bill -----
   static const String upcomingBill = "/upcomingBill";
   static const String upcomingBillDetail = '/upcoming_bill/show';
+  static const String addUpcomingBill = "/upcomingBill/add";
 
   // ----- currency -----
   static const String currency = '/currency';
@@ -76,7 +78,8 @@ var appRoutes = {
 
   // ----- budget plan -----
   RouteName.budgetPlan: (BuildContext context) => const BudgetPlanScreen(),
-  RouteName.budgetPlanDetail: (BuildContext context) => const BudgetPlanDetailScreen(),
+  RouteName.budgetPlanDetail: (BuildContext context) =>
+      const BudgetPlanDetailScreen(),
   RouteName.addBudget: (BuildContext context) => const AddBudgetPlanScreen(),
 
   // ----- finance -----
@@ -102,8 +105,9 @@ var appRoutes = {
   RouteName.upcomingBill: (BuildContext context) => const UpcomingBillScreen(),
   RouteName.upcomingBillDetail: (BuildContext context) =>
       UpcomingBillDetailScreen(),
+  RouteName.addUpcomingBill: (BuildContext context) =>
+      const AddUpcomingBillScreen(),
 
   // ----- currency -----
   RouteName.currency: (BuildContext context) => const CurrencyScreen(),
-
 };

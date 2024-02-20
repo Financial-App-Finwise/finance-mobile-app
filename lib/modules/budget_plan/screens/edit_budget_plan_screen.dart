@@ -69,7 +69,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => TestCategory()));
           },
-          child: Text(
+          child: const Text(
             'Edit budget',
             style: TextStyle(
               fontWeight: FontWeight.w600,
