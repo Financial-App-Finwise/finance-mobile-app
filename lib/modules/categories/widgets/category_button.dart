@@ -25,74 +25,86 @@ class _CategoryButtonState extends State<CategoryButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CategoryScreen(setCategory: widget.setCategory),
-              ),
+      onTap: () => Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              CategoryScreen(setCategory: widget.setCategory),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            final tween = Tween(begin: begin, end: end);
+            final offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(
+              position: offsetAnimation,
+              child: child,
+            );
+          },
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 20,
             ),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 20,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: ColorConstant.white,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      widget.category?.name == 'no name'
-                          ? _unpickCategoryIcon()
-                          : _pickedCategoryIcon(),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Category',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12,
-                              letterSpacing: 0.75,
-                              color: ColorConstant.mainText,
-                            ),
-                          ),
-                          Text(
-                            widget.category?.name == 'no name'
-                                ? 'Select one of the category'
-                                : widget.category!.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              letterSpacing: 0.75,
-                              color: widget.category?.name == 'no name'
-                                  ? const Color(0xFF656B9F)
-                                  : ColorConstant.mainText,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  IconHelper.getSVG(
-                    SVGName.arrowRight,
-                    color: ColorConstant.thin,
-                  ),
-                ],
-              ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: ColorConstant.white,
             ),
-            widget.showTip! ? _tip() : Container(),
-          ],
-        ));
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    widget.category?.name == 'no name'
+                        ? _unpickCategoryIcon()
+                        : _pickedCategoryIcon(),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Category',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                            letterSpacing: 0.75,
+                            color: ColorConstant.mainText,
+                          ),
+                        ),
+                        Text(
+                          widget.category?.name == 'no name'
+                              ? 'Select one of the category'
+                              : widget.category!.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            letterSpacing: 0.75,
+                            color: widget.category?.name == 'no name'
+                                ? const Color(0xFF656B9F)
+                                : ColorConstant.mainText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                IconHelper.getSVG(
+                  SVGName.arrowRight,
+                  color: ColorConstant.thin,
+                ),
+              ],
+            ),
+          ),
+          widget.showTip! ? _tip() : Container(),
+        ],
+      ),
+    );
   }
 
   Widget _unpickCategoryIcon() {

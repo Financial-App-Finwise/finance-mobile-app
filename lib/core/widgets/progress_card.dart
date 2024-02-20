@@ -3,7 +3,8 @@ import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProgressCard extends StatelessWidget {
-  final Color color;
+  final Color gradient1;
+  final Color gradient2;
   final int transaction;
   final int remain;
   final int total;
@@ -11,7 +12,8 @@ class ProgressCard extends StatelessWidget {
 
   const ProgressCard({
     super.key,
-    required this.color,
+    required this.gradient1,
+    required this.gradient2,
     required this.transaction,
     required this.remain,
     required this.total,
@@ -83,7 +85,8 @@ class ProgressCard extends StatelessWidget {
           ),
           CustomProgressBar(
             value: ((spent * 10) / total) / 10,
-            color: color,
+            gradient1: gradient1,
+            gradient2: gradient2,
           ),
           const SizedBox(
             height: 6,
@@ -104,7 +107,7 @@ class ProgressCard extends StatelessWidget {
                   const SizedBox(
                     width: 6,
                   ),
-                  Text(
+                  const Text(
                     'spent',
                     style: TextStyle(
                       fontSize: 14,

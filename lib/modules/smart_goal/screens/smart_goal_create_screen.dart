@@ -83,7 +83,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
               Expanded(
                 child: CustomProgressBar(
                   value: _progressBar,
-                  color: ColorConstant.primary,
+                  gradient1: ColorConstant.secondary,
+                  gradient2: ColorConstant.primary,
                 ),
               ),
             ],
