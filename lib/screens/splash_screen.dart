@@ -1,6 +1,8 @@
+import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
-import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
-import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +21,11 @@ class _SplashScreenState extends State<SplashScreen> {
     debugPrint('--> START: splash screen initState');
     Future.delayed(const Duration(seconds: 1), () async {
       debugPrint('<-- END: splash screen initState');
+      await context.read<AuthStore>().readCache();
+      // await context.read<SmartGoalStore>().read();
+
       // if the state object is mounted
       if (mounted) {
-        await context.read<AuthStore>().readCache();
-        // await context.read<SmartGoalStore>().read();
         Navigator.of(context).pushReplacementNamed(RouteName.wrapper);
       }
     });
@@ -37,8 +40,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Splash Screen')),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconHelper.getSVGDefault(SVGName.finwise),
+            const SizedBox(height: 10),
+            Text('Personal finance. Personal growth.',
+                style: TextStyleHelper.getw500size(14,
+                    color: ColorConstant.color211F32)),
+          ],
+        ),
+      ),
     );
   }
 }
