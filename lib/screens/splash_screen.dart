@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -43,13 +44,23 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconHelper.getSVGDefault(SVGName.finwise),
-            const SizedBox(height: 10),
-            Text('Personal finance. Personal growth.',
-                style: TextStyleHelper.getw500size(14,
-                    color: ColorConstant.color211F32)),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconHelper.getSVGDefault(SVGName.finwise),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Personal finance. Personal growth.',
+                    style: TextStyleHelper.getw500size(14,
+                        color: ColorConstant.color211F32),
+                  ),
+                ],
+              ),
+            ),
+            CircularProgressIndicatorTwoArcs(),
+            const SizedBox(height: 32),
           ],
         ),
       ),
