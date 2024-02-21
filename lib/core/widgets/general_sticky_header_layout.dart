@@ -49,7 +49,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
       _setContainerHeight();
     });
     _scrollController.addListener(() {
-      if (_scrollController.offset > titleHeight) {
+      if (_scrollController.offset > titleHeight * 0.9) {
         setState(() {
           _isAppBarExpanded = false;
         });
@@ -126,7 +126,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
             child: Row(
               children: [
                 _buildBackArrow(),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Visibility(
                   visible: !_isAppBarExpanded,
                   child: Text(
