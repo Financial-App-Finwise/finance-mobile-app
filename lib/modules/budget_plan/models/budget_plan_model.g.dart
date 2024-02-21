@@ -7,14 +7,22 @@ part of 'budget_plan_model.dart';
 // **************************************************************************
 
 BudgetPlan _$BudgetPlanFromJson(Map<String, dynamic> json) => BudgetPlan(
-      data: (json['data'] as List<dynamic>)
-          .map((e) => BudgetPlanData.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      data: February.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$BudgetPlanToJson(BudgetPlan instance) =>
     <String, dynamic>{
       'data': instance.data,
+    };
+
+February _$FebruaryFromJson(Map<String, dynamic> json) => February(
+      monthData: (json['February'] as List<dynamic>)
+          .map((e) => BudgetPlanData.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$FebruaryToJson(February instance) => <String, dynamic>{
+      'February': instance.monthData,
     };
 
 BudgetPlanData _$BudgetPlanDataFromJson(Map<String, dynamic> json) =>
@@ -39,5 +47,5 @@ Map<String, dynamic> _$BudgetPlanDataToJson(BudgetPlanData instance) =>
       'categoryID': instance.categoryID,
       'isMonthly': BudgetPlanData._boolToInt(instance.isMonthly),
       'name': instance.name,
-      'amount': instance.amount,
+      'amount': BudgetPlanData._doubleToString(instance.amount),
     };

@@ -49,6 +49,28 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     return _$readAsyncAction.run(() => super.read());
   }
 
+  late final _$postAsyncAction =
+      AsyncAction('_UpcomingBillStoreBase.post', context: context);
+
+  @override
+  Future<bool> post(UpcomingBillData upcomingBillData) {
+    return _$postAsyncAction.run(() => super.post(upcomingBillData));
+  }
+
+  late final _$_UpcomingBillStoreBaseActionController =
+      ActionController(name: '_UpcomingBillStoreBase', context: context);
+
+  @override
+  void setLoadingStatus(LoadingStatusEnum status) {
+    final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
+        name: '_UpcomingBillStoreBase.setLoadingStatus');
+    try {
+      return super.setLoadingStatus(status);
+    } finally {
+      _$_UpcomingBillStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

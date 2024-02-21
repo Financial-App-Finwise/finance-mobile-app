@@ -8,7 +8,7 @@ BudgetPlan getBudgetPlan(Map<String, dynamic> json) {
 
 @JsonSerializable()
 class BudgetPlan {
-  late List<BudgetPlanData> data;
+  late February data;
 
   BudgetPlan({required this.data});
 
@@ -16,6 +16,19 @@ class BudgetPlan {
       _$BudgetPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$BudgetPlanToJson(this);
+}
+
+@JsonSerializable()
+class February {
+  @JsonKey(name: 'February')
+  late List<BudgetPlanData> monthData;
+
+  February({required this.monthData});
+
+  factory February.fromJson(Map<String, dynamic> json) =>
+      _$FebruaryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FebruaryToJson(this);
 }
 
 @JsonSerializable()
@@ -30,7 +43,7 @@ class BudgetPlanData {
   late bool isMonthly;
   late String name;
 
-  @JsonKey(fromJson: _stringToDouble)
+  @JsonKey(fromJson: _stringToDouble, toJson: _doubleToString)
   late double amount;
 
   @JsonKey(name: 'created_at', includeToJson: false)
@@ -56,6 +69,8 @@ class BudgetPlanData {
   Map<String, dynamic> toJson() => _$BudgetPlanDataToJson(this);
 
   static double _stringToDouble(String value) => double.parse(value);
+
+  static String _doubleToString(double value) => value.toString();
 
   static bool _intToBool(int value) => 1 == value;
 

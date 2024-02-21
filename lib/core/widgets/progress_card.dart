@@ -45,7 +45,7 @@ class ProgressCard extends StatelessWidget {
                   const SizedBox(
                     width: 6,
                   ),
-                  Text(
+                  const Text(
                     'transactions',
                     style: TextStyle(
                       fontSize: 14,
@@ -68,7 +68,7 @@ class ProgressCard extends StatelessWidget {
                   const SizedBox(
                     width: 6,
                   ),
-                  Text(
+                  const Text(
                     'left',
                     style: TextStyle(
                       fontSize: 14,
@@ -83,10 +83,13 @@ class ProgressCard extends StatelessWidget {
           const SizedBox(
             height: 6,
           ),
-          CustomProgressBar(
-            value: ((spent * 10) / total) / 10,
-            gradient1: gradient1,
-            gradient2: gradient2,
+          SizedBox(
+            width: double.infinity,
+            child: CustomProgressBar(
+              value: 0.3,
+              gradient1: gradient1,
+              gradient2: gradient2,
+            ),
           ),
           const SizedBox(
             height: 6,

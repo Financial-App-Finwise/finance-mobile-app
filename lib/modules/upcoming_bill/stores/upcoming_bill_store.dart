@@ -17,6 +17,9 @@ abstract class _UpcomingBillStoreBase with Store {
   LoadingStatusEnum status = LoadingStatusEnum.none;
 
   @action
+  void setLoadingStatus(LoadingStatusEnum status) => status = status;
+
+  @action
   Future read() async {
     debugPrint('--> Start fetching upcoming bill');
     status = LoadingStatusEnum.loading;
@@ -33,5 +36,31 @@ abstract class _UpcomingBillStoreBase with Store {
     } finally {
       debugPrint('<-- End: fetching upcoming bill');
     }
+  }
+
+  @action
+  Future<bool> post(UpcomingBillData upcomingBillData) async {
+    debugPrint('-->START: post, upcoming bill');
+    bool success = false;
+    try {
+      Map<String, dynamic> jsonData = upcomingBillData.toJson();
+      debugPrint('llll $jsonData');
+      Response response =
+          await ApiService.dio.post('upcomingbills', data: jsonData);
+      if (response.statusCode == 201) {
+        success = true;
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
+      }
+    } catch (e) {
+      debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+    } finally {
+      debugPrint('$success');
+      debugPrint('<-- End: posting upcoming bill');
+    }
+
+    return success;
   }
 }

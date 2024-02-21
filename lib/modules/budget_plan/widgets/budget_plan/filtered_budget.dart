@@ -1,8 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/widgets/title_progress_card.dart';
+import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
-import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 
 class FilteredBudget extends StatefulWidget {
@@ -31,16 +31,7 @@ class _FilteredBudgetState extends State<FilteredBudget> {
         for (int index = 0; index < widget.budgetCards.length; index++)
           Column(
             children: [
-              TitleProgressCard(
-                screen: const BudgetPlanDetailScreen(),
-                title: widget.budgetCards[index].name,
-                gradient1: const Color(0xFFFBA6A6),
-                gradient2 : ColorConstant.expense,
-                transaction: widget.budgetCards[index].userID,
-                remain: widget.budgetCards[index].amount.toInt(),
-                total: widget.budgetCards[index].amount.toInt(),
-                spent: widget.budgetCards[index].amount.toInt(),
-              ),
+              _titleProgressCard(widget.budgetCards[index]),
               if (index < widget.budgetCards.length - 1)
                 const SizedBox(
                   height: 16,
@@ -48,6 +39,188 @@ class _FilteredBudgetState extends State<FilteredBudget> {
             ],
           ),
       ],
+    );
+  }
+
+  Widget _titleProgressCard(BudgetPlanData item) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RouteName.budgetPlanDetail,
+          arguments: item,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: ColorConstant.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ColorConstant.expense,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Icon(
+                    Icons.car_rental_outlined,
+                    color: ColorConstant.white,
+                  ),
+                ),
+                const SizedBox(
+                  width: 11,
+                ),
+                Text(
+                  item.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF000000),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              color: Color(0xFFF2F2F2),
+            ),
+            _card(item),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _card(BudgetPlanData item) {
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorConstant.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '${item.amount.toInt()}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF191B29),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  const Text(
+                    'transactions',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ColorConstant.mainText,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    '\$${item.amount.toInt()}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF191B29),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  const Text(
+                    'left',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ColorConstant.mainText,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 6,
+          ),
+          const SizedBox(
+            width: double.infinity,
+            child: CustomProgressBar(
+              value: 0.5,
+              gradient1: Color(0xFFFBA6A6),
+              gradient2: ColorConstant.expense,
+            ),
+          ),
+          const SizedBox(
+            height: 6,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '\$${item.amount.toInt()}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF191B29),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  const Text(
+                    'spent',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ColorConstant.mainText,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'out of',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF333652),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Text(
+                    '\$${item.amount.toInt()}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF191B29),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

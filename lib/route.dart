@@ -4,6 +4,7 @@ import 'package:finwise/modules/auth/screens/verify_email_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
 import 'package:finwise/modules/categories/screens/category_screen.dart';
 import 'package:finwise/modules/currency/screens/currency_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_screen.dart';
@@ -39,6 +40,7 @@ abstract class RouteName {
   static const String budgetPlan = '/budget_plan';
   static const String budgetPlanDetail = '/budget_plan/show';
   static const String addBudget = '/budget_plan/create';
+  static const String editBudget = '/budget_plan/edit';
 
   // ----- finance -----
   static const String finance = '/finance';
@@ -83,6 +85,7 @@ var appRoutes = {
   RouteName.budgetPlanDetail: (BuildContext context) =>
       const BudgetPlanDetailScreen(),
   RouteName.addBudget: (BuildContext context) => const AddBudgetPlanScreen(),
+  RouteName.editBudget: (BuildContext context) => const EditBudgetPlanScreen(),
 
   // ----- finance -----
   RouteName.finance: (BuildContext context) => const FinanceScreen(),

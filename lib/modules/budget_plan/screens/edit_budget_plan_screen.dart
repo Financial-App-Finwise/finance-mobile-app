@@ -1,13 +1,16 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/test_category.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
-import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class EditBudgetPlanScreen extends StatefulWidget {
   const EditBudgetPlanScreen({super.key});
@@ -17,25 +20,38 @@ class EditBudgetPlanScreen extends StatefulWidget {
 }
 
 class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
-  final _expenseNameController = TextEditingController();
-  final _budgetAmountController = TextEditingController();
+  late final BudgetPlanData args =
+      ModalRoute.of(context)!.settings.arguments as BudgetPlanData;
+
+  late final _expenseNameController = TextEditingController(text: args.name);
+  late final _budgetAmountController =
+      TextEditingController(text: '${args.amount.toInt()}');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            children: [
-              _title(),
-              const SizedBox(
-                height: 20,
-              ),
-              _form(),
-            ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                _title(),
+                const SizedBox(
+                  height: 20,
+                ),
+                _form(),
+                const SizedBox(
+                  height: 20,
+                ),
+                _buttons(),
+              ],
+            ),
           ),
         ),
       ),
@@ -113,11 +129,25 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
     );
   }
 
+  late CategoryData _selectedCategory = CategoryData(id: args.categoryID);
+
   Widget _form() {
     return Column(
       children: [
         // Category
-        // CategoryButton(setCategory: () {}),
+        CategoryButton(
+          setCategory: (category) {
+            // debugPrint('${category.id}');
+            setState(() {
+              _selectedCategory = category;
+            });
+            debugPrint(_selectedCategory.name);
+          },
+          category: _selectedCategory,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
 
         // Amount input
         Column(
@@ -167,6 +197,93 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buttons() {
+    return Row(
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: _backButton(),
+          ),
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              context.read<BudgetPlanStore>().edit(
+                    BudgetPlanData(
+                      id: args.id,
+                      categoryID: _selectedCategory.id,
+                      isMonthly: args.isMonthly,
+                      name: _expenseNameController.text == ''
+                          ? _selectedCategory.name
+                          : _expenseNameController.text,
+                      amount: double.parse(_budgetAmountController.text),
+                    ),
+                  );
+            },
+            child: _createButton(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _backButton() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(
+        vertical: 16,
+        horizontal: 24,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: ColorConstant.primary,
+          width: 1,
+        ),
+      ),
+      child: const Text(
+        'Back',
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          letterSpacing: 1,
+          color: ColorConstant.primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _createButton() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(
+        vertical: 16,
+        horizontal: 24,
+      ),
+      decoration: BoxDecoration(
+        color: ColorConstant.secondary,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: ColorConstant.secondary,
+          width: 1,
+        ),
+      ),
+      child: const Text(
+        'Save',
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          letterSpacing: 1,
+          color: ColorConstant.white,
+        ),
+      ),
     );
   }
 }

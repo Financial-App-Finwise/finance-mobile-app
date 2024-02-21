@@ -1,14 +1,10 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
-import 'package:finwise/core/constants/loading_status_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
-import 'package:finwise/core/widgets/calendar_header_layout.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
-import 'package:finwise/modules/budget_plan/models/budget_card.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
-import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
@@ -90,8 +86,6 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     return Observer(builder: (context) {
       BudgetPlan budgetPlan = context.watch<BudgetPlanStore>().budgetPlan;
 
-      debugPrint('statoose ${budgetPlan.data.length}');
-
       return Container(
         color: const Color(0xFFF5F7F8),
         child: Column(
@@ -111,7 +105,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
               'Monthly budget',
               'Monthly budget',
               'Monthly budget'
-            ], budgetCards: budgetPlan.data),
+            ], budgetCards: budgetPlan.data.monthData),
           ],
         ),
       );
@@ -164,7 +158,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'You have no budget plan for this month.',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -187,7 +181,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                 borderRadius: BorderRadius.circular(8),
                 color: ColorConstant.secondary,
               ),
-              child: Text(
+              child: const Text(
                 'Add Budget Plan',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,

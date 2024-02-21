@@ -51,7 +51,7 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Add one-time budget',
           style: TextStyle(
             fontWeight: FontWeight.w600,
@@ -76,7 +76,7 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
             const SizedBox(
               width: 12,
             ),
-            Expanded(
+            const Expanded(
               child: Text(
                 'Budget plan in specific category for this month only. ',
                 style: TextStyle(
@@ -189,16 +189,20 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
         ),
         Expanded(
           child: InkWell(
-            onTap: () {
-              context.read<BudgetPlanStore>().post(
+            onTap: () async {
+              bool success = await context.read<BudgetPlanStore>().post(
                     BudgetPlanData(
-                      userID: 1,
                       categoryID: _selectedCategory.id,
                       isMonthly: false,
-                      name: _expenseNameController.text,
+                      name: _expenseNameController.text == ''
+                          ? _selectedCategory.name
+                          : _expenseNameController.text,
                       amount: double.parse(_budgetAmountController.text),
                     ),
                   );
+              if (success) {
+                Navigator.pop(context);
+              }
             },
             child: _createButton(),
           ),

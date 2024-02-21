@@ -29,13 +29,13 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
       Atom(name: '_BudgetPlanStoreBase.status', context: context);
 
   @override
-  LoadingStatus get status {
+  LoadingStatusEnum get status {
     _$statusAtom.reportRead();
     return super.status;
   }
 
   @override
-  set status(LoadingStatus value) {
+  set status(LoadingStatusEnum value) {
     _$statusAtom.reportWrite(value, super.status, () {
       super.status = value;
     });
@@ -55,6 +55,36 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   @override
   Future<bool> post(BudgetPlanData budgetPlanData) {
     return _$postAsyncAction.run(() => super.post(budgetPlanData));
+  }
+
+  late final _$editAsyncAction =
+      AsyncAction('_BudgetPlanStoreBase.edit', context: context);
+
+  @override
+  Future<bool> edit(BudgetPlanData budgetPlanData) {
+    return _$editAsyncAction.run(() => super.edit(budgetPlanData));
+  }
+
+  late final _$deleteAsyncAction =
+      AsyncAction('_BudgetPlanStoreBase.delete', context: context);
+
+  @override
+  Future<bool> delete(BudgetPlanData budgetPlanData) {
+    return _$deleteAsyncAction.run(() => super.delete(budgetPlanData));
+  }
+
+  late final _$_BudgetPlanStoreBaseActionController =
+      ActionController(name: '_BudgetPlanStoreBase', context: context);
+
+  @override
+  void setLoadingStatus(LoadingStatusEnum status) {
+    final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
+        name: '_BudgetPlanStoreBase.setLoadingStatus');
+    try {
+      return super.setLoadingStatus(status);
+    } finally {
+      _$_BudgetPlanStoreBaseActionController.endAction(_$actionInfo);
+    }
   }
 
   @override

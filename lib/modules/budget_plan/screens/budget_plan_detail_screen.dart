@@ -1,10 +1,17 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/widgets/custom_icon_button.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/six_month_chart.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/this_month_content.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/transaction_content.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BudgetPlanDetailScreen extends StatefulWidget {
   const BudgetPlanDetailScreen({super.key});
@@ -14,6 +21,9 @@ class BudgetPlanDetailScreen extends StatefulWidget {
 }
 
 class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
+  late final BudgetPlanData args =
+      ModalRoute.of(context)!.settings.arguments as BudgetPlanData;
+
   final Map<String, dynamic> data = {
     "06": 10,
     "07": 20,
@@ -70,23 +80,11 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Icon
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                size: 24,
-              ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                iconColor: MaterialStateProperty.all(
-                  const Color(0xFFFFFFFF),
-                ),
-              ),
+          CustomIconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: IconHelper.getSVG(
+              SVGName.arrowBack,
+              color: ColorConstant.white,
             ),
           ),
 
@@ -113,17 +111,17 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                   const SizedBox(
                     width: 8,
                   ),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Transportation',
-                        style: TextStyle(
+                        args.name,
+                        style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 24,
                             color: Color(0xFFFFFFFF)),
                       ),
-                      Text(
+                      const Text(
                         'Budget Category',
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -144,14 +142,16 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     height: 24,
                     child: IconButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const EditBudgetPlanScreen(),
-                          ),
+                          RouteName.editBudget,
+                          arguments: args,
                         );
                       },
-                      icon: IconConstant.edit,
+                      icon: IconHelper.getSVG(
+                        SVGName.edit,
+                        color: ColorConstant.white,
+                      ),
                       style: ButtonStyle(
                         padding:
                             MaterialStateProperty.all(const EdgeInsets.all(0)),
@@ -171,7 +171,10 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                       onPressed: () {
                         _showModal(context);
                       },
-                      icon: IconConstant.delete,
+                      icon: IconHelper.getSVG(
+                        SVGName.delete,
+                        color: ColorConstant.white,
+                      ),
                       style: ButtonStyle(
                         padding:
                             MaterialStateProperty.all(const EdgeInsets.all(0)),
@@ -193,8 +196,12 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const ThisMonthContent(
-              transaction: 7, total: 50, remain: 40, spent: 10),
+          ThisMonthContent(
+            transaction: args.amount.toInt(),
+            total: args.amount.toInt(),
+            remain: args.amount.toInt(),
+            spent: args.amount.toInt(),
+          ),
           const SizedBox(
             height: 16,
           ),
@@ -227,12 +234,14 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                 SizedBox(
                   width: 125,
                   height: 125,
-                  child: IconConstant.myBudget(color: Colors.red),
+                  child: IconConstant.myBudget(
+                    color: ColorConstant.expense,
+                  ),
                 ),
                 const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   'Are you sure you want to delete this SMART gaol?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -246,7 +255,7 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                 const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   'You will delete every transaction added to this goal.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -277,7 +286,7 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                             borderRadius: BorderRadius.circular(12),
                             color: const Color(0xFFE9EAF1),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Cancel',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -294,8 +303,15 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
+                        onTap: () async {
+                          bool success = await context
+                              .read<BudgetPlanStore>()
+                              .delete(args);
+
+                          if (success) {
+                            Navigator.of(context).pop();
+                            Navigator.pop(context);
+                          }
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -307,7 +323,7 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                             borderRadius: BorderRadius.circular(12),
                             color: ColorConstant.expense,
                           ),
-                          child: Text(
+                          child: const Text(
                             'Delete',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
