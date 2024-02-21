@@ -145,6 +145,14 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     return _$postAsyncAction.run(() => super.post(smartGoalData));
   }
 
+  late final _$updateAsyncAction =
+      AsyncAction('_SmartGoalStoreBase.update', context: context);
+
+  @override
+  Future<bool> update(SmartGoalData smartGoalData) {
+    return _$updateAsyncAction.run(() => super.update(smartGoalData));
+  }
+
   late final _$deleteAsyncAction =
       AsyncAction('_SmartGoalStoreBase.delete', context: context);
 

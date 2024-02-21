@@ -167,6 +167,7 @@ abstract class _SmartGoalStoreBase with Store {
   }
 
   // -------------------- Update a Smart Goal --------------------
+  @action
   Future<bool> update(SmartGoalData smartGoalData) async {
     debugPrint('--> START: update, smart goal');
     setLoadingStatus(LoadingStatusEnum.loading);
