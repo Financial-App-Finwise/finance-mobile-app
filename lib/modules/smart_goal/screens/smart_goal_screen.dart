@@ -1,5 +1,4 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/smart_goal_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
@@ -18,12 +17,9 @@ import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/test/test_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class SmartGoalScreen extends StatefulWidget {
   const SmartGoalScreen({super.key});

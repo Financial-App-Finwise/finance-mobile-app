@@ -84,7 +84,7 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
-  // ---------- Pagination ----------
+  // -------------------- Pagination --------------------
   final int _perPage = 10;
 
   @observable
@@ -93,6 +93,7 @@ abstract class _SmartGoalStoreBase with Store {
   @observable
   ObservableList<SmartGoalData> paginatedGoals = ObservableList();
 
+  // -------------------- Read one page at a time --------------------
   @action
   Future readByPage({bool refreshed = false}) async {
     debugPrint('--> START: read smart goal');
@@ -134,6 +135,7 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
+  // -------------------- Create a Smart Goal --------------------
   @action
   Future<bool> post(SmartGoalData smartGoalData) async {
     debugPrint('--> START: post, smart goal');
@@ -164,6 +166,7 @@ abstract class _SmartGoalStoreBase with Store {
     return success;
   }
 
+  // -------------------- Update a Smart Goal --------------------
   Future<bool> update(SmartGoalData smartGoalData) async {
     debugPrint('--> START: update, smart goal');
     setLoadingStatus(LoadingStatusEnum.loading);
@@ -192,6 +195,7 @@ abstract class _SmartGoalStoreBase with Store {
     return success;
   }
 
+  // -------------------- Delete a Smart Goal --------------------
   @action
   Future<bool> delete(SmartGoalData smartGoalData) async {
     debugPrint('--> START: delete, smart goal');

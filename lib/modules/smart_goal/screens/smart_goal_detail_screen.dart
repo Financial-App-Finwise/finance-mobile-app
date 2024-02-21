@@ -42,7 +42,7 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
   Widget _buildBody() {
     return GeneralDetailLayout(
       title: args.name,
-      subTitle: 'Created on: ${UIHelper.getFormattedDate(args.startDate)}',
+      subTitle: 'Created on: ${UIHelper.getFormattedDate(args.createdAt)}',
       iconTitle: IconHelper.getSVG(
         SVGName.smartGoal,
         color: ColorConstant.income,

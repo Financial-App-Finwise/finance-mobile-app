@@ -122,76 +122,78 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     return Column(
       children: [
         Expanded(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: RadioMenuButton(
-                      value: true,
-                      groupValue: _setDue,
-                      onChanged: (value) => setState(() => _setDue = true),
-                      child: const Text('Set'),
-                    ),
-                  ),
-                  Expanded(
-                    child: RadioMenuButton(
-                      value: false,
-                      groupValue: _setDue,
-                      onChanged: (value) => setState(() => _setDue = false),
-                      child: const Text("Don't Set"),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Visibility(
-                visible: _setDue,
-                child: Row(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
                   children: [
                     Expanded(
-                        child: _buildDate(
-                      hintText: 'Start Date',
-                      controller: _startDateController,
-                      onDaySelected: (selectedDay, focusedDay) {
-                        setState(() {
-                          _startDateController.text =
-                              UIHelper.getInputDate(selectedDay.toString());
-                          _selectedStartDay = selectedDay;
-                        });
-                      },
-                    )),
-                    const SizedBox(width: 8),
-                    Expanded(
-                        child: _buildDate(
-                      hintText: 'End Date',
-                      controller: _endDateController,
-                      onDaySelected: (selectedDay, focusedDay) {
-                        setState(() {
-                          _endDateController.text =
-                              UIHelper.getInputDate(selectedDay.toString());
-                          _selectedEndDay = selectedDay;
-                        });
-                      },
-                    )),
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: !_setDue,
-                child: Column(
-                  children: [
-                    SmartGoalFormItem(
-                      label: 'Monthly Contribution',
-                      isNumber: true,
-                      controller: _contributionController,
+                      child: RadioMenuButton(
+                        value: true,
+                        groupValue: _setDue,
+                        onChanged: (value) => setState(() => _setDue = true),
+                        child: const Text('Set'),
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    const SmartGoalPrediction(),
+                    Expanded(
+                      child: RadioMenuButton(
+                        value: false,
+                        groupValue: _setDue,
+                        onChanged: (value) => setState(() => _setDue = false),
+                        child: const Text("Don't Set"),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Visibility(
+                  visible: _setDue,
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: _buildDate(
+                        hintText: 'Start Date',
+                        controller: _startDateController,
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _startDateController.text =
+                                UIHelper.getInputDate(selectedDay.toString());
+                            _selectedStartDay = selectedDay;
+                          });
+                        },
+                      )),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: _buildDate(
+                        hintText: 'End Date',
+                        controller: _endDateController,
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _endDateController.text =
+                                UIHelper.getInputDate(selectedDay.toString());
+                            _selectedEndDay = selectedDay;
+                          });
+                        },
+                      )),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: !_setDue,
+                  child: Column(
+                    children: [
+                      SmartGoalFormItem(
+                        label: 'Monthly Contribution',
+                        isNumber: true,
+                        controller: _contributionController,
+                      ),
+                      const SizedBox(height: 20),
+                      const SmartGoalPrediction(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Row(
@@ -239,7 +241,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                         ),
                       );
                   if (success) {
-                    print('success');
+                    Navigator.pop(context);
                   }
                 },
                 buttonLabel: 'Create',
