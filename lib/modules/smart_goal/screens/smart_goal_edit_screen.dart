@@ -56,81 +56,27 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(_nameController.text);
-
     return SmartGoalFormLayout(
       title: 'Edit Goal',
-      formSection: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildBasicInfoPart(),
-                  _buildTargetGoalPart(),
-                ],
-              ),
+      formSection: _buildForm(),
+    );
+  }
+
+  Widget _buildForm() {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildBasicInfoPart(),
+                _buildTargetGoalPart(),
+              ],
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: GeneralBottomButton(
-                  onButtonTap: () {},
-                  buttonLabel: 'Cancel',
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: GeneralBottomButton(
-                  onButtonTap: () async {
-                    String? startDate;
-                    String? endDate;
-                    double? monthlyContribution;
-
-                    if (_setDue) {
-                      startDate = UIHelper.getDateFormat(
-                          _selectedStartDay.toString(), 'yyyy-MM-dd');
-                      endDate = UIHelper.getDateFormat(
-                          _selectedEndDay.toString(), 'yyyy-MM-dd');
-                      monthlyContribution = null;
-                    } else {
-                      startDate = null;
-                      endDate = null;
-                      monthlyContribution =
-                          double.parse(_contributionController.text);
-                    }
-
-                    SmartGoalData smartGoalData = SmartGoalData(
-                      id: _args.id,
-                      userID: _args.userID,
-                      name: _nameController.text,
-                      amount: double.parse(_amountController.text),
-                      currentSave: double.parse(_currentSaveController.text),
-                      remainingSave: double.parse(_leftToSaveController.text),
-                      setDate: _setDue,
-                      startDate: startDate,
-                      endDate: endDate,
-                      monthlyContribution: monthlyContribution,
-                    );
-
-                    bool success = await context
-                        .read<SmartGoalStore>()
-                        .update(smartGoalData);
-
-                    if (success) {
-                      print('updated successfully');
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    }
-                  },
-                  buttonLabel: 'Save',
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
+        ),
+        _buildButtonPart(),
+      ],
     );
   }
 
@@ -303,6 +249,65 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
         hintText: hintText,
         hintStyle: GeneralTextStyle.getSize(12, color: ColorConstant.thin),
       ),
+    );
+  }
+
+  Widget _buildButtonPart() {
+    return Row(
+      children: [
+        Expanded(
+          child: GeneralBottomButton(
+            onButtonTap: () {},
+            buttonLabel: 'Cancel',
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: GeneralBottomButton(
+            onButtonTap: () async {
+              String? startDate;
+              String? endDate;
+              double? monthlyContribution;
+
+              if (_setDue) {
+                startDate = UIHelper.getDateFormat(
+                    _selectedStartDay.toString(), 'yyyy-MM-dd');
+                endDate = UIHelper.getDateFormat(
+                    _selectedEndDay.toString(), 'yyyy-MM-dd');
+                monthlyContribution = null;
+              } else {
+                startDate = null;
+                endDate = null;
+                monthlyContribution =
+                    double.parse(_contributionController.text);
+              }
+
+              SmartGoalData smartGoalData = SmartGoalData(
+                id: _args.id,
+                userID: _args.userID,
+                name: _nameController.text,
+                amount: double.parse(_amountController.text),
+                currentSave: double.parse(_currentSaveController.text),
+                remainingSave: double.parse(_leftToSaveController.text),
+                setDate: _setDue,
+                startDate: startDate,
+                endDate: endDate,
+                monthlyContribution: monthlyContribution,
+              );
+
+              bool success =
+                  await context.read<SmartGoalStore>().update(smartGoalData);
+
+              if (success) {
+                print('updated successfully');
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }
+            },
+            buttonLabel: 'Save',
+          ),
+        ),
+      ],
     );
   }
 }

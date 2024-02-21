@@ -4,14 +4,14 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
-import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
+import 'package:finwise/modules/smart_goal/widgets/forms/smart_goal_form_item.dart';
+import 'package:finwise/modules/smart_goal/widgets/smart_goal_form_layout.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_prediction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class AddSmartGoalScreen extends StatefulWidget {
@@ -22,8 +22,6 @@ class AddSmartGoalScreen extends StatefulWidget {
 }
 
 class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
-  final double _progressBar = 0.5;
-
   @override
   void initState() {
     super.initState();
@@ -31,120 +29,10 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstant.backgroundColor,
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: SafeArea(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.transparent,
-            child: Column(
-              children: [
-                _buildTitleContent(),
-                const SizedBox(height: 10),
-                _buildMainContentDescription(),
-                const SizedBox(height: 20),
-                Expanded(child: _buildForm()),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitleContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestGradientSVG()));
-                  },
-                  icon: IconHelper.getSVG(SVGName.close),
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.all(0),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: CustomProgressBar(
-                  value: _progressBar,
-                  gradient1: ColorConstant.secondary,
-                  gradient2: ColorConstant.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMainContentDescription() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Add Smart Goal',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 32,
-            letterSpacing: 1,
-            color: ColorConstant.black,
-          ),
-        ),
-        const SizedBox(height: 32),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 72,
-              height: 72,
-              child: IconHelper.getGradientSVG(SVGName.smartGoal,
-                  gradient: const LinearGradient(colors: [
-                    ColorConstant.smartGoalLight,
-                    ColorConstant.smartGoalThick,
-                  ])),
-            ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: Text(
-                'Setup and track your smart goal to achieve your saving and stress free.',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  letterSpacing: 0.75,
-                  height: 1.5,
-                  color: ColorConstant.mainText,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Input below information',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            letterSpacing: 0.75,
-            color: ColorConstant.mainText,
-          ),
-        ),
-      ],
+    return SmartGoalFormLayout(
+      title: 'Add Smart Goal',
+      showTopProgress: true,
+      formSection: _buildForm(),
     );
   }
 
@@ -152,6 +40,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _currentSaveController = TextEditingController();
   final TextEditingController _contributionController = TextEditingController();
+  final TextEditingController _leftToSaveController = TextEditingController();
 
   bool _setDue = true;
 
@@ -173,7 +62,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  _buildFormItem(
+                  SmartGoalFormItem(
                     label: 'Name you goal',
                     controller: _nameController,
                   ),
@@ -181,14 +70,14 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                   Row(
                     children: [
                       Expanded(
-                          child: _buildFormItem(
+                          child: SmartGoalFormItem(
                         label: 'Goal Amount',
                         controller: _amountController,
                         isNumber: true,
                       )),
                       const SizedBox(width: 8),
                       Expanded(
-                          child: _buildFormItem(
+                          child: SmartGoalFormItem(
                         label: 'Saved so far',
                         controller: _currentSaveController,
                         isNumber: true,
@@ -199,11 +88,13 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildFormItem(
-                            color: const Color(0xffD3D5E4),
-                            label: 'Left to Save',
-                            // controller: _contributionController,
-                            readOnly: true),
+                        child: SmartGoalFormItem(
+                          color: const Color(0xffD3D5E4),
+                          label: 'Left to Save',
+                          controller: _leftToSaveController,
+                          readOnly: true,
+                          isNumber: true,
+                        ),
                       ),
                       const Expanded(child: SizedBox()),
                     ],
@@ -222,57 +113,10 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
     );
   }
 
-  Widget _buildFormItem({
-    String label = '',
-    isNumber = false,
-    TextEditingController? controller,
-    bool readOnly = false,
-    Color color = Colors.white,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Text(label,
-          //     style: GeneralTextStyle.getSize(12, color: ColorConstant.thin)),
-          TextFormField(
-            readOnly: readOnly,
-            controller: controller,
-            keyboardType: isNumber ? TextInputType.number : null,
-            inputFormatters: isNumber
-                ? [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}')),
-                  ]
-                : null,
-            style: GeneralTextStyle.getSize(14),
-            decoration: InputDecoration(
-              prefix: isNumber ? const Text('\$') : const SizedBox(),
-              isDense: true,
-              border: InputBorder.none,
-              // hintText: '0',
-              label: Text(label),
-              floatingLabelStyle:
-                  GeneralTextStyle.getSize(14, color: ColorConstant.thin),
-              labelStyle:
-                  GeneralTextStyle.getSize(12, color: ColorConstant.thin),
-              contentPadding: EdgeInsets.zero,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
-  DateTime _selectedStartDate = DateTime.now(); // save value for posting
-  DateTime _selectedEndDate = DateTime.now();
+  DateTime _selectedStartDay = DateTime.now(); // save value for posting
+  DateTime _selectedEndDay = DateTime.now();
 
   Widget _buildTargetGoalPart() {
     return Column(
@@ -313,7 +157,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                         setState(() {
                           _startDateController.text =
                               UIHelper.getInputDate(selectedDay.toString());
-                          _selectedStartDate = selectedDay;
+                          _selectedStartDay = selectedDay;
                         });
                       },
                     )),
@@ -326,7 +170,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                         setState(() {
                           _endDateController.text =
                               UIHelper.getInputDate(selectedDay.toString());
-                          _selectedEndDate = selectedDay;
+                          _selectedEndDay = selectedDay;
                         });
                       },
                     )),
@@ -337,7 +181,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                 visible: !_setDue,
                 child: Column(
                   children: [
-                    _buildFormItem(
+                    SmartGoalFormItem(
                       label: 'Monthly Contribution',
                       isNumber: true,
                       controller: _contributionController,
@@ -362,6 +206,23 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
             Expanded(
               child: GeneralBottomButton(
                 onButtonTap: () async {
+                  String? startDate;
+                  String? endDate;
+                  double? monthlyContribution;
+
+                  if (_setDue) {
+                    startDate = UIHelper.getDateFormat(
+                        _selectedStartDay.toString(), 'yyyy-MM-dd');
+                    endDate = UIHelper.getDateFormat(
+                        _selectedEndDay.toString(), 'yyyy-MM-dd');
+                    monthlyContribution = null;
+                  } else {
+                    startDate = null;
+                    endDate = null;
+                    monthlyContribution =
+                        double.parse(_contributionController.text);
+                  }
+
                   bool success = await context.read<SmartGoalStore>().post(
                         SmartGoalData(
                           userID: context.read<SmartGoalStore>().userID,
@@ -372,18 +233,13 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                           remainingSave: double.parse(_amountController.text) -
                               double.parse(_currentSaveController.text),
                           setDate: _setDue,
-                          startDate: UIHelper.getYYYYMMDD(
-                              _selectedStartDate.toString()),
-                          endDate:
-                              UIHelper.getYYYYMMDD(_selectedEndDate.toString()),
-                          monthlyContribution:
-                              double.parse(_contributionController.text),
+                          startDate: startDate,
+                          endDate: endDate,
+                          monthlyContribution: monthlyContribution,
                         ),
                       );
                   if (success) {
-                    await context
-                        .read<SmartGoalStore>()
-                        .readByPage(refreshed: true);
+                    print('success');
                   }
                 },
                 buttonLabel: 'Create',

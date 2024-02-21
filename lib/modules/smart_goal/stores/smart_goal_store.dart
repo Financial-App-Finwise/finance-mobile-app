@@ -134,47 +134,41 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
+  @action
   Future<bool> post(SmartGoalData smartGoalData) async {
     debugPrint('--> START: post, smart goal');
+    setLoadingStatus(LoadingStatusEnum.loading);
     bool success = false;
     try {
-      // debugPrint('${smartGoalData.toJson()}');
-      // debugPrint('${FormData.fromMap(smartGoalData.toJson())}');
       Response response = await ApiService.dio.post(
         'goals',
-        // data: FormData.fromMap(smartGoalData.toJson()),
         data: smartGoalData.toJson(),
       );
 
       if (response.statusCode == 201) {
         success = true;
+        await readByPage(refreshed: true);
+        setLoadingStatus(LoadingStatusEnum.done);
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
+      setLoadingStatus(LoadingStatusEnum.error);
     } finally {
       debugPrint('<-- END: post, smart goal');
     }
     return success;
   }
 
-  @action
-  void dispose() {
-    currentProgressStatus = SmartGoalStatusEnum.all;
-    smartGoal = SmartGoal(data: [], meta: SmartGoalMeta());
-    loadingStatus = LoadingStatusEnum.none;
-  }
-
   Future<bool> update(SmartGoalData smartGoalData) async {
-    //https://finwise-api-test.up.railway.app/api/goals/33
     debugPrint('--> START: update, smart goal');
     setLoadingStatus(LoadingStatusEnum.loading);
     bool success = false;
     try {
-      print(smartGoalData.toJson());
       Response response = await ApiService.dio.put(
         'goals/${smartGoalData.id}',
         data: smartGoalData.toJson(),
@@ -223,5 +217,12 @@ abstract class _SmartGoalStoreBase with Store {
       debugPrint('<-- END: delete, smart goal');
     }
     return success;
+  }
+
+  @action
+  void dispose() {
+    currentProgressStatus = SmartGoalStatusEnum.all;
+    smartGoal = SmartGoal(data: [], meta: SmartGoalMeta());
+    loadingStatus = LoadingStatusEnum.none;
   }
 }
