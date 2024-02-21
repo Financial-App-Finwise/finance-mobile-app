@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
@@ -153,7 +154,7 @@ class _MainContentListViewState extends State<MainContentListView> {
                   width: 11,
                 ),
                 Text(
-                  date,
+                  UIHelper.getInputDate(date),
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
