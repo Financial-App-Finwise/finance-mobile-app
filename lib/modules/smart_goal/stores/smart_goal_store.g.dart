@@ -137,6 +137,14 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
         .run(() => super.readByPage(refreshed: refreshed));
   }
 
+  late final _$deleteAsyncAction =
+      AsyncAction('_SmartGoalStoreBase.delete', context: context);
+
+  @override
+  Future<bool> delete(SmartGoalData smartGoalData) {
+    return _$deleteAsyncAction.run(() => super.delete(smartGoalData));
+  }
+
   late final _$_SmartGoalStoreBaseActionController =
       ActionController(name: '_SmartGoalStoreBase', context: context);
 
@@ -154,7 +162,7 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   @override
   void setLoadingStatus(LoadingStatusEnum status) {
     final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
-        name: '_SmartGoalStoreBase.setStatus');
+        name: '_SmartGoalStoreBase.setLoadingStatus');
     try {
       return super.setLoadingStatus(status);
     } finally {

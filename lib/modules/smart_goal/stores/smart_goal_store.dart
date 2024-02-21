@@ -167,4 +167,61 @@ abstract class _SmartGoalStoreBase with Store {
     smartGoal = SmartGoal(data: [], meta: SmartGoalMeta());
     loadingStatus = LoadingStatusEnum.none;
   }
+
+  Future<bool> update(SmartGoalData smartGoalData) async {
+    //https://finwise-api-test.up.railway.app/api/goals/33
+    debugPrint('--> START: update, smart goal');
+    setLoadingStatus(LoadingStatusEnum.loading);
+    bool success = false;
+    try {
+      print(smartGoalData.toJson());
+      Response response = await ApiService.dio.put(
+        'goals/${smartGoalData.id}',
+        data: smartGoalData.toJson(),
+      );
+      if (response.statusCode == 200) {
+        success = true;
+        await readByPage(refreshed: true);
+        setLoadingStatus(LoadingStatusEnum.done);
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      setLoadingStatus(LoadingStatusEnum.error);
+    } finally {
+      debugPrint('<-- END: update, smart goal');
+    }
+    return success;
+  }
+
+  @action
+  Future<bool> delete(SmartGoalData smartGoalData) async {
+    debugPrint('--> START: delete, smart goal');
+    setLoadingStatus(LoadingStatusEnum.loading);
+    bool success = false;
+    try {
+      Response response =
+          await ApiService.dio.delete('goals/${smartGoalData.id}');
+      if (response.statusCode == 200) {
+        success = true;
+        await readByPage(refreshed: true);
+        setLoadingStatus(LoadingStatusEnum.done);
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      setLoadingStatus(LoadingStatusEnum.error);
+    } finally {
+      debugPrint('<-- END: delete, smart goal');
+    }
+    return success;
+  }
 }

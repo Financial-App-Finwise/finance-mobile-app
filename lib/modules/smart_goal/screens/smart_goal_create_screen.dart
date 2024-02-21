@@ -27,7 +27,6 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
   @override
   void initState() {
     super.initState();
-    _contributionController.text = '\$0';
   }
 
   @override
@@ -202,8 +201,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                       Expanded(
                         child: _buildFormItem(
                             color: const Color(0xffD3D5E4),
-                            label: 'Monthly Contribution',
-                            controller: _contributionController,
+                            label: 'Left to Save',
+                            // controller: _contributionController,
                             readOnly: true),
                       ),
                       const Expanded(child: SizedBox()),
@@ -341,6 +340,7 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                     _buildFormItem(
                       label: 'Monthly Contribution',
                       isNumber: true,
+                      controller: _contributionController,
                     ),
                     const SizedBox(height: 20),
                     const SmartGoalPrediction(),
@@ -376,7 +376,8 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
                               _selectedStartDate.toString()),
                           endDate:
                               UIHelper.getYYYYMMDD(_selectedEndDate.toString()),
-                          monthlyContribution: 10,
+                          monthlyContribution:
+                              double.parse(_contributionController.text),
                         ),
                       );
                   if (success) {

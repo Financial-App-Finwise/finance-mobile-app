@@ -15,8 +15,10 @@ import 'package:finwise/core/widgets/general_progress_widget.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SmartGoalDetailScreen extends StatefulWidget {
   const SmartGoalDetailScreen({super.key});
@@ -50,6 +52,16 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
         RouteName.smartGoalEdit,
         arguments: args,
       ),
+      onDelete: () async {
+        bool success = await context.read<SmartGoalStore>().delete(args);
+        if (success) {
+          if (mounted) {
+            context.read<SmartGoalStore>().readByPage(refreshed: true);
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
+        }
+      },
       gradient: const LinearGradient(
         colors: [
           ColorConstant.smartGoalLight,

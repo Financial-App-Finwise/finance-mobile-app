@@ -1,7 +1,8 @@
 import 'package:intl/intl.dart';
 
 abstract class UIHelper {
-  static getFormattedDate(String date) {
+  static getFormattedDate(String? date) {
+    date = date ?? 'no date';
     if (DateTime.tryParse(date) != null) {
       DateTime parsedDate = DateTime.parse(date);
       String formattedDate = DateFormat('dd MMMM, yyyy').format(parsedDate);
@@ -10,7 +11,8 @@ abstract class UIHelper {
     return date;
   }
 
-  static getInputDate(String date) {
+  static getInputDate(String? date) {
+    date = date ?? 'no date';
     if (DateTime.tryParse(date) != null) {
       DateTime parsedDate = DateTime.parse(date);
       String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
@@ -19,7 +21,9 @@ abstract class UIHelper {
     return date;
   }
 
-  static getYYYYMMDD(String date) {
+  static getYYYYMMDD(String? date) {
+    date = date ?? 'no date';
+
     if (DateTime.tryParse(date) != null) {
       DateTime parsedDate = DateTime.parse(date);
       String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
@@ -28,7 +32,8 @@ abstract class UIHelper {
     return date;
   }
 
-  static getDateFormat(String date, String format) {
+  static getDateFormat(String? date, String format) {
+    date = date ?? 'no date';
     if (DateTime.tryParse(date) != null) {
       DateTime parsedDate = DateTime.parse(date);
       String formattedDate = DateFormat(format).format(parsedDate);

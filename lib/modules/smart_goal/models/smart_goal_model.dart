@@ -42,11 +42,11 @@ class SmartGoalData {
   @JsonKey(fromJson: _intToBool)
   late bool setDate;
 
-  late String startDate;
-  late String endDate;
+  String? startDate;
+  String? endDate;
 
   @JsonKey(fromJson: _stringToDouble)
-  late double monthlyContribution;
+  double? monthlyContribution;
 
   @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;

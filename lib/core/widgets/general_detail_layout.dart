@@ -12,6 +12,7 @@ class GeneralDetailLayout extends StatefulWidget {
     this.themeColor,
     this.iconTitle,
     this.onEdit,
+    this.onDelete,
   });
 
   final String title;
@@ -21,6 +22,7 @@ class GeneralDetailLayout extends StatefulWidget {
   final Color? themeColor;
   final Widget? iconTitle;
   final void Function()? onEdit;
+  final void Function()? onDelete;
 
   @override
   State<GeneralDetailLayout> createState() => _GeneralDetailLayoutState();
@@ -149,7 +151,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                     height: 24,
                     child: IconButton(
                       onPressed: () {
-                        _showModal(context);
+                        _showModal();
                       },
                       icon: IconConstant.delete,
                       style: ButtonStyle(
@@ -167,10 +169,10 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
     );
   }
 
-  void _showModal(BuildContext context) {
+  void _showModal() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext ctx) {
         return AlertDialog(
           backgroundColor: ColorConstant.white,
           elevation: 0,
@@ -219,7 +221,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(ctx).pop();
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -248,9 +250,7 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
+                        onTap: widget.onDelete,
                         child: Container(
                           alignment: Alignment.center,
                           padding: const EdgeInsets.symmetric(
