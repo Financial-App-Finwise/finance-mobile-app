@@ -30,6 +30,7 @@ class GeneralSimpleHeaderLayout extends StatelessWidget {
             children: [
               // header
               Container(
+                alignment: Alignment.topLeft,
                 padding:
                     const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
                 decoration: BoxDecoration(
