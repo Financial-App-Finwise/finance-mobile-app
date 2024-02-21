@@ -13,7 +13,7 @@ class BudgetPlanStore = _BudgetPlanStoreBase with _$BudgetPlanStore;
 abstract class _BudgetPlanStoreBase with Store {
   @observable
   // Declare the right data type
-  BudgetPlan budgetPlan = BudgetPlan(data: February(monthData: []));
+  BudgetPlan budgetPlan = BudgetPlan(data: []);
 
   @observable
   LoadingStatusEnum status = LoadingStatusEnum.none;

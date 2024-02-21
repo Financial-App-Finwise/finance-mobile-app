@@ -7,7 +7,9 @@ part of 'budget_plan_model.dart';
 // **************************************************************************
 
 BudgetPlan _$BudgetPlanFromJson(Map<String, dynamic> json) => BudgetPlan(
-      data: February.fromJson(json['data'] as Map<String, dynamic>),
+      data: (json['data'] as List<dynamic>)
+          .map((e) => BudgetPlanData.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$BudgetPlanToJson(BudgetPlan instance) =>

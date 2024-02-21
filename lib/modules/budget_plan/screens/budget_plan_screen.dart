@@ -105,7 +105,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
               'Monthly budget',
               'Monthly budget',
               'Monthly budget'
-            ], budgetCards: budgetPlan.data.monthData),
+            ], budgetCards: budgetPlan.data),
           ],
         ),
       );

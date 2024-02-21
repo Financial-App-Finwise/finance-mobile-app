@@ -8,8 +8,8 @@ BudgetPlan getBudgetPlan(Map<String, dynamic> json) {
 
 @JsonSerializable()
 class BudgetPlan {
-  late February data;
-
+  late List<BudgetPlanData> data;
+  
   BudgetPlan({required this.data});
 
   factory BudgetPlan.fromJson(Map<String, dynamic> json) =>
