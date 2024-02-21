@@ -31,26 +31,35 @@ class IncomeExpenseBarChart extends StatelessWidget {
     );
   }
 
-  Widget _roundedContainer({Widget? child}) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-      ),
-      padding: const EdgeInsets.all(16),
-      child: child,
-    );
-  }
-
   Widget _buildBarChart() {
     return SizedBox(
       height: 200,
       child: BarChart(
         BarChartData(
+          barTouchData: BarTouchData(
+            touchTooltipData: BarTouchTooltipData(
+              tooltipBgColor: ColorConstant.mainDark,
+              // getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              //   return BarTooltipItem(
+              //     '${rod.toY}',
+              //     TextStyle(
+              //       // backgroundColor: rodIndex % 2 == 0
+              //       //     ? ColorConstant.income.withOpacity(0.4)
+              //       //     : ColorConstant.expense.withOpacity(0.4),
+              //       fontWeight: FontWeight.w600,
+              //       color:  rodIndex % 2 == 0
+              //           ? ColorConstant.income
+              //           : ColorConstant.expense,
+              //     ),
+              //   );
+              // },
+            ),
+          ),
           titlesData: FlTitlesData(
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 reservedSize: 32,

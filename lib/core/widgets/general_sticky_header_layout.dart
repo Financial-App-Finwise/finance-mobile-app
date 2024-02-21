@@ -32,17 +32,32 @@ class GeneralStickyHeaderLayout extends StatefulWidget {
 class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
   final GlobalKey _centerContainerKey = GlobalKey();
   final GlobalKey _headerContainerKey = GlobalKey();
+  final GlobalKey _titleContainerKey = GlobalKey();
 
   double centerContainerHeight = 0;
   double headerContainerHeight = 0;
   double expandedHeight = 0;
+  double titleHeight = 0;
   final double _depth = 32;
 
+  final ScrollController _scrollController = ScrollController();
+  bool _isAppBarExpanded = true;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setContainerHeight();
+    });
+    _scrollController.addListener(() {
+      if (_scrollController.offset > titleHeight) {
+        setState(() {
+          _isAppBarExpanded = false;
+        });
+      } else {
+        setState(() {
+          _isAppBarExpanded = true;
+        });
+      }
     });
   }
 
@@ -50,6 +65,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
     setState(() {
       centerContainerHeight = _getContainerHeight(_centerContainerKey);
       headerContainerHeight = _getContainerHeight(_headerContainerKey);
+      titleHeight = _getContainerHeight(_titleContainerKey);
       expandedHeight = centerContainerHeight + headerContainerHeight - _depth;
     });
   }
@@ -92,7 +108,6 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
 
   Widget _buildNestedScrollView() {
     return Container(
-      // color: Colors.red,
       decoration: BoxDecoration(
         gradient: widget.gradient ??
             const LinearGradient(
@@ -108,16 +123,28 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-            child: _buildBackArrow(),
+            child: Row(
+              children: [
+                _buildBackArrow(),
+                const SizedBox(width: 12),
+                Visibility(
+                  visible: !_isAppBarExpanded,
+                  child: Text(
+                    widget.title,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: NestedScrollView(
+              controller: _scrollController,
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
                     automaticallyImplyLeading: false,
-                    backgroundColor: Colors.amber,
                     toolbarHeight: centerContainerHeight > 0
                         ? centerContainerHeight + 0 // plus padding
                         : 0, // equal to center height
@@ -184,15 +211,18 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
                                       children: [
                                         // _buildBackArrow(),
                                         // const SizedBox(height: 12),
-                                        Text(
-                                          widget.title,
-                                          style: const TextStyle(
-                                            fontFamily:
-                                                FontConstant.balooThambi2,
-                                            color: Color(0xFFFFFFFF),
-                                            fontSize: 32,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 1,
+                                        Container(
+                                          key: _titleContainerKey,
+                                          child: Text(
+                                            widget.title,
+                                            style: const TextStyle(
+                                              fontFamily:
+                                                  FontConstant.balooThambi2,
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 32,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 1,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(height: 4),
