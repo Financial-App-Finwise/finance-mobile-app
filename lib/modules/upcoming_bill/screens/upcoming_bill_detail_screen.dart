@@ -4,9 +4,13 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/detail_header_layout.dart';
 import 'package:finwise/core/widgets/switch_input.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';
+import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class UpcomingBillDetailScreen extends StatefulWidget {
   UpcomingBillDetailScreen({super.key});
@@ -17,14 +21,28 @@ class UpcomingBillDetailScreen extends StatefulWidget {
 }
 
 class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
+  late final UpcomingBillData args =
+      ModalRoute.of(context)!.settings.arguments as UpcomingBillData;
+
   @override
   Widget build(BuildContext context) {
     return DetailHeaderLayout(
       gradient1: const Color(0xFFFBA6A6),
       gradient2: const Color(0xFFEE5353),
-      title: 'Netflex',
+      title: args.name,
       description: 'Upcoming Bill',
       editScreen: const EditUpcomingBuildScreen(),
+      edit: () {
+        Navigator.pushNamed(context, RouteName.editUpcomingBill,
+            arguments: args);
+      },
+      delete: () async {
+        bool success = await context.read<UpcomingBillStore>().delete(args);
+        if (success) {
+          Navigator.of(context).pop();
+          Navigator.pop(context);
+        }
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

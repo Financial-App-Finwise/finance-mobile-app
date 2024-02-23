@@ -49,6 +49,7 @@ abstract class _UpcomingBillStoreBase with Store {
           await ApiService.dio.post('upcomingbills', data: jsonData);
       if (response.statusCode == 201) {
         success = true;
+        setLoadingStatus(LoadingStatusEnum.done);
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
@@ -61,6 +62,59 @@ abstract class _UpcomingBillStoreBase with Store {
       debugPrint('<-- End: posting upcoming bill');
     }
 
+    return success;
+  }
+
+  @action
+  Future<bool> edit(UpcomingBillData upcomingBillData) async {
+    debugPrint('-->START: edit, upcoming bill');
+    bool success = false;
+    try {
+      Map<String, dynamic> jsonData = upcomingBillData.toJson();
+      Response response = await ApiService.dio.put(
+        'upcomingbills/${upcomingBillData.id}',
+        data: jsonData,
+      );
+      if (response.statusCode == 200) {
+        success = true;
+        setLoadingStatus(LoadingStatusEnum.done);
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      setLoadingStatus(LoadingStatusEnum.error);
+    } finally {
+      debugPrint('<-- END: edit, upcoming bill');
+    }
+    return success;
+  }
+
+  @action
+  Future<bool> delete(UpcomingBillData upcomingBillData) async {
+    debugPrint('-->START: delete, upcoming bill');
+    bool success = false;
+    try {
+      Response response =
+          await ApiService.dio.delete('upcomingbills/${upcomingBillData.id}');
+      if (response.statusCode == 200) {
+        success = true;
+        setLoadingStatus(LoadingStatusEnum.done);
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      setLoadingStatus(LoadingStatusEnum.error);
+    } finally {
+      debugPrint('<-- END: delete, upcoming bill');
+    }
     return success;
   }
 }

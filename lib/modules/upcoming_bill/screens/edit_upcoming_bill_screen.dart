@@ -1,12 +1,19 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
+import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/amount_input.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/expenses_name_input.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/note_input.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditUpcomingBuildScreen extends StatefulWidget {
   const EditUpcomingBuildScreen({super.key});
@@ -17,6 +24,9 @@ class EditUpcomingBuildScreen extends StatefulWidget {
 }
 
 class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
+  late final UpcomingBillData args =
+      ModalRoute.of(context)!.settings.arguments as UpcomingBillData;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,16 +91,37 @@ class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
     );
   }
 
-  final _billAmountController = TextEditingController();
-  final _expenseNameController = TextEditingController();
-  final _noteController = TextEditingController();
+  late final _billAmountController =
+      TextEditingController(text: '${args.amount}');
+  late final _expenseNameController = TextEditingController(text: args.name);
+  late final _noteController = TextEditingController(text: args.note);
   CategoryData _selectedCategory = CategoryData();
+
+  late final _upcomingDateController =
+      TextEditingController(text: UIHelper.getInputDate(args.date.toString()));
+  DateTime _selectedUpcomingDay = DateTime.now(); // save value for posting
 
   Widget _form() {
     return Column(
       children: [
         AmountInput(
           controller: _billAmountController,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        _buildDate(
+          hintText: 'Upcoming bill date',
+          controller: _upcomingDateController,
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(
+              () {
+                _upcomingDateController.text =
+                    UIHelper.getInputDate(selectedDay.toString());
+                _selectedUpcomingDay = selectedDay;
+              },
+            );
+          },
         ),
         const SizedBox(
           height: 20,
@@ -152,7 +183,28 @@ class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
         ),
         Expanded(
           child: InkWell(
-            onTap: () {},
+            onTap: () async {
+              String upcomingBillDate = UIHelper.getDateFormat(
+                _selectedUpcomingDay.toString(),
+                'yyyy-MM-dd',
+              );
+
+              bool success = await context.read<UpcomingBillStore>().edit(
+                    UpcomingBillData(
+                      id: args.id,
+                      categoryID: _selectedCategory.id,
+                      amount: double.parse(_billAmountController.text),
+                      date: "$upcomingBillDate 12:00:00",
+                      name: _expenseNameController.text == ''
+                          ? _selectedCategory.name
+                          : _expenseNameController.text,
+                      note: _noteController.text,
+                    ),
+                  );
+              if (success) {
+                Navigator.pop(context);
+              }
+            },
             child: _saveButton(),
           ),
         ),
@@ -209,6 +261,47 @@ class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
           letterSpacing: 1,
           color: ColorConstant.white,
         ),
+      ),
+    );
+  }
+
+  Widget _buildDate({
+    String hintText = '',
+    TextEditingController? controller,
+    required void Function(DateTime selectedDay, DateTime focusedDay)
+        onDaySelected,
+  }) {
+    return TextFormField(
+      controller: controller,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CalendarWidget(
+              onDaySelected: onDaySelected,
+            ),
+          ),
+        );
+      },
+      style: TextStyleHelper.getw500size(14),
+      readOnly: true,
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: const EdgeInsets.all(25),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none),
+        fillColor: Colors.white,
+        filled: true,
+        prefixIcon: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: IconHelper.getSVG(
+            SVGName.calendar,
+            color: ColorConstant.mainText,
+          ),
+        ),
+        hintText: hintText,
+        hintStyle: GeneralTextStyle.getSize(12, color: ColorConstant.thin),
       ),
     );
   }
