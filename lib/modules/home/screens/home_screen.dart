@@ -14,6 +14,7 @@ import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -671,7 +672,14 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildBudgetCardItem() {
     return BudgetCard(
-      screen: const BudgetPlanDetailScreen(),
+      // screen: const BudgetPlanDetailScreen(),
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RouteName.budgetPlanDetail,
+          arguments: BudgetPlanData(),
+        );
+      },
       title: 'Transportation',
       color: ColorConstant.expense,
       topLeft: Row(

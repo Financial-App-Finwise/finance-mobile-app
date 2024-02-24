@@ -2,11 +2,12 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
+import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_progress_indicators/simple_progress_indicators.dart';
 
 class BudgetCard extends StatelessWidget {
-  final Widget screen;
+  // final Widget screen;
   final String title;
   final Widget? icon;
   final Color color;
@@ -20,9 +21,11 @@ class BudgetCard extends StatelessWidget {
   final int total;
   final int spent;
 
+  final void Function()? onTap;
+
   const BudgetCard({
     super.key,
-    required this.screen,
+    // required this.screen,
     this.icon,
     this.title = 'title',
     this.color = Colors.black,
@@ -34,19 +37,13 @@ class BudgetCard extends StatelessWidget {
     this.remain = 0,
     this.total = 1,
     this.spent = 0,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => screen,
-          ),
-        );
-      },
+      onTap: onTap,
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(16),
