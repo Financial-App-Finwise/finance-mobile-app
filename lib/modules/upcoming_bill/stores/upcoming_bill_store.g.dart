@@ -57,6 +57,22 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     return _$postAsyncAction.run(() => super.post(upcomingBillData));
   }
 
+  late final _$editAsyncAction =
+      AsyncAction('_UpcomingBillStoreBase.edit', context: context);
+
+  @override
+  Future<bool> edit(UpcomingBillData upcomingBillData) {
+    return _$editAsyncAction.run(() => super.edit(upcomingBillData));
+  }
+
+  late final _$deleteAsyncAction =
+      AsyncAction('_UpcomingBillStoreBase.delete', context: context);
+
+  @override
+  Future<bool> delete(UpcomingBillData upcomingBillData) {
+    return _$deleteAsyncAction.run(() => super.delete(upcomingBillData));
+  }
+
   late final _$_UpcomingBillStoreBaseActionController =
       ActionController(name: '_UpcomingBillStoreBase', context: context);
 

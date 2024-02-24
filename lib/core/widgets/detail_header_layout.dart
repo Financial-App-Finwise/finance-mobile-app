@@ -13,6 +13,8 @@ class DetailHeaderLayout extends StatefulWidget {
   final String title;
   final String description;
   final Widget editScreen;
+  final VoidCallback edit;
+  final VoidCallback delete;
 
   const DetailHeaderLayout({
     super.key,
@@ -22,6 +24,8 @@ class DetailHeaderLayout extends StatefulWidget {
     required this.title,
     required this.description,
     required this.editScreen,
+    required this.delete,
+    required this.edit,
   });
 
   @override
@@ -135,23 +139,11 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
               Row(
                 children: [
                   // Edit Icon Button
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => widget.editScreen,
-                          ),
-                        );
-                      },
-                      icon: IconConstant.edit,
-                      style: ButtonStyle(
-                        padding:
-                            MaterialStateProperty.all(const EdgeInsets.all(0)),
-                      ),
+                  CustomIconButton(
+                    onPressed: widget.edit,
+                    icon: IconHelper.getSVG(
+                      SVGName.edit,
+                      color: ColorConstant.white,
                     ),
                   ),
 
@@ -160,18 +152,13 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                   ),
 
                   // Delete Icon Button
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: IconButton(
-                      onPressed: () {
-                        _showModal(context);
-                      },
-                      icon: IconConstant.delete,
-                      style: ButtonStyle(
-                        padding:
-                            MaterialStateProperty.all(const EdgeInsets.all(0)),
-                      ),
+                  CustomIconButton(
+                    onPressed: () {
+                      _showModal(context);
+                    },
+                    icon: IconHelper.getSVG(
+                      SVGName.delete,
+                      color: ColorConstant.white,
                     ),
                   ),
                 ],
@@ -202,7 +189,7 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                 const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   'Are you sure you want to delete this SMART gaol?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -216,7 +203,7 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                 const SizedBox(
                   height: 16,
                 ),
-                Text(
+                const Text(
                   'You will delete every transaction added to this goal.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -233,7 +220,7 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                 Row(
                   children: [
                     Expanded(
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
                         },
@@ -247,7 +234,7 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                             borderRadius: BorderRadius.circular(12),
                             color: const Color(0xFFE9EAF1),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Cancel',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -263,10 +250,8 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                       width: 12,
                     ),
                     Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
+                      child: InkWell(
+                        onTap: widget.delete,
                         child: Container(
                           alignment: Alignment.center,
                           padding: const EdgeInsets.symmetric(
@@ -277,7 +262,7 @@ class _DetailHeaderLayoutState extends State<DetailHeaderLayout> {
                             borderRadius: BorderRadius.circular(12),
                             color: ColorConstant.expense,
                           ),
-                          child: Text(
+                          child: const Text(
                             'Delete',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
