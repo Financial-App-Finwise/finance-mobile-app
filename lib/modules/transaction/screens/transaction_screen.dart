@@ -14,7 +14,6 @@ import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -30,12 +29,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    store.initialize();
     Future.delayed(Duration.zero, () async {
       await context.read<TransactionStore>().readByPage(refreshed: true);
     });
-    store.disposer;
+    store.setReaction();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
   }
 
   @override
@@ -62,7 +66,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
           await context.read<TransactionStore>().readByPage(refreshed: true);
         },
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -80,9 +85,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       title: 'Expense', value: TransactionTypeEnum.expense),
                 ],
                 onTap: (value) {
-                  context
-                      .read<TransactionStore>()
-                      .changeFilteredType(value);
+                  // context
+                  //     .read<TransactionStore>()
+                  //     .changeFilteredType(value);
                   store.changeFilteredType(value);
                 },
               ),
@@ -124,8 +129,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   Widget _buildTransactions() {
     return Observer(builder: (context) {
-      final store = context.read<TransactionStore>();
-
       return store.isLoading
           ? CircularProgressIndicatorTwoArcs()
           : ListView.separated(
