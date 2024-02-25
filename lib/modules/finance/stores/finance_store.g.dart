@@ -16,11 +16,11 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
       (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
               name: '_FinanceStoreBase.isLoading'))
           .value;
-  Computed<FinanceData>? _$dollarAccountComputed;
+  Computed<FinanceItem>? _$dollarAccountComputed;
 
   @override
-  FinanceData get dollarAccount => (_$dollarAccountComputed ??=
-          Computed<FinanceData>(() => super.dollarAccount,
+  FinanceItem get dollarAccount => (_$dollarAccountComputed ??=
+          Computed<FinanceItem>(() => super.dollarAccount,
               name: '_FinanceStoreBase.dollarAccount'))
       .value;
 

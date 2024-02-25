@@ -3,8 +3,10 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/financial_text_style_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FinanceUpdateScreen extends StatefulWidget {
   const FinanceUpdateScreen({super.key});
@@ -24,6 +26,8 @@ class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
       ),
     );
   }
+
+  final TextEditingController _balanceController = TextEditingController();
 
   Widget _buildBody() {
     return SafeArea(
@@ -103,6 +107,7 @@ class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: TextFormField(
+                                    controller: _balanceController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       contentPadding: EdgeInsets.zero,
@@ -116,7 +121,13 @@ class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
                       ),
                     ),
                     GeneralBottomButton(
-                        onButtonTap: () {}, buttonLabel: 'Update Balance'),
+                      onButtonTap: () async {
+                        await context
+                            .read<FinanceStore>()
+                            .update(double.parse(_balanceController.text));
+                      },
+                      buttonLabel: 'Update Balance',
+                    ),
                   ],
                 ),
               ),
