@@ -14,8 +14,10 @@ import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FinanceScreen extends StatefulWidget {
   const FinanceScreen({super.key});
@@ -62,14 +64,14 @@ class _FinanceScreenState extends State<FinanceScreen> {
               color: ColorConstant.secondary,
             ),
             const SizedBox(width: 12),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Total Balance',
+                const Text('Total Balance',
                     style: FiancialTextStyle.totalBalanceTitle),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  '\$9645.50',
+                  '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
                   style: FiancialTextStyle.totalBalance,
                 ),
               ],
