@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/general_detail_layout.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -29,6 +30,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
       title: 'CADT Salary',
       subTitle: 'My Income',
       iconTitle: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
+      onEdit: () => Navigator.pushNamed(context, RouteName.transactionEdit),
       mainContent: _buildContent(),
     );
   }

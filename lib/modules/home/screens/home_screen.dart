@@ -4,6 +4,7 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
@@ -16,9 +17,16 @@ import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
+import 'package:finwise/modules/finance/models/finance_model.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,10 +41,19 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      _readAll();
+    });
+  }
+
+  Future _readAll() async {
+    context.read<BudgetPlanStore>().read();
+    context.read<FinanceStore>().read();
+    context.read<UpcomingBillStore>().read();
+  }
 
   @override
   void deactivate() {
@@ -65,25 +82,29 @@ class _HomeScreenState extends State<HomeScreen>
         alignment: Alignment.topRight,
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: RefreshIndicator(
-          onRefresh: () async {},
-          child: SingleChildScrollView(
-            child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                _buildProfile(),
-                _buildFinance(),
-                _buildMainFeatures(),
-                _buildSpendingIncome(),
-                _buildTopSpending(),
-                _buildBudgetPlan(),
-                _buildTotalSpend(),
-                _buildTotalEarn(),
-                _buildUpcomingBill(),
-                const SizedBox(height: 48),
-              ],
-            ),
-          ),
+          onRefresh: () async {
+            _readAll();
+          },
+          child: Observer(builder: (context) {
+            return SingleChildScrollView(
+              child: ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  _buildProfile(),
+                  _buildFinance(),
+                  _buildMainFeatures(),
+                  _buildSpendingIncome(),
+                  _buildTopSpending(),
+                  _buildBudgetPlan(),
+                  _buildTotalSpend(),
+                  _buildTotalEarn(),
+                  _buildUpcomingBill(),
+                  const SizedBox(height: 48),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -178,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ---------- finance ----------
+  // -------------------- Finance --------------------
   Widget _buildFinance() {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteName.finance),
@@ -210,7 +231,8 @@ class _HomeScreenState extends State<HomeScreen>
                         // color: Colors.amber,
                         child: _buildFinanceItem(
                           text: 'Total Balance',
-                          amount: '\$1000',
+                          amount:
+                              '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
                           color: ColorConstant.primary,
                           icon: IconConstant.piggyBank,
                         ),
@@ -594,7 +616,7 @@ class _HomeScreenState extends State<HomeScreen>
                         Navigator.pushNamed(context, RouteName.budgetPlan),
                     child: _buildBudgetOverview(),
                   ),
-                  _buildBudgetCards(),
+                  _buildBudgetPlanCards(),
                 ],
               ),
             ),
@@ -651,36 +673,40 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildBudgetCards() {
+  Widget _buildBudgetPlanCards() {
+    List budgetPlans = context.watch<BudgetPlanStore>().budgetPlan.data;
+    budgetPlans =
+        budgetPlans.length > 3 ? budgetPlans.sublist(0, 3) : budgetPlans;
+
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: [
-            _buildBudgetCardItem(),
-            const SizedBox(width: 12),
-            _buildBudgetCardItem(),
-            const SizedBox(width: 12),
-            _buildBudgetCardItem(),
-          ],
+          children: budgetPlans
+              .map((e) => Row(
+                    children: [
+                      _buildBudgetCardItem(e),
+                      const SizedBox(width: 12)
+                    ],
+                  ))
+              .toList(),
         ),
       ),
     );
   }
 
-  Widget _buildBudgetCardItem() {
+  Widget _buildBudgetCardItem(BudgetPlanData item) {
     return BudgetCard(
-      // screen: const BudgetPlanDetailScreen(),
       onTap: () {
         Navigator.pushNamed(
           context,
           RouteName.budgetPlanDetail,
-          arguments: BudgetPlanData(),
+          arguments: item,
         );
       },
-      title: 'Transportation',
+      title: '${item.name}',
       color: ColorConstant.expense,
       topLeft: Row(
         children: [
@@ -693,12 +719,14 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           Text('out of', style: HomeTextStyleConstant.medium),
           const SizedBox(width: 6),
-          Text('\$50', style: HomeTextStyleConstant.budgetCardTitle),
+          Text('\$${item.amount}',
+              style: HomeTextStyleConstant.budgetCardTitle),
         ],
       ),
       bottomLeft: Text('Today', style: HomeTextStyleConstant.medium),
-      bottomRight:
-          Text('January 24, 2024', style: HomeTextStyleConstant.medium),
+      bottomRight: Text(
+          '${UIHelper.getDateFormat(item.createdAt, 'dd MMM, yyyy')}',
+          style: HomeTextStyleConstant.medium),
       total: 10,
       spent: 5,
     );
@@ -834,7 +862,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   const Divider(color: ColorConstant.divider),
                   const SizedBox(height: 16),
-                  _buildBills(),
+                  _buildUpcomingBills(),
                 ],
               ),
             ),
@@ -844,23 +872,30 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildBills() {
+  Widget _buildUpcomingBills() {
+    List upcomingBills = context.watch<UpcomingBillStore>().upcomingBill.data;
+    upcomingBills =
+        upcomingBills.length > 3 ? upcomingBills.sublist(0, 3) : upcomingBills;
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: [
-          _buildBillItem(),
-          const SizedBox(width: 8),
-          _buildBillItem(),
-          const SizedBox(width: 8),
-          _buildBillItem(),
-        ],
+        children: upcomingBills
+            .map((item) =>
+                Row(children: [_buildBillItem(item), const SizedBox(width: 8)]))
+            .toList(),
+        // children: [
+        //   _buildBillItem(),
+        //   const SizedBox(width: 8),
+        //   _buildBillItem(),
+        //   const SizedBox(width: 8),
+        //   _buildBillItem(),
+        // ],
       ),
     );
   }
 
-  Widget _buildBillItem() {
+  Widget _buildBillItem(UpcomingBillData item) {
     return Container(
       width: 200,
       alignment: Alignment.center,
@@ -869,8 +904,11 @@ class _HomeScreenState extends State<HomeScreen>
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextButton(
-        onPressed: () =>
-            Navigator.pushNamed(context, RouteName.upcomingBillDetail),
+        onPressed: () => Navigator.pushNamed(
+          context,
+          RouteName.upcomingBillDetail,
+          arguments: item,
+        ),
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
             EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -882,16 +920,11 @@ class _HomeScreenState extends State<HomeScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    _buildSmallRoundedSquare(color: ColorConstant.bill),
-                    const SizedBox(width: 12),
-                    Text('Today', style: HomeTextStyleConstant.budgetCardTitle),
-                  ],
-                ),
-                IconConstant.getMore(color: const Color(0xffBABCD4)),
+                _buildSmallRoundedSquare(color: ColorConstant.bill),
+                const SizedBox(width: 12),
+                Text(UIHelper.getDateFormat(item.date, 'dd MMM, yyyy'),
+                    style: HomeTextStyleConstant.budgetCardTitle),
               ],
             ),
             const SizedBox(height: 8),
@@ -900,9 +933,9 @@ class _HomeScreenState extends State<HomeScreen>
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Netflix', style: HomeTextStyleConstant.medium),
+                Text(item.name, style: HomeTextStyleConstant.medium),
                 const SizedBox(height: 2),
-                Text('\$2.5',
+                Text('\$${item.amount}',
                     style: HomeTextStyleConstant.numberFocus(
                       color: ColorConstant.black,
                     )),

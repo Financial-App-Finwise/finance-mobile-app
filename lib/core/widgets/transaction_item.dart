@@ -6,14 +6,21 @@ import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class TransactionItem extends StatefulWidget {
   const TransactionItem({
     super.key,
+    this.title = '',
+    this.date = '',
+    this.amount = '',
     this.color,
     this.icon,
   });
 
+  final String title;
+  final String date;
+  final String amount;
   final Color? color;
   final Widget? icon;
 
@@ -51,23 +58,30 @@ class _TransactionItemState extends State<TransactionItem> {
                     icon: widget.icon,
                   ),
                   const SizedBox(width: 12),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Transportation',
-                          style: HomeTextStyleConstant.transactionItemTitle),
-                      SizedBox(height: 1),
-                      Text('12 December, 2023',
-                          style: HomeTextStyleConstant.transactionItemSubtitle),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: HomeTextStyleConstant.transactionItemTitle,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 1),
+                        Text(widget.date,
+                            style:
+                                HomeTextStyleConstant.transactionItemSubtitle),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 12),
             Row(
               children: [
                 Text(
-                  '\$10',
+                  '\$${widget.amount}',
                   style: TextStyleHelper.getw500size(20,
                       color: widget.color ?? ColorConstant.income),
                 ),

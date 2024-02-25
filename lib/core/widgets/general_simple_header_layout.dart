@@ -64,6 +64,7 @@ class GeneralSimpleHeaderLayout extends StatelessWidget {
               // content
               Expanded(
                 child: Container(
+                  
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   color: ColorConstant.backgroundColor,

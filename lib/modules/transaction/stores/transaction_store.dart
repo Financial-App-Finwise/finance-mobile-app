@@ -57,7 +57,8 @@ abstract class _TransactionStoreBase with Store {
   // -------------------- Reaction --------------------
   late ReactionDisposer _disposer;
   void setReaction() {
-    _disposer = reaction((_) => filteredType, (value) async {
+    // recheck with 'queryParemeter', not with filteredType
+    _disposer = reaction((_) => queryParemeter, (value) async {
       bool refreshed = false;
       if (filteredTransaction[queryParemeter] == null) {
         refreshed = true;

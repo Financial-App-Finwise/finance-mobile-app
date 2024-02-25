@@ -16,6 +16,7 @@ import 'package:finwise/modules/smart_goal/screens/smart_goal_edit_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_detail_screen.dart';
+import 'package:finwise/modules/transaction/screens/transaction_edit_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/add_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';
@@ -49,8 +50,9 @@ abstract class RouteName {
 
   // ----- transaction -----
   static const String transaction = '/transaction';
-  static const String transactionDetail = 'transaction/show';
-  static const String transactionCreate = 'transaction/create';
+  static const String transactionDetail = '/transaction/show';
+  static const String transactionCreate = '/transaction/create';
+  static const String transactionEdit = '/transaction/edit';
 
   // ----- smart goal -----
   static const String smartGoal = '/smart_goal';
@@ -100,6 +102,8 @@ var appRoutes = {
       const TransactionDetailScreen(),
   RouteName.transactionCreate: (BuildContext context) =>
       const AddTransactionScreen(),
+  RouteName.transactionEdit: (BuildContext context) =>
+      const TransactionEditScreen(),
 
   // ----- smart goal -----
   RouteName.smartGoal: (BuildContext context) => const SmartGoalScreen(),
@@ -116,7 +120,8 @@ var appRoutes = {
       UpcomingBillDetailScreen(),
   RouteName.addUpcomingBill: (BuildContext context) =>
       const AddUpcomingBillScreen(),
-  RouteName.editUpcomingBill: (BuildContext context) => const EditUpcomingBuildScreen(),
+  RouteName.editUpcomingBill: (BuildContext context) =>
+      const EditUpcomingBuildScreen(),
 
   // ----- currency -----
   RouteName.currency: (BuildContext context) => const CurrencyScreen(),
