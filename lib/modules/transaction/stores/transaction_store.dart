@@ -57,7 +57,7 @@ abstract class _TransactionStoreBase with Store {
   // -------------------- Reaction --------------------
   late ReactionDisposer disposer = reaction((_) => filteredType, (value) {
     bool refreshed = false;
-    if (filteredTransaction[filteredType] == null) {
+    if (filteredTransaction[queryParemeter] == null) {
       refreshed = true;
     }
     readByPage(refreshed: refreshed);
