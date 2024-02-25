@@ -55,18 +55,29 @@ abstract class _TransactionStoreBase with Store {
   }
 
   // -------------------- Reaction --------------------
-  late ReactionDisposer disposer = reaction((_) => filteredType, (value) {
-    bool refreshed = false;
-    if (filteredTransaction[queryParemeter] == null) {
-      refreshed = true;
-    }
-    readByPage(refreshed: refreshed);
-  });
+  late ReactionDisposer _disposer;
+  void setReaction() {
+    _disposer = reaction((_) => filteredType, (value) async {
+      bool refreshed = false;
+      if (filteredTransaction[queryParemeter] == null) {
+        refreshed = true;
+      }
+      await readByPage(refreshed: refreshed);
+    });
+  }
 
   // -------------------- Filtered Transaction --------------------
   // Map from a query paremeter to the Transaction
   @observable
   ObservableMap<String, Transaction> filteredTransaction = ObservableMap();
+
+  @action
+  void initialize() {
+    if (filteredTransaction[queryParemeter] == null) {
+      filteredTransaction[queryParemeter] =
+          Transaction(items: ObservableList.of([]), meta: TransactionMeta());
+    }
+  }
 
   // -------------------- Pagination and Filter --------------------
   @action
@@ -74,10 +85,7 @@ abstract class _TransactionStoreBase with Store {
     debugPrint('--> START: read transaction');
 
     // initialize value of map item
-    if (filteredTransaction[queryParemeter] == null) {
-      filteredTransaction[queryParemeter] =
-          Transaction(items: ObservableList.of([]), meta: TransactionMeta());
-    }
+    initialize();
 
     // if the page is refreshed, reinitialized
     if (refreshed) {
@@ -120,6 +128,7 @@ abstract class _TransactionStoreBase with Store {
     setLoadingStatus(LoadingStatusEnum.none);
     changeFilteredType(TransactionTypeEnum.all);
     changeFilteredPeriod(TransactionPeriodEnum.all);
-    disposer();
+    filteredTransaction = ObservableMap();
+    _disposer();
   }
 }

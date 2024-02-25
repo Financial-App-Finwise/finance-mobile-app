@@ -150,6 +150,17 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
   }
 
   @override
+  void initialize() {
+    final _$actionInfo = _$_TransactionStoreBaseActionController.startAction(
+        name: '_TransactionStoreBase.initialize');
+    try {
+      return super.initialize();
+    } finally {
+      _$_TransactionStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 loadingStatus: ${loadingStatus},
