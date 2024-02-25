@@ -6,14 +6,19 @@ SmartGoal getSmartGoal(Map<String, dynamic> json) => SmartGoal.fromJson(json);
 
 @JsonSerializable()
 class SmartGoal {
-  late List<SmartGoalData> data;
+  @JsonKey(name: 'data')
+  late List<SmartGoalData> items;
 
   @JsonKey(includeToJson: false)
   SmartGoalMeta meta;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late int currentPage;
+
   SmartGoal({
-    required this.data,
+    required this.items,
     required this.meta,
+    this.currentPage = 0,
   });
 
   factory SmartGoal.fromJson(Map<String, dynamic> json) =>

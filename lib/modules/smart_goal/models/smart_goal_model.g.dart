@@ -7,14 +7,14 @@ part of 'smart_goal_model.dart';
 // **************************************************************************
 
 SmartGoal _$SmartGoalFromJson(Map<String, dynamic> json) => SmartGoal(
-      data: (json['data'] as List<dynamic>)
+      items: (json['data'] as List<dynamic>)
           .map((e) => SmartGoalData.fromJson(e as Map<String, dynamic>))
           .toList(),
       meta: SmartGoalMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SmartGoalToJson(SmartGoal instance) => <String, dynamic>{
-      'data': instance.data,
+      'data': instance.items,
     };
 
 SmartGoalData _$SmartGoalDataFromJson(Map<String, dynamic> json) =>

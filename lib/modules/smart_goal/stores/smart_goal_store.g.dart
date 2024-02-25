@@ -9,28 +9,6 @@ part of 'smart_goal_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
-  Computed<ObservableList<SmartGoalData>>? _$inProgressComputed;
-
-  @override
-  ObservableList<SmartGoalData> get inProgress => (_$inProgressComputed ??=
-          Computed<ObservableList<SmartGoalData>>(() => super.inProgress,
-              name: '_SmartGoalStoreBase.inProgress'))
-      .value;
-  Computed<ObservableList<SmartGoalData>>? _$achievedComputed;
-
-  @override
-  ObservableList<SmartGoalData> get achieved => (_$achievedComputed ??=
-          Computed<ObservableList<SmartGoalData>>(() => super.achieved,
-              name: '_SmartGoalStoreBase.achieved'))
-      .value;
-  Computed<ObservableList<SmartGoalData>>? _$filteredGoalsComputed;
-
-  @override
-  ObservableList<SmartGoalData> get filteredGoals =>
-      (_$filteredGoalsComputed ??= Computed<ObservableList<SmartGoalData>>(
-              () => super.filteredGoals,
-              name: '_SmartGoalStoreBase.filteredGoals'))
-          .value;
   Computed<bool>? _$isLoadingComputed;
 
   @override
@@ -38,21 +16,34 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
               name: '_SmartGoalStoreBase.isLoading'))
           .value;
-
-  late final _$currentProgressStatusAtom =
-      Atom(name: '_SmartGoalStoreBase.currentProgressStatus', context: context);
+  Computed<String>? _$queryParemeterComputed;
 
   @override
-  SmartGoalStatusEnum get currentProgressStatus {
-    _$currentProgressStatusAtom.reportRead();
-    return super.currentProgressStatus;
+  String get queryParemeter =>
+      (_$queryParemeterComputed ??= Computed<String>(() => super.queryParemeter,
+              name: '_SmartGoalStoreBase.queryParemeter'))
+          .value;
+  Computed<String>? _$dateQueryComputed;
+
+  @override
+  String get dateQuery =>
+      (_$dateQueryComputed ??= Computed<String>(() => super.dateQuery,
+              name: '_SmartGoalStoreBase.dateQuery'))
+          .value;
+
+  late final _$loadingStatusAtom =
+      Atom(name: '_SmartGoalStoreBase.loadingStatus', context: context);
+
+  @override
+  LoadingStatusEnum get loadingStatus {
+    _$loadingStatusAtom.reportRead();
+    return super.loadingStatus;
   }
 
   @override
-  set currentProgressStatus(SmartGoalStatusEnum value) {
-    _$currentProgressStatusAtom.reportWrite(value, super.currentProgressStatus,
-        () {
-      super.currentProgressStatus = value;
+  set loadingStatus(LoadingStatusEnum value) {
+    _$loadingStatusAtom.reportWrite(value, super.loadingStatus, () {
+      super.loadingStatus = value;
     });
   }
 
@@ -72,51 +63,67 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
-  late final _$loadingStatusAtom =
-      Atom(name: '_SmartGoalStoreBase.loadingStatus', context: context);
+  late final _$filteredProgressAtom =
+      Atom(name: '_SmartGoalStoreBase.filteredProgress', context: context);
 
   @override
-  LoadingStatusEnum get loadingStatus {
-    _$loadingStatusAtom.reportRead();
-    return super.loadingStatus;
+  SmartGoalStatusEnum get filteredProgress {
+    _$filteredProgressAtom.reportRead();
+    return super.filteredProgress;
   }
 
   @override
-  set loadingStatus(LoadingStatusEnum value) {
-    _$loadingStatusAtom.reportWrite(value, super.loadingStatus, () {
-      super.loadingStatus = value;
+  set filteredProgress(SmartGoalStatusEnum value) {
+    _$filteredProgressAtom.reportWrite(value, super.filteredProgress, () {
+      super.filteredProgress = value;
     });
   }
 
-  late final _$currentPageAtom =
-      Atom(name: '_SmartGoalStoreBase.currentPage', context: context);
+  late final _$startDateAtom =
+      Atom(name: '_SmartGoalStoreBase.startDate', context: context);
 
   @override
-  int get currentPage {
-    _$currentPageAtom.reportRead();
-    return super.currentPage;
+  DateTime? get startDate {
+    _$startDateAtom.reportRead();
+    return super.startDate;
   }
 
   @override
-  set currentPage(int value) {
-    _$currentPageAtom.reportWrite(value, super.currentPage, () {
-      super.currentPage = value;
+  set startDate(DateTime? value) {
+    _$startDateAtom.reportWrite(value, super.startDate, () {
+      super.startDate = value;
     });
   }
 
-  late final _$paginatedGoalsAtom =
-      Atom(name: '_SmartGoalStoreBase.paginatedGoals', context: context);
+  late final _$endDateAtom =
+      Atom(name: '_SmartGoalStoreBase.endDate', context: context);
 
   @override
-  ObservableList<SmartGoalData> get paginatedGoals {
-    _$paginatedGoalsAtom.reportRead();
-    return super.paginatedGoals;
+  DateTime? get endDate {
+    _$endDateAtom.reportRead();
+    return super.endDate;
   }
 
   @override
-  set paginatedGoals(ObservableList<SmartGoalData> value) {
-    _$paginatedGoalsAtom.reportWrite(value, super.paginatedGoals, () {
-      super.paginatedGoals = value;
+  set endDate(DateTime? value) {
+    _$endDateAtom.reportWrite(value, super.endDate, () {
+      super.endDate = value;
+    });
+  }
+
+  late final _$filteredSmartGoalAtom =
+      Atom(name: '_SmartGoalStoreBase.filteredSmartGoal', context: context);
+
+  @override
+  ObservableMap<String, SmartGoal> get filteredSmartGoal {
+    _$filteredSmartGoalAtom.reportRead();
+    return super.filteredSmartGoal;
+  }
+
+  @override
+  set filteredSmartGoal(ObservableMap<String, SmartGoal> value) {
+    _$filteredSmartGoalAtom.reportWrite(value, super.filteredSmartGoal, () {
+      super.filteredSmartGoal = value;
     });
   }
 
@@ -165,22 +172,33 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       ActionController(name: '_SmartGoalStoreBase', context: context);
 
   @override
-  void changeProgressStatus(SmartGoalStatusEnum status) {
+  void setLoadingStatus(LoadingStatusEnum status) {
     final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
-        name: '_SmartGoalStoreBase.changeProgressStatus');
+        name: '_SmartGoalStoreBase.setLoadingStatus');
     try {
-      return super.changeProgressStatus(status);
+      return super.setLoadingStatus(status);
     } finally {
       _$_SmartGoalStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setLoadingStatus(LoadingStatusEnum status) {
+  void changeFilteredProgress(SmartGoalStatusEnum type) {
     final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
-        name: '_SmartGoalStoreBase.setLoadingStatus');
+        name: '_SmartGoalStoreBase.changeFilteredProgress');
     try {
-      return super.setLoadingStatus(status);
+      return super.changeFilteredProgress(type);
+    } finally {
+      _$_SmartGoalStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void initialize() {
+    final _$actionInfo = _$_SmartGoalStoreBaseActionController.startAction(
+        name: '_SmartGoalStoreBase.initialize');
+    try {
+      return super.initialize();
     } finally {
       _$_SmartGoalStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -200,15 +218,15 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   @override
   String toString() {
     return '''
-currentProgressStatus: ${currentProgressStatus},
-smartGoal: ${smartGoal},
 loadingStatus: ${loadingStatus},
-currentPage: ${currentPage},
-paginatedGoals: ${paginatedGoals},
-inProgress: ${inProgress},
-achieved: ${achieved},
-filteredGoals: ${filteredGoals},
-isLoading: ${isLoading}
+smartGoal: ${smartGoal},
+filteredProgress: ${filteredProgress},
+startDate: ${startDate},
+endDate: ${endDate},
+filteredSmartGoal: ${filteredSmartGoal},
+isLoading: ${isLoading},
+queryParemeter: ${queryParemeter},
+dateQuery: ${dateQuery}
     ''';
   }
 }

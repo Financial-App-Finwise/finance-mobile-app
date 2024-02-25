@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
+import 'package:finwise/modules/smart_goal/helpers/smart_goal_helper.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
@@ -17,39 +19,7 @@ abstract class _SmartGoalStoreBase with Store {
 
   int get userID => authStore.user!.userData.id;
 
-  // ---------- Progress Status ----------
-  @observable
-  SmartGoalStatusEnum currentProgressStatus = SmartGoalStatusEnum.all;
-
-  @action
-  void changeProgressStatus(SmartGoalStatusEnum status) =>
-      currentProgressStatus = status;
-
-  // ---------- Data Part ----------
-  @observable
-  SmartGoal smartGoal = SmartGoal(data: [], meta: SmartGoalMeta());
-
-  @computed
-  ObservableList<SmartGoalData> get inProgress => ObservableList.of(
-      smartGoal.data.where((data) => data.currentSave < data.amount).toList());
-
-  @computed
-  ObservableList<SmartGoalData> get achieved => ObservableList.of(
-      smartGoal.data.where((data) => data.currentSave == data.amount).toList());
-
-  @computed
-  ObservableList<SmartGoalData> get filteredGoals {
-    switch (currentProgressStatus) {
-      case SmartGoalStatusEnum.inProgress:
-        return inProgress;
-      case SmartGoalStatusEnum.achieved:
-        return achieved;
-      default:
-        return ObservableList.of(smartGoal.data);
-    }
-  }
-
-  // ---------- Loading ----------
+  // -------------------- Loading --------------------
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
@@ -59,6 +29,70 @@ abstract class _SmartGoalStoreBase with Store {
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
 
+  // -------------------- Smart Goal --------------------
+  @observable
+  SmartGoal smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
+
+  // -------------------- Filtering Variable --------------------
+  @observable
+  SmartGoalStatusEnum filteredProgress = SmartGoalStatusEnum.all;
+
+  @action
+  void changeFilteredProgress(SmartGoalStatusEnum type) =>
+      filteredProgress = type;
+
+  // -------------------- Query Paremeter --------------------
+  // Convert the value of selected filtering button to the query Paremeter
+  @computed
+  String get queryParemeter {
+    String filter1 = SmartGoalHelper.enumToQuery[filteredProgress] ?? '';
+
+    if ('$filter1$dateQuery'.isEmpty) {
+      return '';
+    }
+    return '$filter1&$dateQuery';
+  }
+
+  //2024-02-29
+
+  @observable
+  DateTime? startDate = DateTime.now();
+
+  @observable
+  DateTime? endDate;
+
+  @computed
+  String get dateQuery {
+    String date1 = '';
+    String date2 = '';
+    if (startDate != null) {
+      date1 = UIHelper.getDateFormat(startDate.toString(), 'yyyy-MM-dd');
+    }
+    if (endDate != null) {
+      date2 = UIHelper.getDateFormat(startDate.toString(), 'yyyy-MM-dd');
+    }
+
+    return 'startDate[gte]=$date1&endDate[lte]=$date2';
+  }
+
+  // -------------------- Reaction --------------------
+  late ReactionDisposer _disposer;
+  void setReaction() {
+    _disposer = reaction((_) => queryParemeter, (value) async {
+      bool refreshed = false;
+      if (filteredSmartGoal[queryParemeter] == null) {
+        refreshed = true;
+      }
+      await readByPage(refreshed: refreshed);
+    });
+  }
+
+  // -------------------- Filtered SmartGoal --------------------
+  // Map from a query paremeter to the SmartGoal
+  @observable
+  ObservableMap<String, SmartGoal> filteredSmartGoal = ObservableMap();
+
+  @Deprecated('')
   @action
   Future read() async {
     debugPrint('--> START: read smart goal');
@@ -85,42 +119,45 @@ abstract class _SmartGoalStoreBase with Store {
   }
 
   // -------------------- Pagination --------------------
-  final int _perPage = 10;
-
-  @observable
-  int currentPage = 0;
-
-  @observable
-  ObservableList<SmartGoalData> paginatedGoals = ObservableList();
+  @action
+  void initialize() {
+    if (filteredSmartGoal[queryParemeter] == null) {
+      filteredSmartGoal[queryParemeter] =
+          SmartGoal(items: ObservableList.of([]), meta: SmartGoalMeta());
+    }
+  }
 
   // -------------------- Read one page at a time --------------------
   @action
   Future readByPage({bool refreshed = false}) async {
     debugPrint('--> START: read smart goal');
-    // check if the page is refreshed
+
+    // initialize value of map item
+    initialize();
+
+    // if the page is refreshed, reinitialized
     if (refreshed) {
-      currentPage = 0;
-      paginatedGoals = ObservableList();
+      filteredSmartGoal[queryParemeter]!.items = ObservableList();
+      filteredSmartGoal[queryParemeter]!.currentPage = 0;
       setLoadingStatus(LoadingStatusEnum.loading);
     }
-    currentPage = currentPage + 1;
 
-    // try getting the data
+    // increase the page number
+    filteredSmartGoal[queryParemeter]!.currentPage++;
+
     try {
+      int page = filteredSmartGoal[queryParemeter]!.currentPage;
       Response response =
-          await ApiService.dio.get('goals/?page=${currentPage}');
+          await ApiService.dio.get('goals?$queryParemeter&page=$page');
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
-        smartGoal = await compute(
-          getSmartGoal,
-          response.data as Map<String, dynamic>,
-        );
 
-        // --- TODO: check if the page exceeds the last page
-        debugPrint('length = ${paginatedGoals.length}');
-        if (paginatedGoals.length < smartGoal.meta.total) {
-          paginatedGoals.addAll(smartGoal.data);
-          // paginatedGoals.sort((a, b) => b.id.compareTo(a.id));
+        smartGoal =
+            await compute(getSmartGoal, response.data as Map<String, dynamic>);
+
+        if (filteredSmartGoal[queryParemeter]!.items.length <
+            smartGoal.meta.total) {
+          filteredSmartGoal[queryParemeter]!.items.addAll(smartGoal.items);
         }
         setLoadingStatus(LoadingStatusEnum.done);
       } else {
@@ -226,8 +263,8 @@ abstract class _SmartGoalStoreBase with Store {
 
   @action
   void dispose() {
-    currentProgressStatus = SmartGoalStatusEnum.all;
-    smartGoal = SmartGoal(data: [], meta: SmartGoalMeta());
+    smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
     loadingStatus = LoadingStatusEnum.none;
+    _disposer();
   }
 }

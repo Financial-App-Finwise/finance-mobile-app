@@ -30,21 +30,22 @@ class SmartGoalScreen extends StatefulWidget {
 
 class _SmartGoalScreenState extends State<SmartGoalScreen> {
   late SmartGoalUIStore uiStore = SmartGoalUIStore();
+  late SmartGoalStore store = context.read<SmartGoalStore>();
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
       if (mounted) {
-        await context.read<SmartGoalStore>().read();
         await context.read<SmartGoalStore>().readByPage();
       }
     });
+    store.initialize();
+    store.setReaction();
   }
 
   @override
   void deactivate() {
-    context.read<SmartGoalStore>().dispose();
     print('deactivate');
     super.deactivate();
   }
@@ -52,6 +53,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   @override
   void dispose() {
     print('disposed');
+    store.dispose();
     super.dispose();
   }
 
@@ -87,8 +89,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           return true;
         },
         centerContent: _buildCenterContent(),
-        // mainContent: _buildContent(),
-        mainContent: _buildLoadingData(),
+        mainContent: _buildLoadedData(),
         // mainContent: _buildNestedScrollView(),
       ),
     );
@@ -96,8 +97,14 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   DateTime _startDay = DateTime.now();
   DateTime _endDay = DateTime.now().add(Duration(days: 7));
-  final TextEditingController _startDayController = TextEditingController();
-  final TextEditingController _endDayController = TextEditingController();
+
+  final TextEditingController _startDayController = TextEditingController(
+    text: UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMM, yyyy'),
+  );
+  final TextEditingController _endDayController = TextEditingController(
+    text: UIHelper.getDateFormat(
+        DateTime.now().add(Duration(days: 30)).toString(), 'dd MMM, yyyy'),
+  );
 
   Widget _buildCenterContent() {
     return Row(
@@ -108,6 +115,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               setState(() {
                 _startDayController.text = UIHelper.getDateFormat(
                     selectedDay.toString(), 'MMM dd, yyyy');
+                store.startDate = selectedDay;
               });
             }),
             hintText: 'Start Date',
@@ -120,6 +128,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               setState(() {
                 _endDayController.text = UIHelper.getDateFormat(
                     selectedDay.toString(), 'MMM dd, yyyy');
+                    store.endDate = selectedDay;
               });
             }),
             hintText: 'End Date',
@@ -134,16 +143,6 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         ),
       ],
     );
-    // return uiStore.showGrid
-    //     ? _buildCenterOfGrid()
-    //     : GeneralDatePicker(
-    //         prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
-    //         suffix: IconHelper.getSVG(SVGName.addSquare,
-    //             color: ColorConstant.secondary),
-    //         onSuffix: () =>
-    //             Navigator.pushNamed(context, RouteName.smartGoalCreate),
-    //         onPreffix: () => uiStore.toggleShowGrid(),
-    //       );
   }
 
   // Widget _buildNestedScrollView() {
@@ -225,19 +224,17 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   //   );
   // }
 
-  Widget _buildLoadingData() {
+  Widget _buildLoadedData() {
     LoadingStatusEnum status = context.watch<SmartGoalStore>().loadingStatus;
-    return Observer(builder: (_) {
-      switch (status) {
-        case LoadingStatusEnum.loading:
-        case LoadingStatusEnum.none:
-          return Center(child: CircularProgressIndicatorTwoArcs());
-        case LoadingStatusEnum.error:
-          return Icon(Icons.error);
-        case LoadingStatusEnum.done:
-          return _buildContent();
-      }
-    });
+    switch (status) {
+      case LoadingStatusEnum.loading:
+      case LoadingStatusEnum.none:
+        return Center(child: CircularProgressIndicatorTwoArcs());
+      case LoadingStatusEnum.error:
+        return Icon(Icons.error);
+      case LoadingStatusEnum.done:
+        return _buildContent();
+    }
   }
 
   Widget _buildContent() {
@@ -270,7 +267,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   Widget _buildSummary() {
     return ListView(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: [
         _buildTotalSummary(),
@@ -324,7 +321,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         children: [
           GeneralFilterBarHeader(
             padding: const EdgeInsets.only(left: 0, bottom: 12),
-            currentValue: context.watch<SmartGoalStore>().currentProgressStatus,
+            currentValue: store.filteredProgress,
             items: [
               FilterBarHeaderItem(
                 title: 'All',
@@ -339,39 +336,25 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 value: SmartGoalStatusEnum.achieved,
               ),
             ],
-            onTap: (value) =>
-                context.read<SmartGoalStore>().changeProgressStatus(value),
+            onTap: (value) => store.changeFilteredProgress(value),
           ),
-          _buildFilteredSmartGoals(
-            context.watch<SmartGoalStore>().paginatedGoals,
-          ),
+          _buildFilteredSmartGoals(),
           const SizedBox(height: 16),
         ],
       );
     });
   }
 
-  // NotificationListener<ScrollNotification>(
-  //           onNotification: (notification) {
-  //            if (notification is ScrollEndNotification) {
-  //              if (notification.metrics.pixels ==
-  //                  notification.metrics.maxScrollExtent) {
-  //                final tempList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  //                setState(() => _list.addAll(tempList));
-  //                return true;
-  //              }
-  //            }
-  //            return true;
-  //          },
-
-  Widget _buildFilteredSmartGoals(List<SmartGoalData> data) {
+  Widget _buildFilteredSmartGoals() {
+    List<SmartGoalData> items =
+        store.filteredSmartGoal[store.queryParemeter]!.items;
     return SingleChildScrollView(
       child: ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: data.length,
+        itemCount: items.length,
         itemBuilder: (context, index) {
-          return _buildSmartGoalItem(data[index]);
+          return _buildSmartGoalItem(items[index]);
         },
         separatorBuilder: (context, index) {
           return const SizedBox(height: 8);
