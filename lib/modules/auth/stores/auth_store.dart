@@ -132,10 +132,10 @@ abstract class _AuthStoreBase with Store {
 
   Future<void> signOut() async {
     debugPrint('--> START: signOut');
+    user = null;
     try {
       Response response = await ApiService.dio.post('auth/logout');
       if (response.statusCode == 200) {
-        user = null;
         _writeCache();
         debugPrint('--> successfully signed out');
       } else {
