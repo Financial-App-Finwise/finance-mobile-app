@@ -6,18 +6,64 @@ part of 'transaction_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Transaction _$TransactionFromJson(Map<String, dynamic> json) => Transaction(
+      items: (json['data'] as List<dynamic>)
+          .map((e) => TransactionData.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      meta: TransactionMeta.fromJson(json['meta'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
+    <String, dynamic>{
+      'data': instance.items,
+      'meta': instance.meta,
+    };
+
 TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) =>
     TransactionData(
-      isIncome: json['isIncome'] as bool? ?? true,
-      hasContributed: json['hasContributed'] as bool? ?? false,
-      amount: (json['amount'] as num?)?.toDouble() ?? 0,
-      date: json['date'] as String? ?? 'no data',
-    );
+      id: json['id'] as int? ?? 0,
+      userID: json['userID'] as int? ?? 0,
+      categoryID: json['categoryID'] as int? ?? 0,
+      isIncome: json['isIncome'] == null
+          ? true
+          : TransactionData._intToBool(json['isIncome'] as int),
+      amount: json['amount'] == null
+          ? 0
+          : TransactionData._stringToDouble(json['amount'] as String),
+      hasContributed: json['hasContributed'] == null
+          ? false
+          : TransactionData._intToBool(json['hasContributed'] as int),
+      expenseType: json['expenseType'] as String? ?? '',
+      date: json['date'] as String? ?? '',
+      note: json['note'] as String? ?? '',
+    )
+      ..createdAt = json['created_at'] as String
+      ..updatedAt = json['updated_at'] as String;
 
 Map<String, dynamic> _$TransactionDataToJson(TransactionData instance) =>
     <String, dynamic>{
-      'isIncome': instance.isIncome,
-      'hasContributed': instance.hasContributed,
-      'amount': instance.amount,
+      'id': instance.id,
+      'userID': instance.userID,
+      'categoryID': instance.categoryID,
+      'expenseType': instance.expenseType,
       'date': instance.date,
+      'note': instance.note,
+      'created_at': instance.createdAt,
+      'updated_at': instance.updatedAt,
+    };
+
+TransactionLink _$TransactionLinkFromJson(Map<String, dynamic> json) =>
+    TransactionLink();
+
+Map<String, dynamic> _$TransactionLinkToJson(TransactionLink instance) =>
+    <String, dynamic>{};
+
+TransactionMeta _$TransactionMetaFromJson(Map<String, dynamic> json) =>
+    TransactionMeta(
+      total: json['total'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$TransactionMetaToJson(TransactionMeta instance) =>
+    <String, dynamic>{
+      'total': instance.total,
     };
