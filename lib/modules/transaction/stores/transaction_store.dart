@@ -55,7 +55,13 @@ abstract class _TransactionStoreBase with Store {
   }
 
   // -------------------- Reaction --------------------
-  late ReactionDisposer disposer = reaction((_) => filteredType, (value) => readByPage(refreshed: true));
+  late ReactionDisposer disposer = reaction((_) => filteredType, (value) {
+    bool refreshed = false;
+    if (filteredTransaction[filteredType] == null) {
+      refreshed = true;
+    }
+    readByPage(refreshed: refreshed);
+  });
 
   // -------------------- Filtered Transaction --------------------
   // Map from a query paremeter to the Transaction
