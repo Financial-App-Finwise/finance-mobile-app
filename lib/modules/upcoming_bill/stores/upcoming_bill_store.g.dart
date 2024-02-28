@@ -9,6 +9,21 @@ part of 'upcoming_bill_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
+  Computed<DateTime>? _$endDateComputed;
+
+  @override
+  DateTime get endDate =>
+      (_$endDateComputed ??= Computed<DateTime>(() => super.endDate,
+              name: '_UpcomingBillStoreBase.endDate'))
+          .value;
+  Computed<String>? _$queryParameterComputed;
+
+  @override
+  String get queryParameter =>
+      (_$queryParameterComputed ??= Computed<String>(() => super.queryParameter,
+              name: '_UpcomingBillStoreBase.queryParameter'))
+          .value;
+
   late final _$upcomingBillAtom =
       Atom(name: '_UpcomingBillStoreBase.upcomingBill', context: context);
 
@@ -41,12 +56,60 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     });
   }
 
+  late final _$startDateAtom =
+      Atom(name: '_UpcomingBillStoreBase.startDate', context: context);
+
+  @override
+  DateTime get startDate {
+    _$startDateAtom.reportRead();
+    return super.startDate;
+  }
+
+  @override
+  set startDate(DateTime value) {
+    _$startDateAtom.reportWrite(value, super.startDate, () {
+      super.startDate = value;
+    });
+  }
+
+  late final _$filterAtom =
+      Atom(name: '_UpcomingBillStoreBase.filter', context: context);
+
+  @override
+  UpcomingBillFilterEnum get filter {
+    _$filterAtom.reportRead();
+    return super.filter;
+  }
+
+  @override
+  set filter(UpcomingBillFilterEnum value) {
+    _$filterAtom.reportWrite(value, super.filter, () {
+      super.filter = value;
+    });
+  }
+
+  late final _$pageAtom =
+      Atom(name: '_UpcomingBillStoreBase.page', context: context);
+
+  @override
+  int get page {
+    _$pageAtom.reportRead();
+    return super.page;
+  }
+
+  @override
+  set page(int value) {
+    _$pageAtom.reportWrite(value, super.page, () {
+      super.page = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_UpcomingBillStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read() {
-    return _$readAsyncAction.run(() => super.read());
+  Future<dynamic> read({bool refreshed = false}) {
+    return _$readAsyncAction.run(() => super.read(refreshed: refreshed));
   }
 
   late final _$postAsyncAction =
@@ -88,10 +151,48 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
   }
 
   @override
+  void setStartDate(DateTime date) {
+    final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
+        name: '_UpcomingBillStoreBase.setStartDate');
+    try {
+      return super.setStartDate(date);
+    } finally {
+      _$_UpcomingBillStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setFilter(UpcomingBillFilterEnum type) {
+    final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
+        name: '_UpcomingBillStoreBase.setFilter');
+    try {
+      return super.setFilter(type);
+    } finally {
+      _$_UpcomingBillStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setNextPage() {
+    final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
+        name: '_UpcomingBillStoreBase.setNextPage');
+    try {
+      return super.setNextPage();
+    } finally {
+      _$_UpcomingBillStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 upcomingBill: ${upcomingBill},
-status: ${status}
+status: ${status},
+startDate: ${startDate},
+filter: ${filter},
+page: ${page},
+endDate: ${endDate},
+queryParameter: ${queryParameter}
     ''';
   }
 }

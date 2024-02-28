@@ -41,7 +41,6 @@ abstract class _BudgetPlanStoreBase with Store {
   @computed
   String get queryParameter {
     String filterParameter = BudgetPlanHelper.enumToQuery[filter] ?? '';
-    debugPrint(filterParameter);
     String parameter = '/${selectedDate.year}/${selectedDate.month}';
 
     if (filterParameter.isNotEmpty) {
@@ -70,16 +69,6 @@ abstract class _BudgetPlanStoreBase with Store {
     } finally {
       debugPrint('<-- End: fetching budget plan');
     }
-  }
-
-  late final reactionDisposer = reaction((_) => queryParameter, (value) async {
-    await read();
-  });
-
-  @action
-  void dispose() {
-    status = LoadingStatusEnum.none;
-    reactionDisposer();
   }
 
   @action

@@ -31,7 +31,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
 
     Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
-        await context.read<UpcomingBillStore>().read();
+        await context.read<UpcomingBillStore>().read(refreshed: true);
       }
     });
   }
@@ -75,16 +75,30 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
             color: ColorConstant.secondary),
         onSuffix: () => Navigator.pushNamed(context, RouteName.addUpcomingBill),
         onPreffix: () => setState(() => _isGrid = !_isGrid),
+        onDateChanged: (DateTime date) async {
+          context.read<UpcomingBillStore>().setStartDate(date);
+          context.read<UpcomingBillStore>().read(refreshed: true);
+        },
       ),
       mainContent: _buildContent(),
       centerContentPadding: const EdgeInsets.all(16),
+      onNotification: (notification) {
+        if (notification is ScrollEndNotification) {
+          if (notification.metrics.pixels ==
+              notification.metrics.maxScrollExtent) {
+            context.read<UpcomingBillStore>().read();
+            return true;
+          }
+        }
+        return true;
+      },
     );
   }
 
   Widget _buildContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read<UpcomingBillStore>().read();
+        await context.read<UpcomingBillStore>().read(refreshed: true);
       },
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -105,7 +119,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
           context.watch<UpcomingBillStore>().upcomingBill;
 
       return MainContentListView(
-        totalUpcomingBill: 4,
+        totalUpcomingBill: upcomingBill.meta.total,
         upcomingBillList: upcomingBill.data,
       );
     });

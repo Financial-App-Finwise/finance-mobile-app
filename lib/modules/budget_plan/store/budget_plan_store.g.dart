@@ -150,17 +150,6 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   }
 
   @override
-  void dispose() {
-    final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
-        name: '_BudgetPlanStoreBase.dispose');
-    try {
-      return super.dispose();
-    } finally {
-      _$_BudgetPlanStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 budgetPlan: ${budgetPlan},

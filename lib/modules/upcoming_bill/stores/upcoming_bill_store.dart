@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
+import 'package:finwise/core/enums/upcoming_bill_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
+import 'package:finwise/modules/upcoming_bill/helpers/upcoming_bill_helper.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
@@ -13,7 +15,7 @@ abstract class _UpcomingBillStoreBase with Store {
   @observable
   UpcomingBill upcomingBill = UpcomingBill(
     data: [],
-    meta: Meta(),
+    meta: UpcomingBillMeta(),
   );
 
   @observable
@@ -22,16 +24,67 @@ abstract class _UpcomingBillStoreBase with Store {
   @action
   void setLoadingStatus(LoadingStatusEnum status) => status = status;
 
+  @observable
+  DateTime startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+
+  @computed
+  DateTime get endDate {
+    DateTime date = DateTime(startDate.year, startDate.month + 1, 1);
+    return date;
+  }
+
   @action
-  Future read() async {
+  void setStartDate(DateTime date) {
+    startDate = date;
+  }
+
+  @observable
+  UpcomingBillFilterEnum filter = UpcomingBillFilterEnum.all;
+
+  @action
+  void setFilter(UpcomingBillFilterEnum type) => filter = type;
+
+  @observable
+  int page = 1;
+
+  @action
+  void setNextPage() {
+    if (upcomingBill.meta.perPage * page <= upcomingBill.meta.total) {
+      page++;
+    }
+  }
+
+  @computed
+  String get queryParameter {
+    String filterParameter = UpcomingBillHelper.enumToQuery[filter] ?? '';
+    String parameter =
+        '?date[gte]=${startDate.year}-${startDate.month}-${startDate.day}&date[lte]=${endDate.year}-${endDate.month}-${endDate.day}';
+
+    if (filterParameter.isNotEmpty) {
+      return '?$filterParameter&page=$page';
+    }
+
+    return '$parameter&page=$page';
+  }
+
+  @action
+  Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
     status = LoadingStatusEnum.loading;
 
+    if (refreshed) {
+      page = 1;
+    }
+
     try {
-      Response response = await ApiService.dio.get('upcomingbills');
+      String url = 'upcomingbills$queryParameter';
+      debugPrint('llll $url');
+
+      Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
         upcomingBill = await compute(
             getUpcomingBill, response.data as Map<String, dynamic>);
+        setNextPage();
         status = LoadingStatusEnum.done;
       }
     } catch (e) {
