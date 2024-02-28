@@ -57,6 +57,9 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             color: ColorConstant.secondary),
         onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
         onPreffix: () => setState(() => _isGrid = !_isGrid),
+        onDateChanged: (DateTime date) {
+          context.read<BudgetPlanStore>().setSelectedDate(date);
+        },
       ),
       mainContent: _buildContent(),
       centerContentPadding: const EdgeInsets.all(16),

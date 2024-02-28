@@ -11,7 +11,10 @@ class UpcomingBillStore = _UpcomingBillStoreBase with _$UpcomingBillStore;
 
 abstract class _UpcomingBillStoreBase with Store {
   @observable
-  UpcomingBill upcomingBill = UpcomingBill(data: []);
+  UpcomingBill upcomingBill = UpcomingBill(
+    data: [],
+    meta: Meta(),
+  );
 
   @observable
   LoadingStatusEnum status = LoadingStatusEnum.none;

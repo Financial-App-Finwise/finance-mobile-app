@@ -9,6 +9,14 @@ part of 'budget_plan_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
+  Computed<String>? _$queryParameterComputed;
+
+  @override
+  String get queryParameter =>
+      (_$queryParameterComputed ??= Computed<String>(() => super.queryParameter,
+              name: '_BudgetPlanStoreBase.queryParameter'))
+          .value;
+
   late final _$budgetPlanAtom =
       Atom(name: '_BudgetPlanStoreBase.budgetPlan', context: context);
 
@@ -38,6 +46,38 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   set status(LoadingStatusEnum value) {
     _$statusAtom.reportWrite(value, super.status, () {
       super.status = value;
+    });
+  }
+
+  late final _$selectedDateAtom =
+      Atom(name: '_BudgetPlanStoreBase.selectedDate', context: context);
+
+  @override
+  DateTime get selectedDate {
+    _$selectedDateAtom.reportRead();
+    return super.selectedDate;
+  }
+
+  @override
+  set selectedDate(DateTime value) {
+    _$selectedDateAtom.reportWrite(value, super.selectedDate, () {
+      super.selectedDate = value;
+    });
+  }
+
+  late final _$filterAtom =
+      Atom(name: '_BudgetPlanStoreBase.filter', context: context);
+
+  @override
+  BudgetPlanFilterEnum get filter {
+    _$filterAtom.reportRead();
+    return super.filter;
+  }
+
+  @override
+  set filter(BudgetPlanFilterEnum value) {
+    _$filterAtom.reportWrite(value, super.filter, () {
+      super.filter = value;
     });
   }
 
@@ -88,10 +128,46 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   }
 
   @override
+  void setSelectedDate(DateTime date) {
+    final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
+        name: '_BudgetPlanStoreBase.setSelectedDate');
+    try {
+      return super.setSelectedDate(date);
+    } finally {
+      _$_BudgetPlanStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setFilter(BudgetPlanFilterEnum type) {
+    final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
+        name: '_BudgetPlanStoreBase.setFilter');
+    try {
+      return super.setFilter(type);
+    } finally {
+      _$_BudgetPlanStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void dispose() {
+    final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
+        name: '_BudgetPlanStoreBase.dispose');
+    try {
+      return super.dispose();
+    } finally {
+      _$_BudgetPlanStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 budgetPlan: ${budgetPlan},
-status: ${status}
+status: ${status},
+selectedDate: ${selectedDate},
+filter: ${filter},
+queryParameter: ${queryParameter}
     ''';
   }
 }

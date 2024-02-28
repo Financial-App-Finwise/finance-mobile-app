@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
+import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
+import 'package:finwise/modules/budget_plan/helpers/budget_plan_helper.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
@@ -21,23 +23,63 @@ abstract class _BudgetPlanStoreBase with Store {
   @action
   void setLoadingStatus(LoadingStatusEnum status) => status = status;
 
+  @observable
+  DateTime selectedDate =
+      DateTime(DateTime.now().year, DateTime.now().month, 1);
+
+  @action
+  void setSelectedDate(DateTime date) {
+    selectedDate = date;
+  }
+
+  @observable
+  BudgetPlanFilterEnum filter = BudgetPlanFilterEnum.all;
+
+  @action
+  void setFilter(BudgetPlanFilterEnum type) => filter = type;
+
+  @computed
+  String get queryParameter {
+    String filterParameter = BudgetPlanHelper.enumToQuery[filter] ?? '';
+    debugPrint(filterParameter);
+    String parameter = '/${selectedDate.year}/${selectedDate.month}';
+
+    if (filterParameter.isNotEmpty) {
+      parameter += '?$filterParameter';
+    }
+
+    return parameter;
+  }
+
   @action
   Future read() async {
     debugPrint('--> Start fetching budget plan');
     status = LoadingStatusEnum.loading;
 
     try {
-      Response response = await ApiService.dio.get('budgetplans/2024/2');
-      if (response.statusCode == 200) {
-        budgetPlan =
-            await compute(getBudgetPlan, response.data as Map<String, dynamic>);
-        status = LoadingStatusEnum.done;
-      }
+      String url = 'budgetplans$queryParameter';
+      debugPrint('llll $url');
+      // Response response = await ApiService.dio.get(url);
+      // if (response.statusCode == 200) {
+      //   budgetPlan =
+      //       await compute(getBudgetPlan, response.data as Map<String, dynamic>);
+      //   status = LoadingStatusEnum.done;
+      // }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
     } finally {
       debugPrint('<-- End: fetching budget plan');
     }
+  }
+
+  late final reactionDisposer = reaction((_) => queryParameter, (value) async {
+    await read();
+  });
+
+  @action
+  void dispose() {
+    status = LoadingStatusEnum.none;
+    reactionDisposer();
   }
 
   @action

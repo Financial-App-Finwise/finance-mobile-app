@@ -1,0 +1,1 @@
+enum BudgetPlanFilterEnum{all, oneTimeBudget, monthlyBudget}

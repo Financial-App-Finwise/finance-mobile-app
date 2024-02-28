@@ -10,11 +10,13 @@ UpcomingBill _$UpcomingBillFromJson(Map<String, dynamic> json) => UpcomingBill(
       data: (json['data'] as List<dynamic>)
           .map((e) => UpcomingBillData.fromJson(e as Map<String, dynamic>))
           .toList(),
+      meta: Meta.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UpcomingBillToJson(UpcomingBill instance) =>
     <String, dynamic>{
       'data': instance.data,
+      'meta': instance.meta,
     };
 
 UpcomingBillData _$UpcomingBillDataFromJson(Map<String, dynamic> json) =>
@@ -40,4 +42,14 @@ Map<String, dynamic> _$UpcomingBillDataToJson(UpcomingBillData instance) =>
       'date': instance.date,
       'name': instance.name,
       'note': instance.note,
+    };
+
+Meta _$MetaFromJson(Map<String, dynamic> json) => Meta(
+      currentPage: json['current_page'] as int? ?? 0,
+      total: json['total'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$MetaToJson(Meta instance) => <String, dynamic>{
+      'current_page': instance.currentPage,
+      'total': instance.total,
     };

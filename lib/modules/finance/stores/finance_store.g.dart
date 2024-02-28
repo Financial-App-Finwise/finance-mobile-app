@@ -64,6 +64,14 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     return _$readAsyncAction.run(() => super.read());
   }
 
+  late final _$updateAsyncAction =
+      AsyncAction('_FinanceStoreBase.update', context: context);
+
+  @override
+  Future<bool> update(double totalbalance) {
+    return _$updateAsyncAction.run(() => super.update(totalbalance));
+  }
+
   late final _$_FinanceStoreBaseActionController =
       ActionController(name: '_FinanceStoreBase', context: context);
 
