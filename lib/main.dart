@@ -1,14 +1,10 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
-<<<<<<< Updated upstream
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
-=======
-import 'package:finwise/modules/categories/stores/category_store.dart';
->>>>>>> Stashed changes
 import 'package:finwise/route.dart';
 import 'package:finwise/themes/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +24,6 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(create: (context) => AuthStore()),
         Provider(create: (context) => CategoryStore()),
-<<<<<<< Updated upstream
         Provider(create: (context) => BudgetPlanStore()),
         Provider(create: (context) => UpcomingBillStore()),
         Provider(create: (context) => TransactionStore()),
@@ -37,8 +32,6 @@ class MyApp extends StatelessWidget {
         // // // proxy provider
         ProxyProvider<AuthStore, SmartGoalStore>(
             update: (_, auth, smartGoal) => SmartGoalStore(authStore: auth)),
-=======
->>>>>>> Stashed changes
       ],
       child: MaterialApp(
         // debugShowCheckedModeBanner: ,

@@ -1,12 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
-<<<<<<< Updated upstream
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/test_category.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
-=======
-import 'package:finwise/modules/budget_plan/screens/test_category.dart';
->>>>>>> Stashed changes
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
@@ -89,11 +85,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => TestCategory()));
           },
-<<<<<<< Updated upstream
           child: const Text(
-=======
-          child: Text(
->>>>>>> Stashed changes
             'Edit budget',
             style: TextStyle(
               fontWeight: FontWeight.w600,

@@ -99,7 +99,6 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
 
 // Main content list view
   Widget _mainContentListView() {
-<<<<<<< Updated upstream
     return Observer(builder: (context) {
       BudgetPlan budgetPlan = context.watch<BudgetPlanStore>().budgetPlan;
 
@@ -135,59 +134,6 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
         ),
       );
     });
-=======
-    return Container(
-      color: const Color(0xFFF5F7F8),
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 77,
-        bottom: 16,
-      ),
-      child: const Column(
-        children: [
-          BudgetOverview(
-              totalBudget: 3,
-              available: 130,
-              spend: 30,
-              overBudget: 0,
-              plannedBudget: 150),
-          SizedBox(
-            height: 16,
-          ),
-          FilteredBudget(
-            filterTitles: [
-              'All',
-              'One-time budget',
-              'Monthly budget',
-              'Monthly budget',
-              'Monthly budget'
-            ],
-            budgetCards: [
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-              BudgetCardModel(
-                  title: 'Transportation',
-                  transaction: 7,
-                  remain: 40,
-                  spent: 10,
-                  total: 50),
-            ],
-          )
-        ],
-      ),
-    );
->>>>>>> Stashed changes
   }
 
 // Main content grid view
