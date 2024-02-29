@@ -2,13 +2,13 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
 import 'package:flutter/material.dart';
 
-class CustomRadioButton extends StatefulWidget {
+class CustomRowRadioButton extends StatefulWidget {
   final void Function(RadioButtonModel) setButton;
   final String question;
   final List<RadioButtonModel> list;
   final RadioButtonModel selectedButton;
 
-  CustomRadioButton({
+  const CustomRowRadioButton({
     super.key,
     required this.setButton,
     required this.question,
@@ -17,10 +17,10 @@ class CustomRadioButton extends StatefulWidget {
   });
 
   @override
-  State<CustomRadioButton> createState() => _CustomRadioButtonState();
+  State<CustomRowRadioButton> createState() => _CustomRowRadioButtonState();
 }
 
-class _CustomRadioButtonState extends State<CustomRadioButton> {
+class _CustomRowRadioButtonState extends State<CustomRowRadioButton> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -40,10 +40,12 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
         ),
         ListView.separated(
           shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: widget.list.length,
-          separatorBuilder: (BuildContext context, int index) =>
-              const SizedBox(height: 20),
+          separatorBuilder: (BuildContext context, int index) => const SizedBox(
+            width: 8,
+          ),
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
@@ -52,8 +54,10 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
                 });
               },
               child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 12,
+                ),
                 decoration:
                     widget.list[index].name != widget.selectedButton.name
                         ? BoxDecoration(
@@ -62,10 +66,7 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
                           )
                         : BoxDecoration(
                             color: Color(0xECFDFF80),
-                            border: Border.all(
-                              color: ColorConstant.secondary,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

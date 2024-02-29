@@ -54,6 +54,9 @@ abstract class _UpcomingBillStoreBase with Store {
     }
   }
 
+  @observable
+  ObservableMap<String, UpcomingBill> filteredUpcomingBill = ObservableMap();
+
   @computed
   String get queryParameter {
     String filterParameter = UpcomingBillHelper.enumToQuery[filter] ?? '';
@@ -68,11 +71,23 @@ abstract class _UpcomingBillStoreBase with Store {
   }
 
   @action
+  void initialize() {
+    if(filteredUpcomingBill[queryParameter] == null) {
+      filteredUpcomingBill[queryParameter] = UpcomingBill(data: ObservableList.of([]), meta: UpcomingBillMeta());
+    }
+  }
+
+  @action
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
-    status = LoadingStatusEnum.loading;
+
+    initialize();
 
     if (refreshed) {
+      status = LoadingStatusEnum.loading;
+      filteredUpcomingBill[queryParameter]!.data = ObservableList();
+      filteredUpcomingBill[queryParameter]!.meta = UpcomingBillMeta();
+      filteredUpcomingBill[queryParameter]!.meta.currentPage = 1;
       page = 1;
     }
 

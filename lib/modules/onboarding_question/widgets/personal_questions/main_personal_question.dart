@@ -23,6 +23,14 @@ class MainPersonalQuestion extends StatefulWidget {
   // Age
   final TextEditingController ageController;
 
+  // Martial Status
+  final void Function(RadioButtonModel) selectMartialStatus;
+  final RadioButtonModel selectedMartialStatus;
+
+  // Profession
+  final void Function(RadioButtonModel) selectProfression;
+  final RadioButtonModel selectedProfression;
+
   const MainPersonalQuestion({
     super.key,
     required this.previousPage,
@@ -32,6 +40,10 @@ class MainPersonalQuestion extends StatefulWidget {
     required this.selectGender,
     required this.selectedGender,
     required this.ageController,
+    required this.selectMartialStatus,
+    required this.selectedMartialStatus,
+    required this.selectProfression,
+    required this.selectedProfression,
   });
 
   @override
@@ -61,20 +73,31 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
                     const SizedBox(
                       height: 24,
                     ),
-                    AnimatedSwitcher(
-                      duration: const Duration(microseconds: 500),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return ScaleTransition(
-                          scale: animation,
-                          child: child,
-                        );
-                      },
-                      child: _getCurrentWidget(),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(microseconds: 500),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                              scale: animation,
+                              child: child,
+                            );
+                          },
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: _getCurrentWidget(),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
             ContinueButton(nextPage: widget.nextPage)
           ],
@@ -89,6 +112,10 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
         return _gender();
       case 2:
         return _age();
+      case 3:
+        return _martialStatus();
+      case 4:
+        return _profession();
       default:
         return Container();
     }
@@ -148,13 +175,67 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
           const SizedBox(
             height: 24,
           ),
-          TipText(
+          const TipText(
             title: 'We ask your age to create your personal plan',
             description:
                 'Age is just a number, but it helps us understand your life stage better.',
           ),
         ],
       ),
+    );
+  }
+
+  Widget _martialStatus() {
+    return Column(
+      children: [
+        CustomRadioButton(
+          setButton: widget.selectMartialStatus,
+          question: 'What is your martial status',
+          list: [
+            RadioButtonModel('Married'),
+            RadioButtonModel('Single'),
+            RadioButtonModel('In relationship'),
+            RadioButtonModel('I prefer not to say'),
+          ],
+          selectedButton: widget.selectedMartialStatus,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        const TipText(
+          title: 'We ask your age to create your personal plan',
+          description:
+              "Whether it's a solo adventure or a duo dance, this detail helps us tailor the perfect chapters for your cosmic journey. 📖✨,",
+        ),
+      ],
+    );
+  }
+
+  Widget _profession() {
+    return Column(
+      children: [
+        CustomRadioButton(
+          setButton: widget.selectProfression,
+          question: 'Which stage do you resonate with the most?',
+          list: [
+            RadioButtonModel('Student'),
+            RadioButtonModel('Young Professional'),
+            RadioButtonModel('Mid career'),
+            RadioButtonModel('Pre-retirement'),
+            RadioButtonModel('Retired'),
+            RadioButtonModel('I prefer not to say'),
+          ],
+          selectedButton: widget.selectedProfression,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        const TipText(
+          title: 'We ask your age to create your personal plan',
+          description:
+              'Choose your stage, and let the cosmic adventure unfold! 🌌✨,',
+        ),
+      ],
     );
   }
 
