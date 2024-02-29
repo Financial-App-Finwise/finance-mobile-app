@@ -10,6 +10,7 @@ import 'package:finwise/modules/currency/screens/currency_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_update_screen.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
+<<<<<<< Updated upstream
 import 'package:finwise/modules/smart_goal/screens/smart_goal_create_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_detail_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_edit_screen.dart';
@@ -21,6 +22,8 @@ import 'package:finwise/modules/transaction/screens/transaction_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/add_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
+=======
+>>>>>>> Stashed changes
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_screen.dart';
 import 'package:finwise/screens/index_screen.dart';
 import 'package:finwise/screens/splash_screen.dart';
@@ -29,6 +32,7 @@ import 'package:flutter/material.dart';
 
 // store all route names
 abstract class RouteName {
+<<<<<<< Updated upstream
   // ----- starting screens -----
   static const String splash = '/splash';
   static const String wrapper = '/wrapper';
@@ -71,6 +75,18 @@ abstract class RouteName {
 
   // ----- category -----
   static const String category = '/category';
+=======
+  static String splash = '/splash';
+  static String wrapper = '/wrapper';
+  static String signUp = '/sign_up';
+  static String verifyEmail = '/verify_email';
+  static String signIn = '/sign_in';
+  static String index = '/index';
+  static String home ='/home';
+  static String budgetPlan = '/budget_plan';
+  static String addBudget = '/budget_plan/create';
+  static String upcomingBill = "/upcomingBill";
+>>>>>>> Stashed changes
 }
 
 // map from route names to screens
@@ -81,6 +97,7 @@ var appRoutes = {
   RouteName.signUp: (BuildContext context) => const SignUpScreen(),
   RouteName.signIn: (BuildContext context) => const SignInScreen(),
   RouteName.verifyEmail: (BuildContext context) => VerifyEmailScreen(),
+<<<<<<< Updated upstream
   RouteName.index: (BuildContext context) => const IndexScreen(),
   RouteName.home: (BuildContext context) => const HomeScreen(),
 
@@ -126,3 +143,11 @@ var appRoutes = {
   // ----- currency -----
   RouteName.currency: (BuildContext context) => const CurrencyScreen(),
 };
+=======
+  RouteName.index: (BuildContext context) => IndexScreen(),
+  RouteName.home: (BuildContext context) => HomeScreen(),
+  RouteName.budgetPlan: (BuildContext context) => BudgetPlanScreen(),
+  RouteName.addBudget: (BuildContext context) => AddBudgetPlanScreen(),
+  RouteName.upcomingBill: (BuildContext context) => UpcomingBillScreen(),
+};
+>>>>>>> Stashed changes

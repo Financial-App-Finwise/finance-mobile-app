@@ -128,8 +128,14 @@ class _HomeScreenState extends State<HomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Welcome Back,', style: HomeTextStyleConstant.welcome),
+<<<<<<< Updated upstream
                   Text(authStore.user!.userData.name,
                       style: HomeTextStyleConstant.profileName),
+=======
+                  // Text(authStore.user!.userData.name,
+                  //     style: HomeTextStyleConstant.profileName),
+                  Text('User', style: HomeTextStyleConstant.profileName),
+>>>>>>> Stashed changes
                 ],
               ),
             ],
@@ -331,12 +337,22 @@ class _HomeScreenState extends State<HomeScreen>
                     }),
                 const SizedBox(width: 12),
                 _buildFeatureItem(
+<<<<<<< Updated upstream
                     text: 'Upcoming Bill',
                     amount: '3',
                     icon: IconConstant.getUpcomingBill(),
                     onPressed: () {
                       Navigator.pushNamed(context, RouteName.upcomingBill);
                     }),
+=======
+                  text: 'Upcoming Bill',
+                  amount: '3',
+                  icon: IconConstant.getUpcomingBill(),
+                  onPressed: () {Navigator.pushNamed(
+                          context, RouteName.upcomingBill);
+                    }
+                ),
+>>>>>>> Stashed changes
                 const SizedBox(width: 12),
                 _buildFeatureItem(
                     text: 'Smart Goal',

@@ -53,6 +53,7 @@ abstract class IconConstant {
 
   static SvgPicture internet = SvgPicture.asset('${_svgPath}internet.svg');
 
+<<<<<<< Updated upstream
   // ------------------------ methods --------------------------
 
   static SvgPicture getAddSquare({Color color = Colors.black}) =>
@@ -78,6 +79,9 @@ abstract class IconConstant {
         '${_svgPath}expense.svg',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
+=======
+  // methods
+>>>>>>> Stashed changes
 
   static SvgPicture getUpcomingBill({Color color = Colors.white}) =>
       SvgPicture.asset(

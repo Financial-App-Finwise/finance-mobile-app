@@ -1,4 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
+<<<<<<< Updated upstream
 import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
@@ -7,6 +8,12 @@ import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/route.dart';
+=======
+import 'package:finwise/core/widgets/title_progress_card.dart';
+import 'package:finwise/modules/budget_plan/models/budget_card.dart';
+import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
+import 'package:finwise/core/widgets/filter_bar.dart';
+>>>>>>> Stashed changes
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
