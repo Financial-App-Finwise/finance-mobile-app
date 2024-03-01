@@ -88,39 +88,6 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     });
   }
 
-  late final _$pageAtom =
-      Atom(name: '_UpcomingBillStoreBase.page', context: context);
-
-  @override
-  int get page {
-    _$pageAtom.reportRead();
-    return super.page;
-  }
-
-  @override
-  set page(int value) {
-    _$pageAtom.reportWrite(value, super.page, () {
-      super.page = value;
-    });
-  }
-
-  late final _$filteredUpcomingBillAtom = Atom(
-      name: '_UpcomingBillStoreBase.filteredUpcomingBill', context: context);
-
-  @override
-  ObservableMap<String, UpcomingBill> get filteredUpcomingBill {
-    _$filteredUpcomingBillAtom.reportRead();
-    return super.filteredUpcomingBill;
-  }
-
-  @override
-  set filteredUpcomingBill(ObservableMap<String, UpcomingBill> value) {
-    _$filteredUpcomingBillAtom.reportWrite(value, super.filteredUpcomingBill,
-        () {
-      super.filteredUpcomingBill = value;
-    });
-  }
-
   late final _$readAsyncAction =
       AsyncAction('_UpcomingBillStoreBase.read', context: context);
 
@@ -201,25 +168,12 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
   }
 
   @override
-  void initialize() {
-    final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
-        name: '_UpcomingBillStoreBase.initialize');
-    try {
-      return super.initialize();
-    } finally {
-      _$_UpcomingBillStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 upcomingBill: ${upcomingBill},
 status: ${status},
 startDate: ${startDate},
 filter: ${filter},
-page: ${page},
-filteredUpcomingBill: ${filteredUpcomingBill},
 endDate: ${endDate},
 queryParameter: ${queryParameter}
     ''';

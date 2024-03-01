@@ -44,61 +44,56 @@ abstract class _UpcomingBillStoreBase with Store {
   @action
   void setFilter(UpcomingBillFilterEnum type) => filter = type;
 
-  @observable
-  int page = 1;
-
   @action
   void setNextPage() {
-    if (upcomingBill.meta.perPage * page <= upcomingBill.meta.total) {
-      page++;
+    if (upcomingBill.meta.perPage * upcomingBill.meta.currentPage <=
+        upcomingBill.meta.total) {
+      upcomingBill.meta.currentPage += 1;
     }
   }
-
-  @observable
-  ObservableMap<String, UpcomingBill> filteredUpcomingBill = ObservableMap();
 
   @computed
   String get queryParameter {
     String filterParameter = UpcomingBillHelper.enumToQuery[filter] ?? '';
     String parameter =
-        '?date[gte]=${startDate.year}-${startDate.month}-${startDate.day}&date[lte]=${endDate.year}-${endDate.month}-${endDate.day}';
+        'date[gte]=${startDate.year}-${startDate.month}-${startDate.day}&date[lte]=${endDate.year}-${endDate.month}-${endDate.day}';
 
     if (filterParameter.isNotEmpty) {
-      return '?$filterParameter&page=$page';
+      return filterParameter;
     }
 
-    return '$parameter&page=$page';
-  }
-
-  @action
-  void initialize() {
-    if(filteredUpcomingBill[queryParameter] == null) {
-      filteredUpcomingBill[queryParameter] = UpcomingBill(data: ObservableList.of([]), meta: UpcomingBillMeta());
-    }
+    return parameter;
   }
 
   @action
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
 
-    initialize();
-
     if (refreshed) {
       status = LoadingStatusEnum.loading;
-      filteredUpcomingBill[queryParameter]!.data = ObservableList();
-      filteredUpcomingBill[queryParameter]!.meta = UpcomingBillMeta();
-      filteredUpcomingBill[queryParameter]!.meta.currentPage = 1;
-      page = 1;
+      upcomingBill.data.clear();
+      upcomingBill.meta = UpcomingBillMeta();
+      upcomingBill.meta.currentPage = 1;
     }
 
     try {
-      String url = 'upcomingbills$queryParameter';
+      int page = upcomingBill.meta.currentPage;
+      String url = 'upcomingbills?$queryParameter&page=$page';
       debugPrint('llll $url');
 
       Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
-        upcomingBill = await compute(
+        UpcomingBill newUpcomingBill = await compute(
             getUpcomingBill, response.data as Map<String, dynamic>);
+        if (upcomingBill.data.length < newUpcomingBill.meta.total &&
+            upcomingBill.data.length + newUpcomingBill.data.length <=
+                newUpcomingBill.meta.total) {
+          upcomingBill.data.addAll(newUpcomingBill.data);
+          upcomingBill.meta = newUpcomingBill.meta;
+
+          print("llll billlength ${upcomingBill.data.length}");
+          print('llll totallenth ${upcomingBill.meta.total}');
+        }
         setNextPage();
         status = LoadingStatusEnum.done;
       }
