@@ -312,15 +312,15 @@ class _FinanceScreenState extends State<FinanceScreen> {
 
 // -------------------- Transactions --------------------
   Widget _buildTransactionItems({bool isIncome = true}) {
-    print('${store.finance.data.allTransaction.toJson()}');
+    print('${store.finance.data.allTransactions.toJson()}');
     List<TransactionData> todayIncomeTransactions =
-        store.incomeFinance.data.allTransaction.today;
+        store.incomeFinance.data.allTransactions.today;
     List<TransactionData> yesterdayIncomeTransactions =
-        store.incomeFinance.data.allTransaction.yesterday;
+        store.incomeFinance.data.allTransactions.yesterday;
     List<TransactionData> todayExpenseTransactions =
-        store.expenseFinance.data.allTransaction.today;
+        store.expenseFinance.data.allTransactions.today;
     List<TransactionData> yesterdayExpenseTransactions =
-        store.expenseFinance.data.allTransaction.yesterday;
+        store.expenseFinance.data.allTransactions.yesterday;
 
     return Column(
       children: [

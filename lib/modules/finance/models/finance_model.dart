@@ -27,8 +27,8 @@ class FinanceData {
     required this.items,
     this.totalExpenses = 0,
     this.totalIncomes = 0,
-    required this.topTransaction,
-    required this.allTransaction,
+    required this.topTransactions,
+    required this.allTransactions,
     required this.total,
   });
 
@@ -41,11 +41,11 @@ class FinanceData {
   @JsonKey(name: 'total_incomes')
   late final double totalIncomes;
 
-  @JsonKey(name: 'top_transaction')
-  late final List<TopTransaction> topTransaction;
+  @JsonKey(name: 'top_transactions')
+  late final List<TopTransaction> topTransactions;
 
-  @JsonKey(name: 'all_transaction')
-  late final AllTransaction allTransaction;
+  @JsonKey(name: 'all_transactions')
+  late final AllTransaction allTransactions;
 
   @JsonKey(name: 'totals', fromJson: _totalFromJson)
   late final dynamic total;

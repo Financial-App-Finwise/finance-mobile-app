@@ -25,8 +25,8 @@ abstract class _FinanceStoreBase with Store {
   Finance finance = Finance(
     data: FinanceData(
       items: [],
-      topTransaction: [],
-      allTransaction: AllTransaction(today: [], yesterday: []),
+      topTransactions: [],
+      allTransactions: AllTransaction(today: [], yesterday: []),
       total: [],
     ),
   );
@@ -50,8 +50,8 @@ abstract class _FinanceStoreBase with Store {
   Finance incomeFinance = Finance(
     data: FinanceData(
       items: [],
-      topTransaction: [],
-      allTransaction: AllTransaction(today: [], yesterday: []),
+      topTransactions: [],
+      allTransactions: AllTransaction(today: [], yesterday: []),
       total: [],
     ),
   );
@@ -60,8 +60,8 @@ abstract class _FinanceStoreBase with Store {
   Finance expenseFinance = Finance(
     data: FinanceData(
       items: [],
-      topTransaction: [],
-      allTransaction: AllTransaction(today: [], yesterday: []),
+      topTransactions: [],
+      allTransactions: AllTransaction(today: [], yesterday: []),
       total: [],
     ),
   );

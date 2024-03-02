@@ -22,11 +22,11 @@ FinanceData _$FinanceDataFromJson(Map<String, dynamic> json) => FinanceData(
           .toList(),
       totalExpenses: (json['total_expenses'] as num?)?.toDouble() ?? 0,
       totalIncomes: (json['total_incomes'] as num?)?.toDouble() ?? 0,
-      topTransaction: (json['top_transaction'] as List<dynamic>)
+      topTransactions: (json['top_transactions'] as List<dynamic>)
           .map((e) => TopTransaction.fromJson(e as Map<String, dynamic>))
           .toList(),
-      allTransaction: AllTransaction.fromJson(
-          json['all_transaction'] as Map<String, dynamic>),
+      allTransactions: AllTransaction.fromJson(
+          json['all_transactions'] as Map<String, dynamic>),
       total: FinanceData._totalFromJson(json['totals']),
     );
 
@@ -35,8 +35,8 @@ Map<String, dynamic> _$FinanceDataToJson(FinanceData instance) =>
       'finance': instance.items,
       'total_expenses': instance.totalExpenses,
       'total_incomes': instance.totalIncomes,
-      'top_transaction': instance.topTransaction,
-      'all_transaction': instance.allTransaction,
+      'top_transactions': instance.topTransactions,
+      'all_transactions': instance.allTransactions,
       'totals': instance.total,
     };
 
