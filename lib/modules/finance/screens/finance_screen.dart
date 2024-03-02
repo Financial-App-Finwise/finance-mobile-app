@@ -5,18 +5,23 @@ import 'package:finwise/core/constants/text_style_constants/general_text_style_c
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
+import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class FinanceScreen extends StatefulWidget {
@@ -27,6 +32,17 @@ class FinanceScreen extends StatefulWidget {
 }
 
 class _FinanceScreenState extends State<FinanceScreen> {
+  late FinanceStore store = context.read<FinanceStore>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      // await _readAll();
+      // await context.read<FinanceStore>().read();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,32 +114,95 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Widget _buildContent() {
-    return RefreshIndicator(
-      onRefresh: () async {},
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                const SizedBox(height: 20),
-                _buildBarChart(),
-                const SizedBox(height: 12),
-                _buildIncomeExpense(),
-                const SizedBox(height: 16),
-                _buildIncomeExpenseFilter(),
-                const SizedBox(height: 48),
-              ],
-            ),
-          ],
+    return Observer(builder: (context) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          await context.read<FinanceStore>().read();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  const SizedBox(height: 20),
+                  _buildBarChart(),
+                  const SizedBox(height: 12),
+                  _buildIncomeExpense(),
+                  const SizedBox(height: 16),
+                  _buildIncomeExpenseFilter(),
+                  const SizedBox(height: 48),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildBarChart() {
-    return IncomeExpenseBarChart();
+    print('value: ${store.finance.data.total}');
+    return RoundedContainer(
+      child: Column(
+        children: [
+          Row(children: [
+            const Expanded(child: SizedBox()),
+            DurationDropDown(
+              items: [
+                {
+                  'label': 'This Month',
+                  'value': 'this_month',
+                },
+                {
+                  'label': 'This Week',
+                  'value': 'this_week',
+                },
+                {
+                  'label': 'Last Month',
+                  'value': 'last_month',
+                },
+                {
+                  'label': 'Last 3 Months',
+                  'value': 'last_3_months',
+                },
+                {
+                  'label': 'Last 6 Months',
+                  'value': 'last_6_months',
+                }
+              ],
+              selectedValue: 'this_month',
+              onChange: (value) async {
+                print('selected value: $value');
+                store.period = value;
+                await store.read();
+              },
+            ),
+          ]),
+          const SizedBox(height: 24),
+          store.finance.data.total.isEmpty
+              ? Column(
+                  children: [
+                    const EmptyBarChart(),
+                    const SizedBox(height: 8),
+                    Text(
+                      'You have no payment history yet.',
+                      style: TextStyleHelper.getw500size(16,
+                          color: ColorConstant.black),
+                    ),
+                    const SizedBox(height: 8),
+                    GeneralBottomButton(
+                      onButtonTap: () => Navigator.pushNamed(
+                          context, RouteName.transactionCreate),
+                      buttonLabel: 'Add Transaction',
+                    ),
+                  ],
+                )
+              : IncomeExpenseBarChart(data: store.finance.data.total),
+        ],
+      ),
+    );
   }
 
   Widget _buildIncomeExpense() {
@@ -132,13 +211,13 @@ class _FinanceScreenState extends State<FinanceScreen> {
       children: [
         _buildFinanceItem(
           text: 'Income',
-          amount: '\$200.6K',
+          amount: '\$${store.finance.data.totalIncomes}',
           icon: IconConstant.earn,
           color: ColorConstant.income,
         ),
         _buildFinanceItem(
           text: 'Expense',
-          amount: '\$200.6K',
+          amount: '\$${store.finance.data.totalExpenses}',
           icon: IconConstant.expense,
           color: ColorConstant.expense,
         ),
@@ -215,7 +294,10 @@ class _FinanceScreenState extends State<FinanceScreen> {
         children: [
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [SizedBox(), DurationDropDown()],
+            children: [
+              SizedBox(),
+              // DurationDropDown(),
+            ],
           ),
           const SizedBox(height: 30),
           IncomeExpensePieChart(
@@ -270,6 +352,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
             itemCount: 2,
             itemBuilder: ((context, index) {
               return TransactionItem(
+                transactionData: TransactionData(),
                 icon: isIncome
                     ? IconConstant.getEarn()
                     : IconConstant.getExpense(),

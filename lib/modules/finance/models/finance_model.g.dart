@@ -27,7 +27,7 @@ FinanceData _$FinanceDataFromJson(Map<String, dynamic> json) => FinanceData(
           .toList(),
       allTransaction: AllTransaction.fromJson(
           json['all_transaction'] as Map<String, dynamic>),
-      total: Total.fromJson(json['totals'] as Map<String, dynamic>),
+      total: FinanceData._totalFromJson(json['totals']),
     );
 
 Map<String, dynamic> _$FinanceDataToJson(FinanceData instance) =>
@@ -43,7 +43,9 @@ Map<String, dynamic> _$FinanceDataToJson(FinanceData instance) =>
 FinanceItem _$FinanceItemFromJson(Map<String, dynamic> json) => FinanceItem(
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
-      totalbalance: json['totalbalance'] as String? ?? '',
+      totalbalance: json['totalbalance'] == null
+          ? 0
+          : FinanceItem._stringToDouble(json['totalbalance'] as String),
       currency: Currency.fromJson(json['currency'] as Map<String, dynamic>),
     );
 
@@ -95,26 +97,16 @@ Map<String, dynamic> _$AllTransactionToJson(AllTransaction instance) =>
       'yesterday': instance.yesterday,
     };
 
-Total _$TotalFromJson(Map<String, dynamic> json) => Total(
-      week1: Week.fromJson(json['Week 1'] as Map<String, dynamic>),
-      week2: Week.fromJson(json['Week 2'] as Map<String, dynamic>),
-      week3: Week.fromJson(json['Week 3'] as Map<String, dynamic>),
-      week4: Week.fromJson(json['Week 4'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$TotalToJson(Total instance) => <String, dynamic>{
-      'Week 1': instance.week1,
-      'Week 2': instance.week2,
-      'Week 3': instance.week3,
-      'Week 4': instance.week4,
-    };
-
-Week _$WeekFromJson(Map<String, dynamic> json) => Week(
+IncomeExpenseCompare _$IncomeExpenseCompareFromJson(
+        Map<String, dynamic> json) =>
+    IncomeExpenseCompare(
       totalIncome: (json['total_income'] as num?)?.toDouble() ?? 0,
       totalExpense: (json['total_expense'] as num?)?.toDouble() ?? 0,
     );
 
-Map<String, dynamic> _$WeekToJson(Week instance) => <String, dynamic>{
+Map<String, dynamic> _$IncomeExpenseCompareToJson(
+        IncomeExpenseCompare instance) =>
+    <String, dynamic>{
       'total_income': instance.totalIncome,
       'total_expense': instance.totalExpense,
     };

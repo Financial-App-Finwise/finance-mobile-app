@@ -27,12 +27,7 @@ abstract class _FinanceStoreBase with Store {
       items: [],
       topTransaction: [],
       allTransaction: AllTransaction(today: [], yesterday: []),
-      total: Total(
-        week1: Week(),
-        week2: Week(),
-        week3: Week(),
-        week4: Week(),
-      ),
+      total: [],
     ),
   );
 
@@ -44,6 +39,13 @@ abstract class _FinanceStoreBase with Store {
         },
       );
 
+  // ---------- Period Filter ----------
+  @observable
+  String period = 'this_month';
+
+  @observable
+  int isIncome = 0;
+
   // ---------- read finance ----------
   @action
   Future read() async {
@@ -51,13 +53,22 @@ abstract class _FinanceStoreBase with Store {
     loadingStatus = LoadingStatusEnum.loading;
     try {
       Response response = await ApiService.dio
-          .get('myfinances/view-my-finance?period=this_month');
+          .get('myfinances/view-my-finance?isIncome=$isIncome&period=$period');
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
         finance = await compute(
           getFinanceModel,
           response.data as Map<String, dynamic>,
         );
+        // print('fetched and converted: ${finance.data.total}');
+        if (finance.data.total.runtimeType.toString() ==
+            "_Map<String, dynamic>") {
+          // Map<String, dynamic> map = {};
+          // map.forEach((key, value) {});
+          // finance.data.total.forEach((key, value) {
+          //   print('$key: $value');
+          // });
+        }
         loadingStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');

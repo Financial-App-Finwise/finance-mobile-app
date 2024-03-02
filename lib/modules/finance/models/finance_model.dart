@@ -47,13 +47,26 @@ class FinanceData {
   @JsonKey(name: 'all_transaction')
   late final AllTransaction allTransaction;
 
-  @JsonKey(name: 'totals')
-  late final Total total;
+  @JsonKey(name: 'totals', fromJson: _totalFromJson)
+  late final dynamic total;
 
   factory FinanceData.fromJson(Map<String, dynamic> json) =>
       _$FinanceDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$FinanceDataToJson(this);
+
+  static dynamic _totalFromJson(dynamic json) {
+    if (json.runtimeType.toString() == "_Map<String, dynamic>") {
+      Map<String, dynamic> map = json;
+      return map.map(
+        (key, value) => MapEntry(
+          key,
+          IncomeExpenseCompare.fromJson(value),
+        ),
+      );
+    }
+    return [];
+  }
 }
 
 @JsonSerializable()
@@ -61,19 +74,24 @@ class FinanceItem {
   FinanceItem({
     this.id = 0,
     this.userID = 0,
-    this.totalbalance = '',
+    this.totalbalance = 0,
     required this.currency,
   });
 
   late final int id;
   late final int userID;
-  late final String totalbalance;
+
+  @JsonKey(fromJson: _stringToDouble)
+  late final double totalbalance;
   late final Currency currency;
 
   factory FinanceItem.fromJson(Map<String, dynamic> json) =>
       _$FinanceItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$FinanceItemToJson(this);
+
+  static double _stringToDouble(String value) =>
+      double.tryParse(value) == null ? 0 : double.parse(value);
 }
 
 @JsonSerializable()
@@ -126,35 +144,35 @@ class AllTransaction {
   Map<String, dynamic> toJson() => _$AllTransactionToJson(this);
 }
 
+// @JsonSerializable()
+// class Total {
+//   Total({
+//     required this.week1,
+//     required this.week2,
+//     required this.week3,
+//     required this.week4,
+//   });
+
+//   @JsonKey(name: 'Week 1')
+//   late final IncomeExpenseCompare week1;
+
+//   @JsonKey(name: 'Week 2')
+//   late final IncomeExpenseCompare week2;
+
+//   @JsonKey(name: 'Week 3')
+//   late final IncomeExpenseCompare week3;
+
+//   @JsonKey(name: 'Week 4')
+//   late final IncomeExpenseCompare week4;
+
+//   factory Total.fromJson(Map<String, dynamic> json) => _$TotalFromJson(json);
+
+//   Map<String, dynamic> toJson() => _$TotalToJson(this);
+// }
+
 @JsonSerializable()
-class Total {
-  Total({
-    required this.week1,
-    required this.week2,
-    required this.week3,
-    required this.week4,
-  });
-
-  @JsonKey(name: 'Week 1')
-  late final Week week1;
-
-  @JsonKey(name: 'Week 2')
-  late final Week week2;
-
-  @JsonKey(name: 'Week 3')
-  late final Week week3;
-
-  @JsonKey(name: 'Week 4')
-  late final Week week4;
-
-  factory Total.fromJson(Map<String, dynamic> json) => _$TotalFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TotalToJson(this);
-}
-
-@JsonSerializable()
-class Week {
-  Week({
+class IncomeExpenseCompare {
+  IncomeExpenseCompare({
     this.totalIncome = 0,
     this.totalExpense = 0,
   });
@@ -165,7 +183,8 @@ class Week {
   @JsonKey(name: 'total_expense')
   late final double totalExpense;
 
-  factory Week.fromJson(Map<String, dynamic> json) => _$WeekFromJson(json);
+  factory IncomeExpenseCompare.fromJson(Map<String, dynamic> json) =>
+      _$IncomeExpenseCompareFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WeekToJson(this);
+  Map<String, dynamic> toJson() => _$IncomeExpenseCompareToJson(this);
 }

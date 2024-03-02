@@ -56,12 +56,52 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$periodAtom =
+      Atom(name: '_FinanceStoreBase.period', context: context);
+
+  @override
+  String get period {
+    _$periodAtom.reportRead();
+    return super.period;
+  }
+
+  @override
+  set period(String value) {
+    _$periodAtom.reportWrite(value, super.period, () {
+      super.period = value;
+    });
+  }
+
+  late final _$isIncomeAtom =
+      Atom(name: '_FinanceStoreBase.isIncome', context: context);
+
+  @override
+  int get isIncome {
+    _$isIncomeAtom.reportRead();
+    return super.isIncome;
+  }
+
+  @override
+  set isIncome(int value) {
+    _$isIncomeAtom.reportWrite(value, super.isIncome, () {
+      super.isIncome = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_FinanceStoreBase.read', context: context);
 
   @override
   Future<dynamic> read() {
     return _$readAsyncAction.run(() => super.read());
+  }
+
+  late final _$updateAsyncAction =
+      AsyncAction('_FinanceStoreBase.update', context: context);
+
+  @override
+  Future<bool> update(double totalbalance) {
+    return _$updateAsyncAction.run(() => super.update(totalbalance));
   }
 
   late final _$_FinanceStoreBaseActionController =
@@ -83,6 +123,8 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     return '''
 loadingStatus: ${loadingStatus},
 finance: ${finance},
+period: ${period},
+isIncome: ${isIncome},
 isLoading: ${isLoading},
 dollarAccount: ${dollarAccount}
     ''';
