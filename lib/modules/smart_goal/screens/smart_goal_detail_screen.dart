@@ -16,6 +16,7 @@ import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -387,6 +388,7 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
             itemCount: 2,
             itemBuilder: ((context, index) {
               return TransactionItem(
+                transactionData: TransactionData(),
                 icon: isIncome
                     ? IconConstant.getEarn()
                     : IconConstant.getExpense(),

@@ -240,7 +240,11 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildContent() {
     return Container(
       padding: const EdgeInsets.only(top: 20),
-      child: _buildColumnContent(),
+      child: store.smartGoal.items.isEmpty ? Column(
+        children: [
+          Text('You have no smart goals yet.'),
+        ],
+      ) : _buildColumnContent(),
     );
   }
 

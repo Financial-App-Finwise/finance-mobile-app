@@ -32,7 +32,9 @@ class SmartGoalData {
   @JsonKey(includeToJson: false)
   late int id;
 
+  @JsonKey(includeToJson: false)
   late int userID;
+  
   late String name;
 
   @JsonKey(fromJson: _stringToDouble)

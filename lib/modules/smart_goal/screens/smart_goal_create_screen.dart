@@ -227,7 +227,6 @@ class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
 
                   bool success = await context.read<SmartGoalStore>().post(
                         SmartGoalData(
-                          userID: context.read<SmartGoalStore>().userID,
                           name: _nameController.text,
                           amount: double.parse(_amountController.text),
                           currentSave:

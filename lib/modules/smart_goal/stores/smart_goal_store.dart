@@ -3,7 +3,6 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/services/api_service.dart';
-import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/smart_goal/helpers/smart_goal_helper.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:flutter/foundation.dart';
@@ -13,12 +12,6 @@ part 'smart_goal_store.g.dart';
 class SmartGoalStore = _SmartGoalStoreBase with _$SmartGoalStore;
 
 abstract class _SmartGoalStoreBase with Store {
-  late AuthStore authStore;
-
-  _SmartGoalStoreBase({required this.authStore});
-
-  int get userID => authStore.user!.userData.id;
-
   // -------------------- Loading --------------------
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
@@ -142,9 +135,6 @@ abstract class _SmartGoalStoreBase with Store {
       setLoadingStatus(LoadingStatusEnum.loading);
     }
 
-    // increase the page number
-    filteredSmartGoal[queryParemeter]!.currentPage++;
-
     try {
       int page = filteredSmartGoal[queryParemeter]!.currentPage;
       Response response =
@@ -158,6 +148,8 @@ abstract class _SmartGoalStoreBase with Store {
         if (filteredSmartGoal[queryParemeter]!.items.length <
             smartGoal.meta.total) {
           filteredSmartGoal[queryParemeter]!.items.addAll(smartGoal.items);
+          // increase the page number
+          filteredSmartGoal[queryParemeter]!.currentPage++;
         }
         setLoadingStatus(LoadingStatusEnum.done);
       } else {
