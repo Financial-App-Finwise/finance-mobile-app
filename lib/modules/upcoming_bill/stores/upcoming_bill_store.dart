@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
+import 'package:finwise/core/enums/upcoming_bill_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
+import 'package:finwise/modules/upcoming_bill/helpers/upcoming_bill_helper.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
@@ -11,7 +13,10 @@ class UpcomingBillStore = _UpcomingBillStoreBase with _$UpcomingBillStore;
 
 abstract class _UpcomingBillStoreBase with Store {
   @observable
-  UpcomingBill upcomingBill = UpcomingBill(data: []);
+  UpcomingBill upcomingBill = UpcomingBill(
+    data: [],
+    meta: UpcomingBillMeta(),
+  );
 
   @observable
   LoadingStatusEnum status = LoadingStatusEnum.none;
@@ -19,16 +24,77 @@ abstract class _UpcomingBillStoreBase with Store {
   @action
   void setLoadingStatus(LoadingStatusEnum status) => status = status;
 
+  @observable
+  DateTime startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+
+  @computed
+  DateTime get endDate {
+    DateTime date = DateTime(startDate.year, startDate.month + 1, 1);
+    return date;
+  }
+
   @action
-  Future read() async {
+  void setStartDate(DateTime date) {
+    startDate = date;
+  }
+
+  @observable
+  UpcomingBillFilterEnum filter = UpcomingBillFilterEnum.all;
+
+  @action
+  void setFilter(UpcomingBillFilterEnum type) => filter = type;
+
+  @action
+  void setNextPage() {
+    if (upcomingBill.meta.perPage * upcomingBill.meta.currentPage <=
+        upcomingBill.meta.total) {
+      upcomingBill.meta.currentPage += 1;
+    }
+  }
+
+  @computed
+  String get queryParameter {
+    String filterParameter = UpcomingBillHelper.enumToQuery[filter] ?? '';
+    String parameter =
+        'date[gte]=${startDate.year}-${startDate.month}-${startDate.day}&date[lte]=${endDate.year}-${endDate.month}-${endDate.day}';
+
+    if (filterParameter.isNotEmpty) {
+      return filterParameter;
+    }
+
+    return parameter;
+  }
+
+  @action
+  Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
-    status = LoadingStatusEnum.loading;
+
+    if (refreshed) {
+      status = LoadingStatusEnum.loading;
+      upcomingBill.data.clear();
+      upcomingBill.meta = UpcomingBillMeta();
+      upcomingBill.meta.currentPage = 1;
+    }
 
     try {
-      Response response = await ApiService.dio.get('upcomingbills');
+      int page = upcomingBill.meta.currentPage;
+      String url = 'upcomingbills?$queryParameter&page=$page';
+      debugPrint('llll $url');
+
+      Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
-        upcomingBill = await compute(
+        UpcomingBill newUpcomingBill = await compute(
             getUpcomingBill, response.data as Map<String, dynamic>);
+        if (upcomingBill.data.length < newUpcomingBill.meta.total &&
+            upcomingBill.data.length + newUpcomingBill.data.length <=
+                newUpcomingBill.meta.total) {
+          upcomingBill.data.addAll(newUpcomingBill.data);
+          upcomingBill.meta = newUpcomingBill.meta;
+
+          print("llll billlength ${upcomingBill.data.length}");
+          print('llll totallenth ${upcomingBill.meta.total}');
+        }
+        setNextPage();
         status = LoadingStatusEnum.done;
       }
     } catch (e) {

@@ -9,8 +9,12 @@ UpcomingBill getUpcomingBill(Map<String, dynamic> json) {
 @JsonSerializable()
 class UpcomingBill {
   late List<UpcomingBillData> data;
+  late UpcomingBillMeta meta;
 
-  UpcomingBill({required this.data});
+  UpcomingBill({
+    required this.data,
+    required this.meta,
+  });
 
   factory UpcomingBill.fromJson(Map<String, dynamic> json) =>
       _$UpcomingBillFromJson(json);
@@ -55,7 +59,28 @@ class UpcomingBillData {
   Map<String, dynamic> toJson() => _$UpcomingBillDataToJson(this);
 
   static double _stringToDouble(String value) => double.parse(value);
-} 
+}
+
+@JsonSerializable()
+class UpcomingBillMeta {
+  @JsonKey(name: 'current_page')
+  late int currentPage;
+  late int total;
+
+  @JsonKey(name: 'per_page')
+  late int perPage;
+
+  UpcomingBillMeta({
+    this.currentPage = 0,
+    this.total = 0,
+    this.perPage = 0,
+  });
+
+  factory UpcomingBillMeta.fromJson(Map<String, dynamic> json) =>
+      _$UpcomingBillMetaFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UpcomingBillMetaToJson(this);
+}
 
 // {
 //     "id": 1,

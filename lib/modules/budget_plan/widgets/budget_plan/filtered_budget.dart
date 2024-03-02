@@ -1,12 +1,17 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FilteredBudget extends StatefulWidget {
-  final List<String> filterTitles;
+  final List<FilterBarHeaderItem> filterTitles;
   final List<BudgetPlanData> budgetCards;
 
   const FilteredBudget({
@@ -24,7 +29,14 @@ class _FilteredBudgetState extends State<FilteredBudget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        FilterBar(filterTitles: widget.filterTitles),
+        GeneralFilterBarHeader(
+          items: widget.filterTitles,
+          onTap: (value) async {
+            context.read<BudgetPlanStore>().setFilter(value);
+            await context.read<BudgetPlanStore>().read();
+          },
+          currentValue: context.read<BudgetPlanStore>().filter,
+        ),
         const SizedBox(
           height: 16,
         ),

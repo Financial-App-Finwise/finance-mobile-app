@@ -9,19 +9,22 @@ class GeneralDatePicker extends StatefulWidget {
     this.suffix,
     this.onPreffix,
     this.onSuffix,
+    this.onDateChanged,
+    
   });
 
   final Widget? prefix;
   final Widget? suffix;
   final void Function()? onSuffix;
   final void Function()? onPreffix;
+  final void Function(DateTime)? onDateChanged;
 
   @override
   State<GeneralDatePicker> createState() => _GeneralDatePickerState();
 }
 
 class _GeneralDatePickerState extends State<GeneralDatePicker> {
-  DateTime currentDate = DateTime.now();
+  DateTime currentDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
 
   List<String> monthNames = [
     'Jan',
@@ -111,6 +114,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
           onTap: () {
             setState(() {
               currentDate = subtractMonth(currentDate);
+              widget.onDateChanged!(currentDate);
             });
           },
           child: IconConstant.arrowLeft,
@@ -130,6 +134,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
           onTap: () {
             setState(() {
               currentDate = addMonth(currentDate);
+              widget.onDateChanged!(currentDate);
             });
           },
           child: IconConstant.arrowRight,

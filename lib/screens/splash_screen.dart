@@ -4,6 +4,7 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

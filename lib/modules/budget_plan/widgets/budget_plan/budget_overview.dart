@@ -1,8 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/onboarding_question/screens/onboarding_question_screen.dart';
 import 'package:flutter/material.dart';
 
-class BudgetOverview extends StatelessWidget {
+class BudgetOverview extends StatefulWidget {
   final int totalBudget;
   final int available;
   final int spend;
@@ -18,6 +19,11 @@ class BudgetOverview extends StatelessWidget {
     required this.plannedBudget,
   });
 
+  @override
+  State<BudgetOverview> createState() => _BudgetOverviewState();
+}
+
+class _BudgetOverviewState extends State<BudgetOverview> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,53 +44,63 @@ class BudgetOverview extends StatelessWidget {
 
   // Total budget
   Widget _totalBudget() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      decoration: BoxDecoration(
-          color: const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(12)),
-      child: Column(children: [
-        Row(
-          children: [
-            SizedBox(
-              height: 36,
-              width: 36,
-              child: IconConstant.myBudget(
-                color: ColorConstant.secondary,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const OnboardingQuestionScreen(),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        decoration: BoxDecoration(
+            color: const Color(0xFFFFFFFF),
+            borderRadius: BorderRadius.circular(12)),
+        child: Column(children: [
+          Row(
+            children: [
+              SizedBox(
+                height: 36,
+                width: 36,
+                child: IconConstant.myBudget(
+                  color: ColorConstant.secondary,
+                ),
               ),
-            ),
 
-            const SizedBox(
-              width: 12,
-            ),
-            // Text
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Total budgets',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF333652),
+              const SizedBox(
+                width: 12,
+              ),
+              // Text
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Total budgets',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF333652),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 1,
-                ),
-                Text(
-                  '$totalBudget',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF0B8AAF),
+                  const SizedBox(
+                    height: 1,
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ]),
+                  Text(
+                    '${widget.totalBudget}',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF0B8AAF),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ]),
+      ),
     );
   }
 
@@ -105,7 +121,7 @@ class BudgetOverview extends StatelessWidget {
                   child: _budgetOverviewCardSection(
                     IconConstant.available,
                     'Available',
-                    available,
+                    widget.available,
                     const Color(0xFF35D2A5),
                   ),
                 ),
@@ -122,7 +138,7 @@ class BudgetOverview extends StatelessWidget {
                   child: _budgetOverviewCardSection(
                     IconConstant.spend,
                     'Spend',
-                    spend,
+                    widget.spend,
                     const Color(0xFFEE5353),
                   ),
                 ),
@@ -139,7 +155,7 @@ class BudgetOverview extends StatelessWidget {
                   child: _budgetOverviewCardSection(
                     IconConstant.overBudget,
                     'Over Budget',
-                    overBudget,
+                    widget.overBudget,
                     const Color(0xFFEF6007),
                   ),
                 ),
@@ -156,7 +172,7 @@ class BudgetOverview extends StatelessWidget {
                   child: _budgetOverviewCardSection(
                     IconConstant.budgetPlan,
                     'Planned Budget',
-                    plannedBudget,
+                    widget.plannedBudget,
                     const Color(0xFF0B8AAF),
                   ),
                 ),

@@ -34,6 +34,7 @@ class _IndexScreenState extends State<IndexScreen> {
 
   @override
   Widget build(BuildContext context) {
+    CategoryStore().read();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: _buildBody(),

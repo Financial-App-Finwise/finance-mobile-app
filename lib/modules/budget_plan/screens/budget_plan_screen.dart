@@ -1,7 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
@@ -57,9 +59,23 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             color: ColorConstant.secondary),
         onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
         onPreffix: () => setState(() => _isGrid = !_isGrid),
+        onDateChanged: (DateTime date) async {
+          context.read<BudgetPlanStore>().setSelectedDate(date);
+          await context.read<BudgetPlanStore>().read();
+        },
       ),
       mainContent: _buildContent(),
       centerContentPadding: const EdgeInsets.all(16),
+      onNotification: (notification) {
+        if (notification is ScrollEndNotification) {
+          if (notification.metrics.pixels ==
+              notification.metrics.maxScrollExtent) {
+            context.read<BudgetPlanStore>().read();
+            return true;
+          }
+        }
+        return true;
+      },
     );
   }
 
@@ -86,6 +102,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     return Observer(builder: (context) {
       BudgetPlan budgetPlan = context.watch<BudgetPlanStore>().budgetPlan;
 
+
       return Container(
         color: const Color(0xFFF5F7F8),
         child: Column(
@@ -99,12 +116,19 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             const SizedBox(
               height: 16,
             ),
-            FilteredBudget(filterTitles: const [
-              'All',
-              'One-time budget',
-              'Monthly budget',
-              'Monthly budget',
-              'Monthly budget'
+            FilteredBudget(filterTitles: [
+              FilterBarHeaderItem(
+                title: 'All',
+                value: BudgetPlanFilterEnum.all,
+              ),
+              FilterBarHeaderItem(
+                title: 'One-time budget',
+                value: BudgetPlanFilterEnum.oneTimeBudget,
+              ),
+              FilterBarHeaderItem(
+                title: 'Monthly budget',
+                value: BudgetPlanFilterEnum.monthlyBudget,
+              ),
             ], budgetCards: budgetPlan.data),
           ],
         ),

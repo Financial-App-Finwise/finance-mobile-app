@@ -181,6 +181,7 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
               ),
             );
         if (success) {
+          await context.read<UpcomingBillStore>().read(refreshed: true);
           Navigator.pop(context);
         }
       },
