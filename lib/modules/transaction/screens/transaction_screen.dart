@@ -53,6 +53,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // !!! TODO: Pagination
     return GeneralSimpleHeaderLayout(
       title: 'All Transactions',
       description:
