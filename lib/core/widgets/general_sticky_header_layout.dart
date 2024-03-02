@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 
 class GeneralStickyHeaderLayout extends StatefulWidget {
@@ -83,6 +84,58 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _buildBody(),
+      bottomNavigationBar: _buildBottom(),
+      floatingActionButton: _buildFloating(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  Widget _buildBottom() {
+    return Theme(
+      data: ThemeData(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        onTap: (index) {
+          Navigator.pushReplacementNamed(context, RouteName.index);
+        },
+        type: BottomNavigationBarType.fixed,
+        selectedFontSize: 14,
+        unselectedFontSize: 14,
+        selectedItemColor: const Color(0xff00A6FB),
+        unselectedItemColor: const Color(0xff464255),
+        items: [
+          BottomNavigationBarItem(
+            icon: SizedBox(
+              height: 24,
+              child: IconHelper.getSVG(SVGName.home),
+            ),
+            label: 'Home',
+          ),
+          const BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
+          BottomNavigationBarItem(
+            icon: SizedBox(
+              height: 24,
+              child: IconHelper.getSVG(SVGName.bottomNavUser),
+            ),
+            label: 'Profile',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFloating() {
+    return FloatingActionButton(
+      onPressed: () =>
+          Navigator.pushNamed(context, RouteName.transactionCreate),
+      elevation: 0,
+      backgroundColor: const Color(0xff00A6FB),
+      shape: const CircleBorder(),
+      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 

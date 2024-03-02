@@ -1,13 +1,21 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
-import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/widgets/duration_drop_down/stores/duration_drop_down_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class DurationDropDown extends StatefulWidget {
-  const DurationDropDown({super.key});
+  DurationDropDown({
+    super.key,
+    required this.items,
+    required this.selectedValue,
+    required this.onChange,
+  });
+
+  late List<Map<String, String>> items;
+  late String selectedValue;
+  late void Function(dynamic) onChange;
 
   @override
   State<DurationDropDown> createState() => _DurationDropDownState();
@@ -17,12 +25,22 @@ class _DurationDropDownState extends State<DurationDropDown> {
   final _store = DurationDropDownStore();
 
   @override
+  void initState() {
+    super.initState();
+    _store.items = widget.items;
+    _store.selectedValue = widget.selectedValue;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
       return Center(
         child: DropdownButtonHideUnderline(
           child: DropdownButton2(
-            onChanged: (value) => _store.setValue(value),
+            onChanged: (value) {
+              _store.setValue(value);
+              widget.onChange(value);
+            },
             value: _store.selectedValue,
             items: _getItem(),
             style: const TextStyle(
@@ -67,12 +85,13 @@ class _DurationDropDownState extends State<DurationDropDown> {
 
   List<DropdownMenuItem> _getItem() {
     List<DropdownMenuItem<String>> menuItems = [];
+
     for (final item in _store.items) {
       menuItems.addAll(
         [
           DropdownMenuItem(
-            value: item,
-            child: Text(item),
+            value: item['value'],
+            child: Text('${item['label']}'),
           ),
           if (item != _store.items.last)
             const DropdownMenuItem(

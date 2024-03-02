@@ -9,6 +9,7 @@ class DateTextFieldWidget extends StatefulWidget {
   late final String hintText;
   late final void Function(DateTime selectedDay, DateTime focusedDay)
       onDaySelected;
+  late bool enable;
   final TextEditingController? controller;
   final TextStyle? hintStyle;
 
@@ -16,6 +17,7 @@ class DateTextFieldWidget extends StatefulWidget {
     super.key,
     this.hintText = '',
     this.hintStyle,
+    this.enable = true,
     required this.onDaySelected,
     this.controller,
   });
@@ -33,16 +35,18 @@ class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
   Widget _buildDate() {
     return TextFormField(
       controller: widget.controller,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CalendarWidget(
-              onDaySelected: widget.onDaySelected,
-            ),
-          ),
-        );
-      },
+      onTap: widget.enable
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CalendarWidget(
+                    onDaySelected: widget.onDaySelected,
+                  ),
+                ),
+              );
+            }
+          : null,
       style: TextStyleHelper.getw500size(14),
       readOnly: true,
       decoration: InputDecoration(
@@ -64,7 +68,8 @@ class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
         ),
         prefixIconConstraints: BoxConstraints(maxHeight: 24),
         hintText: widget.hintText,
-        hintStyle: widget.hintStyle ?? TextStyleHelper.getw500size(12, color: ColorConstant.thin),
+        hintStyle: widget.hintStyle ??
+            TextStyleHelper.getw500size(12, color: ColorConstant.thin),
       ),
     );
   }

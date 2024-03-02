@@ -1,13 +1,17 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
-import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
-import 'package:finwise/core/widgets/rounded_container.dart';
+import 'package:finwise/modules/finance/models/finance_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 
 class IncomeExpenseBarChart extends StatelessWidget {
-  const IncomeExpenseBarChart({super.key});
+  IncomeExpenseBarChart({
+    super.key,
+    required this.data,
+  });
+
+  late Map<String, IncomeExpenseCompare> data;
 
   @override
   Widget build(BuildContext context) {
@@ -15,26 +19,35 @@ class IncomeExpenseBarChart extends StatelessWidget {
   }
 
   Widget _buildSpendingIncome() {
-    return RoundedContainer(
-      child: Column(
-        children: [
-          const Row(children: [
-            Expanded(child: SizedBox()),
-            DurationDropDown(),
-          ]),
-          const SizedBox(height: 24),
-          _buildBarChart(),
-          const SizedBox(height: 24),
-          _buildBarChartLegend(),
-        ],
-      ),
+    return Column(
+      children: [
+        // const Row(children: [
+        //   Expanded(child: SizedBox()),
+        //   DurationDropDown(),
+        // ]),
+        // const SizedBox(height: 24),
+        _buildBarChart(),
+        const SizedBox(height: 24),
+        _buildBarChartLegend(),
+      ],
     );
   }
 
   Widget _buildBarChart() {
+    List<IncomeExpenseCompare> barGroups = [];
+    if (data.isNotEmpty) {
+      data.forEach((key, value) => barGroups.add(value));
+    }
+    // if (data.isNotEmpty) {
+    //   data.forEach((key, value) => barGroups.add(value));
+    // }
+    print(barGroups);
     return SizedBox(
       height: 200,
       child: BarChart(
+        swapAnimationDuration: const Duration(milliseconds: 750),
+        // swapAnimationDuration: Duration.zero,
+        swapAnimationCurve: Curves.easeInOut,
         BarChartData(
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(
@@ -94,7 +107,9 @@ class IncomeExpenseBarChart extends StatelessWidget {
                 strokeWidth: 1,
               );
             },
-            verticalInterval: 0.25,
+            // verticalInterval: 0.25,
+            verticalInterval:
+                barGroups.isNotEmpty ? 1 / barGroups.length : 0.25,
             horizontalInterval: 1000,
           ),
           borderData: FlBorderData(
@@ -104,12 +119,21 @@ class IncomeExpenseBarChart extends StatelessWidget {
             ),
           ),
           alignment: BarChartAlignment.spaceAround,
-          barGroups: [
-            _buildBarChartGroup(x: 0, income: 6000, expense: 4000),
-            _buildBarChartGroup(x: 1, income: 4000, expense: 2000),
-            _buildBarChartGroup(x: 2, income: 8000, expense: 6000),
-            _buildBarChartGroup(x: 3, income: 7000, expense: 3000),
-          ],
+          // barGroups: [
+          //   _buildBarChartGroup(x: 0, income: 6000, expense: 4000),
+          //   _buildBarChartGroup(x: 1, income: 4000, expense: 2000),
+          //   _buildBarChartGroup(x: 2, income: 8000, expense: 6000),
+          //   _buildBarChartGroup(x: 3, income: 7000, expense: 3000),
+          // ],
+          barGroups: barGroups
+              .map(
+                (e) => _buildBarChartGroup(
+                  x: barGroups.indexOf(e),
+                  income: double.parse(e.totalIncome.toString()),
+                  expense: double.parse(e.totalExpense.toString()),
+                ),
+              )
+              .toList(),
         ),
       ),
     );
@@ -139,7 +163,20 @@ class IncomeExpenseBarChart extends StatelessWidget {
   }
 
   Widget _barChartBottomTitles(double value, TitleMeta meta) {
-    final titles = ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'];
+    // List titles = ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'];
+
+    List titles = [];
+    data.forEach((key, value) {
+      titles.add(key);
+    });
+    // if (data.isEmpty) {
+    //   titles = ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'];
+    // } else {
+    //   data.forEach((key, value) {
+    //     titles.add(key);
+    //   });
+    // }
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(titles[value.toInt()],

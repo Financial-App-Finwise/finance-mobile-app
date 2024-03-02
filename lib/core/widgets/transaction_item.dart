@@ -4,18 +4,20 @@ import 'package:finwise/core/constants/text_style_constants/home_text_style_cons
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class TransactionItem extends StatefulWidget {
-  const TransactionItem({
+  TransactionItem({
     super.key,
     this.title = '',
     this.date = '',
     this.amount = '',
     this.color,
     this.icon,
+    required this.transactionData,
   });
 
   final String title;
@@ -23,6 +25,7 @@ class TransactionItem extends StatefulWidget {
   final String amount;
   final Color? color;
   final Widget? icon;
+  late TransactionData transactionData;
 
   @override
   State<TransactionItem> createState() => _TransactionItemState();
@@ -38,8 +41,11 @@ class _TransactionItemState extends State<TransactionItem> {
 
   Widget _buildTransactionItem() {
     return TextButton(
-      onPressed: () =>
-          Navigator.pushNamed(context, RouteName.transactionDetail),
+      onPressed: () => Navigator.pushNamed(
+        context,
+        RouteName.transactionDetail,
+        arguments: widget.transactionData,
+      ),
       style: ButtonStyle(
         padding: MaterialStateProperty.all(EdgeInsets.zero),
         shape: MaterialStateProperty.all(

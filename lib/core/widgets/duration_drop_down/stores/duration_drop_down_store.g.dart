@@ -13,13 +13,13 @@ mixin _$DurationDropDownStore on _DurationDropDownStoreBase, Store {
       Atom(name: '_DurationDropDownStoreBase.items', context: context);
 
   @override
-  List<dynamic> get items {
+  List<Map<String, String>> get items {
     _$itemsAtom.reportRead();
     return super.items;
   }
 
   @override
-  set items(List<dynamic> value) {
+  set items(List<Map<String, String>> value) {
     _$itemsAtom.reportWrite(value, super.items, () {
       super.items = value;
     });
