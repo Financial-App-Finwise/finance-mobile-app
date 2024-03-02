@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/budget_plan_enum.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
@@ -102,17 +103,17 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     return Observer(builder: (context) {
       BudgetPlan budgetPlan = context.watch<BudgetPlanStore>().budgetPlan;
 
-
       return Container(
         color: const Color(0xFFF5F7F8),
         child: Column(
           children: [
-            const BudgetOverview(
-                totalBudget: 3,
-                available: 130,
-                spend: 30,
-                overBudget: 0,
-                plannedBudget: 150),
+            BudgetOverview(
+              totalBudget: budgetPlan.data.totalBudget,
+              available: budgetPlan.data.available,
+              spend: budgetPlan.data.spent,
+              overBudget: budgetPlan.data.overBudget,
+              plannedBudget: budgetPlan.data.plannedBudget,
+            ),
             const SizedBox(
               height: 16,
             ),
@@ -129,7 +130,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                 title: 'Monthly budget',
                 value: BudgetPlanFilterEnum.monthlyBudget,
               ),
-            ], budgetCards: budgetPlan.data),
+            ], budgetCards: budgetPlan.data.budgetPlans),
           ],
         ),
       );

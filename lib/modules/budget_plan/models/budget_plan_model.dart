@@ -8,8 +8,8 @@ BudgetPlan getBudgetPlan(Map<String, dynamic> json) {
 
 @JsonSerializable()
 class BudgetPlan {
-  late List<BudgetPlanData> data;
-  
+  late BudgetPlanItem data;
+
   BudgetPlan({required this.data});
 
   factory BudgetPlan.fromJson(Map<String, dynamic> json) =>
@@ -19,16 +19,34 @@ class BudgetPlan {
 }
 
 @JsonSerializable()
-class February {
-  @JsonKey(name: 'February')
-  late List<BudgetPlanData> monthData;
+class BudgetPlanItem {
+  @JsonKey(name: 'total_budgets')
+  late int totalBudget;
+  late int available;
+  late int spent;
 
-  February({required this.monthData});
+  @JsonKey(name: 'planned_budgets')
+  late int plannedBudget;
 
-  factory February.fromJson(Map<String, dynamic> json) =>
-      _$FebruaryFromJson(json);
+  @JsonKey(name: 'over_budget')
+  late int overBudget;
 
-  Map<String, dynamic> toJson() => _$FebruaryToJson(this);
+  @JsonKey(name: 'budget_plans')
+  late List<BudgetPlanData> budgetPlans;
+
+  BudgetPlanItem({
+    this.totalBudget = 0,
+    this.available = 0,
+    this.spent = 0,
+    this.plannedBudget = 0,
+    this.overBudget = 0,
+    required this.budgetPlans,
+  });
+
+  factory BudgetPlanItem.fromJson(Map<String, dynamic> json) =>
+      _$BudgetPlanItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BudgetPlanItemToJson(this);
 }
 
 @JsonSerializable()
@@ -46,11 +64,25 @@ class BudgetPlanData {
   @JsonKey(fromJson: _stringToDouble, toJson: _doubleToString)
   late double amount;
 
+  late String date;
+
+  @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
+  late bool isRecurring;
+
   @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;
 
   @JsonKey(name: 'updated_at', includeToJson: false)
   late String updatedAt;
+
+  @JsonKey(name: 'transaction_counts')
+  late int transactionCount;
+
+  @JsonKey(name: 'total_transactions_amount')
+  late int totalTransactionAmount;
+
+  @JsonKey(name: 'remaining_amount')
+  late int remainingAmount;
 
   BudgetPlanData({
     this.id = 0,
@@ -59,8 +91,13 @@ class BudgetPlanData {
     this.isMonthly = false,
     this.name = 'no name',
     this.amount = 0.0,
+    this.date = 'no date',
+    this.isRecurring = false,
     this.createdAt = 'no date',
     this.updatedAt = 'no date',
+    this.transactionCount = 0,
+    this.totalTransactionAmount = 0,
+    this.remainingAmount = 0,
   });
 
   factory BudgetPlanData.fromJson(Map<String, dynamic> json) =>

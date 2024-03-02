@@ -38,6 +38,7 @@ class _MainContentListViewState extends State<MainContentListView> {
           height: 16,
         ),
         GeneralFilterBarHeader(
+          physics: const BouncingScrollPhysics(),
           items: [
             FilterBarHeaderItem(
               title: 'All',

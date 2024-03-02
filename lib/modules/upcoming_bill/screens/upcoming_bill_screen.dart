@@ -117,9 +117,11 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
     return Observer(builder: (context) {
       late UpcomingBill upcomingBill =
           context.watch<UpcomingBillStore>().upcomingBill;
+      late UpcomingBillMeta upcomingBillMeta =
+          context.watch<UpcomingBillStore>().upcomingBillMeta;
 
       return MainContentListView(
-        totalUpcomingBill: upcomingBill.meta.total,
+        totalUpcomingBill: upcomingBill.data.length,
         upcomingBillList: upcomingBill.data,
       );
     });

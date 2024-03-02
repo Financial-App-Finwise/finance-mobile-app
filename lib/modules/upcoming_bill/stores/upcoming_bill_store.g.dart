@@ -24,6 +24,22 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
               name: '_UpcomingBillStoreBase.queryParameter'))
           .value;
 
+  late final _$upcomingBillMetaAtom =
+      Atom(name: '_UpcomingBillStoreBase.upcomingBillMeta', context: context);
+
+  @override
+  UpcomingBillMeta get upcomingBillMeta {
+    _$upcomingBillMetaAtom.reportRead();
+    return super.upcomingBillMeta;
+  }
+
+  @override
+  set upcomingBillMeta(UpcomingBillMeta value) {
+    _$upcomingBillMetaAtom.reportWrite(value, super.upcomingBillMeta, () {
+      super.upcomingBillMeta = value;
+    });
+  }
+
   late final _$upcomingBillAtom =
       Atom(name: '_UpcomingBillStoreBase.upcomingBill', context: context);
 
@@ -170,6 +186,7 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
   @override
   String toString() {
     return '''
+upcomingBillMeta: ${upcomingBillMeta},
 upcomingBill: ${upcomingBill},
 status: ${status},
 startDate: ${startDate},
