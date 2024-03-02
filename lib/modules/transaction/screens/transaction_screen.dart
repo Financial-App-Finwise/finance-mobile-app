@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/text_style_constants/general_text_style_c
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/enums/transaction_period_enum.dart';
 import 'package:finwise/core/enums/transaction_type_enum.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
@@ -13,7 +14,9 @@ import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -132,18 +135,41 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return Observer(builder: (context) {
       return store.isLoading
           ? CircularProgressIndicatorTwoArcs()
-          : ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: store.filteredTransaction[store.queryParemeter]!.items
-                  .length, // example
-              itemBuilder: ((context, index) {
-                return _buildTransactionItem(store
-                    .filteredTransaction[store.queryParemeter]!.items[index]);
-              }),
-              separatorBuilder: (context, index) {
-                return const Divider(color: ColorConstant.divider);
-              },
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 12),
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: store.filteredTransaction[store.queryParemeter]!
+                      .items.length, // example
+                  itemBuilder: ((context, index) {
+                    final TransactionData item = store
+                        .filteredTransaction[store.queryParemeter]!
+                        .items[index];
+                    late TransactionData previousItem = TransactionData();
+                    if (index > 0) {
+                      previousItem = store
+                          .filteredTransaction[store.queryParemeter]!
+                          .items[index - 1];
+                      return _buildTransactionItem(
+                        item,
+                        dateVisible: UIHelper.getDateFormat(
+                                previousItem.date, 'dd MMM, yyyy') !=
+                            UIHelper.getDateFormat(item.date, 'dd MMM, yyyy'),
+                      );
+                    }
+                    return _buildTransactionItem(
+                      item,
+                      dateVisible: true,
+                    );
+                  }),
+                  separatorBuilder: (context, index) {
+                    return const Divider(color: ColorConstant.divider);
+                  },
+                ),
+              ],
             );
     });
   }
@@ -231,14 +257,32 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 
-  Widget _buildTransactionItem(TransactionData item) {
-    return TransactionItem(
-      transactionData: item,
-      title: item.note,
-      date: UIHelper.getDateFormat(item.date, 'dd MMM, yyy'),
-      amount: item.amount.toString(),
-      icon: item.isIncome ? IconConstant.getEarn() : IconConstant.getExpense(),
-      color: item.isIncome ? ColorConstant.income : ColorConstant.expense,
+  Widget _buildTransactionItem(
+    TransactionData item, {
+    bool dateVisible = false,
+  }) {
+    return Column(
+      children: [
+        Visibility(
+          visible: dateVisible,
+          child: Row(children: [
+            Text(UIHelper.getDateFormat(item.date, 'dd MMM, yyyy'),
+                style: TextStyleHelper.getw500size(14)),
+            const SizedBox(width: 12),
+            const Expanded(child: Divider(color: ColorConstant.divider))
+          ]),
+        ),
+        TransactionItem(
+          transactionData: item,
+          title: item.note,
+          date: UIHelper.getDateFormat(item.date, 'dd MMM, yyy'),
+          amount: item.amount.toString(),
+          icon: item.isIncome
+              ? IconConstant.getEarn()
+              : IconConstant.getExpense(),
+          color: item.isIncome ? ColorConstant.income : ColorConstant.expense,
+        ),
+      ],
     );
   }
 }

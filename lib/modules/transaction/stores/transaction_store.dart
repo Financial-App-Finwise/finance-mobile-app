@@ -95,9 +95,6 @@ abstract class _TransactionStoreBase with Store {
       setLoadingStatus(LoadingStatusEnum.loading);
     }
 
-    // increase the page number
-    filteredTransaction[queryParemeter]!.currentPage++;
-
     try {
       int page = filteredTransaction[queryParemeter]!.currentPage;
       Response response =
@@ -111,6 +108,8 @@ abstract class _TransactionStoreBase with Store {
         if (filteredTransaction[queryParemeter]!.items.length <
             transaction.meta.total) {
           filteredTransaction[queryParemeter]!.items.addAll(transaction.items);
+          // increase the page number
+          filteredTransaction[queryParemeter]!.currentPage++;
         }
         setLoadingStatus(LoadingStatusEnum.done);
       } else {

@@ -88,6 +88,38 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$incomeFinanceAtom =
+      Atom(name: '_FinanceStoreBase.incomeFinance', context: context);
+
+  @override
+  Finance get incomeFinance {
+    _$incomeFinanceAtom.reportRead();
+    return super.incomeFinance;
+  }
+
+  @override
+  set incomeFinance(Finance value) {
+    _$incomeFinanceAtom.reportWrite(value, super.incomeFinance, () {
+      super.incomeFinance = value;
+    });
+  }
+
+  late final _$expenseFinanceAtom =
+      Atom(name: '_FinanceStoreBase.expenseFinance', context: context);
+
+  @override
+  Finance get expenseFinance {
+    _$expenseFinanceAtom.reportRead();
+    return super.expenseFinance;
+  }
+
+  @override
+  set expenseFinance(Finance value) {
+    _$expenseFinanceAtom.reportWrite(value, super.expenseFinance, () {
+      super.expenseFinance = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_FinanceStoreBase.read', context: context);
 
@@ -125,6 +157,8 @@ loadingStatus: ${loadingStatus},
 finance: ${finance},
 period: ${period},
 isIncome: ${isIncome},
+incomeFinance: ${incomeFinance},
+expenseFinance: ${expenseFinance},
 isLoading: ${isLoading},
 dollarAccount: ${dollarAccount}
     ''';

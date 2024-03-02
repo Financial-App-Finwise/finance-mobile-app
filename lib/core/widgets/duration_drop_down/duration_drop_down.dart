@@ -1,33 +1,35 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
+import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
 import 'package:finwise/core/widgets/duration_drop_down/stores/duration_drop_down_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
-class DurationDropDown extends StatefulWidget {
-  DurationDropDown({
+class PeriodDropDown extends StatefulWidget {
+  PeriodDropDown({
     super.key,
     required this.items,
     required this.selectedValue,
     required this.onChange,
   });
 
-  late List<Map<String, String>> items;
+  late List<DurationDropDownItem> items;
   late String selectedValue;
   late void Function(dynamic) onChange;
 
   @override
-  State<DurationDropDown> createState() => _DurationDropDownState();
+  State<PeriodDropDown> createState() => _PeriodDropDownState();
 }
 
-class _DurationDropDownState extends State<DurationDropDown> {
+class _PeriodDropDownState extends State<PeriodDropDown> {
   final _store = DurationDropDownStore();
 
   @override
   void initState() {
     super.initState();
-    _store.items = widget.items;
+    _store.items = ObservableList.of(widget.items);
     _store.selectedValue = widget.selectedValue;
   }
 
@@ -90,8 +92,8 @@ class _DurationDropDownState extends State<DurationDropDown> {
       menuItems.addAll(
         [
           DropdownMenuItem(
-            value: item['value'],
-            child: Text('${item['label']}'),
+            value: item.value,
+            child: Text(item.title),
           ),
           if (item != _store.items.last)
             const DropdownMenuItem(

@@ -46,20 +46,57 @@ abstract class _FinanceStoreBase with Store {
   @observable
   int isIncome = 0;
 
-  // ---------- read finance ----------
+  @observable
+  Finance incomeFinance = Finance(
+    data: FinanceData(
+      items: [],
+      topTransaction: [],
+      allTransaction: AllTransaction(today: [], yesterday: []),
+      total: [],
+    ),
+  );
+
+  @observable
+  Finance expenseFinance = Finance(
+    data: FinanceData(
+      items: [],
+      topTransaction: [],
+      allTransaction: AllTransaction(today: [], yesterday: []),
+      total: [],
+    ),
+  );
+
+  // -------------------- read finance --------------------
   @action
   Future read() async {
     debugPrint('--> START: read finance');
     loadingStatus = LoadingStatusEnum.loading;
     try {
+      // get expense
       Response response = await ApiService.dio
-          .get('myfinances/view-my-finance?isIncome=$isIncome&period=$period');
+          .get('myfinances/view-my-finance?isIncome=1&period=$period');
+
+      // get income
+      Response response2 = await ApiService.dio
+          .get('myfinances/view-my-finance?isIncome=0&period=$period');
+
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
         finance = await compute(
           getFinanceModel,
           response.data as Map<String, dynamic>,
         );
+
+        incomeFinance = await compute(
+          getFinanceModel,
+          response.data as Map<String, dynamic>,
+        );
+
+        expenseFinance = await compute(
+          getFinanceModel,
+          response2.data as Map<String, dynamic>,
+        );
+
         // print('fetched and converted: ${finance.data.total}');
         if (finance.data.total.runtimeType.toString() ==
             "_Map<String, dynamic>") {

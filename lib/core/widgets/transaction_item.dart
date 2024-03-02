@@ -69,7 +69,7 @@ class _TransactionItemState extends State<TransactionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.title,
+                          widget.transactionData.note,
                           style: HomeTextStyleConstant.transactionItemTitle,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -87,7 +87,7 @@ class _TransactionItemState extends State<TransactionItem> {
             Row(
               children: [
                 Text(
-                  '\$${widget.amount}',
+                  '\$${widget.transactionData.amount}',
                   style: TextStyleHelper.getw500size(20,
                       color: widget.color ?? ColorConstant.income),
                 ),

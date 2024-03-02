@@ -6,11 +6,13 @@ import 'package:finwise/core/constants/text_style_constants/home_text_style_cons
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
@@ -34,14 +36,14 @@ class FinanceScreen extends StatefulWidget {
 class _FinanceScreenState extends State<FinanceScreen> {
   late FinanceStore store = context.read<FinanceStore>();
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () async {
-      // await _readAll();
-      // await context.read<FinanceStore>().read();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Future.delayed(Duration.zero, () async {
+  //     // await _readAll();
+  //     // await context.read<FinanceStore>().read();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,46 +72,50 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Widget _buildCenterContent() {
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        Row(
+    return Observer(
+      builder: (context) {
+        return ListView(
+          shrinkWrap: true,
           children: [
-            IconHelper.getSVG(
-              SVGName.piggyBank,
-              color: ColorConstant.secondary,
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                const Text('Total Balance',
-                    style: FiancialTextStyle.totalBalanceTitle),
-                const SizedBox(height: 4),
-                Text(
-                  '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
-                  style: FiancialTextStyle.totalBalance,
+                IconHelper.getSVG(
+                  SVGName.piggyBank,
+                  color: ColorConstant.secondary,
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Total Balance',
+                        style: FiancialTextStyle.totalBalanceTitle),
+                    const SizedBox(height: 4),
+                    Text(
+                      '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
+                      style: FiancialTextStyle.totalBalance,
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-        const Divider(color: ColorConstant.divider),
-        // SizedBox(height: 10),
-        TextButton(
-          onPressed: () =>
-              Navigator.of(context).pushNamed(RouteName.financeUpdate),
-          style: ButtonStyle(
-            padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            const Divider(color: ColorConstant.divider),
+            // SizedBox(height: 10),
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(RouteName.financeUpdate),
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                ),
+              ),
+              child: const Text(
+                'Update your balance',
+                style: FiancialTextStyle.updateBalance,
+              ),
             ),
-          ),
-          child: const Text(
-            'Update your balance',
-            style: FiancialTextStyle.updateBalance,
-          ),
-        ),
-      ],
+          ],
+        );
+      }
     );
   }
 
@@ -143,38 +149,15 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Widget _buildBarChart() {
-    print('value: ${store.finance.data.total}');
+    // print('value: ${store.finance.data.total}');
     return RoundedContainer(
       child: Column(
         children: [
           Row(children: [
             const Expanded(child: SizedBox()),
-            DurationDropDown(
-              items: [
-                {
-                  'label': 'This Month',
-                  'value': 'this_month',
-                },
-                {
-                  'label': 'This Week',
-                  'value': 'this_week',
-                },
-                {
-                  'label': 'Last Month',
-                  'value': 'last_month',
-                },
-                {
-                  'label': 'Last 3 Months',
-                  'value': 'last_3_months',
-                },
-                {
-                  'label': 'Last 6 Months',
-                  'value': 'last_6_months',
-                }
-              ],
-              selectedValue: 'this_month',
+            _buildGeneralPeriodButton(
+              selectedValue: store.period,
               onChange: (value) async {
-                print('selected value: $value');
                 store.period = value;
                 await store.read();
               },
@@ -202,6 +185,23 @@ class _FinanceScreenState extends State<FinanceScreen> {
               : IncomeExpenseBarChart(data: store.finance.data.total),
         ],
       ),
+    );
+  }
+
+  Widget _buildGeneralPeriodButton({
+    selectedValue = '',
+    required void Function(dynamic) onChange,
+  }) {
+    return PeriodDropDown(
+      items: [
+        DurationDropDownItem(title: 'This Month', value: 'this_month'),
+        DurationDropDownItem(title: 'This Week', value: 'this_week'),
+        DurationDropDownItem(title: 'Last Month', value: 'last_month'),
+        DurationDropDownItem(title: 'Last 3 Months', value: 'last_3_months'),
+        DurationDropDownItem(title: 'Last 6 Months', value: 'last_6_months'),
+      ],
+      selectedValue: selectedValue,
+      onChange: onChange,
     );
   }
 
@@ -292,11 +292,12 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return RoundedContainer(
       child: Column(
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(),
-              // DurationDropDown(),
+              _buildGeneralPeriodButton(
+                  selectedValue: 'this_month', onChange: (value) {}),
             ],
           ),
           const SizedBox(height: 30),
@@ -309,7 +310,18 @@ class _FinanceScreenState extends State<FinanceScreen> {
     );
   }
 
+// -------------------- Transactions --------------------
   Widget _buildTransactionItems({bool isIncome = true}) {
+    print('${store.finance.data.allTransaction.toJson()}');
+    List<TransactionData> todayIncomeTransactions =
+        store.incomeFinance.data.allTransaction.today;
+    List<TransactionData> yesterdayIncomeTransactions =
+        store.incomeFinance.data.allTransaction.yesterday;
+    List<TransactionData> todayExpenseTransactions =
+        store.expenseFinance.data.allTransaction.today;
+    List<TransactionData> yesterdayExpenseTransactions =
+        store.expenseFinance.data.allTransaction.yesterday;
+
     return Column(
       children: [
         const SizedBox(height: 12),
@@ -318,17 +330,25 @@ class _FinanceScreenState extends State<FinanceScreen> {
           children: [
             Text('All Transactions', style: GeneralTextStyle.getHeader()),
             ViewMoreTextButton(
-              onPressed: () {
-                // go to transaction screens
-                Navigator.pushNamed(context, RouteName.transaction);
-              },
+              onPressed: () =>
+                  Navigator.pushNamed(context, RouteName.transaction),
             ),
           ],
         ),
         const SizedBox(height: 12),
-        _buildTransactionItemsDays(isIncome: isIncome),
+        _buildTransactionItemsDays(
+          isIncome: isIncome,
+          transactions:
+              isIncome ? todayIncomeTransactions : todayExpenseTransactions,
+        ),
         const SizedBox(height: 16),
-        _buildTransactionItemsDays(day: 'Yesterday', isIncome: isIncome),
+        _buildTransactionItemsDays(
+          day: 'Yesterday',
+          isIncome: isIncome,
+          transactions: isIncome
+              ? yesterdayIncomeTransactions
+              : yesterdayExpenseTransactions,
+        ),
       ],
     );
   }
@@ -336,6 +356,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
   Widget _buildTransactionItemsDays({
     String? day,
     bool isIncome = true,
+    List<TransactionData> transactions = const [],
   }) {
     return Column(
       children: [
@@ -349,19 +370,20 @@ class _FinanceScreenState extends State<FinanceScreen> {
           child: ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: 2,
+            itemCount: transactions.length,
             itemBuilder: ((context, index) {
               return TransactionItem(
-                transactionData: TransactionData(),
+                transactionData: transactions[index],
+                date: UIHelper.getDateFormat(
+                    transactions[index].date, 'dd MMM, yyyy'),
                 icon: isIncome
                     ? IconConstant.getEarn()
                     : IconConstant.getExpense(),
                 color: isIncome ? ColorConstant.income : ColorConstant.expense,
               );
             }),
-            separatorBuilder: (context, index) {
-              return const Divider(color: ColorConstant.divider);
-            },
+            separatorBuilder: (context, index) =>
+                const Divider(color: ColorConstant.divider),
           ),
         ),
       ],
