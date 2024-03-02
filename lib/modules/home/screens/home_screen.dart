@@ -707,7 +707,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetPlanCards() {
-    List budgetPlans = context.watch<BudgetPlanStore>().budgetPlan.data;
+    List budgetPlans = context.watch<BudgetPlanStore>().budgetPlan.data.budgetPlans;
     budgetPlans =
         budgetPlans.length > 3 ? budgetPlans.sublist(0, 3) : budgetPlans;
 

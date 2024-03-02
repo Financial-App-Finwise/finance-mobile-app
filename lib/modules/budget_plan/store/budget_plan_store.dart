@@ -15,7 +15,7 @@ class BudgetPlanStore = _BudgetPlanStoreBase with _$BudgetPlanStore;
 abstract class _BudgetPlanStoreBase with Store {
   @observable
   // Declare the right data type
-  BudgetPlan budgetPlan = BudgetPlan(data: []);
+  BudgetPlan budgetPlan = BudgetPlan(data: BudgetPlanItem(budgetPlans: []));
 
   @observable
   LoadingStatusEnum status = LoadingStatusEnum.none;
@@ -58,12 +58,12 @@ abstract class _BudgetPlanStoreBase with Store {
     try {
       String url = 'budgetplans$queryParameter';
       debugPrint('llll $url');
-      // Response response = await ApiService.dio.get(url);
-      // if (response.statusCode == 200) {
-      //   budgetPlan =
-      //       await compute(getBudgetPlan, response.data as Map<String, dynamic>);
-      //   status = LoadingStatusEnum.done;
-      // }
+      Response response = await ApiService.dio.get(url);
+      if (response.statusCode == 200) {
+        budgetPlan =
+            await compute(getBudgetPlan, response.data as Map<String, dynamic>);
+        status = LoadingStatusEnum.done;
+      }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
     } finally {

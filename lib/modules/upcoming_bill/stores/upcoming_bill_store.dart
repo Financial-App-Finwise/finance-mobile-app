@@ -13,8 +13,11 @@ class UpcomingBillStore = _UpcomingBillStoreBase with _$UpcomingBillStore;
 
 abstract class _UpcomingBillStoreBase with Store {
   @observable
+  UpcomingBillMeta upcomingBillMeta = UpcomingBillMeta();
+
+  @observable
   UpcomingBill upcomingBill = UpcomingBill(
-    data: [],
+    data: ObservableList(),
     meta: UpcomingBillMeta(),
   );
 
@@ -69,6 +72,8 @@ abstract class _UpcomingBillStoreBase with Store {
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
 
+    print('llll $queryParameter');
+
     if (refreshed) {
       status = LoadingStatusEnum.loading;
       upcomingBill.data.clear();
@@ -90,9 +95,7 @@ abstract class _UpcomingBillStoreBase with Store {
                 newUpcomingBill.meta.total) {
           upcomingBill.data.addAll(newUpcomingBill.data);
           upcomingBill.meta = newUpcomingBill.meta;
-
-          print("llll billlength ${upcomingBill.data.length}");
-          print('llll totallenth ${upcomingBill.meta.total}');
+          upcomingBillMeta = newUpcomingBill.meta;
         }
         setNextPage();
         status = LoadingStatusEnum.done;
