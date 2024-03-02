@@ -113,6 +113,22 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
         .run(() => super.readByPage(refreshed: refreshed));
   }
 
+  late final _$postAsyncAction =
+      AsyncAction('_TransactionStoreBase.post', context: context);
+
+  @override
+  Future<bool> post(TransactionData transactionData) {
+    return _$postAsyncAction.run(() => super.post(transactionData));
+  }
+
+  late final _$deleteAsyncAction =
+      AsyncAction('_TransactionStoreBase.delete', context: context);
+
+  @override
+  Future<bool> delete(TransactionData transactionData) {
+    return _$deleteAsyncAction.run(() => super.delete(transactionData));
+  }
+
   late final _$_TransactionStoreBaseActionController =
       ActionController(name: '_TransactionStoreBase', context: context);
 

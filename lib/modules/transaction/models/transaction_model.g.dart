@@ -36,20 +36,18 @@ TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) =>
       expenseType: json['expenseType'] as String? ?? '',
       date: json['date'] as String? ?? '',
       note: json['note'] as String? ?? '',
-    )
-      ..createdAt = json['created_at'] as String
-      ..updatedAt = json['updated_at'] as String;
+      createdAt: json['created_at'] as String? ?? '',
+      updatedAt: json['updated_at'] as String? ?? '',
+    );
 
 Map<String, dynamic> _$TransactionDataToJson(TransactionData instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'userID': instance.userID,
       'categoryID': instance.categoryID,
+      'isIncome': TransactionData._boolToInt(instance.isIncome),
+      'amount': instance.amount,
       'expenseType': instance.expenseType,
       'date': instance.date,
       'note': instance.note,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
     };
 
 TransactionLink _$TransactionLinkFromJson(Map<String, dynamic> json) =>

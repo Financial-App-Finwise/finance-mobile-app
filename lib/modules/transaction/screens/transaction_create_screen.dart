@@ -4,15 +4,20 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
-import 'package:finwise/modules/categories/screens/category_screen.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
-import 'package:finwise/route.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -61,7 +66,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ---------- Close Icon ----------
+  // -------------------- Close Icon --------------------
   Widget _buildTopCloseIcon() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +92,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ---------- Title ----------
+  // -------------------- Title --------------------
   Widget _buildTitle() {
     return const Text(
       'Add Transaction',
@@ -100,26 +105,51 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ---------- Form ----------
+  // -------------------- Form --------------------
+  bool _isIncome = true;
+
   Widget _buildMainContent() {
     return Container(
       alignment: Alignment.topLeft,
-      child: GeneralFilterBar(
-        physics: BouncingScrollPhysics(),
-        filterTitles: ['Income', 'Expense'],
-        topSpace: 20,
+      child: Column(
         children: [
-          _buildIncomeForm(),
-          _buildExpenseForm(),
+          GeneralFilterBarHeader(
+            items: [
+              FilterBarHeaderItem(title: 'Income', value: true),
+              FilterBarHeaderItem(title: 'Expense', value: false),
+            ],
+            onTap: (value) => setState(() => _isIncome = value),
+            currentValue: _isIncome,
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+              child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                _isIncome ? _buildIncomeForm() : _buildExpenseForm(),
+              ],
+            ),
+          ))
         ],
       ),
+      // child: GeneralFilterBar(
+      //   physics: BouncingScrollPhysics(),
+      //   filterTitles: ['Income', 'Expense'],
+      //   topSpace: 20,
+      //   children: [
+      //     _buildIncomeForm(),
+      //     _buildExpenseForm(),
+      //   ],
+      // ),
     );
   }
 
-  // ---------- Add Income ----------
+  // -------------------- Add Income --------------------
+  final _amountIncomeController = TextEditingController();
   Widget _buildIncomeForm() {
     return Column(children: [
-      _buildTotalTextField(),
+      _buildTotalTextField(controller: _amountIncomeController),
       const SizedBox(height: 24),
       _buildCategorySection(),
       const SizedBox(height: 24),
@@ -223,26 +253,48 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ---------- Add Expense ----------
+  // -------------------- Add Expense --------------------
+  late String _expenseType = 'General';
+
+  final _amountExpenseController = TextEditingController();
   Widget _buildExpenseForm() {
     return Container(
-      child: RectFilterBar(
-        physics: BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
-        fontSize: 13,
-        filterTitles: ['General', 'Budget Plan', 'Upcoming Bill'],
+      child: Column(
         children: [
-          _buildExpenseGeneral(),
-          _buildExpenseGeneral(),
+          RectFilterBarHeader(
+            physics: const BouncingScrollPhysics(),
+            items: [
+              FilterBarHeaderItem(title: 'General', value: 'General'),
+              FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
+              FilterBarHeaderItem(
+                  title: 'Upcoming Bill', value: 'Upcoming Bill'),
+            ],
+            currentValue: _expenseType,
+            onTap: (value) => setState(() => _expenseType = value),
+          ),
           _buildExpenseGeneral(),
         ],
       ),
+      // child: RectFilterBar(
+      //   physics: BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
+      //   fontSize: 13,
+      //   filterTitles: ['General', 'Budget Plan', 'Upcoming Bill'],
+      //   children: [
+      //     _buildExpenseGeneral(),
+      //     _buildExpenseGeneral(),
+      //     _buildExpenseGeneral(),
+      //   ],
+      // ),
     );
   }
 
   Widget _buildExpenseGeneral() {
     return Column(
       children: [
-        _buildTotalTextField(color: ColorConstant.expense),
+        _buildTotalTextField(
+          color: ColorConstant.expense,
+          controller: _amountExpenseController,
+        ),
         const SizedBox(height: 24),
         _buildCategorySection(
             color: ColorConstant.expense, svgName: SVGName.expense),
@@ -254,9 +306,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ---------- Total Amount Text Field ----------
-  Widget _buildTotalTextField({Color color = ColorConstant.income}) {
+  // -------------------- Total Amount Text Field --------------------
+  Widget _buildTotalTextField({
+    Color color = ColorConstant.income,
+    TextEditingController? controller,
+  }) {
     return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+      ],
       decoration: InputDecoration(
         isDense: true,
         fillColor: Colors.white,
@@ -287,9 +347,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
+  // -------------------- Category Field --------------------
   late CategoryData _selectedCategory = CategoryData();
 
-  // ---------- Category Field ----------
   Widget _buildCategorySection({
     Color color = ColorConstant.income,
     String svgName = SVGName.earn,
@@ -305,42 +365,42 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  Widget _buildCategoryFieldIcon({
-    String svgName = SVGName.earn,
-    Color color = ColorConstant.income,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-      ),
-      child: IconHelper.getSVG(svgName, color: Colors.white),
-    );
-  }
+  // Widget _buildCategoryFieldIcon({
+  //   String svgName = SVGName.earn,
+  //   Color color = ColorConstant.income,
+  // }) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(6),
+  //     decoration: BoxDecoration(
+  //       shape: BoxShape.circle,
+  //       color: color,
+  //     ),
+  //     child: IconHelper.getSVG(svgName, color: Colors.white),
+  //   );
+  // }
 
-  Widget _buildCategoryFieldTitle() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Category',
-          style: TextStyleHelper.getw400size(12).copyWith(letterSpacing: 0.75),
-        ),
-        Text(
-          'Salary',
-          style: TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
-        ),
-      ],
-    );
-  }
+  // Widget _buildCategoryFieldTitle() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         'Category',
+  //         style: TextStyleHelper.getw400size(12).copyWith(letterSpacing: 0.75),
+  //       ),
+  //       Text(
+  //         'Salary',
+  //         style: TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildCategoryFieldSuffix() {
-    return IconHelper.getSVG(SVGName.angleRight, color: ColorConstant.thin);
-  }
+  // Widget _buildCategoryFieldSuffix() {
+  //   return IconHelper.getSVG(SVGName.angleRight, color: ColorConstant.thin);
+  // }
 
   // ---------- Date Field ----------
-  DateTime currentDate = DateTime.now();
+  DateTime _currentDate = DateTime.now();
 
   Widget _buildDateField() {
     // return DateTextFieldWidget(
@@ -353,11 +413,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         borderRadius: BorderRadius.circular(16),
       ),
       child: DateTextFieldWidget(
+        enable: false,
         hintText:
-            UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMMM, yyyy'),
+            UIHelper.getDateFormat(_currentDate.toString(), 'dd MMMM, yyyy'),
         hintStyle:
             TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
-        onDaySelected: ((selectedDay, focusedDay) => null),
+        onDaySelected: ((selectedDay, focusedDay) {}),
       ),
       // child: Row(
       //   children: [
@@ -373,9 +434,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ---------- Note Text Field ----------
+  // -------------------- Note Text Field --------------------
+  final _noteController = TextEditingController();
+
   Widget _buildNoteField() {
     return TextFormField(
+      controller: _noteController,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
@@ -397,7 +461,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   Widget _buildButton() {
     return GeneralBottomButton(
-      onButtonTap: () {},
+      onButtonTap: () async {
+        bool success = await context.read<TransactionStore>().post(
+              TransactionData(
+                categoryID: _selectedCategory.id,
+                isIncome: _isIncome,
+                amount: double.parse(_isIncome
+                    ? _amountIncomeController.text
+                    : _amountExpenseController.text),
+                // "hasContributed": 1,
+                // upcomingbillID: null,
+                // budgetplanID: null,
+                expenseType: "General",
+                //Upcoming Bill', 'Budget Plan'
+                date: DateTime.now().toString(),
+                note: _noteController.text,
+              ),
+            );
+        if (success) {
+          await context.read<FinanceStore>().read();
+          Navigator.pop(context);
+        }
+      },
       buttonLabel: 'Add transaction',
     );
   }

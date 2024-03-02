@@ -33,14 +33,18 @@ class Transaction {
 
 @JsonSerializable()
 class TransactionData {
+  @JsonKey(includeToJson: false)
   late int id;
+
+  @JsonKey(includeToJson: false)
   late int userID;
+
   late int categoryID;
 
-  @JsonKey(fromJson: _intToBool, includeToJson: false)
+  @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
   late bool isIncome;
 
-  @JsonKey(fromJson: _stringToDouble, includeToJson: false)
+  @JsonKey(fromJson: _stringToDouble)
   late double amount;
 
   @JsonKey(fromJson: _intToBool, includeToJson: false)
@@ -52,10 +56,10 @@ class TransactionData {
   late String date;
   late String note;
 
-  @JsonKey(name: 'created_at')
+  @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;
 
-  @JsonKey(name: 'updated_at')
+  @JsonKey(name: 'updated_at', includeToJson: false)
   late String updatedAt;
 
   TransactionData({
@@ -68,6 +72,8 @@ class TransactionData {
     this.expenseType = '',
     this.date = '',
     this.note = '',
+    this.createdAt = '',
+    this.updatedAt = '',
   });
 
   factory TransactionData.fromJson(Map<String, dynamic> json) =>
@@ -78,6 +84,8 @@ class TransactionData {
   static double _stringToDouble(String value) => double.parse(value);
 
   static bool _intToBool(int value) => value == 1;
+
+  static int _boolToInt(bool value) => value ? 1 : 0;
 }
 
 @JsonSerializable()

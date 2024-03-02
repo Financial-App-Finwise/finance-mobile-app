@@ -232,6 +232,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   Widget _buildTransactionItem(TransactionData item) {
     return TransactionItem(
+      transactionData: item,
       title: item.note,
       date: UIHelper.getDateFormat(item.date, 'dd MMM, yyy'),
       amount: item.amount.toString(),

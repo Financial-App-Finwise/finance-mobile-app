@@ -3,9 +3,13 @@ import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/general_detail_layout.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class TransactionDetailScreen extends StatefulWidget {
   const TransactionDetailScreen({super.key});
@@ -16,6 +20,8 @@ class TransactionDetailScreen extends StatefulWidget {
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
+  late final args =
+      ModalRoute.of(context)!.settings.arguments as TransactionData;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +37,17 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
       subTitle: 'My Income',
       iconTitle: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
       onEdit: () => Navigator.pushNamed(context, RouteName.transactionEdit),
+      onDelete: () async {
+        bool success = await context.read<TransactionStore>().delete(args);
+        if (success) {
+          if (mounted) {
+            // await context.read<TransactionStore>().readByPage(refreshed: true);
+            await context.read<FinanceStore>().read();
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
+        }
+      },
       mainContent: _buildContent(),
     );
   }
