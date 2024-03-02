@@ -34,7 +34,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     Future.delayed(Duration.zero, () async {
       await context.read<TransactionStore>().readByPage(refreshed: true);
     });
-    store.setReaction();
+    // store.setReaction();
   }
 
   @override
@@ -84,11 +84,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   FilterBarHeaderItem(
                       title: 'Expense', value: TransactionTypeEnum.expense),
                 ],
-                onTap: (value) {
+                onTap: (value) async {
                   // context
                   //     .read<TransactionStore>()
                   //     .changeFilteredType(value);
                   store.changeFilteredType(value);
+                  await store.readByPage();
                 },
               ),
               _buildTypeTransactions(type: TransactionTypeEnum.all),
