@@ -1,6 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
-import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';

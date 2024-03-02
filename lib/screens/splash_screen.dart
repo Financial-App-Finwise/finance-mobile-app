@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     debugPrint('--> START: splash screen initState');
-    Future.delayed(Duration(seconds: 2), () async {
+    Future.delayed(Duration.zero, () async {
       debugPrint('<-- END: splash screen initState');
       await context.read<AuthStore>().readCache();
 

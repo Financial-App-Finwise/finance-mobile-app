@@ -28,10 +28,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (context) => UpcomingBillStore()),
         Provider(create: (context) => TransactionStore()),
         Provider(create: (context) => FinanceStore()),
-
-        // // // proxy provider
-        ProxyProvider<AuthStore, SmartGoalStore>(
-            update: (_, auth, smartGoal) => SmartGoalStore(authStore: auth)),
+        Provider(create: (context) => SmartGoalStore()),
       ],
       child: MaterialApp(
         // debugShowCheckedModeBanner: ,

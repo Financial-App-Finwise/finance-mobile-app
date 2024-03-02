@@ -8,24 +8,25 @@ import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
+import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
-import 'package:finwise/modules/budget_plan/screens/budget_plan_detail_screen.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/finance/models/finance_model.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -41,18 +42,23 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
+  late final BudgetPlanStore _budgetPlanStore = context.read<BudgetPlanStore>();
+  late final FinanceStore _financeStore = context.read<FinanceStore>();
+  late final UpcomingBillStore _upcomingBillStore =
+      context.read<UpcomingBillStore>();
+
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      _readAll();
+      await _readAll();
     });
   }
 
   Future _readAll() async {
-    context.read<BudgetPlanStore>().read();
-    context.read<FinanceStore>().read();
-    context.read<UpcomingBillStore>().read();
+    await context.read<BudgetPlanStore>().read();
+    await context.read<FinanceStore>().read();
+    await context.read<UpcomingBillStore>().read();
   }
 
   @override
@@ -68,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
     debugPrint('--> START: build home screen');
+    print('${_financeStore.finance.data.total}');
     return Scaffold(
       // appBar: _buildAppBar(),
       body: _buildBody(),
@@ -151,10 +158,6 @@ class _HomeScreenState extends State<HomeScreen>
   //   return Container();
   // }
 
-  // Widget _buildEmptyBarChart() {
-  //   return Container();
-  // }
-
   // Widget _buildEmptyPieChart() {
   //   return Container();
   // }
@@ -194,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen>
           ]),
         ),
         const SizedBox(width: 12),
-        const DurationDropDown(),
+        // const DurationDropDown(),
       ],
     );
   }
@@ -232,12 +235,12 @@ class _HomeScreenState extends State<HomeScreen>
                         child: _buildFinanceItem(
                           text: 'Total Balance',
                           amount:
-                              '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
+                              '\$${_financeStore.dollarAccount.totalbalance}',
                           color: ColorConstant.primary,
                           icon: IconConstant.piggyBank,
                         ),
                       ),
-                      const DurationDropDown(),
+                      // const DurationDropDown(),
                     ],
                   ),
                   Container(
@@ -292,6 +295,7 @@ class _HomeScreenState extends State<HomeScreen>
         icon ?? const SizedBox(),
         const SizedBox(width: 12),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(text, style: HomeTextStyleConstant.medium),
             Text(
@@ -412,7 +416,37 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Spending and Income'),
-          IncomeExpenseBarChart(),
+          RoundedContainer(
+            child: _financeStore.finance.data.total.isEmpty
+                ? Column(
+                    children: [
+                      const EmptyBarChart(),
+                      const SizedBox(height: 8),
+                      Text(
+                        'You have no payment history yet.',
+                        style: TextStyleHelper.getw500size(16,
+                            color: ColorConstant.black),
+                      ),
+                      const SizedBox(height: 8),
+                      GeneralBottomButton(
+                        onButtonTap: () {},
+                        buttonLabel: 'Add Transaction',
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      const Row(children: [
+                        Expanded(child: SizedBox()),
+                        // DurationDropDown(),
+                      ]),
+                      const SizedBox(height: 24),
+                      IncomeExpenseBarChart(
+                        data: _financeStore.finance.data.total,
+                      ),
+                    ],
+                  ),
+          ),
         ],
       ),
     );
@@ -734,6 +768,26 @@ class _HomeScreenState extends State<HomeScreen>
 
   // ---------- totally spent ----------
   Widget _buildTotalSpend() {
+    return RoundedContainer(
+      child: Column(
+        children: [
+          IconHelper.getSVG(
+            SVGName.transaction,
+            color: ColorConstant.colorA4A7C6,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'You currently have no spending transaction history.',
+            style: TextStyleHelper.getw500size(16),
+          ),
+          const SizedBox(height: 8),
+          GeneralBottomButton(
+            onButtonTap: () {},
+            buttonLabel: 'Add Transaction',
+          ),
+        ],
+      ),
+    );
     return Container(
       alignment: Alignment.topLeft,
       child: Column(
@@ -812,6 +866,7 @@ class _HomeScreenState extends State<HomeScreen>
             Navigator.pushNamed(context, RouteName.transaction);
           },
           child: TransactionItem(
+              transactionData: TransactionData(),
               color: color,
               icon: IconHelper.getSVG(
                 SVGName.schoolBus,

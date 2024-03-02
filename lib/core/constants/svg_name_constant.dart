@@ -42,6 +42,7 @@ abstract class SVGName {
   static const String spend = 'spend.svg';
   static const String targetAmount = 'target_amount.svg';
   static const String tickBox = 'tick_box.svg';
+  static const String transaction = 'transaction.svg';
   static const String upcomingBill = 'upcoming_bill.svg';
   static const String user = 'user.svg';
   static const String warning = 'warning.svg';
