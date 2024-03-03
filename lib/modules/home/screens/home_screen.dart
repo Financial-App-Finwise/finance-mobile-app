@@ -855,7 +855,7 @@ class _HomeScreenState extends State<HomeScreen>
                           buttonLabel: 'Add Upcoming Bill',
                           onButtonTap: () => Navigator.pushNamed(
                                 context,
-                                RouteName.transactionCreate,
+                                RouteName.addUpcomingBill,
                               ))
                       : _buildUpcomingBills(),
                 ],
