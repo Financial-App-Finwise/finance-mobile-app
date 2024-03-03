@@ -4,8 +4,10 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
+import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
@@ -15,6 +17,7 @@ import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
+import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_content.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -36,18 +39,14 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      if (mounted) {
-        await context.read<SmartGoalStore>().readByPage();
-      }
+      await _readAll();
     });
     store.initialize();
-    store.setReaction();
   }
 
-  @override
-  void deactivate() {
-    print('deactivate');
-    super.deactivate();
+  Future _readAll() async {
+    await context.read<SmartGoalStore>().readByPage();
+    await context.read<SmartGoalStore>().readYearly();
   }
 
   @override
@@ -107,42 +106,49 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   );
 
   Widget _buildCenterContent() {
-    return Row(
-      children: [
-        Expanded(
-          child: DateTextFieldWidget(
-            onDaySelected: ((selectedDay, focusedDay) {
-              setState(() {
-                _startDayController.text = UIHelper.getDateFormat(
-                    selectedDay.toString(), 'MMM dd, yyyy');
-                store.startDate = selectedDay;
-              });
-            }),
-            hintText: 'Start Date',
-            controller: _startDayController,
-          ),
-        ),
-        Expanded(
-          child: DateTextFieldWidget(
-            onDaySelected: ((selectedDay, focusedDay) {
-              setState(() {
-                _endDayController.text = UIHelper.getDateFormat(
-                    selectedDay.toString(), 'MMM dd, yyyy');
-                    store.endDate = selectedDay;
-              });
-            }),
-            hintText: 'End Date',
-            controller: _endDayController,
-          ),
-        ),
-        IconButton(
-          onPressed: () =>
-              Navigator.pushNamed(context, RouteName.smartGoalCreate),
-          icon: IconHelper.getSVG(SVGName.addSquare,
-              color: ColorConstant.secondary),
-        ),
-      ],
-    );
+    return uiStore.showGrid
+        ? _buildCenterOfGrid()
+        : Row(
+            children: [
+              CustomIconButton(
+                onPressed: () => uiStore.toggleShowGrid(),
+                icon: IconHelper.getSVG(SVGName.contentManagerDashboard),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: DateTextFieldWidget(
+                  onDaySelected: ((selectedDay, focusedDay) {
+                    setState(() {
+                      _startDayController.text = UIHelper.getDateFormat(
+                          selectedDay.toString(), 'MMM dd, yyyy');
+                      store.startDate = selectedDay;
+                    });
+                  }),
+                  hintText: 'Start Date',
+                  controller: _startDayController,
+                ),
+              ),
+              Expanded(
+                child: DateTextFieldWidget(
+                  onDaySelected: ((selectedDay, focusedDay) {
+                    setState(() {
+                      _endDayController.text = UIHelper.getDateFormat(
+                          selectedDay.toString(), 'MMM dd, yyyy');
+                      store.endDate = selectedDay;
+                    });
+                  }),
+                  hintText: 'End Date',
+                  controller: _endDayController,
+                ),
+              ),
+              IconButton(
+                onPressed: () =>
+                    Navigator.pushNamed(context, RouteName.smartGoalCreate),
+                icon: IconHelper.getSVG(SVGName.addSquare,
+                    color: ColorConstant.secondary),
+              ),
+            ],
+          );
   }
 
   // Widget _buildNestedScrollView() {
@@ -187,42 +193,55 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   //   );
   // }
 
-  // Widget _buildCenterOfGrid() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Row(
-  //         children: [
-  //           SizedBox(
-  //             width: 24,
-  //             height: 24,
-  //             child: TextButton(
-  //               onPressed: () => uiStore.toggleShowGrid(),
-  //               style: ButtonStyle(
-  //                 padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-  //               ),
-  //               child: IconHelper.getSVG(SVGName.burgerMenu),
-  //             ),
-  //           ),
-  //           SizedBox(width: 24),
-  //           Text(
-  //             '2024',
-  //             style: GeneralTextStyle.getSize(18).copyWith(
-  //               fontWeight: FontWeight.w700,
-  //             ),
-  //           ),
-  //           Icon(Icons.keyboard_arrow_down),
-  //         ],
-  //       ),
-  //       Row(
-  //         children: [
-  //           Icon(Icons.keyboard_arrow_left),
-  //           Icon(Icons.keyboard_arrow_right),
-  //         ],
-  //       )
-  //     ],
-  //   );
-  // }
+  Widget _buildCenterOfGrid() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: TextButton(
+                onPressed: () => uiStore.toggleShowGrid(),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                ),
+                child: IconHelper.getSVG(SVGName.burgerMenu),
+              ),
+            ),
+            const SizedBox(width: 24),
+            Text(
+              '${store.year}',
+              style: TextStyleHelper.getw500size(18).copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () async {
+                store.year--;
+                await store.readYearly();
+              },
+              child: Icon(Icons.keyboard_arrow_left),
+            ),
+            const SizedBox(width: 16),
+            GestureDetector(
+              onTap: () async {
+                store.year++;
+                await store.readYearly();
+              },
+              child: Icon(Icons.keyboard_arrow_right),
+            ),
+          ],
+        )
+      ],
+    );
+  }
 
   Widget _buildLoadedData() {
     LoadingStatusEnum status = context.watch<SmartGoalStore>().loadingStatus;
@@ -240,11 +259,9 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildContent() {
     return Container(
       padding: const EdgeInsets.only(top: 20),
-      child: store.smartGoal.items.isEmpty ? Column(
-        children: [
-          Text('You have no smart goals yet.'),
-        ],
-      ) : _buildColumnContent(),
+      child: uiStore.showGrid
+          ? SmartGoalGridView(data: store.smartGoalYearly)
+          : _buildColumnContent(),
     );
   }
 
@@ -340,9 +357,21 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 value: SmartGoalStatusEnum.achieved,
               ),
             ],
-            onTap: (value) => store.changeFilteredProgress(value),
+            onTap: (value) {
+              store.changeFilteredProgress(value);
+              store.initialize();
+              print(store.queryParemeter);
+              print(store.filteredSmartGoal[store.queryParemeter]!.items.length);
+              // store.readByPage();
+            },
           ),
-          _buildFilteredSmartGoals(),
+          store.smartGoal.items.isEmpty
+              ? Column(
+                  children: [
+                    Text('You have no smart goals yet.'),
+                  ],
+                )
+              : _buildFilteredSmartGoals(),
           const SizedBox(height: 16),
         ],
       );
@@ -352,17 +381,22 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   Widget _buildFilteredSmartGoals() {
     List<SmartGoalData> items =
         store.filteredSmartGoal[store.queryParemeter]!.items;
+
     return SingleChildScrollView(
-      child: ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return _buildSmartGoalItem(items[index]);
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(height: 8);
-        },
+      child: Column(
+        children: [
+          ListView.separated(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return _buildSmartGoalItem(items[index]);
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(height: 8);
+            },
+          ),
+        ],
       ),
     );
   }

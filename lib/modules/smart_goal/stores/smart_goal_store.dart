@@ -5,6 +5,7 @@ import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/smart_goal/helpers/smart_goal_helper.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_yearly_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 part 'smart_goal_store.g.dart';
@@ -46,8 +47,6 @@ abstract class _SmartGoalStoreBase with Store {
     return '$filter1&$dateQuery';
   }
 
-  //2024-02-29
-
   @observable
   DateTime? startDate = DateTime.now();
 
@@ -67,23 +66,6 @@ abstract class _SmartGoalStoreBase with Store {
 
     return 'startDate[gte]=$date1&endDate[lte]=$date2';
   }
-
-  // -------------------- Reaction --------------------
-  late ReactionDisposer _disposer;
-  void setReaction() {
-    _disposer = reaction((_) => queryParemeter, (value) async {
-      bool refreshed = false;
-      if (filteredSmartGoal[queryParemeter] == null) {
-        refreshed = true;
-      }
-      await readByPage(refreshed: refreshed);
-    });
-  }
-
-  // -------------------- Filtered SmartGoal --------------------
-  // Map from a query paremeter to the SmartGoal
-  @observable
-  ObservableMap<String, SmartGoal> filteredSmartGoal = ObservableMap();
 
   @Deprecated('')
   @action
@@ -110,6 +92,11 @@ abstract class _SmartGoalStoreBase with Store {
       debugPrint('<-- END: read smart goal');
     }
   }
+
+  // -------------------- Filtered SmartGoal --------------------
+  // Map from a query paremeter to the SmartGoal
+  @observable
+  ObservableMap<String, SmartGoal> filteredSmartGoal = ObservableMap();
 
   // -------------------- Pagination --------------------
   @action
@@ -159,6 +146,40 @@ abstract class _SmartGoalStoreBase with Store {
     } catch (e) {
       setLoadingStatus(LoadingStatusEnum.error);
       debugPrint('${e.runtimeType}: ${e.toString()}');
+    } finally {
+      debugPrint('<-- END: read smart goal');
+    }
+  }
+
+  // -------------------- Read Yearly Smart Goal --------------------
+  @observable
+  ObservableMap<String, SmartGoalMonth> smartGoalYearly = ObservableMap();
+
+  @observable
+  int year = DateTime.now().year;
+
+  @action
+  Future readYearly() async {
+    debugPrint('--> START: read smart goal');
+    loadingStatus = LoadingStatusEnum.loading;
+    try {
+      Response response = await ApiService.dio.get('goals?year=$year');
+      if (response.statusCode == 200) {
+        debugPrint('--> successfully fetched');
+        smartGoalYearly = ObservableMap.of(
+          await compute(
+            getSmartGoalMap,
+            response.data as Map<String, dynamic>,
+          ),
+        );
+        loadingStatus = LoadingStatusEnum.done;
+      } else {
+        debugPrint('--> Something went wrong, code: ${response.statusCode}');
+        loadingStatus = LoadingStatusEnum.error;
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      loadingStatus = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: read smart goal');
     }
@@ -257,6 +278,6 @@ abstract class _SmartGoalStoreBase with Store {
   void dispose() {
     smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
     loadingStatus = LoadingStatusEnum.none;
-    _disposer();
+    filteredProgress = SmartGoalStatusEnum.all;
   }
 }

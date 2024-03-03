@@ -127,6 +127,38 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
+  late final _$smartGoalYearlyAtom =
+      Atom(name: '_SmartGoalStoreBase.smartGoalYearly', context: context);
+
+  @override
+  ObservableMap<String, SmartGoalMonth> get smartGoalYearly {
+    _$smartGoalYearlyAtom.reportRead();
+    return super.smartGoalYearly;
+  }
+
+  @override
+  set smartGoalYearly(ObservableMap<String, SmartGoalMonth> value) {
+    _$smartGoalYearlyAtom.reportWrite(value, super.smartGoalYearly, () {
+      super.smartGoalYearly = value;
+    });
+  }
+
+  late final _$yearAtom =
+      Atom(name: '_SmartGoalStoreBase.year', context: context);
+
+  @override
+  int get year {
+    _$yearAtom.reportRead();
+    return super.year;
+  }
+
+  @override
+  set year(int value) {
+    _$yearAtom.reportWrite(value, super.year, () {
+      super.year = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_SmartGoalStoreBase.read', context: context);
 
@@ -142,6 +174,14 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   Future<dynamic> readByPage({bool refreshed = false}) {
     return _$readByPageAsyncAction
         .run(() => super.readByPage(refreshed: refreshed));
+  }
+
+  late final _$readYearlyAsyncAction =
+      AsyncAction('_SmartGoalStoreBase.readYearly', context: context);
+
+  @override
+  Future<dynamic> readYearly() {
+    return _$readYearlyAsyncAction.run(() => super.readYearly());
   }
 
   late final _$postAsyncAction =
@@ -224,6 +264,8 @@ filteredProgress: ${filteredProgress},
 startDate: ${startDate},
 endDate: ${endDate},
 filteredSmartGoal: ${filteredSmartGoal},
+smartGoalYearly: ${smartGoalYearly},
+year: ${year},
 isLoading: ${isLoading},
 queryParemeter: ${queryParemeter},
 dateQuery: ${dateQuery}

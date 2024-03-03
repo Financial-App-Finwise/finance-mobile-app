@@ -192,7 +192,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
     selectedValue = '',
     required void Function(dynamic) onChange,
   }) {
-    return PeriodDropDown(
+    return DurationDropDown(
       items: [
         DurationDropDownItem(title: 'This Month', value: 'this_month'),
         DurationDropDownItem(title: 'This Week', value: 'this_week'),

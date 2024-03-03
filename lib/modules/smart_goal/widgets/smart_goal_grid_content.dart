@@ -1,15 +1,29 @@
-import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_yearly_model.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_tile.dart';
 import 'package:flutter/material.dart';
 
 class SmartGoalGridView extends StatefulWidget {
-  const SmartGoalGridView({super.key});
+  SmartGoalGridView({
+    super.key,
+    required this.data,
+  });
+
+  late Map<String, SmartGoalMonth> data;
 
   @override
   State<SmartGoalGridView> createState() => _SmartGoalGridViewState();
 }
 
 class _SmartGoalGridViewState extends State<SmartGoalGridView> {
+  late List<String> months = [];
+  @override
+  void initState() {
+    super.initState();
+    widget.data.forEach((key, value) {
+      months.add(key);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,14 +37,18 @@ class _SmartGoalGridViewState extends State<SmartGoalGridView> {
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: 12,
+        itemCount: widget.data.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
           crossAxisCount: 3,
         ),
-        itemBuilder: (context, index) =>
-            const SmartGoalGridTile(month: 'January', amount: 3),
+        itemBuilder: (context, index) => SmartGoalGridTile(
+          month: months[index],
+          amount: widget.data[months[index]] == null
+              ? 0
+              : widget.data[months[index]]!.numberOfGoals,
+        ),
       ),
     );
   }

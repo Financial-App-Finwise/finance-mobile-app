@@ -12,6 +12,8 @@ import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
+import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
+import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
@@ -24,8 +26,8 @@ import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -93,20 +95,24 @@ class _HomeScreenState extends State<HomeScreen>
           },
           child: Observer(builder: (context) {
             return SingleChildScrollView(
-              child: ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
+              child: Column(
                 children: [
-                  _buildProfile(),
-                  _buildFinance(),
-                  _buildMainFeatures(),
-                  _buildSpendingIncome(),
-                  _buildTopSpending(),
-                  _buildBudgetPlan(),
-                  _buildTotalSpend(),
-                  _buildTotalEarn(),
-                  _buildUpcomingBill(),
-                  const SizedBox(height: 48),
+                  ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: [
+                      _buildProfile(),
+                      _buildFinance(),
+                      _buildMainFeatures(),
+                      _buildSpendingIncome(),
+                      _buildTopSpending(),
+                      _buildBudgetPlan(),
+                      _buildTotalSpend(),
+                      _buildTotalEarn(),
+                      _buildUpcomingBill(),
+                      const SizedBox(height: 48),
+                    ],
+                  ),
                 ],
               ),
             );
@@ -149,19 +155,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  /// TODO
-  /// if there is no data, indicate that the user has no data
-  /// and needs to add transaction
-
-  // Widget _buildNoDataDisplay() {
-  //   return Container();
-  // }
-
-  // Widget _buildEmptyPieChart() {
-  //   return Container();
-  // }
-
-  // ---------- general ----------
+  // -------------------- General --------------------
   Widget _buildGeneralTitle(String text) {
     return Container(
       padding: const EdgeInsets.only(top: 20, bottom: 12),
@@ -174,29 +168,43 @@ class _HomeScreenState extends State<HomeScreen>
     String amount = 'amount',
     Color color = Colors.black,
     Widget? icon,
-    String buttonText = 'button',
-    void Function()? onButtonPressed,
+    String selectedValue = '',
+    required void Function(dynamic) onChanged,
   }) {
     return Row(
       children: [
         Expanded(
-          child: Row(children: [
-            icon ?? const SizedBox(),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: HomeTextStyleConstant.medium),
-                  Text(amount,
-                      style: HomeTextStyleConstant.numberFocus(color: color)),
-                ],
-              ),
-            )
-          ]),
+          child: Row(
+            children: [
+              icon ?? const SizedBox(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: HomeTextStyleConstant.medium),
+                    Text(amount,
+                        style: HomeTextStyleConstant.numberFocus(color: color)),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
         const SizedBox(width: 12),
-        // const DurationDropDown(),
+        DurationDropDown(
+          items: [
+            DurationDropDownItem(title: 'This Month', value: 'this_month'),
+            DurationDropDownItem(title: 'This Week', value: 'this_week'),
+            DurationDropDownItem(title: 'Last Month', value: 'last_month'),
+            DurationDropDownItem(
+                title: 'Last 3 Months', value: 'last_3_months'),
+            DurationDropDownItem(
+                title: 'Last 6 Months', value: 'last_6_months'),
+          ],
+          selectedValue: selectedValue,
+          onChange: onChanged,
+        )
       ],
     );
   }
@@ -239,7 +247,22 @@ class _HomeScreenState extends State<HomeScreen>
                           icon: IconConstant.piggyBank,
                         ),
                       ),
-                      // const DurationDropDown(),
+                      DurationDropDown(
+                        items: [
+                          DurationDropDownItem(
+                              title: 'This Month', value: 'this_month'),
+                          DurationDropDownItem(
+                              title: 'This Week', value: 'this_week'),
+                          DurationDropDownItem(
+                              title: 'Last Month', value: 'last_month'),
+                          DurationDropDownItem(
+                              title: 'Last 3 Months', value: 'last_3_months'),
+                          DurationDropDownItem(
+                              title: 'Last 6 Months', value: 'last_6_months'),
+                        ],
+                        selectedValue: 'this_month',
+                        onChange: (value) {},
+                      ),
                     ],
                   ),
                   Container(
@@ -435,9 +458,26 @@ class _HomeScreenState extends State<HomeScreen>
                   )
                 : Column(
                     children: [
-                      const Row(children: [
-                        Expanded(child: SizedBox()),
+                      Row(children: [
+                        const Expanded(child: SizedBox()),
+
                         // DurationDropDown(),
+                        DurationDropDown(
+                          items: [
+                            DurationDropDownItem(
+                                title: 'This Month', value: 'this_month'),
+                            DurationDropDownItem(
+                                title: 'This Week', value: 'this_week'),
+                            DurationDropDownItem(
+                                title: 'Last Month', value: 'last_month'),
+                            DurationDropDownItem(
+                                title: 'Last 3 Months', value: 'last_3_months'),
+                            DurationDropDownItem(
+                                title: 'Last 6 Months', value: 'last_6_months'),
+                          ],
+                          selectedValue: 'this_month',
+                          onChange: (value) {},
+                        )
                       ]),
                       const SizedBox(height: 24),
                       IncomeExpenseBarChart(
@@ -455,9 +495,8 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildTopSpending() {
     List values = [40.0, 20.0, 30.0, 10.0];
     values.sort((a, b) => b.compareTo(a));
-    List opacities = [1.0, 0.75, 0.50, 0.25];
+
     return Container(
-      // color: Colors.blue[100],
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,8 +510,8 @@ class _HomeScreenState extends State<HomeScreen>
                   amount: '\$356',
                   color: ColorConstant.expense,
                   icon: IconConstant.expense,
-                  buttonText: 'This month',
-                  onButtonPressed: () {},
+                  selectedValue: 'this_month',
+                  onChanged: (value) {},
                 ),
                 const SizedBox(height: 30),
                 IncomeExpensePieChart(
@@ -493,144 +532,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // pie chart section
-  // bool _showMorePieChartInfo = false;
-  // int _touchedIndex = -1;
-
-  Widget _buildPieChart(values, opacities) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 30),
-      child: SizedBox.fromSize(
-        size: const Size(140, 140),
-        child: PieChart(
-          PieChartData(
-            pieTouchData: PieTouchData(
-              // enabled: true,
-              longPressDuration: const Duration(seconds: 3),
-              touchCallback: (event, response) {
-                // handle the long press on the same section
-                // preventing it from printing the same value many times
-                // setState(() {
-                //   if (event.isInterestedForInteractions ||
-                //       response == null ||
-                //       response.touchedSection == null) {
-                //     _touchedIndex = -1;
-                //     return;
-                //   }
-                //   _touchedIndex = 0;
-                //   debugPrint('${response.touchedSection!.touchedSectionIndex}');
-                //   _showMorePieChartInfo = true;
-                // });
-              },
-            ),
-            sectionsSpace: 0,
-            startDegreeOffset: 180,
-            sections: [
-              _buildPieChartItem(value: values[0], opacity: opacities[0]),
-              _buildPieChartItem(value: values[1], opacity: opacities[1]),
-              _buildPieChartItem(value: values[2], opacity: opacities[2]),
-              _buildPieChartItem(value: values[3], opacity: opacities[3]),
-            ],
-          ),
-          swapAnimationDuration: const Duration(seconds: 1),
-        ),
-      ),
-    );
-  }
-
-  PieChartSectionData _buildPieChartItem({
-    double value = 0.0,
-    double opacity = 1.0,
-  }) {
-    return PieChartSectionData(
-      value: value,
-      // title: '$value',
-      titleStyle: const TextStyle(
-        color: Colors.white,
-        fontSize: 10,
-      ),
-      color: ColorConstant.topSpending.withOpacity(opacity),
-      showTitle: false,
-      radius: 25,
-    );
-  }
-
-  Widget _buildPieChartLegend(values, opacities) {
-    return Column(
-      children: [
-        Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: 'Transportation',
-                    amount: '\$${values[0]}',
-                    color: ColorConstant.topSpending.withOpacity(opacities[0]),
-                  ),
-                ),
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: 'Groceries',
-                    amount: '\$${values[1]}',
-                    color: ColorConstant.topSpending.withOpacity(opacities[1]),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: 'Utilities',
-                    amount: '\$${values[2]}',
-                    color: ColorConstant.topSpending.withOpacity(opacities[2]),
-                  ),
-                ),
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: 'Entertainment',
-                    amount: '\$${values[3]}',
-                    color: ColorConstant.topSpending.withOpacity(opacities[3]),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPieChartLegendItem(
-      {String category = '', String amount = '', Color? color}) {
-    return Row(
-      children: [
-        _buildSmallCircle(color),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(category, style: HomeTextStyleConstant.pieChartLegendSmall),
-            Text(amount, style: HomeTextStyleConstant.pieChartLegendBig),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSmallCircle(Color? color) {
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color ?? Colors.black,
-      ),
-    );
-  }
-
-  // ----- budget plan -----
+  // -------------------- Budget Plan --------------------
   Widget _buildBudgetPlan() {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteName.budgetPlan),
@@ -644,12 +546,26 @@ class _HomeScreenState extends State<HomeScreen>
               child: Column(
                 children: [
                   _buildBudgetPlanHeader(),
-                  InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, RouteName.budgetPlan),
-                    child: _buildBudgetOverview(),
-                  ),
-                  _buildBudgetPlanCards(),
+                  const Divider(color: ColorConstant.divider),
+                  const SizedBox(height: 16),
+                  _budgetPlanStore.budgetPlan.data.budgetPlans.isEmpty
+                      ? EmptyDataWidget(
+                          icon: IconHelper.getSVG(
+                            SVGName.myBudget,
+                            color: ColorConstant.colorA4A7C6,
+                          ),
+                          description:
+                              'You have no budget plan for this month.',
+                          buttonLabel: 'Add Budget Plan',
+                          onButtonTap: () =>
+                              Navigator.pushNamed(context, RouteName.addBudget),
+                        )
+                      : Column(
+                          children: [
+                            _buildBudgetOverview(),
+                            _buildBudgetPlanCards(),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -662,7 +578,10 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildBudgetPlanHeader() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _buildBudgetPlanDate(),
-      _buildAddButton(),
+      Visibility(
+        visible: _budgetPlanStore.budgetPlan.data.budgetPlans.isNotEmpty,
+        child: _buildAddButton(),
+      ),
     ]);
   }
 
@@ -686,10 +605,10 @@ class _HomeScreenState extends State<HomeScreen>
           const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         ),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          const Icon(Icons.add, color: Colors.white),
-          const SizedBox(width: 8),
+          Icon(Icons.add, color: Colors.white),
+          SizedBox(width: 8),
           Text('Add New', style: HomeTextStyleConstant.smallAddButton),
         ],
       ),
@@ -697,17 +616,19 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildBudgetOverview() {
-    return const BudgetOverview(
-      totalBudget: 130,
-      available: 30,
-      spend: 0,
-      overBudget: 0,
-      plannedBudget: 150,
+    final data = _budgetPlanStore.budgetPlan.data;
+    return BudgetOverview(
+      totalBudget: data.totalBudget,
+      available: data.available,
+      spend: data.spent,
+      overBudget: data.overBudget,
+      plannedBudget: data.plannedBudget,
     );
   }
 
   Widget _buildBudgetPlanCards() {
-    List budgetPlans = context.watch<BudgetPlanStore>().budgetPlan.data.budgetPlans;
+    List<BudgetPlanData> budgetPlans =
+        _budgetPlanStore.budgetPlan.data.budgetPlans;
     budgetPlans =
         budgetPlans.length > 3 ? budgetPlans.sublist(0, 3) : budgetPlans;
 
@@ -739,18 +660,19 @@ class _HomeScreenState extends State<HomeScreen>
           arguments: item,
         );
       },
-      title: '${item.name}',
+      title: item.name,
       color: ColorConstant.expense,
       topLeft: Row(
         children: [
-          Text('\$40', style: HomeTextStyleConstant.budgetCardTitle),
+          Text('\$${item.remainingAmount}',
+              style: HomeTextStyleConstant.budgetCardTitle),
           const SizedBox(width: 6),
-          Text('Left', style: HomeTextStyleConstant.medium),
+          const Text('Left', style: HomeTextStyleConstant.medium),
         ],
       ),
       topRight: Row(
         children: [
-          Text('out of', style: HomeTextStyleConstant.medium),
+          const Text('out of', style: HomeTextStyleConstant.medium),
           const SizedBox(width: 6),
           Text('\$${item.amount}',
               style: HomeTextStyleConstant.budgetCardTitle),
@@ -765,28 +687,8 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ---------- totally spent ----------
+  // -------------------- Totally Spent --------------------
   Widget _buildTotalSpend() {
-    return RoundedContainer(
-      child: Column(
-        children: [
-          IconHelper.getSVG(
-            SVGName.transaction,
-            color: ColorConstant.colorA4A7C6,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'You currently have no spending transaction history.',
-            style: TextStyleHelper.getw500size(16),
-          ),
-          const SizedBox(height: 8),
-          GeneralBottomButton(
-            onButtonTap: () {},
-            buttonLabel: 'Add Transaction',
-          ),
-        ],
-      ),
-    );
     return Container(
       alignment: Alignment.topLeft,
       child: Column(
@@ -799,18 +701,31 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
-                  amount: '\$256',
+                  amount: '\$${_financeStore.finance.data.totalExpenses}',
                   color: ColorConstant.expense,
                   icon: IconConstant.expense,
-                  buttonText: 'Last 7 days',
-                  onButtonPressed: () {},
+                  selectedValue: 'this_month',
+                  onChanged: (value) {},
                 ),
                 const Divider(color: ColorConstant.divider),
                 const SizedBox(height: 16),
-                Text('Recent Transactions',
+                const Text('Recent Transactions',
                     style: HomeTextStyleConstant.medium),
                 const SizedBox(height: 12),
-                _buildTransactions(color: ColorConstant.expense),
+                _financeStore.finance.data.allTransactions.today.isEmpty
+                    ? EmptyDataWidget(
+                        icon: IconHelper.getSVG(
+                          SVGName.transaction,
+                          color: ColorConstant.colorA4A7C6,
+                        ),
+                        description:
+                            'You currently have no spending transaction history.',
+                        buttonLabel: 'Add Transaction',
+                        onButtonTap: () => Navigator.pushNamed(
+                              context,
+                              RouteName.transactionCreate,
+                            ))
+                    : _buildTransactions(color: ColorConstant.expense),
               ],
             ),
           ),
@@ -819,7 +734,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ---------- totally earned -----------
+  // -------------------- Totally Earned ---------------------
   Widget _buildTotalEarn() {
     return Container(
       alignment: Alignment.topLeft,
@@ -833,18 +748,31 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Earned',
-                  amount: '\$356',
+                  amount: '\$${_financeStore.finance.data.totalIncomes}',
                   color: ColorConstant.income,
                   icon: IconConstant.earn,
-                  buttonText: 'Last 7 days',
-                  onButtonPressed: () {},
+                  selectedValue: 'this_month',
+                  onChanged: (value) {},
                 ),
                 const Divider(color: ColorConstant.divider),
                 const SizedBox(height: 16),
-                Text('Recent Transactions',
+                const Text('Recent Transactions',
                     style: HomeTextStyleConstant.medium),
                 const SizedBox(height: 12),
-                _buildTransactions(color: ColorConstant.income),
+                _financeStore.finance.data.allTransactions.today.isEmpty
+                    ? EmptyDataWidget(
+                        icon: IconHelper.getSVG(
+                          SVGName.transaction,
+                          color: ColorConstant.colorA4A7C6,
+                        ),
+                        description:
+                            'You currently have no earning transaction history.',
+                        buttonLabel: 'Add Transaction',
+                        onButtonTap: () => Navigator.pushNamed(
+                              context,
+                              RouteName.transactionCreate,
+                            ))
+                    : _buildTransactions(color: ColorConstant.income),
               ],
             ),
           ),
@@ -853,12 +781,12 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------- transaction -----------------
+  // -------------------- Transaction --------------------
   Widget _buildTransactions({Color color = Colors.black}) {
     return ListView.separated(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: 2,
+      itemCount: _financeStore.finance.data.allTransactions.today.length,
       itemBuilder: (context, index) {
         return InkWell(
           onTap: () {
@@ -874,7 +802,7 @@ class _HomeScreenState extends State<HomeScreen>
         );
       },
       separatorBuilder: (context, index) {
-        return Divider(color: ColorConstant.divider);
+        return const Divider(color: ColorConstant.divider);
       },
     );
   }
@@ -911,12 +839,25 @@ class _HomeScreenState extends State<HomeScreen>
                     color: ColorConstant.bill,
                     icon:
                         IconConstant.getUpcomingBill(color: ColorConstant.bill),
-                    buttonText: 'This month',
-                    onButtonPressed: () {},
+                    selectedValue: 'this_month',
+                    onChanged: (value) {},
                   ),
                   const Divider(color: ColorConstant.divider),
                   const SizedBox(height: 16),
-                  _buildUpcomingBills(),
+                  _financeStore.finance.data.allTransactions.today.isEmpty
+                      ? EmptyDataWidget(
+                          icon: IconHelper.getSVG(
+                            SVGName.transaction,
+                            color: ColorConstant.colorA4A7C6,
+                          ),
+                          description:
+                              'You have no upcoming bill for this month.',
+                          buttonLabel: 'Add Upcoming Bill',
+                          onButtonTap: () => Navigator.pushNamed(
+                                context,
+                                RouteName.transactionCreate,
+                              ))
+                      : _buildUpcomingBills(),
                 ],
               ),
             ),
@@ -927,9 +868,10 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildUpcomingBills() {
-    List upcomingBills = context.watch<UpcomingBillStore>().upcomingBill.data;
+    List<UpcomingBillData> upcomingBills = _upcomingBillStore.upcomingBill.data;
     upcomingBills =
         upcomingBills.length > 3 ? upcomingBills.sublist(0, 3) : upcomingBills;
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
@@ -938,13 +880,6 @@ class _HomeScreenState extends State<HomeScreen>
             .map((item) =>
                 Row(children: [_buildBillItem(item), const SizedBox(width: 8)]))
             .toList(),
-        // children: [
-        //   _buildBillItem(),
-        //   const SizedBox(width: 8),
-        //   _buildBillItem(),
-        //   const SizedBox(width: 8),
-        //   _buildBillItem(),
-        // ],
       ),
     );
   }
@@ -965,8 +900,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          ),
+              const EdgeInsets.symmetric(vertical: 12, horizontal: 16)),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
         ),
@@ -990,9 +924,8 @@ class _HomeScreenState extends State<HomeScreen>
                 Text(item.name, style: HomeTextStyleConstant.medium),
                 const SizedBox(height: 2),
                 Text('\$${item.amount}',
-                    style: HomeTextStyleConstant.numberFocus(
-                      color: ColorConstant.black,
-                    )),
+                    style: TextStyleHelper.getw600size(24,
+                        color: ColorConstant.black)),
               ],
             ),
           ],
@@ -1029,7 +962,7 @@ class _HomeScreenState extends State<HomeScreen>
             });
           },
           child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               // color: Colors.amber,
               child: Row(
                 children: [
@@ -1055,7 +988,7 @@ class _HomeScreenState extends State<HomeScreen>
             });
           },
           child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               // color: Colors.amber,
               child: Row(
                 children: [

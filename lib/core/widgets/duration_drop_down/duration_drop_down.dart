@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 
-class PeriodDropDown extends StatefulWidget {
-  PeriodDropDown({
+class DurationDropDown extends StatefulWidget {
+  DurationDropDown({
     super.key,
     required this.items,
     required this.selectedValue,
@@ -20,10 +20,10 @@ class PeriodDropDown extends StatefulWidget {
   late void Function(dynamic) onChange;
 
   @override
-  State<PeriodDropDown> createState() => _PeriodDropDownState();
+  State<DurationDropDown> createState() => _DurationDropDownState();
 }
 
-class _PeriodDropDownState extends State<PeriodDropDown> {
+class _DurationDropDownState extends State<DurationDropDown> {
   final _store = DurationDropDownStore();
 
   @override

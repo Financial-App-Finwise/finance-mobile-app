@@ -119,8 +119,7 @@ abstract class _FinanceStoreBase with Store {
     }
   }
 
-  //myfinances/update-net-worth
-  // -------------------- Update a Smart Goal --------------------
+  // -------------------- Update Total Balance --------------------
   @action
   Future<bool> update(double totalbalance) async {
     debugPrint('--> START: update, finance');
