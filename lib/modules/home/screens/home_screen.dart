@@ -844,7 +844,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   const Divider(color: ColorConstant.divider),
                   const SizedBox(height: 16),
-                  _financeStore.finance.data.allTransactions.today.isEmpty
+                  _upcomingBillStore.upcomingBill.data.isEmpty
                       ? EmptyDataWidget(
                           icon: IconHelper.getSVG(
                             SVGName.transaction,
