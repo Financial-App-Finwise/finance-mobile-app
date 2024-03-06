@@ -8,6 +8,7 @@ import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
+import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
@@ -94,15 +95,21 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     );
   }
 
-  DateTime _startDay = DateTime.now();
-  DateTime _endDay = DateTime.now().add(Duration(days: 7));
-
-  final TextEditingController _startDayController = TextEditingController(
-    text: UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMM, yyyy'),
+  late final DateTime _currentDate = DateTime.now();
+  late final DateTime _startDay = DateTime(
+    _currentDate.year,
+    _currentDate.month,
   );
-  final TextEditingController _endDayController = TextEditingController(
-    text: UIHelper.getDateFormat(
-        DateTime.now().add(Duration(days: 30)).toString(), 'dd MMM, yyyy'),
+  late final DateTime _endDay = DateTime(
+    _currentDate.year,
+    _currentDate.month + 1,
+  );
+
+  late final TextEditingController _startDayController = TextEditingController(
+    text: UIHelper.getDateFormat(store.startDate.toString(), 'dd MMM, yyyy'),
+  );
+  late final TextEditingController _endDayController = TextEditingController(
+    text: UIHelper.getDateFormat(store.endDate.toString(), 'dd MMM, yyyy'),
   );
 
   Widget _buildCenterContent() {
@@ -360,16 +367,22 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             onTap: (value) {
               store.changeFilteredProgress(value);
               store.initialize();
-              print(store.queryParemeter);
-              print(store.filteredSmartGoal[store.queryParemeter]!.items.length);
-              // store.readByPage();
+              if (store
+                  .filteredSmartGoal[store.queryParemeter]!.items.isEmpty) {
+                store.readByPage(refreshed: true);
+              }
             },
           ),
-          store.smartGoal.items.isEmpty
-              ? Column(
-                  children: [
-                    Text('You have no smart goals yet.'),
-                  ],
+          store.filteredSmartGoal[store.queryParemeter]!.items.isEmpty
+              ? EmptyDataWidget(
+                  description: 'You have no smart goal yet for this month',
+                  buttonLabel: 'Add Smart Goal',
+                  icon: IconHelper.getSVG(
+                    SVGName.smartGoal,
+                    color: ColorConstant.colorA4A7C6,
+                  ),
+                  onButtonTap: () =>
+                      Navigator.pushNamed(context, RouteName.smartGoalCreate),
                 )
               : _buildFilteredSmartGoals(),
           const SizedBox(height: 16),
@@ -383,21 +396,23 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         store.filteredSmartGoal[store.queryParemeter]!.items;
 
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return _buildSmartGoalItem(items[index]);
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 8);
-            },
-          ),
-        ],
-      ),
+      child: store.isLoading
+          ? CircularProgressIndicatorTwoArcs()
+          : Column(
+              children: [
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return _buildSmartGoalItem(items[index]);
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 8);
+                  },
+                ),
+              ],
+            ),
     );
   }
 

@@ -164,6 +164,18 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
               const Divider(color: ColorConstant.divider),
               const SizedBox(height: 16),
               _buildOverviewItem(
+                title: 'Start Date',
+                subTitle: UIHelper.getDateFormat(args.startDate, 'MMM dd, yyyy'),
+                subTitleColor: ColorConstant.black,
+                icon: IconHelper.getSVG(
+                  SVGName.calendarTick,
+                  color: ColorConstant.income,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(color: ColorConstant.divider),
+              const SizedBox(height: 16),
+              _buildOverviewItem(
                 title: 'Target Date',
                 subTitle: UIHelper.getDateFormat(args.endDate, 'MMM dd, yyyy'),
                 subTitleColor: ColorConstant.black,
