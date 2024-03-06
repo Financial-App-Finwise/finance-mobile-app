@@ -88,10 +88,14 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     return super.startDate;
   }
 
+  bool _startDateIsInitialized = false;
+
   @override
   set startDate(DateTime? value) {
-    _$startDateAtom.reportWrite(value, super.startDate, () {
+    _$startDateAtom.reportWrite(
+        value, _startDateIsInitialized ? super.startDate : null, () {
       super.startDate = value;
+      _startDateIsInitialized = true;
     });
   }
 
@@ -104,10 +108,14 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     return super.endDate;
   }
 
+  bool _endDateIsInitialized = false;
+
   @override
   set endDate(DateTime? value) {
-    _$endDateAtom.reportWrite(value, super.endDate, () {
+    _$endDateAtom
+        .reportWrite(value, _endDateIsInitialized ? super.endDate : null, () {
       super.endDate = value;
+      _endDateIsInitialized = true;
     });
   }
 

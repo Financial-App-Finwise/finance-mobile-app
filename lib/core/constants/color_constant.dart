@@ -12,6 +12,7 @@ abstract class ColorConstant {
   static const Color income = Color(0xff10AC84);
   static const Color incomeIcon = Color(0xff10AC84);
   static const Color expense = Color(0xffEE5353);
+  static const Color expenseLight = Color(0xFFFBA6A6);
   static const Color expenseIcon = Color(0xffEE5353);
   static const Color overbudget = Color(0xffEF6007);
   static const Color overbudgetIcon = Color(0xffFE7B11);

@@ -47,11 +47,19 @@ abstract class _SmartGoalStoreBase with Store {
     return '$filter1&$dateQuery';
   }
 
-  @observable
-  DateTime? startDate = DateTime.now();
+  late final _currentDate = DateTime.now();
 
   @observable
-  DateTime? endDate;
+  late DateTime? startDate = DateTime(
+    _currentDate.year,
+    _currentDate.month,
+  );
+
+  @observable
+  late DateTime? endDate = DateTime(
+    _currentDate.year,
+    _currentDate.month + 1,
+  );
 
   @computed
   String get dateQuery {
@@ -61,7 +69,7 @@ abstract class _SmartGoalStoreBase with Store {
       date1 = UIHelper.getDateFormat(startDate.toString(), 'yyyy-MM-dd');
     }
     if (endDate != null) {
-      date2 = UIHelper.getDateFormat(startDate.toString(), 'yyyy-MM-dd');
+      date2 = UIHelper.getDateFormat(endDate.toString(), 'yyyy-MM-dd');
     }
 
     return 'startDate[gte]=$date1&endDate[lte]=$date2';
@@ -276,8 +284,9 @@ abstract class _SmartGoalStoreBase with Store {
 
   @action
   void dispose() {
-    smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
+    // smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
     loadingStatus = LoadingStatusEnum.none;
     filteredProgress = SmartGoalStatusEnum.all;
+    filteredSmartGoal = ObservableMap();
   }
 }

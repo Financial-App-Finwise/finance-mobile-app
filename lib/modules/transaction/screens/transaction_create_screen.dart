@@ -3,20 +3,25 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
-import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
-import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:finwise/modules/transaction/widgets/select_smart_goal_widget.dart';
+import 'package:finwise/route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class AddTransactionScreen extends StatefulWidget {
@@ -30,6 +35,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      await _readAll();
+    });
+  }
+
+  Future _readAll() async {
+    await context.read<SmartGoalStore>().readByPage();
   }
 
   @override
@@ -123,14 +135,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           ),
           const SizedBox(height: 20),
           Expanded(
-              child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                _isIncome ? _buildIncomeForm() : _buildExpenseForm(),
-              ],
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  _isIncome ? _buildIncomeForm() : _buildExpenseForm(),
+                ],
+              ),
             ),
-          ))
+          )
         ],
       ),
       // child: GeneralFilterBar(
@@ -162,17 +175,42 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   List<TextEditingController> _goalControllers = [];
+  late List<SmartGoalData> _selectedSmartGoals = [];
 
   Widget _buildGoalContributionSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Goal Contribution (Optional)',
-          style: TextStyleHelper.getw500size(
-            18,
-            color: ColorConstant.black,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Goal Contribution (Optional)',
+              style: TextStyleHelper.getw500size(
+                18,
+                color: ColorConstant.black,
+              ),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SelectSmartGoalWidget(
+                    onPressed: (smartGoalData) {
+                      setState(() {
+                        if (_selectedSmartGoals.every(
+                            (element) => element.id != smartGoalData.id)) {
+                          _selectedSmartGoals.add(smartGoalData);
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ),
+              child: IconHelper.getSVG(SVGName.addSquare,
+                  color: ColorConstant.income),
+            ),
+          ],
         ),
         const SizedBox(height: 2),
         Text(
@@ -192,10 +230,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           child: ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 2,
+            itemCount: _selectedSmartGoals.length,
             itemBuilder: (_, index) {
               _goalControllers.add(TextEditingController());
-              return _buildGoalContributionItem(index, title: 'Vacation');
+              return _buildGoalContributionItem(
+                index,
+                title: _selectedSmartGoals[index].name,
+                smartGoalData: _selectedSmartGoals[index],
+              );
             },
             separatorBuilder: (_, index) => const SizedBox(height: 12),
           ),
@@ -207,10 +249,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget _buildGoalContributionItem(
     int index, {
     String title = '',
+    required SmartGoalData smartGoalData,
   }) {
     return Row(
       children: [
-        Expanded(
+        SizedBox(
+          width: 120,
           child: Text(
             title,
             style:
@@ -249,6 +293,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             style: TextStyleHelper.getw500size(12, color: ColorConstant.income),
           ),
         ),
+        const SizedBox(width: 12),
+        CustomIconButton(
+          onPressed: () {
+            setState(() {
+              _selectedSmartGoals.remove(smartGoalData);
+            });
+          },
+          icon: IconHelper.getSVG(SVGName.close, color: ColorConstant.expense),
+        ),
       ],
     );
   }
@@ -258,33 +311,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   final _amountExpenseController = TextEditingController();
   Widget _buildExpenseForm() {
-    return Container(
-      child: Column(
-        children: [
-          RectFilterBarHeader(
-            physics: const BouncingScrollPhysics(),
-            items: [
-              FilterBarHeaderItem(title: 'General', value: 'General'),
-              FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
-              FilterBarHeaderItem(
-                  title: 'Upcoming Bill', value: 'Upcoming Bill'),
-            ],
-            currentValue: _expenseType,
-            onTap: (value) => setState(() => _expenseType = value),
-          ),
-          _buildExpenseGeneral(),
-        ],
-      ),
-      // child: RectFilterBar(
-      //   physics: BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
-      //   fontSize: 13,
-      //   filterTitles: ['General', 'Budget Plan', 'Upcoming Bill'],
-      //   children: [
-      //     _buildExpenseGeneral(),
-      //     _buildExpenseGeneral(),
-      //     _buildExpenseGeneral(),
-      //   ],
-      // ),
+    return Column(
+      children: [
+        RectFilterBarHeader(
+          physics: const BouncingScrollPhysics(),
+          items: [
+            FilterBarHeaderItem(title: 'General', value: 'General'),
+            FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
+            FilterBarHeaderItem(title: 'Upcoming Bill', value: 'Upcoming Bill'),
+          ],
+          currentValue: _expenseType,
+          onTap: (value) => setState(() => _expenseType = value),
+        ),
+        _buildExpenseGeneral(),
+      ],
     );
   }
 
@@ -480,7 +520,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             );
         if (success) {
           await context.read<FinanceStore>().read();
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         }
       },
       buttonLabel: 'Add transaction',

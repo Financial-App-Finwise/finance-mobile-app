@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/general_detail_layout.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
@@ -26,23 +27,40 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return GeneralDetailLayout(
-      themeColor: ColorConstant.income,
+      themeColor: args.isIncome ? ColorConstant.income : ColorConstant.expense,
       gradient: LinearGradient(
-        colors: [
-          ColorConstant.smartGoalLight,
-          ColorConstant.smartGoalThick,
-        ],
+        colors: args.isIncome
+            ? [
+                ColorConstant.smartGoalLight,
+                ColorConstant.smartGoalThick,
+              ]
+            : [
+                ColorConstant.expenseLight,
+                ColorConstant.expenseIcon,
+              ],
       ),
-      title: 'CADT Salary',
-      subTitle: 'My Income',
-      iconTitle: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
-      onEdit: () => Navigator.pushNamed(context, RouteName.transactionEdit),
+      title: args.note,
+      subTitle: args.isIncome ? 'My Income' : 'My Expense',
+      iconTitle: args.isIncome
+          ? IconHelper.getSVG(
+              SVGName.earn,
+              color: ColorConstant.income,
+            )
+          : IconHelper.getSVG(
+              SVGName.expense,
+              color: ColorConstant.expense,
+            ),
+      onEdit: () => Navigator.pushNamed(
+        context,
+        RouteName.transactionEdit,
+        arguments: args,
+      ),
       onDelete: () async {
         bool success = await context.read<TransactionStore>().delete(args);
         if (success) {
+          await context.read<FinanceStore>().read();
           if (mounted) {
             // await context.read<TransactionStore>().readByPage(refreshed: true);
-            await context.read<FinanceStore>().read();
             Navigator.pop(context);
             Navigator.pop(context);
           }
@@ -54,7 +72,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
   Widget _buildContent() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -91,41 +109,49 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         children: [
           overviewCard(
             IconHelper.getSVG(
-              SVGName.expense,
-              color: ColorConstant.overbudgetIcon,
+              args.isIncome ? SVGName.earn : SVGName.expense,
+              color: args.isIncome
+                  ? ColorConstant.incomeIcon
+                  : ColorConstant.expense,
             ),
-            'Spent',
-            '-\$2.5',
+            args.isIncome ? 'Earned' : 'Spent',
+            '\$${args.amount}',
             defaultStyle,
           ),
           dividerGap(),
           overviewCard(
             IconHelper.getSVG(
               SVGName.internet,
-              color: ColorConstant.overbudgetIcon,
+              color: args.isIncome
+                  ? ColorConstant.incomeIcon
+                  : ColorConstant.expense,
             ),
             'Category',
-            'Entertainment',
+            '${args.categoryID}',
             defaultStyle,
           ),
           dividerGap(),
           overviewCard(
             IconHelper.getSVG(
               SVGName.calendarTick,
-              color: ColorConstant.overbudgetIcon,
+              color: args.isIncome
+                  ? ColorConstant.incomeIcon
+                  : ColorConstant.expense,
             ),
             'Transaction date',
-            '13 Nov, 2026',
+            '${UIHelper.getDateFormat(args.date, 'dd MMM, yyyy HH:mm:ss')}',
             defaultStyle,
           ),
           dividerGap(),
           overviewCard(
             IconHelper.getSVG(
               SVGName.budgetPlan,
-              color: ColorConstant.overbudgetIcon,
+              color: args.isIncome
+                  ? ColorConstant.incomeIcon
+                  : ColorConstant.expense,
             ),
             'Note',
-            'You didn\'t add any note.',
+            args.note.isEmpty ? "You didn't add any note." : args.note,
             noteStyle,
           ),
         ],
@@ -150,7 +176,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
                 letterSpacing: 0.75,
@@ -170,14 +196,14 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     );
   }
 
-  TextStyle defaultStyle = TextStyle(
+  TextStyle defaultStyle = const TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 24,
     letterSpacing: 1,
     color: ColorConstant.black,
   );
 
-  TextStyle noteStyle = TextStyle(
+  TextStyle noteStyle = const TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 16,
     letterSpacing: 0.5,

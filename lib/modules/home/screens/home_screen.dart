@@ -27,7 +27,6 @@ import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -90,9 +89,7 @@ class _HomeScreenState extends State<HomeScreen>
         alignment: Alignment.topRight,
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: RefreshIndicator(
-          onRefresh: () async {
-            _readAll();
-          },
+          onRefresh: () async => _readAll(),
           child: Observer(builder: (context) {
             return SingleChildScrollView(
               child: Column(
@@ -276,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen>
                         Expanded(
                           child: _buildFinanceItem(
                             text: 'Income',
-                            amount: '\$100',
+                            amount: '\$${_financeStore.finance.data.totalIncomes}',
                             color: ColorConstant.income,
                             icon: IconConstant.earn,
                           ),
@@ -289,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen>
                         Expanded(
                           child: _buildFinanceItem(
                             text: 'Expense',
-                            amount: '\$50',
+                            amount: '\$${_financeStore.finance.data.totalExpenses}',
                             color: ColorConstant.expense,
                             icon: IconConstant.expense,
                           ),
@@ -475,8 +472,11 @@ class _HomeScreenState extends State<HomeScreen>
                             DurationDropDownItem(
                                 title: 'Last 6 Months', value: 'last_6_months'),
                           ],
-                          selectedValue: 'this_month',
-                          onChange: (value) {},
+                          selectedValue: _financeStore.period,
+                          onChange: (value) async {
+                            _financeStore.period = value;
+                            await _financeStore.read();
+                          },
                         )
                       ]),
                       const SizedBox(height: 24),
@@ -712,7 +712,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const Text('Recent Transactions',
                     style: HomeTextStyleConstant.medium),
                 const SizedBox(height: 12),
-                _financeStore.finance.data.allTransactions.today.isEmpty
+                _financeStore.expenseFinance.data.allTransactions.today.isEmpty
                     ? EmptyDataWidget(
                         icon: IconHelper.getSVG(
                           SVGName.transaction,
@@ -725,7 +725,11 @@ class _HomeScreenState extends State<HomeScreen>
                               context,
                               RouteName.transactionCreate,
                             ))
-                    : _buildTransactions(color: ColorConstant.expense),
+                    : _buildTransactions(
+                        color: ColorConstant.expense,
+                        transactions: _financeStore
+                            .expenseFinance.data.allTransactions.today,
+                      ),
               ],
             ),
           ),
@@ -759,7 +763,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const Text('Recent Transactions',
                     style: HomeTextStyleConstant.medium),
                 const SizedBox(height: 12),
-                _financeStore.finance.data.allTransactions.today.isEmpty
+                _financeStore.incomeFinance.data.allTransactions.today.isEmpty
                     ? EmptyDataWidget(
                         icon: IconHelper.getSVG(
                           SVGName.transaction,
@@ -772,7 +776,11 @@ class _HomeScreenState extends State<HomeScreen>
                               context,
                               RouteName.transactionCreate,
                             ))
-                    : _buildTransactions(color: ColorConstant.income),
+                    : _buildTransactions(
+                        color: ColorConstant.income,
+                        transactions: _financeStore
+                            .incomeFinance.data.allTransactions.today,
+                      ),
               ],
             ),
           ),
@@ -781,19 +789,24 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Transaction --------------------
-  Widget _buildTransactions({Color color = Colors.black}) {
+  // -------------------- Transactions --------------------
+  Widget _buildTransactions({
+    Color color = Colors.black,
+    List<TransactionData> transactions = const [],
+  }) {
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: _financeStore.finance.data.allTransactions.today.length,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: transactions.length,
       itemBuilder: (context, index) {
         return InkWell(
           onTap: () {
             Navigator.pushNamed(context, RouteName.transaction);
           },
           child: TransactionItem(
-              transactionData: TransactionData(),
+              transactionData: transactions[index],
+              date: UIHelper.getDateFormat(
+                  transactions[index].date, 'dd MMM, yyyy'),
               color: color,
               icon: IconHelper.getSVG(
                 SVGName.schoolBus,

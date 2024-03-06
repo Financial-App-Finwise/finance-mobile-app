@@ -168,7 +168,38 @@ abstract class _TransactionStoreBase with Store {
     return success;
   }
 
-  // -------------------- Delete a Smart Goal --------------------
+    // -------------------- Update a Transaction --------------------
+  @action
+  Future<bool> update(TransactionData transactionData) async {
+    debugPrint('--> START: update, transaction');
+    setLoadingStatus(LoadingStatusEnum.loading);
+    bool success = false;
+    print(transactionData.toJson());
+    try {
+      Response response = await ApiService.dio.put(
+        'transactions/${transactionData.id}',
+        data: transactionData.toJson(),
+      );
+      if (response.statusCode == 200) {
+        success = true;
+        await readByPage(refreshed: true);
+        setLoadingStatus(LoadingStatusEnum.done);
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        setLoadingStatus(LoadingStatusEnum.error);
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      setLoadingStatus(LoadingStatusEnum.error);
+    } finally {
+      debugPrint('<-- END: update, transaction');
+    }
+    return success;
+  }
+
+  // -------------------- Delete a Transaction --------------------
   @action
   Future<bool> delete(TransactionData transactionData) async {
     debugPrint('--> START: delete, transaction');

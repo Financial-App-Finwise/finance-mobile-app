@@ -42,6 +42,7 @@ TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$TransactionDataToJson(TransactionData instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'categoryID': instance.categoryID,
       'isIncome': TransactionData._boolToInt(instance.isIncome),
       'amount': instance.amount,

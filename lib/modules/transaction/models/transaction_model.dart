@@ -33,7 +33,6 @@ class Transaction {
 
 @JsonSerializable()
 class TransactionData {
-  @JsonKey(includeToJson: false)
   late int id;
 
   @JsonKey(includeToJson: false)

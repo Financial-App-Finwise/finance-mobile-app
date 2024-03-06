@@ -72,51 +72,49 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Widget _buildCenterContent() {
-    return Observer(
-      builder: (context) {
-        return ListView(
-          shrinkWrap: true,
-          children: [
-            Row(
-              children: [
-                IconHelper.getSVG(
-                  SVGName.piggyBank,
-                  color: ColorConstant.secondary,
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Total Balance',
-                        style: FiancialTextStyle.totalBalanceTitle),
-                    const SizedBox(height: 4),
-                    Text(
-                      '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
-                      style: FiancialTextStyle.totalBalance,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Divider(color: ColorConstant.divider),
-            // SizedBox(height: 10),
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(RouteName.financeUpdate),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                ),
+    return Observer(builder: (context) {
+      return ListView(
+        shrinkWrap: true,
+        children: [
+          Row(
+            children: [
+              IconHelper.getSVG(
+                SVGName.piggyBank,
+                color: ColorConstant.secondary,
               ),
-              child: const Text(
-                'Update your balance',
-                style: FiancialTextStyle.updateBalance,
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Total Balance',
+                      style: FiancialTextStyle.totalBalanceTitle),
+                  const SizedBox(height: 4),
+                  Text(
+                    '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
+                    style: FiancialTextStyle.totalBalance,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const Divider(color: ColorConstant.divider),
+          // SizedBox(height: 10),
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).pushNamed(RouteName.financeUpdate),
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               ),
             ),
-          ],
-        );
-      }
-    );
+            child: const Text(
+              'Update your balance',
+              style: FiancialTextStyle.updateBalance,
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget _buildContent() {
@@ -177,7 +175,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
                     const SizedBox(height: 8),
                     GeneralBottomButton(
                       onButtonTap: () => Navigator.pushNamed(
-                          context, RouteName.transactionCreate),
+                        context,
+                        RouteName.transactionCreate,
+                      ),
                       buttonLabel: 'Add Transaction',
                     ),
                   ],
