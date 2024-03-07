@@ -1,6 +1,7 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (context) => TransactionStore()),
         Provider(create: (context) => FinanceStore()),
         Provider(create: (context) => SmartGoalStore()),
+        Provider(create: (context) => OnboardingQuestionStore()),
       ],
       child: MaterialApp(
         // debugShowCheckedModeBanner: ,

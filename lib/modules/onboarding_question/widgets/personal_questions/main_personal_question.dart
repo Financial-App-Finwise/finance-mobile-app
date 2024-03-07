@@ -170,6 +170,7 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
           ),
           CustomTextInput(
             label: 'Age',
+            hintText: '20 year old',
             controller: widget.ageController,
           ),
           const SizedBox(

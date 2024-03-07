@@ -167,7 +167,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
             const SizedBox(
               height: 8,
             ),
-            Text(
+            const Text(
               'You have no upcoming bill for this month.',
               style: TextStyle(
                 fontWeight: FontWeight.w600,

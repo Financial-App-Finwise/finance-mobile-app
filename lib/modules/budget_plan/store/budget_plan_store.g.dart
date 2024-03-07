@@ -85,8 +85,8 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
       AsyncAction('_BudgetPlanStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read() {
-    return _$readAsyncAction.run(() => super.read());
+  Future<dynamic> read({bool refreshed = false}) {
+    return _$readAsyncAction.run(() => super.read(refreshed: refreshed));
   }
 
   late final _$postAsyncAction =

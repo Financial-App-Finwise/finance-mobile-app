@@ -4,10 +4,12 @@ import 'package:flutter/services.dart';
 
 class CustomTextInput extends StatelessWidget {
   final String label;
+  final String hintText;
   final TextEditingController controller;
   const CustomTextInput({
     super.key,
     required this.label,
+    required this.hintText,
     required this.controller,
   });
 
@@ -48,7 +50,7 @@ class CustomTextInput extends StatelessWidget {
       ),
       decoration: InputDecoration(
           alignLabelWithHint: true,
-          hintText: '20 year old',
+          hintText: hintText,
           prefixStyle: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 14,
