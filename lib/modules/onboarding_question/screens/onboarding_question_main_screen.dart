@@ -1,12 +1,18 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/modules/onboarding_question/models/budgeting_model.dart';
 import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
+import 'package:finwise/modules/onboarding_question/models/spending_model.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
+import 'package:finwise/modules/onboarding_question/widgets/budgeting/main_budgeting.dart';
+import 'package:finwise/modules/onboarding_question/widgets/budgeting/start_budgeting.dart';
 import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
-import 'package:finwise/modules/onboarding_question/widgets/finance_snapshot/main_finance_snapshot.dart';
-import 'package:finwise/modules/onboarding_question/widgets/finance_snapshot/start_finance_snapshot.dart';
+import 'package:finwise/modules/onboarding_question/widgets/finance_snapshots/main_finance_snapshot.dart';
+import 'package:finwise/modules/onboarding_question/widgets/finance_snapshots/start_finance_snapshot.dart';
 import 'package:finwise/modules/onboarding_question/widgets/onboarding_header.dart';
 import 'package:finwise/modules/onboarding_question/widgets/personal_questions/main_personal_question.dart';
 import 'package:finwise/modules/onboarding_question/widgets/personal_questions/start_personal_questions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class OnboardingQuestionMainScreen extends StatefulWidget {
   final VoidCallback startPage;
@@ -23,41 +29,55 @@ class OnboardingQuestionMainScreen extends StatefulWidget {
 
 class _OnboardingQuestionMainScreenState
     extends State<OnboardingQuestionMainScreen> {
+  late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
+
   int _currentIndex = 1;
+
+  // Index and max page for personal questions
   int _personalQuestionIndex = 1;
   final int _personalQuestionPage = 4;
+
+  // Index and max page for financial snapshot
   int _financialSnapShotIndex = 1;
-  final int _financialSnapShotPage = 6;
+  final int _financialSnapShotPage = 4;
+
+  // Index and max page for budgeting
+  int _budgetingIndex = 1;
+  final int _budgetingPage = 4;
 
   void nextPage() {
-    if (_currentIndex == 1 || _currentIndex == 3) {
+    if (_currentIndex != 2 && _currentIndex != 4 && _currentIndex != 6) {
       setState(() {
         _currentIndex += 1;
       });
-    }
-
-    // Switch page for personal questions
-    if (_currentIndex == 2) {
-      if (_personalQuestionIndex >= _personalQuestionPage) {
-        setState(() {
-          _currentIndex += 1;
-        });
-      } else {
+    } else if (_currentIndex == 2) {
+      if (_personalQuestionIndex < _personalQuestionPage) {
         setState(() {
           _personalQuestionIndex += 1;
         });
-      }
-    }
-
-    // Switch page for financial snapshots
-    if (_currentIndex == 3) {
-      if (_financialSnapShotIndex >= _financialSnapShotPage) {
+      } else {
         setState(() {
           _currentIndex += 1;
         });
-      } else {
+      }
+    } else if (_currentIndex == 4) {
+      if (_financialSnapShotIndex < _financialSnapShotPage) {
         setState(() {
           _financialSnapShotIndex += 1;
+        });
+      } else {
+        setState(() {
+          _currentIndex += 1;
+        });
+      }
+    } else if (_currentIndex == 6) {
+      if (_budgetingIndex < _budgetingPage) {
+        setState(() {
+          _budgetingIndex += 1;
+        });
+      } else {
+        setState(() {
+          _currentIndex += 1;
         });
       }
     }
@@ -66,36 +86,38 @@ class _OnboardingQuestionMainScreenState
   void previousPage() {
     if (_currentIndex <= 1) {
       widget.startPage();
-    }
-
-    if (_currentIndex == 3) {
+    } else if (_currentIndex != 2 && _currentIndex != 4 && _currentIndex != 6) {
       setState(() {
         _currentIndex -= 1;
       });
-    }
-
-    // Switch page for personal questions
-    if (_currentIndex == 2) {
-      if (_personalQuestionIndex <= 1) {
-        setState(() {
-          _currentIndex -= 1;
-        });
-      } else {
+    } else if (_currentIndex == 2) {
+      if (_personalQuestionIndex > 1) {
         setState(() {
           _personalQuestionIndex -= 1;
         });
-      }
-    }
-
-    // Switch page for financial snapshots
-    if (_currentIndex == 4) {
-      if (_financialSnapShotIndex <= 1) {
+      } else {
         setState(() {
           _currentIndex -= 1;
         });
-      } else {
+      }
+    } else if (_currentIndex == 4) {
+      if (_financialSnapShotIndex > 1) {
         setState(() {
           _financialSnapShotIndex -= 1;
+        });
+      } else {
+        setState(() {
+          _currentIndex -= 1;
+        });
+      }
+    } else if (_currentIndex == 6) {
+      if (_budgetingIndex > 1) {
+        setState(() {
+          _budgetingIndex -= 1;
+        });
+      } else {
+        setState(() {
+          _currentIndex -= 1;
         });
       }
     }
@@ -144,7 +166,20 @@ class _OnboardingQuestionMainScreenState
   RadioButtonModel _profession = RadioButtonModel();
 
   // Financial snapshots
-  RadioButtonModel _netWorth = RadioButtonModel();
+  TextEditingController _netWorth = TextEditingController();
+  TextEditingController _expenseController = TextEditingController();
+  late final SpendingModel _expense = SpendingModel(
+    type: 'Daily',
+    controller: _expenseController,
+  );
+  TextEditingController _incomeController = TextEditingController();
+  late final SpendingModel _income = SpendingModel(
+    type: 'Daily',
+    controller: _incomeController,
+  );
+
+  // Budgeting
+  BudgetingModel _budgeting = BudgetingModel();
 
   Widget _getCurrentWidget() {
     switch (_currentIndex) {
@@ -188,12 +223,20 @@ class _OnboardingQuestionMainScreenState
           nextPage: nextPage,
           currentPage: _financialSnapShotIndex,
           maxPage: _financialSnapShotPage,
-          selectedNetWorth: _netWorth,
-          selectNetWorth: (netWorth) {
-            setState(() {
-              _netWorth = netWorth;
-            });
-          },
+          netWorth: _netWorth,
+          expense: _expense,
+          income: _income,
+        );
+      case 5:
+        return StartBudgeting(nextPage: nextPage);
+      case 6:
+        return MainBudgeting(
+          previousPage: previousPage,
+          nextPage: nextPage,
+          currentPage: _budgetingIndex,
+          maxPage: _budgetingPage,
+          income: _income,
+          budgeting: _budgeting,
         );
       default:
         return Container();

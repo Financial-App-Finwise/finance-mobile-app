@@ -56,7 +56,6 @@ class _CustomProgressBarState extends State<CustomProgressBar>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('llll ${widget.value}');
     return ProgressBar(
       value: _animation.value,
       backgroundColor: const Color(0xFFEDF2F7),

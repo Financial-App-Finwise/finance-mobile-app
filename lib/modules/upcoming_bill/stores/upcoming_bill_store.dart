@@ -72,7 +72,6 @@ abstract class _UpcomingBillStoreBase with Store {
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
 
-    print('llll $queryParameter');
 
     if (refreshed) {
       status = LoadingStatusEnum.loading;

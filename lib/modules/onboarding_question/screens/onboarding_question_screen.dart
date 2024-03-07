@@ -1,7 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/onboarding_question/screens/onboarding_question_main_screen.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/start_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class OnboardingQuestionScreen extends StatefulWidget {
   const OnboardingQuestionScreen({super.key});
@@ -12,6 +14,7 @@ class OnboardingQuestionScreen extends StatefulWidget {
 }
 
 class _OnboardingQuestionScreenState extends State<OnboardingQuestionScreen> {
+  late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
   int _currentIndex = 0;
 
   void nextPage() {

@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 class TipText extends StatelessWidget {
   final String title;
   final String description;
+  final String? icon;
+
   const TipText({
     super.key,
     required this.title,
     required this.description,
+    this.icon,
   });
 
   @override
@@ -24,11 +27,11 @@ class TipText extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              '☝️',
-              style: TextStyle(
+              icon ?? '☝️',
+              style: const TextStyle(
                 fontSize: 20,
               ),
             ),

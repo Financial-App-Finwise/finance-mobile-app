@@ -51,9 +51,13 @@ abstract class _BudgetPlanStoreBase with Store {
   }
 
   @action
-  Future read() async {
+  Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching budget plan');
-    status = LoadingStatusEnum.loading;
+
+    if (refreshed) {
+      status = LoadingStatusEnum.loading;
+      budgetPlan = BudgetPlan(data: BudgetPlanItem(budgetPlans: []));
+    }
 
     try {
       String url = 'budgetplans$queryParameter';

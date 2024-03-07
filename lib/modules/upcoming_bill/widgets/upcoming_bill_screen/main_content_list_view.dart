@@ -37,27 +37,31 @@ class _MainContentListViewState extends State<MainContentListView> {
         const SizedBox(
           height: 16,
         ),
-        GeneralFilterBarHeader(
-          physics: const BouncingScrollPhysics(),
-          items: [
-            FilterBarHeaderItem(
-              title: 'All',
-              value: UpcomingBillFilterEnum.all,
-            ),
-            FilterBarHeaderItem(
-              title: 'Tomorrow',
-              value: UpcomingBillFilterEnum.tomorrow,
-            ),
-            FilterBarHeaderItem(
-              title: 'This-week',
-              value: UpcomingBillFilterEnum.thisWeek,
-            ),
-          ],
-          onTap: (value) async {
-            context.read<UpcomingBillStore>().setFilter(value);
-            await context.read<UpcomingBillStore>().read(refreshed: true);
-          },
-          currentValue: context.read<UpcomingBillStore>().filter,
+        Container(
+          width: double.infinity,
+          alignment: Alignment.topLeft,
+          child: GeneralFilterBarHeader(
+            physics: const BouncingScrollPhysics(),
+            items: [
+              FilterBarHeaderItem(
+                title: 'All',
+                value: UpcomingBillFilterEnum.all,
+              ),
+              FilterBarHeaderItem(
+                title: 'Tomorrow',
+                value: UpcomingBillFilterEnum.tomorrow,
+              ),
+              FilterBarHeaderItem(
+                title: 'This-week',
+                value: UpcomingBillFilterEnum.thisWeek,
+              ),
+            ],
+            onTap: (value) async {
+              context.read<UpcomingBillStore>().setFilter(value);
+              await context.read<UpcomingBillStore>().read(refreshed: true);
+            },
+            currentValue: context.read<UpcomingBillStore>().filter,
+          ),
         ),
         const SizedBox(
           height: 16,
@@ -73,7 +77,7 @@ class _MainContentListViewState extends State<MainContentListView> {
                   itemCount: widget.upcomingBillList.length,
                   itemBuilder: (context, index) {
                     List<UpcomingBillData> data = widget.upcomingBillList;
-    
+
                     return Column(
                       children: [
                         InkWell(

@@ -35,7 +35,7 @@ class _FilteredBudgetState extends State<FilteredBudget> {
           items: widget.filterTitles,
           onTap: (value) async {
             context.read<BudgetPlanStore>().setFilter(value);
-            await context.read<BudgetPlanStore>().read();
+            await context.read<BudgetPlanStore>().read(refreshed: true);
           },
           currentValue: context.read<BudgetPlanStore>().filter,
         ),

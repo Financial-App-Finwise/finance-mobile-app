@@ -31,7 +31,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
 
     Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
-        await context.read<BudgetPlanStore>().read();
+        await context.read<BudgetPlanStore>().read(refreshed: true);
       }
     });
   }
@@ -62,7 +62,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
         onPreffix: () => setState(() => _isGrid = !_isGrid),
         onDateChanged: (DateTime date) async {
           context.read<BudgetPlanStore>().setSelectedDate(date);
-          await context.read<BudgetPlanStore>().read();
+          await context.read<BudgetPlanStore>().read(refreshed: true);
         },
       ),
       mainContent: _buildContent(),
@@ -83,7 +83,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   Widget _buildContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read<BudgetPlanStore>().read();
+        await context.read<BudgetPlanStore>().read(refreshed: true);
       },
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
