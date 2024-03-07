@@ -7,13 +7,14 @@ import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
-import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:finwise/modules/transaction/widgets/transaction_form_layout.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +36,15 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return TransactionFormLayout(
+      title: 'Edit Transaction',
+      isIncome: args.isIncome,
+      expenseType: args.expenseType,
+      defaultBillId: args.upcomingbillID ?? 0,
+      defaultBillName: '${args.upcomingbillID ?? 0}',
+      amount: args.amount,
+      buttonLabel: 'Edit Transaction',
+    );
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       backgroundColor: ColorConstant.backgroundColor,
@@ -319,9 +329,9 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
     );
   }
 
+  // -------------------- Category Field --------------------
   late CategoryData _selectedCategory = CategoryData();
 
-  // -------------------- Category Field --------------------
   Widget _buildCategorySection({
     Color color = ColorConstant.income,
     String svgName = SVGName.earn,
@@ -335,40 +345,6 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
       category: _selectedCategory,
       showTip: false,
     );
-  }
-
-  Widget _buildCategoryFieldIcon({
-    String svgName = SVGName.earn,
-    Color color = ColorConstant.income,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-      ),
-      child: IconHelper.getSVG(svgName, color: Colors.white),
-    );
-  }
-
-  Widget _buildCategoryFieldTitle() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Category',
-          style: TextStyleHelper.getw400size(12).copyWith(letterSpacing: 0.75),
-        ),
-        Text(
-          'Salary',
-          style: TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategoryFieldSuffix() {
-    return IconHelper.getSVG(SVGName.angleRight, color: ColorConstant.thin);
   }
 
   // -------------------- Date Field --------------------

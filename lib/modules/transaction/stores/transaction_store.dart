@@ -54,19 +54,6 @@ abstract class _TransactionStoreBase with Store {
     return '$filter1&$filter2';
   }
 
-  // -------------------- Reaction --------------------
-  late ReactionDisposer _disposer;
-  void setReaction() {
-    // recheck with 'queryParemeter', not with filteredType
-    _disposer = reaction((_) => queryParemeter, (value) async {
-      bool refreshed = false;
-      if (filteredTransaction[queryParemeter] == null) {
-        refreshed = true;
-      }
-      await readByPage(refreshed: refreshed);
-    });
-  }
-
   // -------------------- Filtered Transaction --------------------
   // Map from a query paremeter to the Transaction
   @observable
@@ -232,6 +219,5 @@ abstract class _TransactionStoreBase with Store {
     changeFilteredType(TransactionTypeEnum.all);
     changeFilteredPeriod(TransactionPeriodEnum.all);
     filteredTransaction = ObservableMap();
-    _disposer();
   }
 }

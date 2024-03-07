@@ -39,7 +39,9 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 ColorConstant.expenseIcon,
               ],
       ),
-      title: args.note,
+      title: args.note.isEmpty
+          ? '${args.isIncome ? 'Income' : 'Expense'}'
+          : args.note,
       subTitle: args.isIncome ? 'My Income' : 'My Expense',
       iconTitle: args.isIncome
           ? IconHelper.getSVG(
@@ -118,7 +120,28 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             '\$${args.amount}',
             defaultStyle,
           ),
-          dividerGap(),
+          overviewCard(
+            IconHelper.getSVG(
+              SVGName.budgetPlan,
+              color: args.isIncome
+                  ? ColorConstant.incomeIcon
+                  : ColorConstant.expense,
+            ),
+            'Budget Plan',
+            '${args.budgetplanID}',
+            defaultStyle,
+          ),
+          overviewCard(
+            IconHelper.getSVG(
+              SVGName.upcomingBill,
+              color: args.isIncome
+                  ? ColorConstant.incomeIcon
+                  : ColorConstant.expense,
+            ),
+            'Upcoming Bill',
+            '${args.upcomingbillID}',
+            defaultStyle,
+          ),
           overviewCard(
             IconHelper.getSVG(
               SVGName.internet,
@@ -130,7 +153,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             '${args.categoryID}',
             defaultStyle,
           ),
-          dividerGap(),
           overviewCard(
             IconHelper.getSVG(
               SVGName.calendarTick,
@@ -142,7 +164,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             '${UIHelper.getDateFormat(args.date, 'dd MMM, yyyy HH:mm:ss')}',
             defaultStyle,
           ),
-          dividerGap(),
           overviewCard(
             IconHelper.getSVG(
               SVGName.budgetPlan,
@@ -153,6 +174,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             'Note',
             args.note.isEmpty ? "You didn't add any note." : args.note,
             noteStyle,
+            showDivider: false,
           ),
         ],
       ),
@@ -160,38 +182,51 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   }
 
   Widget overviewCard(
-      SvgPicture icon, String title, String description, TextStyle textStyle) {
-    return Row(
+    SvgPicture icon,
+    String title,
+    String description,
+    TextStyle textStyle, {
+    bool showDivider = true,
+  }) {
+    return Column(
       children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: icon,
-        ),
-        const SizedBox(
-          width: 12,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                letterSpacing: 0.75,
-                color: ColorConstant.mainText,
-              ),
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: icon,
             ),
             const SizedBox(
-              height: 1,
+              width: 12,
             ),
-            Text(
-              description,
-              style: textStyle,
-            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    letterSpacing: 0.75,
+                    color: ColorConstant.mainText,
+                  ),
+                ),
+                const SizedBox(
+                  height: 1,
+                ),
+                Text(
+                  description,
+                  style: textStyle,
+                ),
+              ],
+            )
           ],
-        )
+        ),
+        Visibility(
+          visible: showDivider,
+          child: dividerGap(),
+        ),
       ],
     );
   }

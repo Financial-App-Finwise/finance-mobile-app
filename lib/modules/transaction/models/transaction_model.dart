@@ -46,11 +46,11 @@ class TransactionData {
   @JsonKey(fromJson: _stringToDouble)
   late double amount;
 
-  @JsonKey(fromJson: _intToBool, includeToJson: false)
+  @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
   late bool hasContributed;
 
-  // late int upcomingbillID;
-  // late int budgetplanID;
+  late int? upcomingbillID;
+  late int? budgetplanID;
   late String expenseType;
   late String date;
   late String note;
@@ -68,6 +68,8 @@ class TransactionData {
     this.isIncome = true,
     this.amount = 0,
     this.hasContributed = false,
+    this.upcomingbillID,
+    this.budgetplanID,
     this.expenseType = '',
     this.date = '',
     this.note = '',

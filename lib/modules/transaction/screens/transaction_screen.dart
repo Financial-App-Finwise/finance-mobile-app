@@ -14,9 +14,7 @@ import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +65,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       ),
       child: RefreshIndicator(
         onRefresh: () async {
-          await context.read<TransactionStore>().readByPage(refreshed: true);
+          await store.readByPage(refreshed: true);
         },
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(
@@ -89,11 +87,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       title: 'Expense', value: TransactionTypeEnum.expense),
                 ],
                 onTap: (value) async {
-                  // context
-                  //     .read<TransactionStore>()
-                  //     .changeFilteredType(value);
                   store.changeFilteredType(value);
-                  await store.readByPage();
+                  store.initialize();
+                  if (store.filteredTransaction[store.queryParemeter]!.items
+                      .isEmpty) {
+                    store.readByPage(refreshed: true);
+                  }
                 },
               ),
               _buildTypeTransactions(type: TransactionTypeEnum.all),

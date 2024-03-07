@@ -33,6 +33,8 @@ TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) =>
       hasContributed: json['hasContributed'] == null
           ? false
           : TransactionData._intToBool(json['hasContributed'] as int),
+      upcomingbillID: json['upcomingbillID'] as int?,
+      budgetplanID: json['budgetplanID'] as int?,
       expenseType: json['expenseType'] as String? ?? '',
       date: json['date'] as String? ?? '',
       note: json['note'] as String? ?? '',
@@ -46,6 +48,9 @@ Map<String, dynamic> _$TransactionDataToJson(TransactionData instance) =>
       'categoryID': instance.categoryID,
       'isIncome': TransactionData._boolToInt(instance.isIncome),
       'amount': instance.amount,
+      'hasContributed': TransactionData._boolToInt(instance.hasContributed),
+      'upcomingbillID': instance.upcomingbillID,
+      'budgetplanID': instance.budgetplanID,
       'expenseType': instance.expenseType,
       'date': instance.date,
       'note': instance.note,

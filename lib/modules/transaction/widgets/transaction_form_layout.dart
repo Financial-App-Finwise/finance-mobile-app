@@ -17,7 +17,6 @@ import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
-import 'package:finwise/modules/transaction/widgets/budget_plan_button/budget_plan_button.dart';
 import 'package:finwise/modules/transaction/widgets/select_smart_goal_widget.dart';
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
@@ -25,14 +24,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({super.key});
+class TransactionFormLayout extends StatefulWidget {
+  late String title;
+  late bool isIncome;
+  late String expenseType;
+  late int defaultBillId;
+  late String defaultBillName;
+  late double amount;
+  late String buttonLabel;
+
+  TransactionFormLayout({
+    super.key,
+    this.title = '',
+    this.isIncome = true,
+    this.expenseType = 'General',
+    this.defaultBillId = 0,
+    this.defaultBillName = '',
+    this.amount = 0.0,
+    this.buttonLabel = '',
+  });
 
   @override
-  State<AddTransactionScreen> createState() => _AddTransactionScreenState();
+  State<TransactionFormLayout> createState() => _TransactionFormLayoutState();
 }
 
-class _AddTransactionScreenState extends State<AddTransactionScreen> {
+class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   @override
   void initState() {
     super.initState();
@@ -107,9 +123,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   // -------------------- Title --------------------
   Widget _buildTitle() {
-    return const Text(
-      'Add Transaction',
-      style: TextStyle(
+    return Text(
+      widget.title,
+      style: const TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 32,
         letterSpacing: 1,
@@ -119,7 +135,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   // -------------------- Form --------------------
-  bool _isIncome = true;
+  late bool _isIncome = widget.isIncome;
 
   Widget _buildMainContent() {
     return Container(
@@ -160,7 +176,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   // -------------------- Add Income --------------------
-  final _amountIncomeController = TextEditingController();
+  late final _amountIncomeController =
+      TextEditingController(text: widget.amount.toString());
+
   Widget _buildIncomeForm() {
     return Column(children: [
       _buildTotalTextField(controller: _amountIncomeController),
@@ -311,9 +329,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   // -------------------- Add Expense --------------------
-  late String _expenseType = 'General';
+  late String _expenseType = widget.expenseType;
 
-  final _amountExpenseController = TextEditingController();
+  late final _amountExpenseController =
+      TextEditingController(text: widget.amount.toString());
   Widget _buildExpenseForm() {
     return Column(
       children: [
@@ -356,7 +375,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget _buildItemSelection() {
     switch (_expenseType) {
       case "Budget Plan":
-        return _buildBudgetplanSelection();
+        return Text('Budget plan');
       case "Upcoming Bill":
         return _buildUpcomingBillSelection();
       default:
@@ -429,13 +448,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   // -------------------- Budget Plan Selection --------------------
   late BudgetPlanData _selectedBudgetPlan = BudgetPlanData();
 
-  Widget _buildBudgetplanSelection() {
-    return BudgetPlanButton(
-      onPressed: (budgetPlanData) {
+  Widget _buildBudgetplanSelection({
+    Color color = ColorConstant.income,
+    String svgName = SVGName.earn,
+  }) {
+    return CategoryButton(
+      setCategory: (categoryData) {
         setState(() {
-          _selectedBudgetPlan = budgetPlanData;
+          _selectedCategory = categoryData;
         });
       },
+      category: _selectedCategory,
+      showTip: false,
     );
   }
 
@@ -446,6 +470,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   Widget _buildUpcomingBillSelection() {
     return UpcomingBillButton(
+      defaultBillName: '${widget.defaultBillName}',
       onPressed: (upcomingBillData) {
         setState(() {
           _selectedUpcomingBill = upcomingBillData;
@@ -552,46 +577,47 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   // -------------------- Post Data --------------------
   Widget _buildButton() {
     return GeneralBottomButton(
-      onButtonTap: () async {
-        int? selectedBudgetPlanId;
-        int? selectedUpcomingBillId;
-        int selectedCategoryId = 0;
-        bool hasContributed = _selectedSmartGoals.isNotEmpty;
+      onButtonTap: () async {},
+      // onButtonTap: () async {
+      //   int? selectedBudgetPlanId;
+      //   int? selectedUpcomingBillId;
+      //   int selectedCategoryId = 0;
+      //   bool hasContributed = _selectedSmartGoals.isNotEmpty;
 
-        if (_selectedUpcomingBill.id != 0) {
-          selectedUpcomingBillId = _selectedUpcomingBill.id;
-          selectedCategoryId = _selectedUpcomingBill.categoryID;
-        } else if (_selectedBudgetPlan.id != 0) {
-          selectedBudgetPlanId = _selectedBudgetPlan.id;
-          selectedCategoryId = _selectedBudgetPlan.categoryID;
-        } else {
-          selectedCategoryId = _selectedCategory.id;
-        }
+      //   if (_selectedUpcomingBill.id != 0) {
+      //     selectedUpcomingBillId = _selectedUpcomingBill.id;
+      //     selectedCategoryId = _selectedUpcomingBill.categoryID;
+      //   } else if (_selectedBudgetPlan.id != 0) {
+      //     selectedBudgetPlanId = _selectedBudgetPlan.id;
+      //     selectedCategoryId = _selectedBudgetPlan.categoryID;
+      //   } else {
+      //     selectedCategoryId = _selectedCategory.id;
+      //   }
 
-        bool success = await context.read<TransactionStore>().post(
-              TransactionData(
-                categoryID: selectedCategoryId,
-                isIncome: _isIncome,
-                amount: double.parse(_isIncome
-                    ? _amountIncomeController.text
-                    : _amountExpenseController.text),
-                hasContributed: hasContributed,
-                upcomingbillID: selectedUpcomingBillId,
-                budgetplanID: selectedBudgetPlanId,
-                expenseType: _expenseType,
-                //Upcoming Bill', 'Budget Plan'
-                date: DateTime.now().toString(),
-                note: _noteController.text,
-              ),
-            );
-        if (success) {
-          await context.read<FinanceStore>().read();
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        }
-      },
-      buttonLabel: 'Add transaction',
+      //   bool success = await context.read<TransactionStore>().post(
+      //         TransactionData(
+      //           categoryID: selectedCategoryId,
+      //           isIncome: _isIncome,
+      //           amount: double.parse(_isIncome
+      //               ? _amountIncomeController.text
+      //               : _amountExpenseController.text),
+      //           hasContributed: hasContributed,
+      //           upcomingbillID: selectedUpcomingBillId,
+      //           budgetplanID: selectedBudgetPlanId,
+      //           expenseType: _expenseType,
+      //           //Upcoming Bill', 'Budget Plan'
+      //           date: DateTime.now().toString(),
+      //           note: _noteController.text,
+      //         ),
+      //       );
+      //   if (success) {
+      //     await context.read<FinanceStore>().read();
+      //     if (mounted) {
+      //       Navigator.pop(context);
+      //     }
+      //   }
+      // },
+      buttonLabel: widget.buttonLabel,
     );
   }
 }
