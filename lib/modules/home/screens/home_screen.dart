@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
@@ -22,6 +23,7 @@ import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
@@ -44,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   late final BudgetPlanStore _budgetPlanStore = context.read<BudgetPlanStore>();
   late final FinanceStore _financeStore = context.read<FinanceStore>();
+  late final SmartGoalStore _smartGoalStore = context.read<SmartGoalStore>();
   late final UpcomingBillStore _upcomingBillStore =
       context.read<UpcomingBillStore>();
 
@@ -56,9 +59,10 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future _readAll() async {
-    await context.read<BudgetPlanStore>().read();
-    await context.read<FinanceStore>().read();
-    await context.read<UpcomingBillStore>().read();
+    await _budgetPlanStore.read();
+    await _financeStore.read();
+    await _smartGoalStore.read(status: SmartGoalStatusEnum.inProgress);
+    await _upcomingBillStore.read();
   }
 
   @override
@@ -74,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
     debugPrint('--> START: build home screen');
-    print('${_financeStore.finance.data.total}');
     return Scaffold(
       // appBar: _buildAppBar(),
       body: _buildBody(),
@@ -89,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen>
         alignment: Alignment.topRight,
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: RefreshIndicator(
-          onRefresh: () async => _readAll(),
+          onRefresh: () async => await _readAll(),
           child: Observer(builder: (context) {
             return SingleChildScrollView(
               child: Column(
@@ -273,7 +276,8 @@ class _HomeScreenState extends State<HomeScreen>
                         Expanded(
                           child: _buildFinanceItem(
                             text: 'Income',
-                            amount: '\$${_financeStore.finance.data.totalIncomes}',
+                            amount:
+                                '\$${_financeStore.finance.data.totalIncomes}',
                             color: ColorConstant.income,
                             icon: IconConstant.earn,
                           ),
@@ -286,7 +290,8 @@ class _HomeScreenState extends State<HomeScreen>
                         Expanded(
                           child: _buildFinanceItem(
                             text: 'Expense',
-                            amount: '\$${_financeStore.finance.data.totalExpenses}',
+                            amount:
+                                '\$${_financeStore.finance.data.totalExpenses}',
                             color: ColorConstant.expense,
                             icon: IconConstant.expense,
                           ),
@@ -363,7 +368,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(width: 12),
                 _buildFeatureItem(
                     text: 'Smart Goal',
-                    amount: '3',
+                    amount: ' ${_smartGoalStore.smartGoal.meta.total}',
                     icon: IconConstant.getSmartGoal(color: Colors.white),
                     onPressed: () {
                       Navigator.pushNamed(context, RouteName.smartGoal);
@@ -694,7 +699,16 @@ class _HomeScreenState extends State<HomeScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildGeneralTitle('Totally Spent'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildGeneralTitle('Totally Spent'),
+              ViewMoreTextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, RouteName.transaction))
+            ],
+          ),
           RoundedContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
