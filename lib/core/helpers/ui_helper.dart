@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 abstract class UIHelper {
+  @Deprecated('Use getDateFormat')
   static getFormattedDate(String? date) {
     date = date ?? 'no date';
     if (DateTime.tryParse(date) != null) {
@@ -11,6 +12,7 @@ abstract class UIHelper {
     return date;
   }
 
+  @Deprecated('Use getDateFormat')
   static getInputDate(String? date) {
     date = date ?? 'no date';
     if (DateTime.tryParse(date) != null) {
@@ -21,6 +23,7 @@ abstract class UIHelper {
     return date;
   }
 
+  @Deprecated('Use getDateFormat')
   static getYYYYMMDD(String? date) {
     date = date ?? 'no date';
 
