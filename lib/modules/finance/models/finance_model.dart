@@ -115,12 +115,12 @@ class Currency {
 @JsonSerializable()
 class TopTransaction {
   TopTransaction({
-    required this.note,
-    required this.amount,
+    this.note = '',
+    this.amount = 0.0,
   });
 
   late final String note;
-  late final int amount;
+  late final double amount;
 
   factory TopTransaction.fromJson(Map<String, dynamic> json) =>
       _$TopTransactionFromJson(json);

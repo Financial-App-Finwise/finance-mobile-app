@@ -71,8 +71,8 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
 
 TopTransaction _$TopTransactionFromJson(Map<String, dynamic> json) =>
     TopTransaction(
-      note: json['note'] as String,
-      amount: json['amount'] as int,
+      note: json['note'] as String? ?? '',
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
     );
 
 Map<String, dynamic> _$TopTransactionToJson(TopTransaction instance) =>
