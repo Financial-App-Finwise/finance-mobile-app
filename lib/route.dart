@@ -21,9 +21,9 @@ import 'package:finwise/modules/upcoming_bill/screens/add_upcoming_bill_screen.d
 import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_screen.dart';
-import 'package:finwise/screens/index_screen.dart';
-import 'package:finwise/screens/splash_screen.dart';
-import 'package:finwise/screens/wrapper_screen.dart';
+import 'package:finwise/initiating_screens/index_screen.dart';
+import 'package:finwise/initiating_screens/splash_screen.dart';
+import 'package:finwise/initiating_screens/wrapper_screen.dart';
 import 'package:flutter/material.dart';
 
 // store all route names

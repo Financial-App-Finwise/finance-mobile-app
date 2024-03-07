@@ -9,7 +9,7 @@ import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:finwise/themes/app_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:finwise/screens/splash_screen.dart';
+import 'package:finwise/initiating_screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

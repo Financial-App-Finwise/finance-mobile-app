@@ -1,5 +1,5 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
-import 'package:finwise/screens/unimplemented_screen.dart';
+import 'package:finwise/initiating_screens/unimplemented_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

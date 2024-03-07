@@ -5,7 +5,6 @@ import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 
-// combine bottom navigation bar with its associated screens
 class IndexScreen extends StatefulWidget {
   const IndexScreen({super.key});
 
@@ -42,6 +41,12 @@ class _IndexScreenState extends State<IndexScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+
+  // _controller.animateTo(
+  //           0.0,
+  //           duration: Duration(milliseconds: 500),
+  //           curve: Curves.easeInOut,
+  //         );
 
   Widget _buildBody() {
     return PageView(
