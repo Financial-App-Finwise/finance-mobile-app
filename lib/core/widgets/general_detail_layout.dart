@@ -42,7 +42,10 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                 child: Container(
                   alignment: Alignment.topLeft,
                   color: ColorConstant.backgroundColor,
-                  child: widget.mainContent ?? const SizedBox(),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: widget.mainContent ?? const SizedBox(),
+                  ),
                 ),
               ),
             ],

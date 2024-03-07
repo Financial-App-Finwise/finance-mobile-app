@@ -69,11 +69,13 @@ class _TransactionItemState extends State<TransactionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.transactionData.note,
+                          widget.transactionData.note.isEmpty
+                              ? '${widget.transactionData.isIncome ? 'Income' : 'Expense'}'
+                              : widget.transactionData.note,
                           style: HomeTextStyleConstant.transactionItemTitle,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: 1),
+                        const SizedBox(height: 1),
                         Text(widget.date,
                             style:
                                 HomeTextStyleConstant.transactionItemSubtitle),

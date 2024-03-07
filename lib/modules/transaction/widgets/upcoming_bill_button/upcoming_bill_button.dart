@@ -14,7 +14,7 @@ class UpcomingBillButton extends StatefulWidget {
     super.key,
     required this.onPressed,
     this.defaultBillId = 0,
-    this.defaultBillName = '',
+    this.defaultBillName = 'no name',
   });
 
   @override
@@ -71,7 +71,7 @@ class _UpcomingBillButtonState extends State<UpcomingBillButton> {
               children: [
                 Row(
                   children: [
-                    selectedUpcomingBill.name.isEmpty
+                    selectedUpcomingBill.name == 'no name'
                         ? _unpickCategoryIcon()
                         : _pickedCategoryIcon(),
                     const SizedBox(
@@ -90,14 +90,14 @@ class _UpcomingBillButtonState extends State<UpcomingBillButton> {
                           ),
                         ),
                         Text(
-                          selectedUpcomingBill.name.isEmpty
+                          selectedUpcomingBill.name == 'no name'
                               ? 'Select one upcoming bill'
                               : selectedUpcomingBill.name,
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             letterSpacing: 0.75,
-                            color: selectedUpcomingBill.name.isEmpty
+                            color: selectedUpcomingBill.name == 'no name'
                                 ? const Color(0xFF656B9F)
                                 : ColorConstant.mainText,
                           ),

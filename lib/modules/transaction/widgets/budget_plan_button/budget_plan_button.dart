@@ -14,7 +14,7 @@ class BudgetPlanButton extends StatefulWidget {
     super.key,
     required this.onPressed,
     this.defaultBudgetId = 0,
-    this.defaultBudgetName = '',
+    this.defaultBudgetName = 'no name',
   });
 
   @override
@@ -71,7 +71,7 @@ class _BudgetPlanButtonState extends State<BudgetPlanButton> {
               children: [
                 Row(
                   children: [
-                    selectedBudgetPlan.name.isEmpty
+                    selectedBudgetPlan.name == 'no name'
                         ? _unpickCategoryIcon()
                         : _pickedCategoryIcon(),
                     const SizedBox(
@@ -90,14 +90,14 @@ class _BudgetPlanButtonState extends State<BudgetPlanButton> {
                           ),
                         ),
                         Text(
-                          selectedBudgetPlan.name.isEmpty
+                          selectedBudgetPlan.name == 'no name'
                               ? 'Select one budget plan'
                               : selectedBudgetPlan.name,
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             letterSpacing: 0.75,
-                            color: selectedBudgetPlan.name.isEmpty
+                            color: selectedBudgetPlan.name == 'no name'
                                 ? const Color(0xFF656B9F)
                                 : ColorConstant.mainText,
                           ),
