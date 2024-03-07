@@ -47,22 +47,6 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
-  late final _$smartGoalAtom =
-      Atom(name: '_SmartGoalStoreBase.smartGoal', context: context);
-
-  @override
-  SmartGoal get smartGoal {
-    _$smartGoalAtom.reportRead();
-    return super.smartGoal;
-  }
-
-  @override
-  set smartGoal(SmartGoal value) {
-    _$smartGoalAtom.reportWrite(value, super.smartGoal, () {
-      super.smartGoal = value;
-    });
-  }
-
   late final _$filteredProgressAtom =
       Atom(name: '_SmartGoalStoreBase.filteredProgress', context: context);
 
@@ -119,6 +103,22 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
+  late final _$smartGoalAtom =
+      Atom(name: '_SmartGoalStoreBase.smartGoal', context: context);
+
+  @override
+  SmartGoal get smartGoal {
+    _$smartGoalAtom.reportRead();
+    return super.smartGoal;
+  }
+
+  @override
+  set smartGoal(SmartGoal value) {
+    _$smartGoalAtom.reportWrite(value, super.smartGoal, () {
+      super.smartGoal = value;
+    });
+  }
+
   late final _$filteredSmartGoalAtom =
       Atom(name: '_SmartGoalStoreBase.filteredSmartGoal', context: context);
 
@@ -171,8 +171,8 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       AsyncAction('_SmartGoalStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read() {
-    return _$readAsyncAction.run(() => super.read());
+  Future<dynamic> read({SmartGoalStatusEnum status = SmartGoalStatusEnum.all}) {
+    return _$readAsyncAction.run(() => super.read(status: status));
   }
 
   late final _$readByPageAsyncAction =
@@ -267,10 +267,10 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   String toString() {
     return '''
 loadingStatus: ${loadingStatus},
-smartGoal: ${smartGoal},
 filteredProgress: ${filteredProgress},
 startDate: ${startDate},
 endDate: ${endDate},
+smartGoal: ${smartGoal},
 filteredSmartGoal: ${filteredSmartGoal},
 smartGoalYearly: ${smartGoalYearly},
 year: ${year},

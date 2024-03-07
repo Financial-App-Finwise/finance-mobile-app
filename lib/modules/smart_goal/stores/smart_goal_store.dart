@@ -23,10 +23,6 @@ abstract class _SmartGoalStoreBase with Store {
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
 
-  // -------------------- Smart Goal --------------------
-  @observable
-  SmartGoal smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
-
   // -------------------- Filtering Variable --------------------
   @observable
   SmartGoalStatusEnum filteredProgress = SmartGoalStatusEnum.all;
@@ -75,13 +71,14 @@ abstract class _SmartGoalStoreBase with Store {
     return 'startDate[gte]=$date1&endDate[lte]=$date2';
   }
 
-  @Deprecated('')
+  // -------------------- Smart Goal --------------------
   @action
-  Future read() async {
+  Future read({SmartGoalStatusEnum status = SmartGoalStatusEnum.all}) async {
     debugPrint('--> START: read smart goal');
     loadingStatus = LoadingStatusEnum.loading;
     try {
-      Response response = await ApiService.dio.get('goals');
+      Response response = await ApiService.dio
+          .get('goals?${SmartGoalHelper.enumToQuery[status]}');
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
         smartGoal = await compute(
@@ -101,6 +98,9 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
+  @observable
+  SmartGoal smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
+
   // -------------------- Filtered SmartGoal --------------------
   // Map from a query paremeter to the SmartGoal
   @observable
@@ -116,6 +116,7 @@ abstract class _SmartGoalStoreBase with Store {
   }
 
   // -------------------- Read one page at a time --------------------
+
   @action
   Future readByPage({bool refreshed = false}) async {
     debugPrint('--> START: read smart goal');

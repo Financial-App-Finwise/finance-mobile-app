@@ -46,8 +46,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   }
 
   Future _readAll() async {
-    await context.read<SmartGoalStore>().readByPage();
-    await context.read<SmartGoalStore>().readYearly();
+    await store.readByPage();
+    await store.readYearly();
   }
 
   @override
@@ -325,7 +325,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Total SMART Goal', style: SmartGoalTextStyle.totalTitle),
-              Text('${context.watch<SmartGoalStore>().smartGoal.meta.total}',
+              Text('${store.filteredSmartGoal[store.queryParemeter]!.items.length}',
                   style: SmartGoalTextStyle.totalNumber),
             ],
           ),
