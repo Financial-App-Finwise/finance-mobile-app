@@ -4,14 +4,14 @@ import 'package:flutter_svg/svg.dart';
 const _svgPath = 'assets/images/svg/';
 
 abstract class IconHelper {
-  // ------------------------ normal color --------
+  // -------------------- Normal Color --------------------
   static SvgPicture getSVG(String svgName, {Color color = Colors.black}) =>
       SvgPicture.asset(
         '$_svgPath$svgName',
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       );
 
-  // ------------------------- gradient --------------------------
+  // -------------------- Gradient --------------------
   static ShaderMask getGradientSVG(
     String svgName, {
     required LinearGradient gradient,
@@ -21,12 +21,11 @@ abstract class IconHelper {
         blendMode: BlendMode.srcATop,
         child: SvgPicture.asset(
           '$_svgPath$svgName',
-          colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
         ),
       );
 
-    // ------------------------- svg with default color --------------------------
-  static SvgPicture getSVGDefault(String svgName) {
-    return SvgPicture.asset('$_svgPath$svgName');
-  }
+  // -------------------- SVG with its Default Color --------------------
+  static SvgPicture getSVGDefault(String svgName) =>
+      SvgPicture.asset('$_svgPath$svgName');
 }
