@@ -18,7 +18,7 @@ import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/modules/transaction/widgets/budget_plan_button/budget_plan_button.dart';
-import 'package:finwise/modules/transaction/widgets/select_smart_goal_widget.dart';
+import 'package:finwise/modules/transaction/widgets/smart_goal_button/select_smart_goal_widget.dart';
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';

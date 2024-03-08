@@ -13,7 +13,7 @@ import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
-import 'package:finwise/modules/transaction/widgets/transaction_form_layout.dart';
+import 'package:finwise/modules/transaction/layouts/transaction_form_layout.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
