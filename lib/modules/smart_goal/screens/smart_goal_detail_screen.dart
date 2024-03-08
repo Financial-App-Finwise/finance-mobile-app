@@ -10,7 +10,7 @@ import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/charts/general_six_month_bar_chart.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
-import 'package:finwise/core/widgets/general_detail_layout.dart';
+import 'package:finwise/core/layouts/general_detail_layout.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';

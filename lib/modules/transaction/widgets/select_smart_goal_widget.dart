@@ -12,7 +12,7 @@ import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
-import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
+import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';

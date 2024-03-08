@@ -8,7 +8,7 @@ import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
-import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
+import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';

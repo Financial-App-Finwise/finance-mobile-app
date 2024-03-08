@@ -6,7 +6,7 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
-import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
+import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';

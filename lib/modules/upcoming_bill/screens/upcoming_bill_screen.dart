@@ -4,7 +4,7 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/calendar_header_layout.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
-import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
+import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';

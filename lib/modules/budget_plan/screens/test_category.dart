@@ -1,4 +1,4 @@
-import 'package:finwise/core/widgets/overlay_header_layout.dart';
+import 'package:finwise/core/layouts/overlay_header_layout.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:flutter/material.dart';

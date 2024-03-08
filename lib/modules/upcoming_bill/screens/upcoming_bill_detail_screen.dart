@@ -2,7 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
-import 'package:finwise/core/widgets/detail_header_layout.dart';
+import 'package:finwise/core/layouts/detail_header_layout.dart';
 import 'package:finwise/core/widgets/switch_input.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';

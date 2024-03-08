@@ -9,7 +9,7 @@ import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arc
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
-import 'package:finwise/core/widgets/general_sticky_header_layout.dart';
+import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';

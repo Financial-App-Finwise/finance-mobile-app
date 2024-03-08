@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
-import 'package:finwise/core/widgets/general_detail_layout.dart';
+import 'package:finwise/core/layouts/general_detail_layout.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
