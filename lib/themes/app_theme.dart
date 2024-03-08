@@ -10,4 +10,5 @@ ThemeData appTheme = ThemeData(
     headlineMedium: TextStyle(fontFamily: FontConstant.balooThambi2Medium, color: ColorConstant.black, fontSize: 32),
     bodyMedium: TextStyle(color: ColorConstant.mainText, fontSize: 14),
   ),
+  
 );

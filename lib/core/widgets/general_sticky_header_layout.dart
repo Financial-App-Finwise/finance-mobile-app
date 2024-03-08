@@ -2,6 +2,9 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/models/screen_navigation_model/screen_model.dart';
+import 'package:finwise/modules/home/screens/home_screen.dart';
+import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 
@@ -90,6 +93,22 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
     );
   }
 
+  late final List<ScreenNavigationModel> _indexItems = [
+    ScreenNavigationModel(
+      screen: HomeScreen(),
+      index: 0,
+      svgName: SVGName.home,
+      label: 'Home',
+    ),
+    ScreenNavigationModel(screen: const SizedBox()),
+    ScreenNavigationModel(
+      screen: ProfileScreen(),
+      index: 2,
+      svgName: SVGName.bottomNavUser,
+      label: 'Profile',
+    ),
+  ];
+
   Widget _buildBottom() {
     return Theme(
       data: ThemeData(
@@ -100,12 +119,12 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
         backgroundColor: Colors.white,
         elevation: 0,
         onTap: (index) {
-          Navigator.pushReplacementNamed(context, RouteName.index);
+          Navigator.popUntil(context, ModalRoute.withName(RouteName.wrapper));
         },
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 14,
         unselectedFontSize: 14,
-        selectedItemColor: const Color(0xff00A6FB),
+        selectedItemColor: const Color(0xff464255),
         unselectedItemColor: const Color(0xff464255),
         items: [
           BottomNavigationBarItem(

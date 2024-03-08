@@ -212,13 +212,14 @@ class _FinanceScreenState extends State<FinanceScreen> {
         _buildFinanceItem(
           text: 'Income',
           amount: '\$${store.finance.data.totalIncomes}',
-          icon: IconConstant.earn,
+          icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
           color: ColorConstant.income,
         ),
         _buildFinanceItem(
           text: 'Expense',
           amount: '\$${store.finance.data.totalExpenses}',
-          icon: IconConstant.expense,
+          icon:
+              IconHelper.getSVG(SVGName.expense, color: ColorConstant.expense),
           color: ColorConstant.expense,
         ),
       ],

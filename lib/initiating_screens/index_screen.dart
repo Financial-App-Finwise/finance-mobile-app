@@ -1,5 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/models/screen_navigation_model/screen_model.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';
@@ -14,15 +16,16 @@ class IndexScreen extends StatefulWidget {
 
 class _IndexScreenState extends State<IndexScreen> {
   final PageController _pageController = PageController();
-  List _isSelectedList = [true, false, false, false, false];
-  int _currentIndex = 0;
 
-  // @override
-  // void initState() {
-  //   debugPrint('--> START: initState, index screen');
-  //   super.initState();
-  //   debugPrint('<-- END: initState, index screen');
-  // }
+  @override
+  void initState() {
+    debugPrint('--> START: initState, index screen');
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      // _pageController.jumpToPage();
+    });
+    debugPrint('<-- END: initState, index screen');
+  }
 
   // @override
   // void deactivate() {
@@ -42,23 +45,34 @@ class _IndexScreenState extends State<IndexScreen> {
     );
   }
 
-  // _controller.animateTo(
-  //           0.0,
-  //           duration: Duration(milliseconds: 500),
-  //           curve: Curves.easeInOut,
-  //         );
+  final ScrollController _homeScrollController = ScrollController();
+  final ScrollController _profileScrollController = ScrollController();
+
+  late final List<ScreenNavigationModel> _indexItems = [
+    ScreenNavigationModel(
+      screen: HomeScreen(scrollController: _homeScrollController),
+      index: 0,
+      svgName: SVGName.home,
+      label: 'Home',
+    ),
+    ScreenNavigationModel(screen: const SizedBox()),
+    ScreenNavigationModel(
+      screen: ProfileScreen(),
+      index: 2,
+      svgName: SVGName.bottomNavUser,
+      label: 'Profile',
+    ),
+  ];
 
   Widget _buildBody() {
     return PageView(
       physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,
-      children: const [
-        HomeScreen(),
-        SizedBox(),
-        ProfileScreen(),
-      ],
+      children: _indexItems.map((item) => item.screen).toList(),
     );
   }
+
+  int _currentIndex = 0;
 
   Widget _buildBottom() {
     return Theme(
@@ -69,54 +83,64 @@ class _IndexScreenState extends State<IndexScreen> {
       child: BottomNavigationBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        onTap: (index) {
-          if (index != 1) {
-            setState(() {
-              _isSelectedList = [false, false, false];
-              _isSelectedList[index] = true;
-              _currentIndex = index;
-              _pageController.jumpToPage(index);
-            });
-          }
-        },
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         selectedFontSize: 14,
         unselectedFontSize: 14,
         selectedItemColor: const Color(0xff00A6FB),
         unselectedItemColor: const Color(0xff464255),
-        items: [
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 24,
-              child: IconConstant.getHome(
-                color: _isSelectedList[0]
-                    ? const Color(0xff00A6FB)
-                    : ColorConstant.mainText,
+        onTap: (index) {
+          if (index != 1) {
+            setState(() {
+              if (_currentIndex == 0 && index == 0) {
+                _homeScrollController.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.linearToEaseOut,
+                );
+              } else if (_currentIndex == 2 && index == 2) {
+                _pageController.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.linearToEaseOut,
+                );
+              }
+              _currentIndex = index;
+              _pageController.jumpToPage(index);
+            });
+          }
+        },
+        items: _indexItems
+            .map(
+              (item) => BottomNavigationBarItem(
+                icon: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 24,
+                      child: item.svgName.isNotEmpty
+                          ? IconHelper.getSVG(
+                              item.svgName,
+                              color: _currentIndex == item.index
+                                  ? const Color(0xff00A6FB)
+                                  : ColorConstant.mainText,
+                            )
+                          : const SizedBox(),
+                    ),
+                  ],
+                ),
+                label: item.label,
               ),
-            ),
-            label: 'Home',
-          ),
-          const BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 24,
-              child: IconConstant.getBottomUser(
-                color: _isSelectedList[2]
-                    ? const Color(0xff00A6FB)
-                    : ColorConstant.mainText,
-              ),
-            ),
-            label: 'Profile',
-          ),
-        ],
+            )
+            .toList(),
       ),
     );
   }
 
   Widget _buildFloating() {
     return FloatingActionButton(
-      onPressed: () => Navigator.pushNamed(context, RouteName.transactionCreate),
+      onPressed: () =>
+          Navigator.pushNamed(context, RouteName.transactionCreate),
       elevation: 0,
       backgroundColor: const Color(0xff00A6FB),
       shape: const CircleBorder(),

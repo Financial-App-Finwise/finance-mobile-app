@@ -1,6 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
@@ -12,11 +11,13 @@ import 'package:finwise/core/widgets/budget_overview.dart';
 import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
+import 'package:finwise/core/widgets/custom_refresh_indicator.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/general_bottom_button.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
+import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
@@ -33,7 +34,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final ScrollController? scrollController;
+
+  const HomeScreen({super.key, this.scrollController});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
+  // -------------------- Required Store --------------------
+  late final AuthStore _authStore = context.read<AuthStore>();
   late final BudgetPlanStore _budgetPlanStore = context.read<BudgetPlanStore>();
   late final FinanceStore _financeStore = context.read<FinanceStore>();
   late final SmartGoalStore _smartGoalStore = context.read<SmartGoalStore>();
@@ -58,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  // -------------------- Read all Necessary Data --------------------
   Future _readAll() async {
     await _budgetPlanStore.read();
     await _financeStore.read();
@@ -72,17 +78,13 @@ class _HomeScreenState extends State<HomeScreen>
     super.deactivate();
   }
 
-  late AuthStore authStore = context.read<AuthStore>();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
     debugPrint('--> START: build home screen');
     return Scaffold(
-      // appBar: _buildAppBar(),
       body: _buildBody(),
       backgroundColor: ColorConstant.backgroundColor,
-      // backgroundColor: Colors.blue,
     );
   }
 
@@ -91,10 +93,11 @@ class _HomeScreenState extends State<HomeScreen>
       child: Container(
         alignment: Alignment.topRight,
         padding: const EdgeInsets.only(left: 16, right: 16),
-        child: RefreshIndicator(
+        child: CustomRefreshIndicator(
           onRefresh: () async => await _readAll(),
           child: Observer(builder: (context) {
             return SingleChildScrollView(
+              controller: widget.scrollController,
               child: Column(
                 children: [
                   ListView(
@@ -122,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ---------- user profile ----------
+  // -------------------- User Profile --------------------
   Widget _buildProfile() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -133,14 +136,16 @@ class _HomeScreenState extends State<HomeScreen>
             children: [
               SizedBox.fromSize(
                 size: const Size(56, 56),
-                child: CircleAvatar(child: IconConstant.avatar),
+                child: CircleAvatar(
+                    child: IconHelper.getSVGDefault(SVGName.avatar)),
               ),
               const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Welcome Back,', style: HomeTextStyleConstant.welcome),
-                  Text(authStore.user!.userData.name,
+                  const Text('Welcome Back,',
+                      style: HomeTextStyleConstant.welcome),
+                  Text(_authStore.user!.userData.name,
                       style: HomeTextStyleConstant.profileName),
                 ],
               ),
@@ -148,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           InkWell(
             onTap: () {},
-            child: IconConstant.notification,
+            child: IconHelper.getSVG(SVGName.notification),
           ),
         ],
       ),
@@ -183,8 +188,13 @@ class _HomeScreenState extends State<HomeScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(title, style: HomeTextStyleConstant.medium),
-                    Text(amount,
-                        style: HomeTextStyleConstant.numberFocus(color: color)),
+                    Text(
+                      amount,
+                      style: TextStyleHelper.getw600size(
+                        24,
+                        color: color,
+                      ),
+                    ),
                   ],
                 ),
               )
@@ -219,6 +229,7 @@ class _HomeScreenState extends State<HomeScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
+            // ---------- Title ----------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -229,24 +240,27 @@ class _HomeScreenState extends State<HomeScreen>
               ],
             ),
             const SizedBox(height: 12),
-            // build content
+            // ---------- Content ----------
             RoundedContainer(
               child: Column(
                 children: [
-                  // Total balance
+                  // ---------- Total balance ----------
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        // color: Colors.amber,
                         child: _buildFinanceItem(
                           text: 'Total Balance',
                           amount:
                               '\$${_financeStore.dollarAccount.totalbalance}',
                           color: ColorConstant.primary,
-                          icon: IconConstant.piggyBank,
+                          icon: IconHelper.getSVG(
+                            SVGName.piggyBank,
+                            color: ColorConstant.secondary,
+                          ),
                         ),
                       ),
+                      // ---------- Dropdown Button ----------
                       DurationDropDown(
                         items: [
                           DurationDropDownItem(
@@ -265,35 +279,45 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ],
                   ),
+                  // ---------- Divider ----------
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     child: const Divider(color: Color(0xfff2f2f2)),
                   ),
-                  // Income and Expense
+                  // ---------- Income and Expense Sections ----------
                   IntrinsicHeight(
                     child: Row(
                       children: [
                         Expanded(
+                          // ---------- Income Section ----------
                           child: _buildFinanceItem(
                             text: 'Income',
                             amount:
                                 '\$${_financeStore.finance.data.totalIncomes}',
                             color: ColorConstant.income,
-                            icon: IconConstant.earn,
+                            icon: IconHelper.getSVG(
+                              SVGName.earn,
+                              color: ColorConstant.incomeIcon,
+                            ),
                           ),
                         ),
+                        // ---------- Vertical Divider ----------
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child:
                               const VerticalDivider(color: Color(0xfff2f2f2)),
                         ),
+                        // ---------- Expense Section ----------
                         Expanded(
                           child: _buildFinanceItem(
                             text: 'Expense',
                             amount:
                                 '\$${_financeStore.finance.data.totalExpenses}',
                             color: ColorConstant.expense,
-                            icon: IconConstant.expense,
+                            icon: IconHelper.getSVG(
+                              SVGName.expense,
+                              color: ColorConstant.expenseIcon,
+                            ),
                           ),
                         ),
                       ],
@@ -332,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ---------- other features ----------
+  // -------------------- Other Features --------------------
   Widget _buildMainFeatures() {
     return Container(
       alignment: Alignment.topLeft,
@@ -340,39 +364,43 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          const Text(
-            'Other Features',
-            style: HomeTextStyleConstant.header,
-          ),
+          // ---------- Title ----------
+          const Text('Other Features', style: HomeTextStyleConstant.header),
           const SizedBox(height: 12),
           Center(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               child: Row(children: [
+                // ---------- My Budget ----------
                 _buildFeatureItem(
-                    text: 'My Budget',
-                    amount: '3',
-                    icon: IconConstant.myBudget(),
-                    onPressed: () {
-                      Navigator.pushNamed(context, RouteName.budgetPlan);
-                    }),
+                  text: 'My Budget',
+                  amount: '3',
+                  icon:
+                      IconHelper.getSVG(SVGName.myBudget, color: Colors.white),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, RouteName.budgetPlan),
+                ),
                 const SizedBox(width: 12),
+                // ---------- Upcoming Bill ----------
                 _buildFeatureItem(
-                    text: 'Upcoming Bill',
-                    amount: '3',
-                    icon: IconConstant.getUpcomingBill(),
-                    onPressed: () {
-                      Navigator.pushNamed(context, RouteName.upcomingBill);
-                    }),
+                  text: 'Upcoming Bill',
+                  amount: '3',
+                  icon: IconHelper.getSVG(SVGName.upcomingBill,
+                      color: Colors.white),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, RouteName.upcomingBill),
+                ),
                 const SizedBox(width: 12),
+                // ---------- Smart Goal ----------
                 _buildFeatureItem(
-                    text: 'Smart Goal',
-                    amount: ' ${_smartGoalStore.smartGoal.meta.total}',
-                    icon: IconConstant.getSmartGoal(color: Colors.white),
-                    onPressed: () {
-                      Navigator.pushNamed(context, RouteName.smartGoal);
-                    }),
+                  text: 'Smart Goal',
+                  amount: ' ${_smartGoalStore.smartGoal.meta.total}',
+                  icon:
+                      IconHelper.getSVG(SVGName.smartGoal, color: Colors.white),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, RouteName.smartGoal),
+                ),
               ]),
             ),
           ),
@@ -418,8 +446,8 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Text(
                       amount,
-                      style: HomeTextStyleConstant.numberFocus(
-                          color: Colors.white),
+                      style:
+                          TextStyleHelper.getw600size(24, color: Colors.white),
                     ),
                   ],
                 ),
@@ -432,7 +460,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ----- spending income -----
+  // -------------------- Spending Income --------------------
   Widget _buildSpendingIncome() {
     return Container(
       alignment: Alignment.topLeft,
@@ -441,62 +469,60 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           _buildGeneralTitle('Spending and Income'),
           RoundedContainer(
-            child: _financeStore.finance.data.total.isEmpty
-                ? Column(
-                    children: [
-                      const EmptyBarChart(),
-                      const SizedBox(height: 8),
-                      Text(
-                        'You have no payment history yet.',
-                        style: TextStyleHelper.getw500size(16,
-                            color: ColorConstant.black),
-                      ),
-                      const SizedBox(height: 8),
-                      GeneralBottomButton(
-                        onButtonTap: () {},
-                        buttonLabel: 'Add Transaction',
-                      ),
+            child: Column(
+              children: [
+                Row(children: [
+                  const Expanded(child: SizedBox()),
+                  // ---------- Dropdown Button ----------
+                  DurationDropDown(
+                    items: [
+                      DurationDropDownItem(
+                          title: 'This Month', value: 'this_month'),
+                      DurationDropDownItem(
+                          title: 'This Week', value: 'this_week'),
+                      DurationDropDownItem(
+                          title: 'Last Month', value: 'last_month'),
+                      DurationDropDownItem(
+                          title: 'Last 3 Months', value: 'last_3_months'),
+                      DurationDropDownItem(
+                          title: 'Last 6 Months', value: 'last_6_months'),
                     ],
+                    selectedValue: _financeStore.period,
+                    onChange: (value) async {
+                      _financeStore.period = value;
+                      await _financeStore.read();
+                    },
                   )
-                : Column(
-                    children: [
-                      Row(children: [
-                        const Expanded(child: SizedBox()),
-
-                        // DurationDropDown(),
-                        DurationDropDown(
-                          items: [
-                            DurationDropDownItem(
-                                title: 'This Month', value: 'this_month'),
-                            DurationDropDownItem(
-                                title: 'This Week', value: 'this_week'),
-                            DurationDropDownItem(
-                                title: 'Last Month', value: 'last_month'),
-                            DurationDropDownItem(
-                                title: 'Last 3 Months', value: 'last_3_months'),
-                            DurationDropDownItem(
-                                title: 'Last 6 Months', value: 'last_6_months'),
-                          ],
-                          selectedValue: _financeStore.period,
-                          onChange: (value) async {
-                            _financeStore.period = value;
-                            await _financeStore.read();
-                          },
-                        )
-                      ]),
-                      const SizedBox(height: 24),
-                      IncomeExpenseBarChart(
-                        data: _financeStore.finance.data.total,
-                      ),
-                    ],
-                  ),
+                ]),
+                const SizedBox(height: 24),
+                _financeStore.finance.data.total.isEmpty
+                    ? Column(
+                        children: [
+                          const EmptyBarChart(),
+                          const SizedBox(height: 8),
+                          Text(
+                            'You have no payment history yet.',
+                            style: TextStyleHelper.getw500size(16,
+                                color: ColorConstant.black),
+                          ),
+                          const SizedBox(height: 8),
+                          GeneralBottomButton(
+                            onButtonTap: () {},
+                            buttonLabel: 'Add Transaction',
+                          ),
+                        ],
+                      )
+                    : IncomeExpenseBarChart(
+                        data: _financeStore.finance.data.total),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  // ----- top spending -----
+  // -------------------- Top Spending --------------------
   Widget _buildTopSpending() {
     List values = [40.0, 20.0, 30.0, 10.0];
     values.sort((a, b) => b.compareTo(a));
@@ -514,7 +540,10 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Totally Spent',
                   amount: '\$356',
                   color: ColorConstant.expense,
-                  icon: IconConstant.expense,
+                  icon: IconHelper.getSVG(
+                    SVGName.expense,
+                    color: ColorConstant.expenseIcon,
+                  ),
                   selectedValue: 'this_month',
                   onChanged: (value) {},
                 ),
@@ -593,7 +622,6 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildBudgetPlanDate() {
     return Container(
       padding: const EdgeInsets.all(2.0),
-      // color: Colors.green,
       child: _buildDatePicker(),
     );
   }
@@ -683,7 +711,7 @@ class _HomeScreenState extends State<HomeScreen>
               style: HomeTextStyleConstant.budgetCardTitle),
         ],
       ),
-      bottomLeft: Text('Today', style: HomeTextStyleConstant.medium),
+      bottomLeft: const Text('Today', style: HomeTextStyleConstant.medium),
       bottomRight: Text(
           '${UIHelper.getDateFormat(item.createdAt, 'dd MMM, yyyy')}',
           style: HomeTextStyleConstant.medium),
@@ -705,8 +733,8 @@ class _HomeScreenState extends State<HomeScreen>
             children: [
               _buildGeneralTitle('Totally Spent'),
               ViewMoreTextButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, RouteName.transaction))
+                  onPressed: () =>
+                      Navigator.pushNamed(context, RouteName.transaction))
             ],
           ),
           RoundedContainer(
@@ -717,7 +745,10 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Totally Spent',
                   amount: '\$${_financeStore.finance.data.totalExpenses}',
                   color: ColorConstant.expense,
-                  icon: IconConstant.expense,
+                  icon: IconHelper.getSVG(
+                    SVGName.expense,
+                    color: ColorConstant.expenseIcon,
+                  ),
                   selectedValue: 'this_month',
                   onChanged: (value) {},
                 ),
@@ -768,7 +799,10 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Totally Earned',
                   amount: '\$${_financeStore.finance.data.totalIncomes}',
                   color: ColorConstant.income,
-                  icon: IconConstant.earn,
+                  icon: IconHelper.getSVG(
+                    SVGName.earn,
+                    color: ColorConstant.incomeIcon,
+                  ),
                   selectedValue: 'this_month',
                   onChanged: (value) {},
                 ),
@@ -823,7 +857,7 @@ class _HomeScreenState extends State<HomeScreen>
                   transactions[index].date, 'dd MMM, yyyy'),
               color: color,
               icon: IconHelper.getSVG(
-                SVGName.schoolBus,
+                transactions[index].isIncome ? SVGName.earn : SVGName.expense,
                 color: Colors.white,
               )),
         );
@@ -834,20 +868,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildSmallRoundedSquare({Color color = Colors.black}) {
-    return Container(
-      width: 32,
-      height: 32,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: IconConstant.getSchoolBus(),
-    );
-  }
-
-  // ---------- upcoming bill ----------
+  // -------------------- Upcoming Bill --------------------
   Widget _buildUpcomingBill() {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteName.upcomingBill),
@@ -861,11 +882,13 @@ class _HomeScreenState extends State<HomeScreen>
               child: Column(
                 children: [
                   _buildGeneralContentHeading(
-                    title: 'Total Upcoming Bills',
+                    title: 'Total',
                     amount: '4',
                     color: ColorConstant.bill,
-                    icon:
-                        IconConstant.getUpcomingBill(color: ColorConstant.bill),
+                    icon: IconHelper.getSVG(
+                      SVGName.upcomingBill,
+                      color: ColorConstant.billIcon,
+                    ),
                     selectedValue: 'this_month',
                     onChanged: (value) {},
                   ),
@@ -936,7 +959,13 @@ class _HomeScreenState extends State<HomeScreen>
           children: [
             Row(
               children: [
-                _buildSmallRoundedSquare(color: ColorConstant.bill),
+                SmallRoundedSquare(
+                  color: ColorConstant.bill,
+                  icon: IconHelper.getSVG(
+                    SVGName.internet,
+                    color: Colors.white,
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Text(UIHelper.getDateFormat(item.date, 'dd MMM, yyyy'),
                     style: HomeTextStyleConstant.budgetCardTitle),
@@ -961,7 +990,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ---------- General ----------
+  // -------------------- General --------------------
   DateTime currentDate = DateTime.now();
 
   List<String> monthNames = [
@@ -990,11 +1019,10 @@ class _HomeScreenState extends State<HomeScreen>
           },
           child: Container(
               padding: const EdgeInsets.symmetric(vertical: 4),
-              // color: Colors.amber,
               child: Row(
                 children: [
                   const SizedBox(width: 6),
-                  IconConstant.arrowLeft,
+                  IconHelper.getSVG(SVGName.arrowLeft),
                   const SizedBox(width: 12),
                 ],
               )),
@@ -1016,11 +1044,10 @@ class _HomeScreenState extends State<HomeScreen>
           },
           child: Container(
               padding: const EdgeInsets.symmetric(vertical: 4),
-              // color: Colors.amber,
               child: Row(
                 children: [
                   const SizedBox(width: 12),
-                  IconConstant.arrowRight,
+                  IconHelper.getSVG(SVGName.arrowRight),
                   const SizedBox(width: 6),
                 ],
               )),

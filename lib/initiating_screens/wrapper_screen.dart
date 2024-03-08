@@ -2,6 +2,7 @@ import 'package:finwise/modules/auth/models/user_model/user_model.dart';
 import 'package:finwise/modules/auth/screens/auth_wrapper_screen.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/initiating_screens/index_screen.dart';
+import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';

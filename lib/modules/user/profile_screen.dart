@@ -1,5 +1,7 @@
+import 'package:finwise/core/widgets/bottom_navigation_bar_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/initiating_screens/unimplemented_screen.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +28,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 48),
         ],
       ),
+      // bottomNavigationBar: BottomNavigationBarWidget(
+      //   currentIndex: 2,
+      //   onTap: () {},
+      // ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () =>
+      //       Navigator.pushNamed(context, RouteName.transactionCreate),
+      //   elevation: 0,
+      //   backgroundColor: const Color(0xff00A6FB),
+      //   shape: const CircleBorder(),
+      //   child: const Icon(Icons.add, color: Colors.white),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

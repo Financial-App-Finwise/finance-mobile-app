@@ -24,6 +24,7 @@ import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_screen.dart'
 import 'package:finwise/initiating_screens/index_screen.dart';
 import 'package:finwise/initiating_screens/splash_screen.dart';
 import 'package:finwise/initiating_screens/wrapper_screen.dart';
+import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 // store all route names
@@ -68,8 +69,11 @@ abstract class RouteName {
   // -------------------- Currency --------------------
   static const String currency = '/currency';
 
-  // --------------------Ccategory --------------------
+  // --------------------Category --------------------
   static const String category = '/category';
+
+  // -------------------- Profile --------------------
+  static const String profile = '/profile';
 }
 
 // map from route names to screens
@@ -124,4 +128,7 @@ var appRoutes = {
 
   // -------------------- Currency --------------------
   RouteName.currency: (BuildContext context) => const CurrencyScreen(),
+
+  // -------------------- Profile --------------------
+  RouteName.profile: (BuildContext context) => const ProfileScreen(),
 };

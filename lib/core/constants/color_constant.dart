@@ -19,6 +19,7 @@ abstract class ColorConstant {
 
   // ---------- Upcoming Bill ----------
   static const Color bill = Color(0xffFE7B11);
+  static const Color billIcon = Color(0xffFE7B11);
 
   // ---------- Smart Goal ----------
   static const Color smartGoalLight = Color(0xff6FE6C0);
