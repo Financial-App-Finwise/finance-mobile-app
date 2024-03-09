@@ -58,6 +58,9 @@ dependencies:
   intl: ^0.19.0
   table_calendar: ^3.1.0
   loading_animation_widget: ^1.2.0+4
+  webview_flutter: ^4.7.0
+  percent_indicator: ^4.2.3
+  dots_indicator: ^3.0.0
 
 dev_dependencies:
   flutter_test:

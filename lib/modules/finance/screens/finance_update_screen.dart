@@ -2,7 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/financial_text_style_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';

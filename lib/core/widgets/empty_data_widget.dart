@@ -1,5 +1,5 @@
 import 'package:finwise/core/helpers/text_style_helper.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:flutter/material.dart';
 
 class EmptyDataWidget extends StatefulWidget {

@@ -1,9 +1,11 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/financial_text_style_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
@@ -11,9 +13,11 @@ import 'package:finwise/core/models/income_expense_model/income_expense_model.da
 import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
+import 'package:finwise/core/widgets/custom_refresh_indicator.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
@@ -22,7 +26,9 @@ import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
+import 'package:finwise/test/test_3_dots.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -47,12 +53,6 @@ class _FinanceScreenState extends State<FinanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildBody() {
     return GeneralStickyHeaderLayout(
       title: 'My Finance',
       description:
@@ -119,11 +119,12 @@ class _FinanceScreenState extends State<FinanceScreen> {
 
   Widget _buildContent() {
     return Observer(builder: (context) {
-      return RefreshIndicator(
+      return CustomRefreshIndicator(
         onRefresh: () async {
           await context.read<FinanceStore>().read();
         },
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               ListView(
@@ -147,11 +148,14 @@ class _FinanceScreenState extends State<FinanceScreen> {
   }
 
   Widget _buildBarChart() {
-    // print('value: ${store.finance.data.total}');
     return RoundedContainer(
       child: Column(
         children: [
           Row(children: [
+            Visibility(
+              visible: store.barChartLoading == LoadingStatusEnum.loading,
+              child: LinearProgressWithDots(),
+            ),
             const Expanded(child: SizedBox()),
             _buildGeneralPeriodButton(
               selectedValue: store.period,
@@ -296,7 +300,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(),
+              const Expanded(child: SizedBox()),
               _buildGeneralPeriodButton(
                   selectedValue: 'this_month', onChange: (value) {}),
             ],

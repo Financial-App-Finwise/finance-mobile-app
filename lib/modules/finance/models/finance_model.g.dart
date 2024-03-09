@@ -43,9 +43,7 @@ Map<String, dynamic> _$FinanceDataToJson(FinanceData instance) =>
 FinanceItem _$FinanceItemFromJson(Map<String, dynamic> json) => FinanceItem(
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
-      totalbalance: json['totalbalance'] == null
-          ? 0
-          : FinanceItem._stringToDouble(json['totalbalance'] as String),
+      totalbalance: (json['totalbalance'] as num?)?.toDouble() ?? 0,
       currency: Currency.fromJson(json['currency'] as Map<String, dynamic>),
     );
 

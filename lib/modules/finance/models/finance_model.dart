@@ -80,8 +80,6 @@ class FinanceItem {
 
   late final int id;
   late final int userID;
-
-  @JsonKey(fromJson: _stringToDouble)
   late final double totalbalance;
   late final Currency currency;
 
@@ -89,9 +87,6 @@ class FinanceItem {
       _$FinanceItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$FinanceItemToJson(this);
-
-  static double _stringToDouble(String value) =>
-      double.tryParse(value) == null ? 0 : double.parse(value);
 }
 
 @JsonSerializable()

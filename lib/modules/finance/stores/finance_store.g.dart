@@ -40,6 +40,22 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$barChartLoadingAtom =
+      Atom(name: '_FinanceStoreBase.barChartLoading', context: context);
+
+  @override
+  LoadingStatusEnum get barChartLoading {
+    _$barChartLoadingAtom.reportRead();
+    return super.barChartLoading;
+  }
+
+  @override
+  set barChartLoading(LoadingStatusEnum value) {
+    _$barChartLoadingAtom.reportWrite(value, super.barChartLoading, () {
+      super.barChartLoading = value;
+    });
+  }
+
   late final _$financeAtom =
       Atom(name: '_FinanceStoreBase.finance', context: context);
 
@@ -154,6 +170,7 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
   String toString() {
     return '''
 loadingStatus: ${loadingStatus},
+barChartLoading: ${barChartLoading},
 finance: ${finance},
 period: ${period},
 isIncome: ${isIncome},

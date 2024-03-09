@@ -3,7 +3,7 @@ import 'package:finwise/core/constants/text_style_constants/general_text_style_c
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

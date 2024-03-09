@@ -10,9 +10,12 @@ part 'finance_store.g.dart';
 class FinanceStore = _FinanceStoreBase with _$FinanceStore;
 
 abstract class _FinanceStoreBase with Store {
-  // ---------- Loading ----------
+  // -------------------- Loading --------------------
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
+
+  @observable
+  LoadingStatusEnum barChartLoading = LoadingStatusEnum.none;
 
   @action
   void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
@@ -71,6 +74,7 @@ abstract class _FinanceStoreBase with Store {
   Future read() async {
     debugPrint('--> START: read finance');
     loadingStatus = LoadingStatusEnum.loading;
+    barChartLoading = LoadingStatusEnum.loading;
     try {
       // get expense
       Response response = await ApiService.dio
@@ -107,13 +111,16 @@ abstract class _FinanceStoreBase with Store {
           // });
         }
         loadingStatus = LoadingStatusEnum.done;
+        barChartLoading = LoadingStatusEnum.done;
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
         loadingStatus = LoadingStatusEnum.error;
+        barChartLoading = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       loadingStatus = LoadingStatusEnum.error;
+      barChartLoading = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: read finance');
     }
