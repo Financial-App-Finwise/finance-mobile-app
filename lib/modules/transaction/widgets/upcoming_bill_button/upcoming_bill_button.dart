@@ -1,20 +1,17 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/widgets/buttons/select_item_button.dart';
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/select_upcoming_bill_widget.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
 
 class UpcomingBillButton extends StatefulWidget {
-  late void Function(UpcomingBillData) onPressed;
-  late int defaultBillId;
-  late String defaultBillName;
+  final void Function(UpcomingBillData) onItemSelected;
 
-  UpcomingBillButton({
+  const UpcomingBillButton({
     super.key,
-    required this.onPressed,
-    this.defaultBillId = 0,
-    this.defaultBillName = 'no name',
+    required this.onItemSelected,
   });
 
   @override
@@ -22,132 +19,30 @@ class UpcomingBillButton extends StatefulWidget {
 }
 
 class _UpcomingBillButtonState extends State<UpcomingBillButton> {
-  late UpcomingBillData selectedUpcomingBill = UpcomingBillData(
-    id: widget.defaultBillId,
-    name: widget.defaultBillName,
+  late final SelectItem<UpcomingBillData> _currentItem = SelectItem(
+    title: 'Upcoming Bill',
+    subTitle: 'Select an upcoming bill',
+    pickedIcon: IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
+    unpickedIcon: IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
+    backgroundColor: ColorConstant.bill,
+    item: UpcomingBillData(),
   );
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              SelectUpcomingBillWidget(
-            onPressed: (upcomingBillData) {
-              setState(() {
-                selectedUpcomingBill = upcomingBillData;
-              });
-              widget.onPressed(upcomingBillData);
-            },
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            final tween = Tween(begin: begin, end: end);
-            final offsetAnimation = animation.drive(tween);
-
-            return SlideTransition(
-              position: offsetAnimation,
-              child: child,
-            );
-          },
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 20,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: ColorConstant.white,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    selectedUpcomingBill.name == 'no name'
-                        ? _unpickCategoryIcon()
-                        : _pickedCategoryIcon(),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Upcoming Bill',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                            letterSpacing: 0.75,
-                            color: ColorConstant.mainText,
-                          ),
-                        ),
-                        Text(
-                          selectedUpcomingBill.name == 'no name'
-                              ? 'Select one upcoming bill'
-                              : selectedUpcomingBill.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            letterSpacing: 0.75,
-                            color: selectedUpcomingBill.name == 'no name'
-                                ? const Color(0xFF656B9F)
-                                : ColorConstant.mainText,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                IconHelper.getSVG(
-                  SVGName.arrowRight,
-                  color: ColorConstant.thin,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _unpickCategoryIcon() {
-    return Container(
-      width: 36,
-      height: 36,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: const Color(0xFFD3D5E4),
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: IconHelper.getSVG(
-        SVGName.upcomingBill,
-        color: ColorConstant.white,
-      ),
-    );
-  }
-
-  Widget _pickedCategoryIcon() {
-    return Container(
-      width: 36,
-      height: 36,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: ColorConstant.bill,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: IconHelper.getSVG(
-        SVGName.upcomingBill,
-        color: ColorConstant.white,
+    return SelectItemButton(
+      currentItem: _currentItem,
+      title: _currentItem.title,
+      subTitle: _currentItem.subTitle,
+      selectionScreen: SelectUpcomingBillWidget(
+        onItemSelected: (upcomingBillData) {
+          setState(() {
+            _currentItem.item = upcomingBillData;
+            _currentItem.subTitle = upcomingBillData.name;
+            _currentItem.itemPicked = true;
+          });
+          widget.onItemSelected(upcomingBillData);
+        },
       ),
     );
   }

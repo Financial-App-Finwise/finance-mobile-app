@@ -4,10 +4,8 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
-import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
-import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
@@ -19,18 +17,17 @@ import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_content.dart';
-import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class SelectSmartGoalWidget extends StatefulWidget {
-  late void Function(SmartGoalData) onPressed;
+  final void Function(SmartGoalData) onItemSelected;
 
-  SelectSmartGoalWidget({
+  const SelectSmartGoalWidget({
     super.key,
-    required this.onPressed,
+    required this.onItemSelected,
   });
 
   @override
@@ -64,12 +61,6 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildBody() {
     return Observer(
       builder: (context) => GeneralStickyHeaderLayout(
         title: 'Select a Smart Goal',
@@ -79,10 +70,6 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
           ColorConstant.smartGoalLight,
           ColorConstant.smartGoalThick,
         ]),
-        centerContentPadding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
-        ),
         onNotification: (notification) {
           if (notification is ScrollEndNotification) {
             if (notification.metrics.pixels ==
@@ -93,6 +80,10 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
           }
           return true;
         },
+        centerContentPadding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
         centerContent: _buildCenterContent(),
         mainContent: _buildLoadedData(),
         // mainContent: _buildNestedScrollView(),
@@ -156,98 +147,6 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
     );
   }
 
-  // Widget _buildNestedScrollView() {
-  //   return Column(
-  //     children: [
-  //       Expanded(
-  //         child: NestedScrollView(
-  //           physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-  //           headerSliverBuilder:
-  //               (BuildContext context, bool innerBoxIsScrolled) {
-  //             return <Widget>[
-  //               SliverAppBar(
-  //                 automaticallyImplyLeading: false,
-  //                 backgroundColor: Colors.amber,
-  //                 toolbarHeight: 150,
-  //                 expandedHeight: 300,
-  //                 pinned: true,
-  //                 flexibleSpace: FlexibleSpaceBar(
-  //                   expandedTitleScale: 1,
-  //                   titlePadding: EdgeInsets.zero,
-  //                   title: _buildSummary(),
-  //                 ),
-  //               ),
-  //             ];
-  //           },
-  //           body: Column(
-  //             children: [
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  Widget _buildCenterOfGrid() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: TextButton(
-                onPressed: () => uiStore.toggleShowGrid(),
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                ),
-                child: IconHelper.getSVG(SVGName.burgerMenu),
-              ),
-            ),
-            const SizedBox(width: 24),
-            Text(
-              '${store.year}',
-              style: TextStyleHelper.getw500size(18).copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const Icon(Icons.keyboard_arrow_down),
-          ],
-        ),
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () async {
-                store.year--;
-                await store.readYearly();
-              },
-              child: Icon(Icons.keyboard_arrow_left),
-            ),
-            const SizedBox(width: 16),
-            GestureDetector(
-              onTap: () async {
-                store.year++;
-                await store.readYearly();
-              },
-              child: Icon(Icons.keyboard_arrow_right),
-            ),
-          ],
-        )
-      ],
-    );
-  }
-
   Widget _buildLoadedData() {
     LoadingStatusEnum status = context.watch<SmartGoalStore>().loadingStatus;
     switch (status) {
@@ -292,56 +191,6 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
     );
   }
 
-  Widget _buildSummary() {
-    return ListView(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      children: [
-        _buildTotalSummary(),
-        const SizedBox(height: 12),
-        _buildStatusSummary(),
-      ],
-    );
-  }
-
-  Widget _buildTotalSummary() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: IconHelper.getSVG(SVGName.smartGoal,
-                color: ColorConstant.income),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Total SMART Goal', style: SmartGoalTextStyle.totalTitle),
-              Text('${context.watch<SmartGoalStore>().smartGoal.meta.total}',
-                  style: SmartGoalTextStyle.totalNumber),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusSummary() {
-    return const SmartGoalOverview(
-      achieved: '0',
-      saved: '0',
-      leftToSave: '0',
-      targetAmount: '0',
-    );
-  }
-
   Widget _buildSmartGoals() {
     return Observer(builder: (context) {
       return Column(
@@ -351,16 +200,8 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
             currentValue: store.filteredProgress,
             items: [
               FilterBarHeaderItem(
-                title: 'All',
-                value: SmartGoalStatusEnum.all,
-              ),
-              FilterBarHeaderItem(
                 title: 'In Progress',
                 value: SmartGoalStatusEnum.inProgress,
-              ),
-              FilterBarHeaderItem(
-                title: 'Achieved',
-                value: SmartGoalStatusEnum.achieved,
               ),
             ],
             onTap: (value) {
@@ -425,7 +266,7 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
       ),
       child: TextButton(
         onPressed: () {
-          widget.onPressed(item);
+          widget.onItemSelected(item);
           Navigator.pop(context);
         },
         style: ButtonStyle(
@@ -438,22 +279,28 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
           child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SmallRoundedSquare(
-                    color: ColorConstant.incomeIcon,
-                    icon: SizedBox(
-                      child: IconHelper.getSVG(SVGName.smartGoal,
-                          color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Text(item.name, style: SmartGoalTextStyle.getCardTitle()),
-                      Text(
-                          'Due Date: ${UIHelper.getFormattedDate(item.endDate)}',
-                          style: SmartGoalTextStyle.cardSubTitle),
+                      SmallRoundedSquare(
+                        color: ColorConstant.incomeIcon,
+                        icon: SizedBox(
+                          child: IconHelper.getSVG(SVGName.smartGoal,
+                              color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.name,
+                              style: SmartGoalTextStyle.getCardTitle()),
+                          Text(
+                              'Due Date: ${UIHelper.getFormattedDate(item.endDate)}',
+                              style: SmartGoalTextStyle.cardSubTitle),
+                        ],
+                      ),
                     ],
                   ),
                 ],

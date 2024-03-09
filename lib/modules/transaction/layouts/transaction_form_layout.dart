@@ -8,7 +8,7 @@ import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
@@ -215,7 +215,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => SelectSmartGoalWidget(
-                    onPressed: (smartGoalData) {
+                    onItemSelected: (smartGoalData) {
                       setState(() {
                         if (_selectedSmartGoals.every(
                             (element) => element.id != smartGoalData.id)) {
@@ -470,8 +470,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
 
   Widget _buildUpcomingBillSelection() {
     return UpcomingBillButton(
-      defaultBillName: '${widget.defaultBillName}',
-      onPressed: (upcomingBillData) {
+      onItemSelected: (upcomingBillData) {
         setState(() {
           _selectedUpcomingBill = upcomingBillData;
           _amountExpenseController.text = upcomingBillData.amount.toString();

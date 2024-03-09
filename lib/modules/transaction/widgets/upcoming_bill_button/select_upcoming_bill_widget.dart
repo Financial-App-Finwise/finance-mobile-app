@@ -5,6 +5,7 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/upcoming_bill_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/buttons/select_item_button.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
@@ -17,12 +18,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class SelectUpcomingBillWidget extends StatefulWidget {
-  late void Function(UpcomingBillData) onPressed;
+class SelectUpcomingBillWidget extends StatefulWidget{
+  late void Function(UpcomingBillData) onItemSelected;
 
   SelectUpcomingBillWidget({
     super.key,
-    required this.onPressed,
+    required this.onItemSelected,
   });
 
   @override
@@ -31,10 +32,10 @@ class SelectUpcomingBillWidget extends StatefulWidget {
 }
 
 class _SelectUpcomingBillWidgetState extends State<SelectUpcomingBillWidget> {
+
   @override
   void initState() {
     super.initState();
-
     Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
         await context.read<UpcomingBillStore>().read(refreshed: true);
@@ -44,29 +45,6 @@ class _SelectUpcomingBillWidgetState extends State<SelectUpcomingBillWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
-    );
-    // return Scaffold(
-    //   body: CalendarHeaderLayout(
-    //     addScreen: const AddBudgetPlanScreen(),
-    //     title: 'My upcoming bill',
-    //     description:
-    //         'Effortlessly manage your upcoming bill with a powerful simple tool in Finwise.',
-    //     firstColor: const Color(0xFF0ABDE3),
-    //     secondColor: const Color(0xFF0B8AAF),
-    //     changeView: () => setState(() {
-    //       _gridView = !_gridView;
-    //     }),
-    //     // child: _noContentView(),
-    //     child: _gridView ? _mainContentGridView() : _mainContentListView(),
-    //   ),
-    // );
-  }
-
-  bool _isGrid = false;
-
-  Widget _buildBody() {
     return GeneralStickyHeaderLayout(
       title: 'Select Upcoming bill',
       description:
@@ -80,7 +58,6 @@ class _SelectUpcomingBillWidgetState extends State<SelectUpcomingBillWidget> {
         suffix: IconHelper.getSVG(SVGName.addSquare,
             color: ColorConstant.secondary),
         onSuffix: () => Navigator.pushNamed(context, RouteName.addUpcomingBill),
-        onPreffix: () => setState(() => _isGrid = !_isGrid),
         onDateChanged: (DateTime date) async {
           context.read<UpcomingBillStore>().setStartDate(date);
           context.read<UpcomingBillStore>().read(refreshed: true);
@@ -171,7 +148,7 @@ class _SelectUpcomingBillWidgetState extends State<SelectUpcomingBillWidget> {
                       children: [
                         InkWell(
                           onTap: () {
-                            widget.onPressed(data[index]);
+                            widget.onItemSelected(data[index]);
                             Navigator.pop(context);
                           },
                           child: _upcomingBillCard(
