@@ -2,8 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CircularProgressIndicatorTwoArcs extends StatefulWidget {
+  const CircularProgressIndicatorTwoArcs({super.key});
+
   @override
-  _CircularProgressIndicatorTwoArcsState createState() =>
+  State<CircularProgressIndicatorTwoArcs> createState() =>
       _CircularProgressIndicatorTwoArcsState();
 }
 
