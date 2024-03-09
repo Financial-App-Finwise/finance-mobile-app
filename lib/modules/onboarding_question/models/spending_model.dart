@@ -5,7 +5,7 @@ class SpendingModel {
   TextEditingController controller;
 
   SpendingModel({
-    required this.type,
-    required this.controller,
-  });
+    this.type = 'Daily',
+    TextEditingController? controller,
+  }) : controller = controller ?? TextEditingController();
 }

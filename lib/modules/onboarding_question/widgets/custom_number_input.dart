@@ -2,19 +2,18 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTextInput extends StatelessWidget {
+class CustomNumberInput extends StatelessWidget {
   final String label;
   final String hintText;
   final TextEditingController controller;
-  int? textLimit;
+  bool? isMoney;
 
-  CustomTextInput({
-    super.key,
-    required this.label,
-    required this.hintText,
-    required this.controller,
-    this.textLimit,
-  });
+  CustomNumberInput(
+      {super.key,
+      required this.label,
+      required this.hintText,
+      required this.controller,
+      this.isMoney});
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +40,22 @@ class CustomTextInput extends StatelessWidget {
   Widget textInput() {
     return TextField(
       controller: controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+      ],
       style: const TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 14,
         letterSpacing: 0.75,
         color: ColorConstant.mainText,
       ),
-      inputFormatters: [LengthLimitingTextInputFormatter(textLimit)],
       decoration: InputDecoration(
+          prefixText: isMoney == null
+              ? ''
+              : isMoney!
+                  ? '\$'
+                  : '',
           alignLabelWithHint: true,
           hintText: hintText,
           prefixStyle: const TextStyle(

@@ -30,6 +30,7 @@ abstract class SVGName {
   static const String myBudget = 'my_budget.svg';
   static const String notification = 'notification.svg';
   static const String overBudget = 'over_budget.svg';
+  static const String pandaExcited = 'panda_excited.svg';
   static const String pandaFinancialSnapshot = 'panda_financial_snapshot.svg';
   static const String pandaPersonalQuestion = 'panda_personal_question.svg';
   static const String pandaStartPage = 'panda_start_page.svg';
@@ -41,6 +42,7 @@ abstract class SVGName {
   static const String save = 'save.svg';
   static const String schoolBus = 'school_bus.svg';
   static const String search = 'search.svg';
+  static const String smartFinancialGoal = 'smart_financial_goal.svg';
   static const String smartGoal = 'smart_goal.svg';
   static const String spend = 'spend.svg';
   static const String targetAmount = 'target_amount.svg';

@@ -1,16 +1,22 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class StartFinanceSnapshot extends StatelessWidget {
-  final VoidCallback nextPage;
-
+class StartFinanceSnapshot extends StatefulWidget {
   const StartFinanceSnapshot({
     super.key,
-    required this.nextPage,
   });
+
+  @override
+  State<StartFinanceSnapshot> createState() => _StartFinanceSnapshotState();
+}
+
+class _StartFinanceSnapshotState extends State<StartFinanceSnapshot> {
+  late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +27,7 @@ class StartFinanceSnapshot extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconHelper.getSVG(
+              IconHelper.getSVGDefault(
                 SVGName.pandaFinancialSnapshot,
               ),
               const SizedBox(
@@ -40,7 +46,7 @@ class StartFinanceSnapshot extends StatelessWidget {
             ],
           ),
         ),
-        ContinueButton(nextPage: nextPage),
+        ContinueButton(nextPage: store.nextPage),
       ],
     );
   }
