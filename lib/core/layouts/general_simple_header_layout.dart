@@ -13,6 +13,7 @@ class GeneralSimpleHeaderLayout extends StatefulWidget {
     this.color,
     this.gradient,
     this.child,
+    this.padding,
   });
 
   final String title;
@@ -20,6 +21,7 @@ class GeneralSimpleHeaderLayout extends StatefulWidget {
   final Color? color;
   final LinearGradient? gradient;
   final Widget? child;
+  final EdgeInsets? padding;
 
   @override
   State<GeneralSimpleHeaderLayout> createState() =>
@@ -74,7 +76,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
               Expanded(
                 child: Container(
                   alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16),
                   color: ColorConstant.backgroundColor,
                   child: widget.child ?? const SizedBox(),
                 ),
