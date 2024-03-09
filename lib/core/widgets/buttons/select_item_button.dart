@@ -137,7 +137,7 @@ class _SelectItemButtonState extends State<SelectItemButton> {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: ColorConstant.bill,
+        color: widget.currentItem.backgroundColor,
         borderRadius: BorderRadius.circular(50),
       ),
       child: widget.currentItem.pickedIcon,
@@ -152,11 +152,13 @@ class SelectItem<T> {
   late String subTitle;
   late Widget pickedIcon;
   late Widget unpickedIcon;
+  late Color backgroundColor;
 
   SelectItem({
     this.title = '',
     this.subTitle = '',
     this.itemPicked = false,
+    this.backgroundColor = Colors.blue,
     required this.pickedIcon,
     required this.unpickedIcon,
     required this.item,
