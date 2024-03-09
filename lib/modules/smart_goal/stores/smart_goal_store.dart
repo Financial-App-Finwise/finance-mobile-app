@@ -115,6 +115,14 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
+  late List<ReactionDisposer> _disposers;
+
+  void setUpReaction() {
+    _disposers = [
+      reaction((value) => queryParemeter, (value) => initialize()),
+    ];
+  }
+
   // -------------------- Read one page at a time --------------------
 
   @action
@@ -289,5 +297,9 @@ abstract class _SmartGoalStoreBase with Store {
     loadingStatus = LoadingStatusEnum.none;
     filteredProgress = SmartGoalStatusEnum.all;
     filteredSmartGoal = ObservableMap();
+
+    for (var d in _disposers) {
+      d();
+    }
   }
 }
