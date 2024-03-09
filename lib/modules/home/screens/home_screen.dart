@@ -15,7 +15,7 @@ import 'package:finwise/core/widgets/custom_refresh_indicator.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
@@ -24,12 +24,14 @@ import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/home/screens/data_webview_screen.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -98,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
           child: Observer(builder: (context) {
             return SingleChildScrollView(
               controller: widget.scrollController,
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   ListView(
@@ -239,7 +242,40 @@ class _HomeScreenState extends State<HomeScreen>
                         Navigator.pushNamed(context, RouteName.finance))
               ],
             ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    ColorConstant.primary,
+                    ColorConstant.secondary,
+                  ],
+                  stops: [0, 1],
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.zero,
+              child: TextButton(
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(0),
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+                ),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DataWebViewScreen(),
+                  ),
+                ),
+                child: Text(
+                  'Get Insights',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
             const SizedBox(height: 12),
+
             // ---------- Content ----------
             RoundedContainer(
               child: Column(
