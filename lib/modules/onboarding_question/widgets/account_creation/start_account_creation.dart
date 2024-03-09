@@ -7,18 +7,15 @@ import 'package:finwise/modules/onboarding_question/widgets/full_height_containe
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class StartBudgeting extends StatefulWidget {
-  const StartBudgeting({
-    super.key,
-  });
+class StartAccountCreation extends StatefulWidget {
+  const StartAccountCreation({super.key});
 
   @override
-  State<StartBudgeting> createState() => _StartBudgetingState();
+  State<StartAccountCreation> createState() => _StartAccountCreationState();
 }
 
-class _StartBudgetingState extends State<StartBudgeting> {
+class _StartAccountCreationState extends State<StartAccountCreation> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
-
   @override
   Widget build(BuildContext context) {
     return FullHeightContainer(
@@ -26,17 +23,18 @@ class _StartBudgetingState extends State<StartBudgeting> {
         children: [
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconHelper.getSVGDefault(
-                  SVGName.pandaFinancialSnapshot,
+                  SVGName.pandaExcited,
                 ),
                 const SizedBox(
                   height: 32,
                 ),
                 const Text(
-                  'Budgeting offers a range of benefits that contribute to your financial well-being.',
+                  '🎉 Congratulations on completing your onboarding! 🎉',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 24,
@@ -49,7 +47,8 @@ class _StartBudgetingState extends State<StartBudgeting> {
                   height: 8,
                 ),
                 const Text(
-                  "💡 Helps You Work Towards Long-Term Goals \n🚀 Gives You Control of Your Finances \n💳 Ensures You Only Spend What You Can Afford \n💰 Helps You Save Money \n😌 Reduces Stress",
+                  "Your dedication to this process is the first step towards achieving your financial dreams. We're here to support and guide you every step of the way. Let's embark on this exciting journey together!",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16,

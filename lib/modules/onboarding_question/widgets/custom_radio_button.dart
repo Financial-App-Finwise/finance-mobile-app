@@ -61,7 +61,7 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
                             borderRadius: BorderRadius.circular(12),
                           )
                         : BoxDecoration(
-                            color: Color(0xECFDFF80),
+                            color: const Color(0xFFECFDFF).withOpacity(0.5),
                             border: Border.all(
                               color: ColorConstant.secondary,
                             ),

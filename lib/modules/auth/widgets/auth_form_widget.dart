@@ -13,6 +13,7 @@ class FormWidget extends StatefulWidget {
     this.onChanged,
     this.validator,
     this.onEditingComplete,
+    this.whiteBackground,
   });
 
   // final Color backgroundColor;
@@ -23,6 +24,7 @@ class FormWidget extends StatefulWidget {
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
   final void Function()? onEditingComplete;
+  final bool? whiteBackground;
 
   @override
   State<FormWidget> createState() => _FormWidgetState();
@@ -35,10 +37,13 @@ class _FormWidgetState extends State<FormWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: ColorConstant.backgroundColor,
+        color: widget.whiteBackground == null
+            ? ColorConstant.backgroundColor
+            : widget.whiteBackground!
+                ? ColorConstant.white
+                : ColorConstant.backgroundColor,
       ),
       child: TextFormField(
-        
         textAlignVertical: TextAlignVertical.center,
         style: AuthScreenTextStyle.formText,
         controller: widget.controller,
@@ -60,7 +65,7 @@ class _FormWidgetState extends State<FormWidget> {
                     widget.obscureText
                         ? Icons.visibility
                         : Icons.visibility_off,
-                        size: 10,
+                    size: 10,
                   ),
                 )
               : const SizedBox(),

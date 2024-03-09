@@ -4,6 +4,7 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/modules/onboarding_question/models/budgeting_model.dart';
 import 'package:finwise/modules/onboarding_question/models/spending_model.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
 import 'package:finwise/modules/onboarding_question/widgets/custom_drag_input.dart';
 import 'package:finwise/modules/onboarding_question/widgets/custom_question_text.dart';
@@ -11,34 +12,19 @@ import 'package:finwise/modules/onboarding_question/widgets/custom_slider_input.
 import 'package:finwise/modules/onboarding_question/widgets/time_peroid_input.dart';
 import 'package:finwise/modules/onboarding_question/widgets/tip_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class MainBudgeting extends StatefulWidget {
-  final VoidCallback previousPage;
-  final VoidCallback nextPage;
-  final int currentPage;
-  final int maxPage;
-
-  // Financial Snapshot
-  final SpendingModel income;
-
-  // Budgeting
-  final BudgetingModel budgeting;
-
-  const MainBudgeting({
-    super.key,
-    required this.previousPage,
-    required this.nextPage,
-    required this.currentPage,
-    required this.maxPage,
-    required this.income,
-    required this.budgeting,
-  });
+  const MainBudgeting({super.key});
 
   @override
   State<MainBudgeting> createState() => _MainBudgetingState();
 }
 
 class _MainBudgetingState extends State<MainBudgeting> {
+  late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +39,7 @@ class _MainBudgetingState extends State<MainBudgeting> {
                     SizedBox(
                       width: double.infinity,
                       child: CustomProgressBar(
-                        value: widget.currentPage / widget.maxPage,
+                        value: store.budgetingIndex / store.budgetingMaxPage,
                         gradient1: ColorConstant.secondary,
                         gradient2: ColorConstant.primary,
                       ),
@@ -87,7 +73,7 @@ class _MainBudgetingState extends State<MainBudgeting> {
             const SizedBox(
               height: 20,
             ),
-            ContinueButton(nextPage: widget.nextPage)
+            ContinueButton(nextPage: store.nextPage)
           ],
         ),
       ),
@@ -95,12 +81,16 @@ class _MainBudgetingState extends State<MainBudgeting> {
   }
 
   Widget _getCurrentWidget() {
-    switch (widget.currentPage) {
-      case 1:
-        return _idealBudget();
-      default:
-        return Container();
-    }
+    return Observer(builder: (context) {
+      int budgetingIndex = store.budgetingIndex;
+
+      switch (budgetingIndex) {
+        case 1:
+          return _idealBudget();
+        default:
+          return Container();
+      }
+    });
   }
 
   Widget _idealBudget() {
@@ -111,17 +101,23 @@ class _MainBudgetingState extends State<MainBudgeting> {
         const SizedBox(
           height: 32,
         ),
-        _goalOverviewCard(1000, 500),
+        Observer(builder: (context) {
+          double incomeAfterBudget = store.incomeAfterBudget;
+          double incomeAmount = store.incomeAmount;
+
+          return _goalOverviewCard(
+            incomeAmount.toInt(),
+            incomeAfterBudget.toInt(),
+          );
+        }),
         const SizedBox(
           height: 24,
         ),
         TimePeroidInput(
           changeType: (type) {
-            setState(() {
-              widget.budgeting.type = type;
-            });
+            store.budgetingType = type;
           },
-          selectedType: widget.budgeting.type,
+          selectedType: store.budgetingType,
         ),
         const SizedBox(
           height: 24,
@@ -131,11 +127,11 @@ class _MainBudgetingState extends State<MainBudgeting> {
         ),
         _titleDragInput(
           'Housing',
-          widget.budgeting.housing,
+          store.housing,
           (value) {
             setState(
               () {
-                widget.budgeting.housing = value;
+                store.housing = value;
               },
             );
           },
@@ -145,11 +141,11 @@ class _MainBudgetingState extends State<MainBudgeting> {
         ),
         _titleDragInput(
           'Food',
-          widget.budgeting.food,
+          store.food,
           (value) {
             setState(
               () {
-                widget.budgeting.food = value;
+                store.food = value;
               },
             );
           },
@@ -159,11 +155,11 @@ class _MainBudgetingState extends State<MainBudgeting> {
         ),
         _titleDragInput(
           'Utilities',
-          widget.budgeting.utilities,
+          store.utilities,
           (value) {
             setState(
               () {
-                widget.budgeting.utilities = value;
+                store.utilities = value;
               },
             );
           },
@@ -171,13 +167,23 @@ class _MainBudgetingState extends State<MainBudgeting> {
         const SizedBox(
           height: 24,
         ),
-        const TipText(
-          title:
-              "Congratulations! You've unlocked \$40 in monthly by sticking to your budget plan.",
-          description:
-              "Your disciplined budgeting is not just about numbers; it's about achieving your goals and celebrating your financial victories!",
-          icon: '🎉',
-        ),
+        Observer(builder: (context) {
+          return store.incomeAfterBudget >= 0
+              ? TipText(
+                  title:
+                      "Congratulations! You've unlocked \$${store.incomeAfterBudget.toInt()} in monthly by sticking to your budget plan.",
+                  description:
+                      "Your disciplined budgeting is not just about numbers; it's about achieving your goals and celebrating your financial victories!",
+                  icon: '🎉',
+                )
+              : const TipText(
+                  title:
+                      "Adjust and Conquer! It seems you've exceeded your budget this month.",
+                  description:
+                      "No worries! Learn from this experience, make adjustments, and stay committed to your financial goals. Every setback is an opportunity for a comeback! 🔄💡",
+                  icon: '🚨️',
+                );
+        }),
       ],
     );
   }
@@ -263,7 +269,7 @@ class _MainBudgetingState extends State<MainBudgeting> {
                       letterSpacing: 1,
                       color: ColorConstant.primary,
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

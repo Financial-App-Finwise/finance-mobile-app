@@ -2,44 +2,26 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/modules/onboarding_question/models/spending_model.dart';
 import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
 import 'package:finwise/modules/onboarding_question/widgets/custom_question_text.dart';
-import 'package:finwise/modules/onboarding_question/widgets/custom_text_input.dart';
+import 'package:finwise/modules/onboarding_question/widgets/custom_number_input.dart';
 import 'package:finwise/modules/onboarding_question/widgets/time_peroid_input.dart';
 import 'package:finwise/modules/onboarding_question/widgets/tip_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class MainFinanceSnapshot extends StatefulWidget {
-  final VoidCallback previousPage;
-  final VoidCallback nextPage;
-  final int currentPage;
-  final int maxPage;
-
-  // Net worth
-  final TextEditingController netWorth;
-
-  // Monthly expense
-  final SpendingModel expense;
-
-  // Income
-  final SpendingModel income;
-
-  MainFinanceSnapshot({
-    super.key,
-    required this.previousPage,
-    required this.nextPage,
-    required this.currentPage,
-    required this.maxPage,
-    required this.netWorth,
-    required this.expense,
-    required this.income,
-  });
+  const MainFinanceSnapshot({super.key});
 
   @override
   State<MainFinanceSnapshot> createState() => _MainFinanceSnapshotState();
 }
 
 class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
+  late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +36,8 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
                     SizedBox(
                       width: double.infinity,
                       child: CustomProgressBar(
-                        value: widget.currentPage / widget.maxPage,
+                        value: store.financialSnapshotIndex /
+                            store.financialSnapshotMaxPage,
                         gradient1: ColorConstant.secondary,
                         gradient2: ColorConstant.primary,
                       ),
@@ -88,7 +71,7 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
             const SizedBox(
               height: 20,
             ),
-            ContinueButton(nextPage: widget.nextPage)
+            ContinueButton(nextPage: store.nextPage)
           ],
         ),
       ),
@@ -96,16 +79,20 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
   }
 
   Widget _getCurrentWidget() {
-    switch (widget.currentPage) {
-      case 1:
-        return _netWorth();
-      case 2:
-        return _expense();
-      case 3:
-        return _income();
-      default:
-        return Container();
-    }
+    return Observer(builder: (context) {
+      int financialSnapshotIndex = store.financialSnapshotIndex;
+
+      switch (financialSnapshotIndex) {
+        case 1:
+          return _netWorth();
+        case 2:
+          return _expense();
+        case 3:
+          return _income();
+        default:
+          return Container();
+      }
+    });
   }
 
   Widget _netWorth() {
@@ -116,10 +103,11 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
         const SizedBox(
           height: 32,
         ),
-        CustomTextInput(
+        CustomNumberInput(
           label: 'Net worth',
           hintText: '\$ 2000',
-          controller: widget.netWorth,
+          controller: store.networth,
+          isMoney: true,
         ),
         const SizedBox(
           height: 24,
@@ -144,23 +132,22 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
         ),
         TimePeroidInput(
           changeType: (type) {
-            setState(() {
-              widget.expense.type = type;
-            });
+            store.expense = type;
           },
-          selectedType: widget.expense.type,
+          selectedType: store.expense,
         ),
         const SizedBox(
           height: 24,
         ),
-        CustomTextInput(
-          label: widget.expense.type == 'Daily'
+        CustomNumberInput(
+          label: store.expense.type == 'Daily'
               ? 'Daily expense'
-              : widget.expense.type == 'Weekly'
+              : store.expense.type == 'Weekly'
                   ? 'Weekly expense'
                   : 'Monthly expense',
           hintText: '\$ 2000',
-          controller: widget.expense.controller,
+          controller: store.expense.controller,
+          isMoney: true,
         ),
         const SizedBox(
           height: 24,
@@ -185,23 +172,22 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
         ),
         TimePeroidInput(
           changeType: (type) {
-            setState(() {
-              widget.income.type = type;
-            });
+            store.income = type;
           },
-          selectedType: widget.income.type,
+          selectedType: store.income,
         ),
         const SizedBox(
           height: 24,
         ),
-        CustomTextInput(
-          label: widget.income.type == 'Daily'
+        CustomNumberInput(
+          label: store.income.type == 'Daily'
               ? 'Daily income'
-              : widget.income.type == 'Weekly'
+              : store.income.type == 'Weekly'
                   ? 'Weekly income'
                   : 'Monthly income',
           hintText: '\$ 2000',
-          controller: widget.income.controller,
+          controller: store.income.controller,
+          isMoney: true,
         ),
         const SizedBox(
           height: 24,

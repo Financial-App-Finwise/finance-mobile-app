@@ -3,54 +3,26 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
 import 'package:finwise/modules/onboarding_question/widgets/custom_radio_button.dart';
-import 'package:finwise/modules/onboarding_question/widgets/custom_text_input.dart';
+import 'package:finwise/modules/onboarding_question/widgets/custom_number_input.dart';
 import 'package:finwise/modules/onboarding_question/widgets/tip_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class MainPersonalQuestion extends StatefulWidget {
-  final VoidCallback previousPage;
-  final VoidCallback nextPage;
-  final int currentPage;
-  final int maxPage;
-
-  // Gender
-  final void Function(RadioButtonModel) selectGender;
-  final RadioButtonModel selectedGender;
-
-  // Age
-  final TextEditingController ageController;
-
-  // Martial Status
-  final void Function(RadioButtonModel) selectMartialStatus;
-  final RadioButtonModel selectedMartialStatus;
-
-  // Profession
-  final void Function(RadioButtonModel) selectProfression;
-  final RadioButtonModel selectedProfression;
-
-  const MainPersonalQuestion({
-    super.key,
-    required this.previousPage,
-    required this.nextPage,
-    required this.currentPage,
-    required this.maxPage,
-    required this.selectGender,
-    required this.selectedGender,
-    required this.ageController,
-    required this.selectMartialStatus,
-    required this.selectedMartialStatus,
-    required this.selectProfression,
-    required this.selectedProfression,
-  });
+  const MainPersonalQuestion({super.key});
 
   @override
   State<MainPersonalQuestion> createState() => _MainPersonalQuestionState();
 }
 
 class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
+  late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +37,8 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
                     SizedBox(
                       width: double.infinity,
                       child: CustomProgressBar(
-                        value: widget.currentPage / widget.maxPage,
+                        value: store.personalQuestionIndex /
+                            store.personalQuestionMaxPage,
                         gradient1: ColorConstant.secondary,
                         gradient2: ColorConstant.primary,
                       ),
@@ -99,7 +72,15 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
             const SizedBox(
               height: 20,
             ),
-            ContinueButton(nextPage: widget.nextPage)
+            Observer(builder: (context) {
+              List<bool>? checkContinue =
+                  store.checkContinue['personalQuestion'];
+
+              print('llll ${store.personalQuestionIndex} | ${store.age.text}');
+              return checkContinue![store.personalQuestionIndex - 1]
+                  ? ContinueButton(nextPage: store.nextPage)
+                  : Text('Continue');
+            }),
           ],
         ),
       ),
@@ -107,24 +88,30 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
   }
 
   Widget _getCurrentWidget() {
-    switch (widget.currentPage) {
-      case 1:
-        return _gender();
-      case 2:
-        return _age();
-      case 3:
-        return _martialStatus();
-      case 4:
-        return _profession();
-      default:
-        return Container();
-    }
+    return Observer(builder: (context) {
+      int personalQuestionIndex = store.personalQuestionIndex;
+
+      switch (personalQuestionIndex) {
+        case 1:
+          return _gender();
+        case 2:
+          return _age();
+        case 3:
+          return _martialStatus();
+        case 4:
+          return _profession();
+        default:
+          return Container();
+      }
+    });
   }
 
   Widget _gender() {
     return CustomRadioButton(
-      selectedButton: widget.selectedGender,
-      setButton: widget.selectGender,
+      selectedButton: store.gender,
+      setButton: (gender) {
+        store.gender = gender;
+      },
       list: [
         RadioButtonModel(
           'Female',
@@ -168,10 +155,10 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
           const SizedBox(
             height: 32,
           ),
-          CustomTextInput(
+          CustomNumberInput(
             label: 'Age',
             hintText: '20 year old',
-            controller: widget.ageController,
+            controller: store.age,
           ),
           const SizedBox(
             height: 24,
@@ -190,7 +177,10 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
     return Column(
       children: [
         CustomRadioButton(
-          setButton: widget.selectMartialStatus,
+          selectedButton: store.martialStatus,
+          setButton: (status) {
+            store.martialStatus = status;
+          },
           question: 'What is your martial status',
           list: [
             RadioButtonModel('Married'),
@@ -198,7 +188,6 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
             RadioButtonModel('In relationship'),
             RadioButtonModel('I prefer not to say'),
           ],
-          selectedButton: widget.selectedMartialStatus,
         ),
         const SizedBox(
           height: 20,
@@ -216,7 +205,10 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
     return Column(
       children: [
         CustomRadioButton(
-          setButton: widget.selectProfression,
+          selectedButton: store.profression,
+          setButton: (profession) {
+            store.profression = profession;
+          },
           question: 'Which stage do you resonate with the most?',
           list: [
             RadioButtonModel('Student'),
@@ -226,7 +218,6 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
             RadioButtonModel('Retired'),
             RadioButtonModel('I prefer not to say'),
           ],
-          selectedButton: widget.selectedProfression,
         ),
         const SizedBox(
           height: 20,

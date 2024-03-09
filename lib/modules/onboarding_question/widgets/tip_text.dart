@@ -21,7 +21,7 @@ class TipText extends StatelessWidget {
         horizontal: 16,
       ),
       decoration: BoxDecoration(
-        color: Color(0xFF25CBEB1A),
+        color: const Color(0xFF25CBEB).withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -41,11 +41,12 @@ class TipText extends StatelessWidget {
           ),
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     fontSize: 14,
                     letterSpacing: 1,
                     height: 1.8,
