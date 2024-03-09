@@ -42,6 +42,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     Future.delayed(Duration.zero, () async {
       await _readAll();
     });
+    store.setUpReaction();
     store.initialize();
   }
 
@@ -59,12 +60,6 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildBody() {
     return Observer(
       builder: (context) => GeneralStickyHeaderLayout(
         title: 'My Smart Goal',
@@ -74,10 +69,6 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           ColorConstant.smartGoalLight,
           ColorConstant.smartGoalThick,
         ]),
-        centerContentPadding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
-        ),
         onNotification: (notification) {
           if (notification is ScrollEndNotification) {
             if (notification.metrics.pixels ==
@@ -88,9 +79,12 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           }
           return true;
         },
+        centerContentPadding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
         centerContent: _buildCenterContent(),
-        mainContent: _buildLoadedData(),
-        // mainContent: _buildNestedScrollView(),
+        mainContent: _buildContent(),
       ),
     );
   }
@@ -125,11 +119,16 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               Expanded(
                 child: DateTextFieldWidget(
                   onDaySelected: ((selectedDay, focusedDay) {
+                    // print(selectedDay);
                     setState(() {
                       _startDayController.text = UIHelper.getDateFormat(
                           selectedDay.toString(), 'MMM dd, yyyy');
-                      store.startDate = selectedDay;
                     });
+                    store.startDate = selectedDay;
+                    // if (store.filteredSmartGoal[store.queryParemeter]!.items
+                    //     .isEmpty) {
+                    //   store.readByPage(refreshed: true);
+                    // }
                   }),
                   hintText: 'Start Date',
                   controller: _startDayController,
@@ -141,8 +140,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                     setState(() {
                       _endDayController.text = UIHelper.getDateFormat(
                           selectedDay.toString(), 'MMM dd, yyyy');
-                      store.endDate = selectedDay;
                     });
+                    store.endDate = selectedDay;
                   }),
                   hintText: 'End Date',
                   controller: _endDayController,
@@ -157,48 +156,6 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             ],
           );
   }
-
-  // Widget _buildNestedScrollView() {
-  //   return Column(
-  //     children: [
-  //       Expanded(
-  //         child: NestedScrollView(
-  //           physics: ScrollPhysics(parent: BouncingScrollPhysics()),
-  //           headerSliverBuilder:
-  //               (BuildContext context, bool innerBoxIsScrolled) {
-  //             return <Widget>[
-  //               SliverAppBar(
-  //                 automaticallyImplyLeading: false,
-  //                 backgroundColor: Colors.amber,
-  //                 toolbarHeight: 150,
-  //                 expandedHeight: 300,
-  //                 pinned: true,
-  //                 flexibleSpace: FlexibleSpaceBar(
-  //                   expandedTitleScale: 1,
-  //                   titlePadding: EdgeInsets.zero,
-  //                   title: _buildSummary(),
-  //                 ),
-  //               ),
-  //             ];
-  //           },
-  //           body: Column(
-  //             children: [
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //               Text('hello'),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildCenterOfGrid() {
     return Row(
@@ -234,7 +191,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 store.year--;
                 await store.readYearly();
               },
-              child: Icon(Icons.keyboard_arrow_left),
+              child: const Icon(Icons.keyboard_arrow_left),
             ),
             const SizedBox(width: 16),
             GestureDetector(
@@ -242,7 +199,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 store.year++;
                 await store.readYearly();
               },
-              child: Icon(Icons.keyboard_arrow_right),
+              child: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
         )
@@ -325,7 +282,8 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Total SMART Goal', style: SmartGoalTextStyle.totalTitle),
-              Text('${store.filteredSmartGoal[store.queryParemeter]!.items.length}',
+              Text(
+                  '${store.filteredSmartGoal[store.queryParemeter]!.items.length}',
                   style: SmartGoalTextStyle.totalNumber),
             ],
           ),
@@ -454,7 +412,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                     children: [
                       Text(item.name, style: SmartGoalTextStyle.getCardTitle()),
                       Text(
-                          'Due Date: ${UIHelper.getFormattedDate(item.endDate)}',
+                          'Due Date: ${UIHelper.getDateFormat(item.endDate, 'dd MMM, yyyy')}',
                           style: SmartGoalTextStyle.cardSubTitle),
                     ],
                   ),

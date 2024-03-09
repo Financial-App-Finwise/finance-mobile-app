@@ -4,7 +4,7 @@ import 'package:finwise/core/constants/text_style_constants/general_text_style_c
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
-import 'package:finwise/core/widgets/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
