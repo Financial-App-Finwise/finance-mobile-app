@@ -2,11 +2,13 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/layouts/stores/general_sticky_header_layout_store.dart';
 import 'package:finwise/core/models/screen_navigation_model/screen_model.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class GeneralStickyHeaderLayout extends StatefulWidget {
   const GeneralStickyHeaderLayout({
@@ -34,44 +36,59 @@ class GeneralStickyHeaderLayout extends StatefulWidget {
 }
 
 class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
-  final GlobalKey _centerContainerKey = GlobalKey();
-  final GlobalKey _headerContainerKey = GlobalKey();
-  final GlobalKey _titleContainerKey = GlobalKey();
+  final store = GeneralStickyHeaderLayoutStore();
 
-  double centerContainerHeight = 0;
-  double headerContainerHeight = 0;
-  double expandedHeight = 0;
-  double titleHeight = 0;
-  final double _depth = 32;
+  // -------------------- Container Key --------------------
+  final GlobalKey centerContainerKey = GlobalKey();
+  final GlobalKey headerContainerKey = GlobalKey();
+  final GlobalKey titleContainerKey = GlobalKey();
 
-  final ScrollController _scrollController = ScrollController();
-  bool _isAppBarExpanded = true;
+  final ScrollController scrollController = ScrollController();
+
+  // -------------------- Height --------------------
+  // late double centerContainerHeight = store.centerContainerHeight;
+  // double headerContainerHeight = 0;
+  // double expandedHeight = 0;
+  // double titleHeight = 0;
+  // bool isAppBarExpanded = true;
+
+  final double depth = 32;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setContainerHeight();
     });
-    _scrollController.addListener(() {
-      if (_scrollController.offset > titleHeight * 0.9) {
-        setState(() {
-          _isAppBarExpanded = false;
-        });
+    scrollController.addListener(() {
+      if (scrollController.offset > store.titleHeight * 0.9) {
+        store.isAppBarExpanded = false;
+        // setState(() {
+        //   isAppBarExpanded = false;
+        // });
       } else {
-        setState(() {
-          _isAppBarExpanded = true;
-        });
+        store.isAppBarExpanded = true;
+        // setState(() {
+        //   isAppBarExpanded = true;
+        // });
       }
     });
   }
 
   void _setContainerHeight() {
-    setState(() {
-      centerContainerHeight = _getContainerHeight(_centerContainerKey);
-      headerContainerHeight = _getContainerHeight(_headerContainerKey);
-      titleHeight = _getContainerHeight(_titleContainerKey);
-      expandedHeight = centerContainerHeight + headerContainerHeight - _depth;
-    });
+    store.centerContainerHeight = _getContainerHeight(centerContainerKey);
+    store.centerContainerHeight = _getContainerHeight(centerContainerKey);
+    store.headerContainerHeight = _getContainerHeight(headerContainerKey);
+    store.titleHeight = _getContainerHeight(titleContainerKey);
+    store.expandedHeight =
+        store.centerContainerHeight + store.headerContainerHeight - depth;
+
+    // setState(() {
+    //   centerContainerHeight = _getContainerHeight(centerContainerKey);
+    //   headerContainerHeight = _getContainerHeight(headerContainerKey);
+    //   titleHeight = _getContainerHeight(titleContainerKey);
+    //   expandedHeight = centerContainerHeight + headerContainerHeight - depth;
+    // });
   }
 
   double _getContainerHeight(GlobalKey containerKey) {
@@ -93,6 +110,7 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
     );
   }
 
+  // -------------------- Buttom Navigation Bar --------------------
   late final List<ScreenNavigationModel> _indexItems = [
     ScreenNavigationModel(
       screen: HomeScreen(),
@@ -199,162 +217,174 @@ class _GeneralStickyHeaderLayoutState extends State<GeneralStickyHeaderLayout> {
               children: [
                 _buildBackArrow(),
                 const SizedBox(width: 16),
-                Visibility(
-                  visible: !_isAppBarExpanded,
-                  child: Text(
-                    widget.title,
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
+                Observer(
+                  builder: (context) => Visibility(
+                      visible: !store.isAppBarExpanded,
+                      child: Text(
+                        widget.title,
+                        style: const TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )
                 ),
               ],
             ),
           ),
           Expanded(
             child: NestedScrollView(
-              controller: _scrollController,
+              controller: scrollController,
               headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
+                  (BuildContext context, bool innerBoxIsScrolled) => [
+                Observer(builder: (context) {
+                  return SliverAppBar(
                     automaticallyImplyLeading: false,
-                    toolbarHeight: centerContainerHeight > 0
-                        ? centerContainerHeight + 0 // plus padding
+                    toolbarHeight: store.centerContainerHeight > 0
+                        ? store.centerContainerHeight + 0 // plus padding
                         : 0, // equal to center height
-                    expandedHeight: expandedHeight > 0 ? expandedHeight : 300,
+                    expandedHeight: store.expandedHeight > 0 ? store.expandedHeight : 300,
                     // floating: true,
                     pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      expandedTitleScale: 1,
-                      titlePadding: EdgeInsets.zero,
-                      title: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: widget.gradient ??
-                              const LinearGradient(
-                                colors: [
-                                  Colors.blueAccent,
-                                  Colors.greenAccent,
-                                ],
-                                stops: [0.2, 0.8],
-                              ),
-                        ), //
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            // container for creating the size of stack
-                            Container(
-                              alignment: Alignment.topCenter,
-                              color: ColorConstant.backgroundColor,
-                              height: expandedHeight > 0 ? expandedHeight : 300,
-                            ),
-
-                            // Title container
-                            Positioned(
-                              key: _headerContainerKey,
-                              bottom: centerContainerHeight > _depth
-                                  ? centerContainerHeight - _depth
-                                  : 0,
-                              width: MediaQuery.of(context).size.width,
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                  left: 16,
-                                  right: 16,
-                                  bottom: _depth + 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  gradient: widget.gradient ??
-                                      const LinearGradient(
-                                        colors: [
-                                          Colors.blueAccent,
-                                          Colors.greenAccent,
-                                        ],
-                                        stops: [0.2, 0.8],
-                                      ),
-                                ),
-                                alignment: Alignment.topCenter,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: [
-                                    // const SizedBox(height: 12),
-                                    // Title and Description text
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // _buildBackArrow(),
-                                        // const SizedBox(height: 12),
-                                        Container(
-                                          key: _titleContainerKey,
-                                          child: Text(
-                                            widget.title,
-                                            style: const TextStyle(
-                                              fontFamily:
-                                                  FontConstant.balooThambi2,
-                                              color: Color(0xFFFFFFFF),
-                                              fontSize: 32,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 1,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          widget.description,
-                                          style: const TextStyle(
-                                            color: Color(0xFFFFFFFF),
-                                            fontSize: 14,
-                                            height: 1.5,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 0.75,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // center overview container
-                            Container(
-                              margin: const EdgeInsets.only(left: 16, right: 16
-                                  // bottom: 20,
-                                  ),
-                              padding: widget.centerContentPadding ??
-                                  const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 12,
-                                  ),
-                              key: _centerContainerKey,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      color: ColorConstant.colorE9EAF1)),
-                              child: widget.centerContent,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ];
-              },
-              body: NotificationListener<ScrollNotification>(
-                onNotification: widget.onNotification,
-                child: Container(
-                  color: ColorConstant.backgroundColor,
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    // top: 16,
-                  ),
-                  child: widget.mainContent,
-                ),
-              ),
+                    flexibleSpace: _buildFlexibleSpace(),
+                  );
+                }),
+              ],
+              body: _buildNestedBody(),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFlexibleSpace() {
+    return FlexibleSpaceBar(
+      expandedTitleScale: 1,
+      titlePadding: EdgeInsets.zero,
+      title: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: widget.gradient ??
+              const LinearGradient(
+                colors: [
+                  Colors.blueAccent,
+                  Colors.greenAccent,
+                ],
+                stops: [0.2, 0.8],
+              ),
+        ), //
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            // ---------- Create the Stack Size ----------
+            Container(
+              alignment: Alignment.topCenter,
+              color: ColorConstant.backgroundColor,
+              height: store.expandedHeight > 0 ? store.expandedHeight : 300,
+            ),
+
+            // ---------- Title Container ----------
+            Positioned(
+              key: headerContainerKey,
+              bottom: store.centerContainerHeight > depth
+                  ? store.centerContainerHeight - depth
+                  : 0,
+              width: MediaQuery.of(context).size.width,
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: depth + 16,
+                ),
+                decoration: BoxDecoration(
+                  gradient: widget.gradient ??
+                      const LinearGradient(
+                        colors: [
+                          Colors.blueAccent,
+                          Colors.greenAccent,
+                        ],
+                        stops: [0.2, 0.8],
+                      ),
+                ),
+                alignment: Alignment.topCenter,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    // const SizedBox(height: 12),
+
+                    // // ---------- Title and Description ----------
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // _buildBackArrow(),
+                        // const SizedBox(height: 12),
+
+                        // ---------- Title ----------
+                        Container(
+                          key: titleContainerKey,
+                          child: Text(
+                            widget.title,
+                            style: const TextStyle(
+                              fontFamily: FontConstant.balooThambi2,
+                              color: Color(0xFFFFFFFF),
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+
+                        // ---------- Description ----------
+                        Text(
+                          widget.description,
+                          style: const TextStyle(
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 14,
+                            height: 1.5,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.75,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            // // ---------- Center Overview ----------
+            Container(
+              margin: const EdgeInsets.only(left: 16, right: 16
+                  // bottom: 20,
+                  ),
+              padding: widget.centerContentPadding ??
+                  const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 12,
+                  ),
+              key: centerContainerKey,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  border: Border.all(color: ColorConstant.colorE9EAF1)),
+              child: widget.centerContent,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNestedBody() {
+    return NotificationListener<ScrollNotification>(
+      onNotification: widget.onNotification,
+      child: Container(
+        color: ColorConstant.backgroundColor,
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          // top: 16,
+        ),
+        child: widget.mainContent,
       ),
     );
   }
