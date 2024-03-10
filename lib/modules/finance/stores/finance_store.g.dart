@@ -136,12 +136,36 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$updateLoadingAtom =
+      Atom(name: '_FinanceStoreBase.updateLoading', context: context);
+
+  @override
+  LoadingStatusEnum get updateLoading {
+    _$updateLoadingAtom.reportRead();
+    return super.updateLoading;
+  }
+
+  @override
+  set updateLoading(LoadingStatusEnum value) {
+    _$updateLoadingAtom.reportWrite(value, super.updateLoading, () {
+      super.updateLoading = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_FinanceStoreBase.read', context: context);
 
   @override
   Future<dynamic> read() {
     return _$readAsyncAction.run(() => super.read());
+  }
+
+  late final _$postAsyncAction =
+      AsyncAction('_FinanceStoreBase.post', context: context);
+
+  @override
+  Future<bool> post(FinancePost data) {
+    return _$postAsyncAction.run(() => super.post(data));
   }
 
   late final _$updateAsyncAction =
@@ -176,6 +200,7 @@ period: ${period},
 isIncome: ${isIncome},
 incomeFinance: ${incomeFinance},
 expenseFinance: ${expenseFinance},
+updateLoading: ${updateLoading},
 isLoading: ${isLoading},
 dollarAccount: ${dollarAccount}
     ''';

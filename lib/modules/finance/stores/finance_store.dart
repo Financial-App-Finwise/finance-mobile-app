@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/finance/models/finance_model.dart';
+import 'package:finwise/modules/finance/models/finance_post_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
@@ -126,18 +127,19 @@ abstract class _FinanceStoreBase with Store {
     }
   }
 
-  // -------------------- Update Total Balance --------------------
+  // -------------------- Create a Finance --------------------
   @action
-  Future<bool> update(double totalbalance) async {
-    debugPrint('--> START: update, finance');
+  Future<bool> post(FinancePost data) async {
+    debugPrint('--> START: post, finance');
     setLoadingStatus(LoadingStatusEnum.loading);
     bool success = false;
     try {
-      Response response = await ApiService.dio.put(
-        'myfinances/update-net-worth',
-        data: {'totalbalance': totalbalance},
+      Response response = await ApiService.dio.post(
+        'myfinances',
+        data: data.toJson(),
       );
-      if (response.statusCode == 200) {
+
+      if (response.statusCode == 201) {
         success = true;
         await read();
         setLoadingStatus(LoadingStatusEnum.done);
@@ -151,8 +153,75 @@ abstract class _FinanceStoreBase with Store {
       success = false;
       setLoadingStatus(LoadingStatusEnum.error);
     } finally {
+      debugPrint('<-- END: post, finance');
+    }
+    return success;
+  }
+
+  // -------------------- Update Total Balance --------------------
+  // Loading Status for Update
+  @observable
+  LoadingStatusEnum updateLoading = LoadingStatusEnum.none;
+
+  @action
+  Future<bool> update(double totalbalance) async {
+    debugPrint('--> START: update, finance');
+    updateLoading = LoadingStatusEnum.loading;
+
+    bool success = false;
+    try {
+      Response response = await ApiService.dio.put(
+        'myfinances/update-net-worth',
+        data: {'totalbalance': totalbalance},
+      );
+      if (response.statusCode == 200) {
+        success = true;
+        updateLoading = LoadingStatusEnum.done;
+        await read();
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        updateLoading = LoadingStatusEnum.error;
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      updateLoading = LoadingStatusEnum.error;
+    } finally {
       debugPrint('<-- END: update, finance');
     }
     return success;
+  }
+
+  // -------------------- Dispose --------------------
+  void dispose() {
+    loadingStatus = LoadingStatusEnum.none;
+    barChartLoading = LoadingStatusEnum.none;
+    finance = Finance(
+      data: FinanceData(
+        items: [],
+        topTransactions: [],
+        allTransactions: AllTransaction(today: [], yesterday: []),
+        total: [],
+      ),
+    );
+    period = 'this_month';
+    isIncome = 0;
+    incomeFinance = Finance(
+      data: FinanceData(
+        items: [],
+        topTransactions: [],
+        allTransactions: AllTransaction(today: [], yesterday: []),
+        total: [],
+      ),
+    );
+    expenseFinance = Finance(
+      data: FinanceData(
+        items: [],
+        topTransactions: [],
+        allTransactions: AllTransaction(today: [], yesterday: []),
+        total: [],
+      ),
+    );
   }
 }
