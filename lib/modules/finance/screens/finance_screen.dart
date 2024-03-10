@@ -74,6 +74,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
   Widget _buildCenterContent() {
     return Observer(builder: (context) {
       return ListView(
+        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         children: [
           Row(
@@ -101,7 +102,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
           // SizedBox(height: 10),
           TextButton(
             onPressed: () =>
-                Navigator.of(context).pushNamed(RouteName.financeUpdate),
+                Navigator.of(context).pushNamed(RouteName.financeEdit),
             style: ButtonStyle(
               padding: MaterialStateProperty.all(
                 const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
