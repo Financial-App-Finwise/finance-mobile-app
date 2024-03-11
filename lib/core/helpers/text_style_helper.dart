@@ -29,6 +29,7 @@ abstract class TextStyleHelper {
         fontSize: size ?? 14,
         fontWeight: FontWeight.w700,
         color: color ?? ColorConstant.mainText,
+        fontFamily: FontConstant.balooThambi2,
       );
 
   // ----- Home Screen -----
