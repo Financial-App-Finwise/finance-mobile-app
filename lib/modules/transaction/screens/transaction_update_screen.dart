@@ -9,20 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class TransactionCreateScreen extends StatefulWidget {
+class TransactionUpdateScreen extends StatefulWidget {
   final TransactionData transactionData;
 
-  const TransactionCreateScreen({
+  const TransactionUpdateScreen({
     super.key,
     required this.transactionData,
   });
 
   @override
-  State<TransactionCreateScreen> createState() =>
-      _TransactionCreateScreenState();
+  State<TransactionUpdateScreen> createState() =>
+      _TransactionUpdateScreenState();
 }
 
-class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
+class _TransactionUpdateScreenState extends State<TransactionUpdateScreen> {
   late final store = context.read<TransactionStore>();
   late final financeStore = context.read<FinanceStore>();
 

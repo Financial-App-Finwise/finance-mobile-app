@@ -3,90 +3,52 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/buttons/select_item_button.dart';
+import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
-import 'package:finwise/core/widgets/general_filter_bar/rect_filter_bar.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
-import 'package:finwise/modules/transaction/layouts/transaction_form_layout.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:finwise/modules/transaction/widgets/budget_plan_button/budget_plan_button.dart';
+import 'package:finwise/modules/transaction/widgets/smart_goal_button/select_smart_goal_widget.dart';
+import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class TransactionEditScreen extends StatefulWidget {
-  const TransactionEditScreen({super.key});
+class TransactionAddScreen extends StatefulWidget {
+  const TransactionAddScreen({super.key});
 
   @override
-  State<TransactionEditScreen> createState() => _TransactionEditScreenState();
+  State<TransactionAddScreen> createState() => _TransactionAddScreenState();
 }
 
-class _TransactionEditScreenState extends State<TransactionEditScreen> {
-  late final args =
-      ModalRoute.of(context)!.settings.arguments as TransactionData;
-
+class _TransactionAddScreenState extends State<TransactionAddScreen> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      await _readAll();
+    });
+  }
+
+  Future _readAll() async {
+    await context.read<SmartGoalStore>().readByPage();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TransactionFormLayout(
-      transactionData: args,
-      title: 'Edit Transaction',
-      canChangeType: false,
-      isIncome: args.isIncome,
-      expenseType: args.expenseType,
-      selectedUpcomingBillID: args.upcomingbillID ?? 0,
-      defaultBillName: '${args.upcomingbillID ?? 0}',
-      amount: args.amount,
-      buttonLabel: 'Edit Transaction',
-      onTap: () async {
-        int? selectedBudgetPlanId;
-        int? selectedUpcomingBillId;
-        int selectedCategoryId = 0;
-        // bool hasContributed = _selectedSmartGoals.isNotEmpty;
-
-        if (args.upcomingbillID != 0) {
-          selectedUpcomingBillId = args.upcomingbillID;
-          selectedCategoryId = args.categoryID;
-        } else if (args.budgetplanID != 0) {
-          selectedBudgetPlanId = args.budgetplanID;
-          selectedCategoryId = args.categoryID;
-        } else {
-          selectedCategoryId = args.categoryID;
-        }
-
-        bool success = await context.read<TransactionStore>().update(
-              TransactionData(
-                id: args.id,
-                categoryID: selectedCategoryId,
-                isIncome: _isIncome,
-                amount: double.parse(
-                  _isIncome
-                      ? _amountIncomeController.text
-                      : _amountExpenseController.text,
-                ),
-                // "hasContributed": 1,
-                upcomingbillID: selectedUpcomingBillId,
-                budgetplanID: selectedBudgetPlanId,
-                expenseType: args.expenseType,
-                date: args.date,
-                note: _noteController.text,
-              ),
-            );
-        if (success) {
-          await context.read<FinanceStore>().read();
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        }
-      },
-    );
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       backgroundColor: ColorConstant.backgroundColor,
@@ -148,7 +110,7 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
   // -------------------- Title --------------------
   Widget _buildTitle() {
     return const Text(
-      'Edit Transaction',
+      'Add Transaction',
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 32,
@@ -159,42 +121,51 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
   }
 
   // -------------------- Form --------------------
-  late bool _isIncome = args.isIncome;
+  bool _isIncome = true;
 
   Widget _buildMainContent() {
     return Container(
       alignment: Alignment.topLeft,
-      child: Column(children: [
-        GeneralFilterBarHeader(
-          items: [
-            FilterBarHeaderItem(title: 'Income', value: true),
-            FilterBarHeaderItem(title: 'Expense', value: false),
-          ],
-          onTap: (value) => setState(() => _isIncome = value),
-          currentValue: _isIncome,
-        ),
-        const SizedBox(height: 20),
-        Expanded(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                _isIncome ? _buildIncomeForm() : _buildExpenseForm(),
-              ],
-            ),
+      child: Column(
+        children: [
+          GeneralFilterBarHeader(
+            items: [
+              FilterBarHeaderItem(title: 'Income', value: true),
+              FilterBarHeaderItem(title: 'Expense', value: false),
+            ],
+            onTap: (value) => setState(() => _isIncome = value),
+            currentValue: _isIncome,
           ),
-        )
-      ]),
+          const SizedBox(height: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  _isIncome ? _buildIncomeForm() : _buildExpenseForm(),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+      // child: GeneralFilterBar(
+      //   physics: BouncingScrollPhysics(),
+      //   filterTitles: ['Income', 'Expense'],
+      //   topSpace: 20,
+      //   children: [
+      //     _buildIncomeForm(),
+      //     _buildExpenseForm(),
+      //   ],
+      // ),
     );
   }
 
   // -------------------- Add Income --------------------
-  late final _amountIncomeController =
-      TextEditingController(text: args.amount.toString());
-
+  final _amountIncomeController = TextEditingController();
   Widget _buildIncomeForm() {
     return Column(children: [
-      _buildTotalTextField(controller: _amountExpenseController),
+      _buildTotalTextField(controller: _amountIncomeController),
       const SizedBox(height: 24),
       _buildCategorySection(),
       const SizedBox(height: 24),
@@ -206,18 +177,44 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
     ]);
   }
 
-  List<TextEditingController> _goalControllers = [];
+  late List<TextEditingController> _goalControllers = [];
+  late List<SmartGoalData> _selectedSmartGoals = [];
 
   Widget _buildGoalContributionSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Goal Contribution (Optional)',
-          style: TextStyleHelper.getw500size(
-            18,
-            color: ColorConstant.black,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Goal Contribution (Optional)',
+              style: TextStyleHelper.getw500size(
+                18,
+                color: ColorConstant.black,
+              ),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SelectSmartGoalWidget(
+                    onItemSelected: (smartGoalData) {
+                      setState(() {
+                        if (_selectedSmartGoals.every(
+                            (element) => element.id != smartGoalData.id)) {
+                          _selectedSmartGoals.add(smartGoalData);
+                          _goalControllers.add(TextEditingController());
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ),
+              child: IconHelper.getSVG(SVGName.addSquare,
+                  color: ColorConstant.income),
+            ),
+          ],
         ),
         const SizedBox(height: 2),
         Text(
@@ -228,21 +225,27 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
           ).copyWith(letterSpacing: 0.75),
         ),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 2,
-            itemBuilder: (_, index) {
-              _goalControllers.add(TextEditingController());
-              return _buildGoalContributionItem(index, title: 'Vacation');
-            },
-            separatorBuilder: (_, index) => const SizedBox(height: 12),
+        Visibility(
+          visible: _selectedSmartGoals.isNotEmpty,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _selectedSmartGoals.length,
+              itemBuilder: (_, index) {
+                return _buildGoalContributionItem(
+                  index,
+                  title: _selectedSmartGoals[index].name,
+                  smartGoalData: _selectedSmartGoals[index],
+                );
+              },
+              separatorBuilder: (_, index) => const SizedBox(height: 12),
+            ),
           ),
         ),
       ],
@@ -252,10 +255,12 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
   Widget _buildGoalContributionItem(
     int index, {
     String title = '',
+    required SmartGoalData smartGoalData,
   }) {
     return Row(
       children: [
-        Expanded(
+        SizedBox(
+          width: 120,
           child: Text(
             title,
             style:
@@ -294,27 +299,43 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
             style: TextStyleHelper.getw500size(12, color: ColorConstant.income),
           ),
         ),
+        const SizedBox(width: 12),
+        CustomIconButton(
+          onPressed: () {
+            setState(() {
+              _selectedSmartGoals.remove(smartGoalData);
+            });
+          },
+          icon: IconHelper.getSVG(SVGName.close, color: ColorConstant.expense),
+        ),
       ],
     );
   }
 
   // -------------------- Add Expense --------------------
+  late String _expenseType = 'General';
+
+  final _amountExpenseController = TextEditingController();
   Widget _buildExpenseForm() {
-    return RectFilterBar(
-      physics:
-          const BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
-      fontSize: 13,
-      filterTitles: ['General', 'Budget Plan', 'Upcoming Bill'],
+    return Column(
       children: [
-        _buildExpenseGeneral(),
-        _buildExpenseGeneral(),
+        RectFilterBarHeader(
+          physics: const BouncingScrollPhysics(),
+          items: [
+            FilterBarHeaderItem(title: 'General', value: 'General'),
+            FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
+            FilterBarHeaderItem(title: 'Upcoming Bill', value: 'Upcoming Bill'),
+          ],
+          currentValue: _expenseType,
+          onTap: (value) => setState(() {
+            _expenseType = value;
+            _amountExpenseController.clear();
+          }),
+        ),
         _buildExpenseGeneral(),
       ],
     );
   }
-
-  late final _amountExpenseController =
-      TextEditingController(text: args.amount.toString());
 
   Widget _buildExpenseGeneral() {
     return Column(
@@ -322,10 +343,10 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
         _buildTotalTextField(
           color: ColorConstant.expense,
           controller: _amountExpenseController,
+          readOnly: _expenseType == 'Upcoming Bill',
         ),
         const SizedBox(height: 24),
-        _buildCategorySection(
-            color: ColorConstant.expense, svgName: SVGName.expense),
+        _buildItemSelection(),
         const SizedBox(height: 24),
         _buildDateField(),
         const SizedBox(height: 24),
@@ -334,13 +355,31 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
     );
   }
 
+  Widget _buildItemSelection() {
+    switch (_expenseType) {
+      case "Budget Plan":
+        return _buildBudgetplanSelection();
+      case "Upcoming Bill":
+        return _buildUpcomingBillSelection();
+      default:
+        return _buildCategorySection(
+            color: ColorConstant.expense, svgName: SVGName.expense);
+    }
+  }
+
   // -------------------- Total Amount Text Field --------------------
   Widget _buildTotalTextField({
     Color color = ColorConstant.income,
     TextEditingController? controller,
+    bool readOnly = false,
   }) {
     return TextFormField(
+      readOnly: readOnly,
       controller: controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+      ],
       decoration: InputDecoration(
         isDense: true,
         fillColor: Colors.white,
@@ -389,8 +428,76 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
     );
   }
 
-  // -------------------- Date Field --------------------
-  DateTime currentDate = DateTime.now();
+  // -------------------- Budget Plan Selection --------------------
+  late BudgetPlanData _selectedBudgetPlan = BudgetPlanData();
+
+  Widget _buildBudgetplanSelection() {
+    return BudgetPlanButton(
+      onItemSelected: (budgetPlanData) {
+        setState(() {
+          _selectedBudgetPlan = budgetPlanData;
+        });
+      },
+    );
+  }
+
+  // TODO: budplan, general, upcoming bill, select only one
+
+  // -------------------- Upcoming Bill Selection --------------------
+  late UpcomingBillData _selectedUpcomingBill = UpcomingBillData();
+
+  Widget _buildUpcomingBillSelection() {
+    return UpcomingBillButton(
+      currentItem: SelectItem<UpcomingBillData>(
+        pickedIcon: IconHelper.getSVG(SVGName.upcomingBill),
+        unpickedIcon: const SizedBox(),
+        item: UpcomingBillData(),
+      ),
+      onItemSelected: (upcomingBillData) {
+        setState(() {
+          _selectedUpcomingBill = upcomingBillData;
+          _amountExpenseController.text = upcomingBillData.amount.toString();
+        });
+      },
+    );
+  }
+
+  // Widget _buildCategoryFieldIcon({
+  //   String svgName = SVGName.earn,
+  //   Color color = ColorConstant.income,
+  // }) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(6),
+  //     decoration: BoxDecoration(
+  //       shape: BoxShape.circle,
+  //       color: color,
+  //     ),
+  //     child: IconHelper.getSVG(svgName, color: Colors.white),
+  //   );
+  // }
+
+  // Widget _buildCategoryFieldTitle() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         'Category',
+  //         style: TextStyleHelper.getw400size(12).copyWith(letterSpacing: 0.75),
+  //       ),
+  //       Text(
+  //         'Salary',
+  //         style: TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // Widget _buildCategoryFieldSuffix() {
+  //   return IconHelper.getSVG(SVGName.angleRight, color: ColorConstant.thin);
+  // }
+
+  // ---------- Date Field ----------
+  DateTime _currentDate = DateTime.now();
 
   Widget _buildDateField() {
     // return DateTextFieldWidget(
@@ -403,11 +510,12 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
         borderRadius: BorderRadius.circular(16),
       ),
       child: DateTextFieldWidget(
+        enable: false,
         hintText:
-            UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMMM, yyyy'),
+            UIHelper.getDateFormat(_currentDate.toString(), 'dd MMMM, yyyy'),
         hintStyle:
             TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
-        onDaySelected: ((selectedDay, focusedDay) => null),
+        onDaySelected: ((selectedDay, focusedDay) {}),
       ),
       // child: Row(
       //   children: [
@@ -424,7 +532,8 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
   }
 
   // -------------------- Note Text Field --------------------
-  late final _noteController = TextEditingController(text: args.note);
+  final _noteController = TextEditingController();
+
   Widget _buildNoteField() {
     return TextFormField(
       controller: _noteController,
@@ -447,36 +556,52 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
     );
   }
 
+  // -------------------- Post Data --------------------
   Widget _buildButton() {
     return GeneralBottomButton(
       onButtonTap: () async {
-        bool success = await context.read<TransactionStore>().update(
-              TransactionData(
-                id: args.id,
-                categoryID: _selectedCategory.id,
+        int? selectedBudgetPlanId;
+        int? selectedUpcomingBillId;
+        int selectedCategoryId = 0;
+        bool hasContributed = _selectedSmartGoals.isNotEmpty;
+
+        if (_selectedUpcomingBill.id != 0) {
+          selectedUpcomingBillId = _selectedUpcomingBill.id;
+          selectedCategoryId = _selectedUpcomingBill.categoryID;
+        } else if (_selectedBudgetPlan.id != 0) {
+          selectedBudgetPlanId = _selectedBudgetPlan.id;
+          selectedCategoryId = _selectedBudgetPlan.categoryID;
+        } else {
+          selectedCategoryId = _selectedCategory.id;
+        }
+
+        bool success = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => TransactionCreateScreen(
+              transactionData: TransactionData(
+                categoryID: selectedCategoryId,
                 isIncome: _isIncome,
-                amount: double.parse(
-                  _isIncome
-                      ? _amountIncomeController.text
-                      : _amountExpenseController.text,
-                ),
-                // "hasContributed": 1,
-                // upcomingbillID: null,
-                // budgetplanID: null,
-                expenseType: "General",
+                amount: double.parse(_isIncome
+                    ? _amountIncomeController.text
+                    : _amountExpenseController.text),
+                hasContributed: hasContributed,
+                upcomingbillID: selectedUpcomingBillId,
+                budgetplanID: selectedBudgetPlanId,
+                expenseType: _expenseType,
                 //Upcoming Bill', 'Budget Plan'
                 date: DateTime.now().toString(),
                 note: _noteController.text,
               ),
-            );
+            ),
+          ),
+        );
+
         if (success) {
-          await context.read<FinanceStore>().read();
-          if (mounted) {
-            Navigator.pop(context);
-          }
+          Navigator.pop(context);
         }
       },
-      buttonLabel: 'Edit transaction',
+      buttonLabel: 'Add transaction',
     );
   }
 }

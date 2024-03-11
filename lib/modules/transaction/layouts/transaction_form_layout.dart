@@ -3,20 +3,19 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/buttons/select_item_button.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
-import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
-import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
-import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:finwise/modules/transaction/widgets/budget_plan_button/budget_plan_button.dart';
 import 'package:finwise/modules/transaction/widgets/smart_goal_button/select_smart_goal_widget.dart';
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
@@ -28,20 +27,27 @@ class TransactionFormLayout extends StatefulWidget {
   late String title;
   late bool isIncome;
   late String expenseType;
-  late int defaultBillId;
+  late int selectedUpcomingBillID;
   late String defaultBillName;
   late double amount;
+  final TransactionData transactionData;
+  final bool canChangeType;
+
   late String buttonLabel;
+  final void Function() onTap;
 
   TransactionFormLayout({
     super.key,
+    required this.transactionData,
     this.title = '',
     this.isIncome = true,
     this.expenseType = 'General',
-    this.defaultBillId = 0,
+    this.selectedUpcomingBillID = 0,
     this.defaultBillName = '',
     this.amount = 0.0,
     this.buttonLabel = '',
+    required this.onTap,
+    this.canChangeType = true,
   });
 
   @override
@@ -147,6 +153,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
               FilterBarHeaderItem(title: 'Income', value: true),
               FilterBarHeaderItem(title: 'Expense', value: false),
             ],
+            readOnly: !widget.canChangeType,
             onTap: (value) => setState(() => _isIncome = value),
             currentValue: _isIncome,
           ),
@@ -337,18 +344,19 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     return Column(
       children: [
         RectFilterBarHeader(
-          physics: const BouncingScrollPhysics(),
-          items: [
-            FilterBarHeaderItem(title: 'General', value: 'General'),
-            FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
-            FilterBarHeaderItem(title: 'Upcoming Bill', value: 'Upcoming Bill'),
-          ],
-          currentValue: _expenseType,
-          onTap: (value) => setState(() {
-            _expenseType = value;
-            _amountExpenseController.clear();
-          }),
-        ),
+            physics: const BouncingScrollPhysics(),
+            items: [
+              FilterBarHeaderItem(title: 'General', value: 'General'),
+              FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
+              FilterBarHeaderItem(
+                  title: 'Upcoming Bill', value: 'Upcoming Bill'),
+            ],
+            currentValue: _expenseType,
+            readOnly: !widget.canChangeType,
+            onTap: (value) => setState(() {
+                  _expenseType = value;
+                  _amountExpenseController.clear();
+                })),
         _buildExpenseGeneral(),
       ],
     );
@@ -375,7 +383,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   Widget _buildItemSelection() {
     switch (_expenseType) {
       case "Budget Plan":
-        return Text('Budget plan');
+        return _buildBudgetplanSelection();
       case "Upcoming Bill":
         return _buildUpcomingBillSelection();
       default:
@@ -428,7 +436,9 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   // -------------------- Category Field --------------------
-  late CategoryData _selectedCategory = CategoryData();
+  late CategoryData _selectedCategory = CategoryData(
+    id: widget.transactionData.categoryID,
+  );
 
   Widget _buildCategorySection({
     Color color = ColorConstant.income,
@@ -446,80 +456,36 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   // -------------------- Budget Plan Selection --------------------
-  late BudgetPlanData _selectedBudgetPlan = BudgetPlanData();
-
-  Widget _buildBudgetplanSelection({
-    Color color = ColorConstant.income,
-    String svgName = SVGName.earn,
-  }) {
-    return CategoryButton(
-      setCategory: (categoryData) {
-        setState(() {
-          _selectedCategory = categoryData;
-        });
-      },
-      category: _selectedCategory,
-      showTip: false,
-    );
+  Widget _buildBudgetplanSelection() {
+    return BudgetPlanButton(onItemSelected: (item) {});
   }
 
   // TODO: budplan, general, upcoming bill, select only one
 
   // -------------------- Upcoming Bill Selection --------------------
-  late UpcomingBillData _selectedUpcomingBill = UpcomingBillData();
-
   Widget _buildUpcomingBillSelection() {
     return UpcomingBillButton(
+      currentItem: SelectItem<UpcomingBillData>(
+        pickedIcon:
+            IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
+        unpickedIcon:
+            IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
+        backgroundColor: ColorConstant.bill,
+        title: 'Upcoming Bill',
+        subTitle: 'upcoming bill id: ${widget.transactionData.upcomingbillID}',
+        itemPicked: true,
+        item: UpcomingBillData(),
+      ),
       onItemSelected: (upcomingBillData) {
         setState(() {
-          _selectedUpcomingBill = upcomingBillData;
           _amountExpenseController.text = upcomingBillData.amount.toString();
         });
       },
     );
   }
 
-  // Widget _buildCategoryFieldIcon({
-  //   String svgName = SVGName.earn,
-  //   Color color = ColorConstant.income,
-  // }) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(6),
-  //     decoration: BoxDecoration(
-  //       shape: BoxShape.circle,
-  //       color: color,
-  //     ),
-  //     child: IconHelper.getSVG(svgName, color: Colors.white),
-  //   );
-  // }
-
-  // Widget _buildCategoryFieldTitle() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         'Category',
-  //         style: TextStyleHelper.getw400size(12).copyWith(letterSpacing: 0.75),
-  //       ),
-  //       Text(
-  //         'Salary',
-  //         style: TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildCategoryFieldSuffix() {
-  //   return IconHelper.getSVG(SVGName.angleRight, color: ColorConstant.thin);
-  // }
-
-  // ---------- Date Field ----------
-  DateTime _currentDate = DateTime.now();
-
+  // -------------------- Date Field --------------------
   Widget _buildDateField() {
-    // return DateTextFieldWidget(
-    //   onDaySelected: ((selectedDay, focusedDay) => null),
-    // );
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       decoration: BoxDecoration(
@@ -528,8 +494,8 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
       ),
       child: DateTextFieldWidget(
         enable: false,
-        hintText:
-            UIHelper.getDateFormat(_currentDate.toString(), 'dd MMMM, yyyy'),
+        hintText: UIHelper.getDateFormat(
+            widget.transactionData.date.toString(), 'dd MMMM, yyyy'),
         hintStyle:
             TextStyleHelper.getw500size(14).copyWith(letterSpacing: 0.75),
         onDaySelected: ((selectedDay, focusedDay) {}),
@@ -549,11 +515,12 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   // -------------------- Note Text Field --------------------
-  final _noteController = TextEditingController();
+  late final noteController =
+      TextEditingController(text: widget.transactionData.note);
 
   Widget _buildNoteField() {
     return TextFormField(
-      controller: _noteController,
+      controller: noteController,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
@@ -576,46 +543,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   // -------------------- Post Data --------------------
   Widget _buildButton() {
     return GeneralBottomButton(
-      onButtonTap: () async {},
-      // onButtonTap: () async {
-      //   int? selectedBudgetPlanId;
-      //   int? selectedUpcomingBillId;
-      //   int selectedCategoryId = 0;
-      //   bool hasContributed = _selectedSmartGoals.isNotEmpty;
-
-      //   if (_selectedUpcomingBill.id != 0) {
-      //     selectedUpcomingBillId = _selectedUpcomingBill.id;
-      //     selectedCategoryId = _selectedUpcomingBill.categoryID;
-      //   } else if (_selectedBudgetPlan.id != 0) {
-      //     selectedBudgetPlanId = _selectedBudgetPlan.id;
-      //     selectedCategoryId = _selectedBudgetPlan.categoryID;
-      //   } else {
-      //     selectedCategoryId = _selectedCategory.id;
-      //   }
-
-      //   bool success = await context.read<TransactionStore>().post(
-      //         TransactionData(
-      //           categoryID: selectedCategoryId,
-      //           isIncome: _isIncome,
-      //           amount: double.parse(_isIncome
-      //               ? _amountIncomeController.text
-      //               : _amountExpenseController.text),
-      //           hasContributed: hasContributed,
-      //           upcomingbillID: selectedUpcomingBillId,
-      //           budgetplanID: selectedBudgetPlanId,
-      //           expenseType: _expenseType,
-      //           //Upcoming Bill', 'Budget Plan'
-      //           date: DateTime.now().toString(),
-      //           note: _noteController.text,
-      //         ),
-      //       );
-      //   if (success) {
-      //     await context.read<FinanceStore>().read();
-      //     if (mounted) {
-      //       Navigator.pop(context);
-      //     }
-      //   }
-      // },
+      onButtonTap: widget.onTap,
       buttonLabel: widget.buttonLabel,
     );
   }

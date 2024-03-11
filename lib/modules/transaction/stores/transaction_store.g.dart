@@ -104,6 +104,22 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
     });
   }
 
+  late final _$loadingCreateAtom =
+      Atom(name: '_TransactionStoreBase.loadingCreate', context: context);
+
+  @override
+  LoadingStatusEnum get loadingCreate {
+    _$loadingCreateAtom.reportRead();
+    return super.loadingCreate;
+  }
+
+  @override
+  set loadingCreate(LoadingStatusEnum value) {
+    _$loadingCreateAtom.reportWrite(value, super.loadingCreate, () {
+      super.loadingCreate = value;
+    });
+  }
+
   late final _$readByPageAsyncAction =
       AsyncAction('_TransactionStoreBase.readByPage', context: context);
 
@@ -192,6 +208,7 @@ transaction: ${transaction},
 filteredType: ${filteredType},
 filteredPeriod: ${filteredPeriod},
 filteredTransaction: ${filteredTransaction},
+loadingCreate: ${loadingCreate},
 isLoading: ${isLoading},
 queryParemeter: ${queryParemeter}
     ''';

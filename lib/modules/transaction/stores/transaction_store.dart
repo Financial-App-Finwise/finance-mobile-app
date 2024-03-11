@@ -124,11 +124,13 @@ abstract class _TransactionStoreBase with Store {
 // }
 
   // -------------------- Create a Transaction --------------------
+  @observable
+  LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
+
   @action
   Future<bool> post(TransactionData transactionData) async {
     debugPrint('--> START: post, transaction');
-    setLoadingStatus(LoadingStatusEnum.loading);
-    print(transactionData.toJson());
+    loadingCreate = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Response response = await ApiService.dio.post(
@@ -139,16 +141,16 @@ abstract class _TransactionStoreBase with Store {
       if (response.statusCode == 201) {
         success = true;
         await readByPage(refreshed: true);
-        setLoadingStatus(LoadingStatusEnum.done);
+        loadingCreate = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        loadingCreate = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      loadingCreate = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: post, transaction');
     }

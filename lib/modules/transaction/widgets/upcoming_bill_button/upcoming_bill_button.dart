@@ -7,10 +7,12 @@ import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
 
 class UpcomingBillButton extends StatefulWidget {
+  final SelectItem<UpcomingBillData> currentItem;
   final void Function(UpcomingBillData) onItemSelected;
 
   const UpcomingBillButton({
     super.key,
+    required this.currentItem,
     required this.onItemSelected,
   });
 
@@ -19,14 +21,7 @@ class UpcomingBillButton extends StatefulWidget {
 }
 
 class _UpcomingBillButtonState extends State<UpcomingBillButton> {
-  late final SelectItem<UpcomingBillData> _currentItem = SelectItem(
-    title: 'Upcoming Bill',
-    subTitle: 'Select an upcoming bill',
-    pickedIcon: IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
-    unpickedIcon: IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
-    backgroundColor: ColorConstant.bill,
-    item: UpcomingBillData(),
-  );
+  late final SelectItem<UpcomingBillData> _currentItem = widget.currentItem;
 
   @override
   Widget build(BuildContext context) {

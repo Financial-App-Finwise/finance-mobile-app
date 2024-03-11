@@ -138,8 +138,7 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
           ),
         ),
         IconButton(
-          onPressed: () =>
-              Navigator.pushNamed(context, RouteName.smartGoalCreate),
+          onPressed: () => Navigator.pushNamed(context, RouteName.smartGoalAdd),
           icon: IconHelper.getSVG(SVGName.addSquare,
               color: ColorConstant.secondary),
         ),
@@ -165,7 +164,10 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: uiStore.showGrid
-          ? SmartGoalGridView(data: store.smartGoalYearly)
+          ? SmartGoalGridView(
+              data: store.smartGoalYearly,
+              onTap: (month) {},
+            )
           : _buildColumnContent(),
     );
   }
@@ -222,7 +224,7 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
                     color: ColorConstant.colorA4A7C6,
                   ),
                   onButtonTap: () =>
-                      Navigator.pushNamed(context, RouteName.smartGoalCreate),
+                      Navigator.pushNamed(context, RouteName.smartGoalAdd),
                 )
               : _buildFilteredSmartGoals(),
           const SizedBox(height: 16),
