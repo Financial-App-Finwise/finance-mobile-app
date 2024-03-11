@@ -161,12 +161,12 @@ abstract class _FinanceStoreBase with Store {
   // -------------------- Update Total Balance --------------------
   // Loading Status for Update
   @observable
-  LoadingStatusEnum updateLoading = LoadingStatusEnum.none;
+  LoadingStatusEnum loadingUpdate = LoadingStatusEnum.none;
 
   @action
   Future<bool> update(double totalbalance) async {
     debugPrint('--> START: update, finance');
-    updateLoading = LoadingStatusEnum.loading;
+    loadingUpdate = LoadingStatusEnum.loading;
 
     bool success = false;
     try {
@@ -176,17 +176,17 @@ abstract class _FinanceStoreBase with Store {
       );
       if (response.statusCode == 200) {
         success = true;
-        updateLoading = LoadingStatusEnum.done;
+        loadingUpdate = LoadingStatusEnum.done;
         await read();
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        updateLoading = LoadingStatusEnum.error;
+        loadingUpdate = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      updateLoading = LoadingStatusEnum.error;
+      loadingUpdate = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: update, finance');
     }

@@ -140,15 +140,15 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
       Atom(name: '_FinanceStoreBase.updateLoading', context: context);
 
   @override
-  LoadingStatusEnum get updateLoading {
+  LoadingStatusEnum get loadingUpdate {
     _$updateLoadingAtom.reportRead();
-    return super.updateLoading;
+    return super.loadingUpdate;
   }
 
   @override
-  set updateLoading(LoadingStatusEnum value) {
-    _$updateLoadingAtom.reportWrite(value, super.updateLoading, () {
-      super.updateLoading = value;
+  set loadingUpdate(LoadingStatusEnum value) {
+    _$updateLoadingAtom.reportWrite(value, super.loadingUpdate, () {
+      super.loadingUpdate = value;
     });
   }
 
@@ -200,7 +200,7 @@ period: ${period},
 isIncome: ${isIncome},
 incomeFinance: ${incomeFinance},
 expenseFinance: ${expenseFinance},
-updateLoading: ${updateLoading},
+updateLoading: ${loadingUpdate},
 isLoading: ${isLoading},
 dollarAccount: ${dollarAccount}
     ''';

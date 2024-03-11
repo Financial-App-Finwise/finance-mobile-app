@@ -5,6 +5,7 @@ import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,13 +18,19 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late final authStore = context.read<AuthStore>();
+  late final financeStore = context.read<FinanceStore>();
+
   @override
   void initState() {
     super.initState();
     debugPrint('--> START: splash screen initState');
     Future.delayed(Duration.zero, () async {
       debugPrint('<-- END: splash screen initState');
-      await context.read<AuthStore>().readCache();
+      await authStore.readCache();
+      if (authStore.user != null) {
+        await financeStore.read();
+      }
 
       // if the state object is mounted
       if (mounted) {

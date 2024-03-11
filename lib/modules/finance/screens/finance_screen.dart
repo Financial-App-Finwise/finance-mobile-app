@@ -181,7 +181,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                     GeneralBottomButton(
                       onButtonTap: () => Navigator.pushNamed(
                         context,
-                        RouteName.transactionCreate,
+                        RouteName.transactionAdd,
                       ),
                       buttonLabel: 'Add Transaction',
                     ),

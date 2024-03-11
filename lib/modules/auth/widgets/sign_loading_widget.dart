@@ -2,7 +2,6 @@ import 'package:finwise/core/constants/text_style_constants/auth_text_style_cons
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class SignLoadingWidget extends StatefulWidget {
   const SignLoadingWidget({super.key});

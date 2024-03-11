@@ -132,7 +132,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
   Widget _buildFloating() {
     return FloatingActionButton(
       onPressed: () =>
-          Navigator.pushNamed(context, RouteName.transactionCreate),
+          Navigator.pushNamed(context, RouteName.transactionAdd),
       elevation: 0,
       backgroundColor: const Color(0xff00A6FB),
       shape: const CircleBorder(),

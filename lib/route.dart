@@ -7,13 +7,13 @@ import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
 import 'package:finwise/modules/currency/screens/currency_screen.dart';
 import 'package:finwise/modules/finance/screens/finance_screen.dart';
-import 'package:finwise/modules/finance/screens/finance_update_screen.dart';
+import 'package:finwise/modules/finance/screens/finance_edit_screen.dart';
 import 'package:finwise/modules/home/screens/home_screen.dart';
-import 'package:finwise/modules/smart_goal/screens/smart_goal_create_screen.dart';
+import 'package:finwise/modules/smart_goal/screens/smart_goal_add_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_detail_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_edit_screen.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_screen.dart';
-import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
+import 'package:finwise/modules/transaction/screens/transaction_add_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_detail_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_edit_screen.dart';
 import 'package:finwise/modules/transaction/screens/transaction_screen.dart';
@@ -46,18 +46,18 @@ abstract class RouteName {
 
   // -------------------- Finance --------------------
   static const String finance = '/finance';
-  static const String financeUpdate = '/finance/update';
+  static const String financeEdit = '/finance/edit';
 
   // -------------------- Transaction --------------------
   static const String transaction = '/transaction';
   static const String transactionDetail = '/transaction/show';
-  static const String transactionCreate = '/transaction/create';
+  static const String transactionAdd = '/transaction/add';
   static const String transactionEdit = '/transaction/edit';
 
   // -------------------- Smart Goal --------------------
   static const String smartGoal = '/smart_goal';
   static const String smartGoalDetail = '/smart_goal/show';
-  static const String smartGoalCreate = '/smart_goal/create';
+  static const String smartGoalAdd = '/smart_goal/add';
   static const String smartGoalEdit = '/smart_goal/edit';
 
   // -------------------- Upcoming Bill --------------------
@@ -96,22 +96,22 @@ var appRoutes = {
 
   // -------------------- Finance --------------------
   RouteName.finance: (BuildContext context) => const FinanceScreen(),
-  RouteName.financeUpdate: (BuildContext context) =>
-      const FinanceUpdateScreen(),
+  RouteName.financeEdit: (BuildContext context) =>
+      const FinanceEditScreen(),
 
   // -------------------- Transaction --------------------
   RouteName.transaction: (BuildContext context) => const TransactionScreen(),
   RouteName.transactionDetail: (BuildContext context) =>
       const TransactionDetailScreen(),
-  RouteName.transactionCreate: (BuildContext context) =>
-      const AddTransactionScreen(),
+  RouteName.transactionAdd: (BuildContext context) =>
+      const TransactionAddScreen(),
   RouteName.transactionEdit: (BuildContext context) =>
       const TransactionEditScreen(),
 
   // -------------------- Smart goal --------------------
   RouteName.smartGoal: (BuildContext context) => const SmartGoalScreen(),
-  RouteName.smartGoalCreate: (BuildContext context) =>
-      const AddSmartGoalScreen(),
+  RouteName.smartGoalAdd: (BuildContext context) =>
+      const SmartGoalAddScreen(),
   RouteName.smartGoalDetail: (BuildContext context) =>
       const SmartGoalDetailScreen(),
   RouteName.smartGoalEdit: (BuildContext context) =>

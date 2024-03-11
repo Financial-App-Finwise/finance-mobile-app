@@ -31,7 +31,6 @@ import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -804,7 +803,7 @@ class _HomeScreenState extends State<HomeScreen>
                         buttonLabel: 'Add Transaction',
                         onButtonTap: () => Navigator.pushNamed(
                               context,
-                              RouteName.transactionCreate,
+                              RouteName.transactionAdd,
                             ))
                     : _buildTransactions(
                         color: ColorConstant.expense,
@@ -858,7 +857,7 @@ class _HomeScreenState extends State<HomeScreen>
                         buttonLabel: 'Add Transaction',
                         onButtonTap: () => Navigator.pushNamed(
                               context,
-                              RouteName.transactionCreate,
+                              RouteName.transactionAdd,
                             ))
                     : _buildTransactions(
                         color: ColorConstant.income,

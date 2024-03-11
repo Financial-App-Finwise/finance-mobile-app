@@ -4,6 +4,7 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/screens/loading_screen.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class FinanceUpdateScreen extends StatefulWidget {
@@ -39,17 +40,21 @@ class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
   }
 
   Widget _buildLoadingScreen() {
-    return store.updateLoading == LoadingStatusEnum.done
-        ? LoadingScreen(
-            title: 'Balance Updated Successfully!',
-            description:
-                'Please wait...\nYou will be directed to your finance.',
-            icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
-          )
-        : LoadingScreen(
-            title: 'Just a moment',
-            description: 'Please wait...\nWe are preparing for you...',
-            icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
-          );
+    return Observer(
+      builder: (context) {
+        return store.loadingUpdate == LoadingStatusEnum.done
+            ? LoadingScreen(
+                title: 'Balance Updated Successfully!',
+                description:
+                    'Please wait...\nYou will be directed to your finance.',
+                icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
+              )
+            : LoadingScreen(
+                title: 'Just a moment',
+                description: 'Please wait...\nWe are preparing for you...',
+                icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
+              );
+      }
+    );
   }
 }

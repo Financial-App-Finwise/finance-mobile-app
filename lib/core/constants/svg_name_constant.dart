@@ -12,6 +12,7 @@ abstract class SVGName {
   static const String burgerMenu = 'burger_menu.svg';
   static const String calendar = 'calendar.svg';
   static const String calendarTick = 'calendar_tick.svg';
+  static const String check = 'check.svg';
   static const String close = 'close.svg';
   static const String contentManagerDashboard = 'content_manager_dashboard.svg';
   static const String delete = 'delete.svg';

@@ -1,7 +1,6 @@
-import 'package:finwise/core/widgets/bottom_navigation_bar_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/initiating_screens/unimplemented_screen.dart';
-import 'package:finwise/route.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +20,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const Expanded(child: UnimplementedScreen()),
           ElevatedButton(
             onPressed: () async {
+              // ---------- Dispose All Stores ----------
+              context.read<FinanceStore>().dispose();
+
+              // ---------- Logout ----------
               await context.read<AuthStore>().signOut();
             },
             child: const Text('Log out'),

@@ -5,6 +5,8 @@ import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
+import 'package:finwise/modules/finance/models/finance_post_model.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';
@@ -25,10 +27,11 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  late AuthStore authStore = context.read<AuthStore>();
+  late FinanceStore financeStore = context.read<FinanceStore>();
+
   @override
   Widget build(BuildContext context) {
-    AuthStore authStore = context.read<AuthStore>();
-
     return Observer(builder: (context) {
       return authStore.isLoading
           ? const SignLoadingWidget()
@@ -41,6 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               formArea: _buildTextFields(),
               onButtonTap: () async {
                 if (_formKey.currentState!.validate()) {
+                  // ---------- Register ----------
                   bool success = await authStore.signUp(
                     UserPost(
                       name: _nameController.text,
@@ -49,11 +53,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       passwordConfirmation: _passwordConfirmController.text,
                     ),
                   );
+                  // ---------- Validate Email ----------
+                  //
+
+                  // ---------- Login ----------
+                  success = await authStore.signIn(
+                    UserSignIn(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    ),
+                  );
+
+                  // ---------- Create Finance Account ----------
+                  success = await financeStore.post(FinancePost());
                   if (success) {
                     if (success) {
                       Navigator.pushNamed(context, RouteName.verifyEmail);
                     } else {}
                   }
+
+                  // ---------- Create Onboarding (Optional) ----------
                 }
               },
             );
@@ -167,6 +186,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Row(
+            children: [
+              Observer(
+                builder: (context) {
+                  return Checkbox(
+                    value: authStore.rememberMe,
+                    onChanged: (value) => authStore.toggleRememberMe(),
+                  );
+                },
+              ),
+              Text(
+                'Remember me',
+                style: AuthScreenTextStyle.medium,
+              ),
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:finwise/core/constants/loading_status_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/core/services/cache_service.dart';
 import 'package:finwise/modules/auth/models/user_model/user_model.dart';
@@ -22,16 +22,16 @@ abstract class _AuthStoreBase with Store {
   String email = '';
 
   @observable
-  LoadingStatus loadingStatus = LoadingStatus.none;
+  LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
   @observable
   bool rememberMe = false;
 
   @computed
-  bool get isLoading => loadingStatus == LoadingStatus.loading;
+  bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
 
   @action
-  void setLoadingStatus(LoadingStatus status) => loadingStatus = status;
+  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
 
   @action
   void toggleRememberMe() => rememberMe = !rememberMe;
@@ -39,26 +39,26 @@ abstract class _AuthStoreBase with Store {
   @action
   Future<bool> signUp(UserPost userPost) async {
     debugPrint('--> START: signUp');
-    setLoadingStatus(LoadingStatus.loading);
+    setLoadingStatus(LoadingStatusEnum.loading);
     try {
       Response response = await ApiService.dio.post(
         'auth/register',
         data: FormData.fromMap(userPost.toJson()),
       );
       if (response.statusCode == 201) {
-        setLoadingStatus(LoadingStatus.done);
+        setLoadingStatus(LoadingStatusEnum.done);
         debugPrint('--> successfully signed up');
         debugPrint('--> data: ${response.data}');
         email = userPost.email;
         return true;
       } else {
-        setLoadingStatus(LoadingStatus.error);
+        setLoadingStatus(LoadingStatusEnum.error);
         debugPrint(
             '--> Error! Something went wrong, code: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      setLoadingStatus(LoadingStatus.error);
+      setLoadingStatus(LoadingStatusEnum.error);
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
       return false;
     } finally {
@@ -68,22 +68,22 @@ abstract class _AuthStoreBase with Store {
 
   Future<bool> verifyEmail({required VerifyEmailModel model}) async {
     debugPrint('--> START: verifyEmail');
-    setLoadingStatus(LoadingStatus.loading);
+    setLoadingStatus(LoadingStatusEnum.loading);
     try {
       Response response = await ApiService.dio.post(
         'auth/verify-email',
         data: FormData.fromMap(model.toJson()),
       );
       if (response.statusCode == 200) {
-        setLoadingStatus(LoadingStatus.done);
+        setLoadingStatus(LoadingStatusEnum.done);
         return true;
       } else {
-        setLoadingStatus(LoadingStatus.error);
+        setLoadingStatus(LoadingStatusEnum.error);
         debugPrint('Something went wrong, code: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      setLoadingStatus(LoadingStatus.error);
+      setLoadingStatus(LoadingStatusEnum.error);
       debugPrint('${e.runtimeType}: ${e.toString()}');
       return false;
     } finally {
@@ -99,7 +99,7 @@ abstract class _AuthStoreBase with Store {
   @action
   Future<bool> signIn(UserSignIn userSignIn) async {
     debugPrint('--> START: signIn');
-    setLoadingStatus(LoadingStatus.loading);
+    setLoadingStatus(LoadingStatusEnum.loading);
     try {
       Response response = await ApiService.dio.post(
         'auth/login',
@@ -114,15 +114,15 @@ abstract class _AuthStoreBase with Store {
         debugPrint('--> data: ${response.data}');
         _attachToken();
         if (rememberMe) _writeCache();
-        setLoadingStatus(LoadingStatus.done);
+        setLoadingStatus(LoadingStatusEnum.done);
         return true;
       } else {
-        setLoadingStatus(LoadingStatus.error);
+        setLoadingStatus(LoadingStatusEnum.error);
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      setLoadingStatus(LoadingStatus.error);
+      setLoadingStatus(LoadingStatusEnum.error);
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
       return false;
     } finally {
