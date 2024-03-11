@@ -1,295 +1,62 @@
-import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
-import 'package:finwise/core/helpers/text_style_helper.dart';
-import 'package:finwise/core/helpers/ui_helper.dart';
-import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
+import 'package:finwise/core/widgets/screens/loading_screen.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
-import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
-import 'package:finwise/modules/smart_goal/widgets/forms/smart_goal_form_item.dart';
-import 'package:finwise/modules/smart_goal/widgets/smart_goal_form_layout.dart';
-import 'package:finwise/modules/smart_goal/widgets/smart_goal_prediction.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class AddSmartGoalScreen extends StatefulWidget {
-  const AddSmartGoalScreen({super.key});
+class SmartGoalCreateScreen extends StatefulWidget {
+  final SmartGoalData smartGoalData;
+
+  const SmartGoalCreateScreen({
+    super.key,
+    required this.smartGoalData,
+  });
 
   @override
-  State<AddSmartGoalScreen> createState() => _AddSmartGoalScreenState();
+  State<SmartGoalCreateScreen> createState() =>
+      _SmartGoalCreateScreenState();
 }
 
-class _AddSmartGoalScreenState extends State<AddSmartGoalScreen> {
+class _SmartGoalCreateScreenState extends State<SmartGoalCreateScreen> {
+  late final store = context.read<SmartGoalStore>();
+
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      bool success = await store.post(widget.smartGoalData);
+
+      if (success) {
+        Navigator.pop(context, success);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SmartGoalFormLayout(
-      title: 'Add Smart Goal',
-      showTopProgress: true,
-      formSection: _buildForm(),
-    );
+    return _buildLoadingScreen();
   }
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _currentSaveController = TextEditingController();
-  final TextEditingController _contributionController = TextEditingController();
-  final TextEditingController _leftToSaveController = TextEditingController();
-
-  bool _setDue = true;
-
-  int _sectionIndex = 0;
-
-  Widget _buildForm() {
-    List sections = [
-      _buildBasicInfoPart(),
-      _buildTargetGoalPart(),
-    ];
-    return sections[_sectionIndex];
-  }
-
-  Widget _buildBasicInfoPart() {
-    return Form(
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SmartGoalFormItem(
-                    label: 'Name you goal',
-                    controller: _nameController,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: SmartGoalFormItem(
-                        label: 'Goal Amount',
-                        controller: _amountController,
-                        isNumber: true,
-                      )),
-                      const SizedBox(width: 8),
-                      Expanded(
-                          child: SmartGoalFormItem(
-                        label: 'Saved so far',
-                        controller: _currentSaveController,
-                        isNumber: true,
-                      )),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SmartGoalFormItem(
-                          color: const Color(0xffD3D5E4),
-                          label: 'Left to Save',
-                          controller: _leftToSaveController,
-                          readOnly: true,
-                          isNumber: true,
-                        ),
-                      ),
-                      const Expanded(child: SizedBox()),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-          ),
-          GeneralBottomButton(
-            onButtonTap: () => setState(() => _sectionIndex = 1),
-            buttonLabel: 'Continue',
-          ),
-        ],
-      ),
-    );
-  }
-
-  final _startDateController = TextEditingController();
-  final _endDateController = TextEditingController();
-  DateTime _selectedStartDay = DateTime.now(); // save value for posting
-  DateTime _selectedEndDay = DateTime.now();
-
-  Widget _buildTargetGoalPart() {
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: RadioMenuButton(
-                        value: true,
-                        groupValue: _setDue,
-                        onChanged: (value) => setState(() => _setDue = true),
-                        child: const Text('Set'),
-                      ),
-                    ),
-                    Expanded(
-                      child: RadioMenuButton(
-                        value: false,
-                        groupValue: _setDue,
-                        onChanged: (value) => setState(() => _setDue = false),
-                        child: const Text("Don't Set"),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Visibility(
-                  visible: _setDue,
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: _buildDate(
-                        hintText: 'Start Date',
-                        controller: _startDateController,
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _startDateController.text =
-                                UIHelper.getInputDate(selectedDay.toString());
-                            _selectedStartDay = selectedDay;
-                          });
-                        },
-                      )),
-                      const SizedBox(width: 8),
-                      Expanded(
-                          child: _buildDate(
-                        hintText: 'End Date',
-                        controller: _endDateController,
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _endDateController.text =
-                                UIHelper.getInputDate(selectedDay.toString());
-                            _selectedEndDay = selectedDay;
-                          });
-                        },
-                      )),
-                    ],
-                  ),
-                ),
-                Visibility(
-                  visible: !_setDue,
-                  child: Column(
-                    children: [
-                      SmartGoalFormItem(
-                        label: 'Monthly Contribution',
-                        isNumber: true,
-                        controller: _contributionController,
-                      ),
-                      const SizedBox(height: 20),
-                      const SmartGoalPrediction(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: GeneralBottomButton(
-                onButtonTap: () => setState(() => _sectionIndex = 0),
-                buttonLabel: 'Back',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: GeneralBottomButton(
-                onButtonTap: () async {
-                  String? startDate;
-                  String? endDate;
-                  double? monthlyContribution;
-
-                  if (_setDue) {
-                    startDate = UIHelper.getDateFormat(
-                        _selectedStartDay.toString(), 'yyyy-MM-dd');
-                    endDate = UIHelper.getDateFormat(
-                        _selectedEndDay.toString(), 'yyyy-MM-dd');
-                    monthlyContribution = null;
-                  } else {
-                    startDate = null;
-                    endDate = null;
-                    monthlyContribution =
-                        double.parse(_contributionController.text);
-                  }
-
-                  bool success = await context.read<SmartGoalStore>().post(
-                        SmartGoalData(
-                          name: _nameController.text,
-                          amount: double.parse(_amountController.text),
-                          currentSave:
-                              double.parse(_currentSaveController.text),
-                          remainingSave: double.parse(_amountController.text) -
-                              double.parse(_currentSaveController.text),
-                          setDate: _setDue,
-                          startDate: startDate,
-                          endDate: endDate,
-                          monthlyContribution: monthlyContribution,
-                        ),
-                      );
-                  if (success) {
-                    Navigator.pop(context);
-                  }
-                },
-                buttonLabel: 'Create',
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDate({
-    String hintText = '',
-    TextEditingController? controller,
-    required void Function(DateTime selectedDay, DateTime focusedDay)
-        onDaySelected,
-  }) {
-    return TextFormField(
-      controller: controller,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CalendarWidget(
-              onDaySelected: onDaySelected,
-            ),
-          ),
-        );
-      },
-      style: TextStyleHelper.getw500size(14),
-      readOnly: true,
-      decoration: InputDecoration(
-        isDense: true,
-        contentPadding: EdgeInsets.zero,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none),
-        fillColor: Colors.white,
-        filled: true,
-        prefixIcon: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: IconHelper.getSVG(
-            SVGName.calendar,
-            color: ColorConstant.mainText,
-          ),
-        ),
-        hintText: hintText,
-        hintStyle: GeneralTextStyle.getSize(12, color: ColorConstant.thin),
-      ),
+  Widget _buildLoadingScreen() {
+    return Observer(
+      builder: (context) {
+        return store.loadingCreate == LoadingStatusEnum.done
+            ? LoadingScreen(
+                title: 'Goal Created Successfully!',
+                description:
+                    'Please wait...\nYou will be directed back.',
+                icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
+              )
+            : LoadingScreen(
+                title: 'Just a moment',
+                description: 'Please wait...\nWe are preparing for you...',
+                icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
+              );
+      }
     );
   }
 }

@@ -352,7 +352,7 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
   Widget _buildAddButton() {
     return TextButton(
       onPressed: () =>
-          Navigator.pushNamed(context, RouteName.transactionCreate),
+          Navigator.pushNamed(context, RouteName.transactionAdd),
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         shape: MaterialStateProperty.all(

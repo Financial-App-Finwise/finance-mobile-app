@@ -9,6 +9,7 @@ class SmartGoalFormItem extends StatefulWidget {
   final TextEditingController? controller;
   late final bool readOnly;
   late final Color color;
+  final String? Function(String?)? validator;
 
   SmartGoalFormItem({
     super.key,
@@ -17,6 +18,7 @@ class SmartGoalFormItem extends StatefulWidget {
     this.controller,
     this.readOnly = false,
     this.color = Colors.white,
+    this.validator,
   });
 
   @override
@@ -51,8 +53,18 @@ class _SmartGoalFormItemState extends State<SmartGoalFormItem> {
                 : null,
             style: GeneralTextStyle.getSize(14),
             decoration: InputDecoration(
+              filled: true,
+              fillColor: widget.color,
+              // enabledBorder: OutlineInputBorder(
+              //   borderSide: BorderSide.none,
+              //   // borderRadius: BorderRadius.circular(12),
+              // ),
               prefix: widget.isNumber ? const Text('\$') : const SizedBox(),
               isDense: true,
+              // border: OutlineInputBorder(
+              //   borderSide: BorderSide.none,
+              //   borderRadius: BorderRadius.circular(12),
+              // ),
               border: InputBorder.none,
               // hintText: '0',
               label: Text(widget.label),
@@ -62,6 +74,7 @@ class _SmartGoalFormItemState extends State<SmartGoalFormItem> {
                   GeneralTextStyle.getSize(12, color: ColorConstant.thin),
               contentPadding: EdgeInsets.zero,
             ),
+            validator: widget.validator,
           ),
         ],
       ),

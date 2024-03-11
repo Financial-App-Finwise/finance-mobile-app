@@ -167,6 +167,22 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
+  late final _$loadingCreateAtom =
+      Atom(name: '_SmartGoalStoreBase.loadingCreate', context: context);
+
+  @override
+  LoadingStatusEnum get loadingCreate {
+    _$loadingCreateAtom.reportRead();
+    return super.loadingCreate;
+  }
+
+  @override
+  set loadingCreate(LoadingStatusEnum value) {
+    _$loadingCreateAtom.reportWrite(value, super.loadingCreate, () {
+      super.loadingCreate = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_SmartGoalStoreBase.read', context: context);
 
@@ -274,6 +290,7 @@ smartGoal: ${smartGoal},
 filteredSmartGoal: ${filteredSmartGoal},
 smartGoalYearly: ${smartGoalYearly},
 year: ${year},
+loadingCreate: ${loadingCreate},
 isLoading: ${isLoading},
 queryParemeter: ${queryParemeter},
 dateQuery: ${dateQuery}

@@ -124,7 +124,6 @@ abstract class _SmartGoalStoreBase with Store {
   }
 
   // -------------------- Read one page at a time --------------------
-
   @action
   Future readByPage({bool refreshed = false}) async {
     debugPrint('--> START: read smart goal');
@@ -203,10 +202,13 @@ abstract class _SmartGoalStoreBase with Store {
   }
 
   // -------------------- Create a Smart Goal --------------------
+  @observable
+  LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
+
   @action
   Future<bool> post(SmartGoalData smartGoalData) async {
     debugPrint('--> START: post, smart goal');
-    setLoadingStatus(LoadingStatusEnum.loading);
+    loadingCreate = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Response response = await ApiService.dio.post(
@@ -216,17 +218,17 @@ abstract class _SmartGoalStoreBase with Store {
 
       if (response.statusCode == 201) {
         success = true;
+        loadingCreate = LoadingStatusEnum.done;
         await readByPage(refreshed: true);
-        setLoadingStatus(LoadingStatusEnum.done);
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        loadingCreate = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      loadingCreate = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: post, smart goal');
     }

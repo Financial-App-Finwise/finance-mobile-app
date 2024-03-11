@@ -6,9 +6,11 @@ class SmartGoalGridView extends StatefulWidget {
   SmartGoalGridView({
     super.key,
     required this.data,
+    required this.onTap,
   });
 
-  late Map<String, SmartGoalMonth> data;
+  final Map<String, SmartGoalMonth> data;
+  final void Function(int) onTap;
 
   @override
   State<SmartGoalGridView> createState() => _SmartGoalGridViewState();
@@ -16,6 +18,7 @@ class SmartGoalGridView extends StatefulWidget {
 
 class _SmartGoalGridViewState extends State<SmartGoalGridView> {
   late List<String> months = [];
+
   @override
   void initState() {
     super.initState();
@@ -43,11 +46,16 @@ class _SmartGoalGridViewState extends State<SmartGoalGridView> {
           crossAxisSpacing: 16,
           crossAxisCount: 3,
         ),
-        itemBuilder: (context, index) => SmartGoalGridTile(
-          month: months[index],
-          amount: widget.data[months[index]] == null
-              ? 0
-              : widget.data[months[index]]!.numberOfGoals,
+        itemBuilder: (context, index) => InkWell(
+          onTap: () {
+            widget.onTap(index);
+          },
+          child: SmartGoalGridTile(
+            month: months[index],
+            amount: widget.data[months[index]] == null
+                ? 0
+                : widget.data[months[index]]!.numberOfGoals,
+          ),
         ),
       ),
     );

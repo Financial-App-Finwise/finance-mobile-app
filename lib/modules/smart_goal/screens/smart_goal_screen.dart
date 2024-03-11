@@ -39,6 +39,10 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _setContainerHeight();
+    });
+
     Future.delayed(Duration.zero, () async {
       await _readAll();
     });
@@ -106,104 +110,129 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     text: UIHelper.getDateFormat(store.endDate.toString(), 'dd MMM, yyyy'),
   );
 
+  final _centerContainerKey = GlobalKey();
+  double _centerContainerHeight = 0;
+
+  double _getContainerHeight(GlobalKey containerKey) {
+    if (containerKey.currentContext != null) {
+      RenderBox renderBox =
+          containerKey.currentContext!.findRenderObject() as RenderBox;
+      return renderBox.size.height;
+    }
+    return 100;
+  }
+
+  void _setContainerHeight() {
+    setState(() {
+      _centerContainerHeight = _getContainerHeight(_centerContainerKey);
+    });
+  }
+
   Widget _buildCenterContent() {
+    print(_centerContainerHeight);
     return uiStore.showGrid
         ? _buildCenterOfGrid()
-        : Row(
-            children: [
-              CustomIconButton(
-                onPressed: () => uiStore.toggleShowGrid(),
-                icon: IconHelper.getSVG(SVGName.contentManagerDashboard),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: DateTextFieldWidget(
-                  onDaySelected: ((selectedDay, focusedDay) {
-                    // print(selectedDay);
-                    setState(() {
-                      _startDayController.text = UIHelper.getDateFormat(
-                          selectedDay.toString(), 'MMM dd, yyyy');
-                    });
-                    store.startDate = selectedDay;
-                    // if (store.filteredSmartGoal[store.queryParemeter]!.items
-                    //     .isEmpty) {
-                    //   store.readByPage(refreshed: true);
-                    // }
-                  }),
-                  hintText: 'Start Date',
-                  controller: _startDayController,
+        : Container(
+            key: _centerContainerKey,
+            child: Row(
+              children: [
+                CustomIconButton(
+                  onPressed: () => uiStore.toggleShowGrid(),
+                  icon: IconHelper.getSVG(SVGName.contentManagerDashboard),
                 ),
-              ),
-              Expanded(
-                child: DateTextFieldWidget(
-                  onDaySelected: ((selectedDay, focusedDay) {
-                    setState(() {
-                      _endDayController.text = UIHelper.getDateFormat(
-                          selectedDay.toString(), 'MMM dd, yyyy');
-                    });
-                    store.endDate = selectedDay;
-                  }),
-                  hintText: 'End Date',
-                  controller: _endDayController,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: DateTextFieldWidget(
+                    onDaySelected: ((selectedDay, focusedDay) {
+                      // print(selectedDay);
+                      setState(() {
+                        _startDayController.text = UIHelper.getDateFormat(
+                            selectedDay.toString(), 'MMM dd, yyyy');
+                      });
+                      store.startDate = selectedDay;
+                      // if (store.filteredSmartGoal[store.queryParemeter]!.items
+                      //     .isEmpty) {
+                      //   store.readByPage(refreshed: true);
+                      // }
+                    }),
+                    hintText: 'Start Date',
+                    controller: _startDayController,
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, RouteName.smartGoalCreate),
-                icon: IconHelper.getSVG(SVGName.addSquare,
-                    color: ColorConstant.secondary),
-              ),
-            ],
+                Expanded(
+                  child: DateTextFieldWidget(
+                    onDaySelected: ((selectedDay, focusedDay) {
+                      setState(() {
+                        _endDayController.text = UIHelper.getDateFormat(
+                            selectedDay.toString(), 'MMM dd, yyyy');
+                      });
+                      store.endDate = selectedDay;
+                    }),
+                    hintText: 'End Date',
+                    controller: _endDayController,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () =>
+                      Navigator.pushNamed(context, RouteName.smartGoalAdd),
+                  icon: IconHelper.getSVG(SVGName.addSquare,
+                      color: ColorConstant.secondary),
+                ),
+              ],
+            ),
           );
   }
 
   Widget _buildCenterOfGrid() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: TextButton(
-                onPressed: () => uiStore.toggleShowGrid(),
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+    return Container(
+      height: _centerContainerHeight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: TextButton(
+                  onPressed: () => uiStore.toggleShowGrid(),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                  ),
+                  child: IconHelper.getSVG(SVGName.burgerMenu),
                 ),
-                child: IconHelper.getSVG(SVGName.burgerMenu),
               ),
-            ),
-            const SizedBox(width: 24),
-            Text(
-              '${store.year}',
-              style: TextStyleHelper.getw500size(18).copyWith(
-                fontWeight: FontWeight.w700,
+              const SizedBox(width: 24),
+              Text(
+                '${store.year}',
+                style: TextStyleHelper.getw500size(18).copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const Icon(Icons.keyboard_arrow_down),
-          ],
-        ),
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () async {
-                store.year--;
-                await store.readYearly();
-              },
-              child: const Icon(Icons.keyboard_arrow_left),
-            ),
-            const SizedBox(width: 16),
-            GestureDetector(
-              onTap: () async {
-                store.year++;
-                await store.readYearly();
-              },
-              child: const Icon(Icons.keyboard_arrow_right),
-            ),
-          ],
-        )
-      ],
+              const Icon(Icons.keyboard_arrow_down),
+            ],
+          ),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  store.year--;
+                  await store.readYearly();
+                },
+                child: const Icon(Icons.keyboard_arrow_left),
+              ),
+              const SizedBox(width: 16),
+              GestureDetector(
+                onTap: () async {
+                  store.year++;
+                  await store.readYearly();
+                },
+                child: const Icon(Icons.keyboard_arrow_right),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -220,11 +249,28 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     }
   }
 
+  int currentMonth = DateTime.now().month;
+  int currentYear = DateTime.now().year;
+
   Widget _buildContent() {
     return Container(
       padding: const EdgeInsets.only(top: 20),
       child: uiStore.showGrid
-          ? SmartGoalGridView(data: store.smartGoalYearly)
+          ? SmartGoalGridView(
+              data: store.smartGoalYearly,
+              onTap: (index) {
+                uiStore.toggleShowGrid();
+                setState(() {
+                  _startDayController.text = UIHelper.getDateFormat(
+                      DateTime(store.year, index + 1).toString(),
+                      'MMM dd, yyyy');
+                  _endDayController.text = UIHelper.getDateFormat(
+                      DateTime(store.year, index + 2).toString(),
+                      'MMM dd, yyyy');
+                });
+                store.endDate = DateTime(currentYear, currentMonth + 1);
+              },
+            )
           : _buildColumnContent(),
     );
   }
@@ -340,7 +386,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                     color: ColorConstant.colorA4A7C6,
                   ),
                   onButtonTap: () =>
-                      Navigator.pushNamed(context, RouteName.smartGoalCreate),
+                      Navigator.pushNamed(context, RouteName.smartGoalAdd),
                 )
               : _buildFilteredSmartGoals(),
           const SizedBox(height: 16),
