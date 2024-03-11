@@ -12,6 +12,7 @@ class GeneralFilterBarHeader extends StatefulWidget {
   final ScrollPhysics? physics;
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
+  final bool readOnly;
 
   GeneralFilterBarHeader({
     super.key,
@@ -22,6 +23,7 @@ class GeneralFilterBarHeader extends StatefulWidget {
     this.physics,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.readOnly = false,
   });
 
   @override
@@ -85,10 +87,12 @@ class _GeneralFilterBarHeaderState extends State<GeneralFilterBarHeader> {
         ),
       ),
       child: TextButton(
-        onPressed: () {
-          store.changeCurrentValue(value);
-          widget.onTap(value);
-        },
+        onPressed: widget.readOnly
+            ? () {}
+            : () {
+                store.changeCurrentValue(value);
+                widget.onTap(value);
+              },
         style: ButtonStyle(
           padding: MaterialStateProperty.all(EdgeInsets.zero),
           shape: MaterialStateProperty.all(

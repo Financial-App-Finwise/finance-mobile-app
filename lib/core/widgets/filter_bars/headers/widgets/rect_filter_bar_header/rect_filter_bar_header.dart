@@ -4,6 +4,7 @@ import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_heade
 import 'package:finwise/core/widgets/filter_bars/headers/stores/general_filter_bar_header_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 enum RectFilterBarHeaderType {
   simple,
@@ -21,6 +22,7 @@ class RectFilterBarHeader extends StatefulWidget {
   late final MainAxisAlignment mainAxisAlignment;
   late final CrossAxisAlignment crossAxisAlignment;
   late final RectFilterBarHeaderType type;
+  final bool readOnly;
 
   RectFilterBarHeader({
     super.key,
@@ -33,6 +35,7 @@ class RectFilterBarHeader extends StatefulWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.type = RectFilterBarHeaderType.simple,
+    this.readOnly = false,
   });
 
   @override
@@ -110,10 +113,12 @@ class _RectFilterBarHeaderState extends State<RectFilterBarHeader> {
     bool isSelected = false,
   }) {
     return TextButton(
-      onPressed: () {
-        store.changeCurrentValue(value);
-        widget.onTap(value);
-      },
+      onPressed: widget.readOnly
+          ? () {}
+          : () {
+              store.changeCurrentValue(value);
+              widget.onTap(value);
+            },
       style: ButtonStyle(
         padding: MaterialStateProperty.all(EdgeInsets.zero),
       ),

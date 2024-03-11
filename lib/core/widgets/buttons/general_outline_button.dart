@@ -2,18 +2,18 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/general_text_style_constant.dart';
 import 'package:flutter/material.dart';
 
-class GeneralBottomButton extends StatelessWidget {
-  const GeneralBottomButton({
+class GeneralOutlineButton extends StatelessWidget {
+  const GeneralOutlineButton({
     super.key,
     this.buttonLabel = 'Button',
     this.onButtonTap,
-    this.backgroundColor = ColorConstant.secondary,
+    this.labelColor = ColorConstant.secondary,
     this.allowPressing = true,
   });
 
   final String buttonLabel;
   final void Function()? onButtonTap;
-  final Color backgroundColor;
+  final Color labelColor;
   final bool allowPressing;
 
   @override
@@ -22,16 +22,16 @@ class GeneralBottomButton extends StatelessWidget {
   }
 
   Widget _buildButton() {
-    return ElevatedButton(
+    return TextButton(
       onPressed: onButtonTap,
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
-        backgroundColor: MaterialStateProperty.all(
-            allowPressing ? backgroundColor : backgroundColor.withOpacity(0.5)),
+        backgroundColor: MaterialStateProperty.all(Colors.transparent),
         padding:
             MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 16)),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
+            side: BorderSide(color: labelColor),
             borderRadius: BorderRadius.circular(12),
           ),
         ),
@@ -40,7 +40,7 @@ class GeneralBottomButton extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           buttonLabel,
-          style: GeneralTextStyle.getSize(16, color: Colors.white)
+          style: GeneralTextStyle.getSize(16, color: labelColor)
               .copyWith(fontWeight: FontWeight.w600),
         ),
       ),

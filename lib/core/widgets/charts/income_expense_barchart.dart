@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 
 class IncomeExpenseBarChart extends StatelessWidget {
-  IncomeExpenseBarChart({
+  const IncomeExpenseBarChart({
     super.key,
     required this.data,
   });
 
-  late Map<String, IncomeExpenseCompare> data;
+  final Map<String, IncomeExpenseCompare> data;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,6 @@ class IncomeExpenseBarChart extends StatelessWidget {
     // if (data.isNotEmpty) {
     //   data.forEach((key, value) => barGroups.add(value));
     // }
-    print(barGroups);
     return SizedBox(
       height: 200,
       child: BarChart(
