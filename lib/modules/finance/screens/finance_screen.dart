@@ -27,7 +27,6 @@ import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/test/test_container_pos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -252,17 +251,11 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => ScrollPositionChecker()));
-          },
-          child: _buildFinanceItem(
-            text: 'Income',
-            amount: '\$${store.finance.data.totalIncomes}',
-            icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
-            color: ColorConstant.income,
-          ),
+        _buildFinanceItem(
+          text: 'Income',
+          amount: '\$${store.finance.data.totalIncomes}',
+          icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
+          color: ColorConstant.income,
         ),
         _buildFinanceItem(
           text: 'Expense',
