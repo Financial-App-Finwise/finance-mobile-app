@@ -21,6 +21,8 @@ abstract class SVGName {
   static const String dollarSquare = 'dollar_square.svg';
   static const String earn = 'earn.svg';
   static const String edit = 'edit.svg';
+  static const String emptyBarChart = 'empty_bar_chart.svg';
+  static const String emptyPieChart = 'empty_pie_chart.svg';
   static const String expense = 'expense.svg';
   static const String finwise = 'finwise.svg';
   static const String home = 'home.svg';

@@ -24,7 +24,7 @@ import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
-import 'package:finwise/modules/home/screens/data_webview_screen.dart';
+import 'package:finwise/modules/data_science/screens/data_webview_screen.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen>
   Future _readAll() async {
     await _budgetPlanStore.read();
     await _financeStore.read();
+    await _financeStore.read(isIncome: false);
     await _smartGoalStore.read(status: SmartGoalStatusEnum.inProgress);
     await _upcomingBillStore.read();
   }
@@ -212,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen>
             DurationDropDownItem(
                 title: 'Last 3 Months', value: 'last_3_months'),
             DurationDropDownItem(
-                title: 'Last 6 Months', value: 'last_6_months'),
+                title: 'Last 4 Months', value: 'last_4_months'),
           ],
           selectedValue: selectedValue,
           onChange: onChanged,
@@ -533,17 +534,14 @@ class _HomeScreenState extends State<HomeScreen>
                 _financeStore.finance.data.total.isEmpty
                     ? Column(
                         children: [
-                          const EmptyBarChart(),
-                          const SizedBox(height: 8),
-                          Text(
-                            'You have no payment history yet.',
-                            style: TextStyleHelper.getw500size(16,
-                                color: ColorConstant.black),
-                          ),
-                          const SizedBox(height: 8),
-                          GeneralBottomButton(
-                            onButtonTap: () {},
+                          EmptyDataWidget(
+                            icon:
+                                IconHelper.getSVGDefault(SVGName.emptyBarChart),
+                            iconSize: const Size(140, 140),
                             buttonLabel: 'Add Transaction',
+                            description: 'You have no payment history yet.',
+                            onButtonTap: () => Navigator.pushNamed(
+                                context, RouteName.transactionAdd),
                           ),
                         ],
                       )
@@ -559,9 +557,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   // -------------------- Top Spending --------------------
   Widget _buildTopSpending() {
-    List values = [40.0, 20.0, 30.0, 10.0];
-    values.sort((a, b) => b.compareTo(a));
-
     return Container(
       alignment: Alignment.topLeft,
       child: Column(
@@ -573,25 +568,41 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
-                  amount: '\$356',
+                  amount:
+                      '\$${_financeStore.expenseFinance.data.totalExpenses}',
                   color: ColorConstant.expense,
                   icon: IconHelper.getSVG(
                     SVGName.expense,
                     color: ColorConstant.expenseIcon,
                   ),
                   selectedValue: 'this_month',
-                  onChanged: (value) {},
+                  onChanged: (value) async {
+                    _financeStore.period = value;
+                    await _financeStore.read(isIncome: false);
+                  },
                 ),
                 const SizedBox(height: 30),
-                IncomeExpensePieChart(
-                  color: ColorConstant.expense,
-                  data: [
-                    IncomeExpense(category: 'Transportation', amount: 40),
-                    IncomeExpense(category: 'Groceries', amount: 40),
-                    IncomeExpense(category: 'Utilities', amount: 40),
-                    IncomeExpense(category: 'Entertainment', amount: 40),
-                  ],
-                ),
+                _financeStore.finance.data.topCategories.isEmpty
+                    ? EmptyDataWidget(
+                        icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
+                        buttonLabel: 'Add Transaction',
+                        description:
+                            'You have no expense transaction history yet.',
+                        onButtonTap: () => Navigator.pushNamed(
+                            context, RouteName.transactionAdd),
+                      )
+                    : IncomeExpensePieChart(
+                        data: getIncomeExpenseList(
+                            _financeStore.filteredFinance.data.topCategories
+                                .map(
+                                  (e) => {
+                                    'category': e.category.name,
+                                    'amount': e.amount,
+                                  },
+                                )
+                                .toList()),
+                        color: ColorConstant.expense,
+                      ),
                 // const SizedBox(height: 30),
               ],
             ),
