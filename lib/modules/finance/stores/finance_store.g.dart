@@ -312,23 +312,7 @@ queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},
 filteredFinance: ${filteredFinance},
 incomeFinance: ${incomeFinance},
-<<<<<<< HEAD
 expenseFinance: ${expenseFinance}
-=======
-expenseFinance: ${expenseFinance},
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-loadingUpdate: ${loadingUpdate},
-isLoading: ${isLoading},
->>>>>>> Stashed changes
-dollarAccount: ${dollarAccount}
->>>>>>> a7e14309f940661842834645111f0328db2e9ba2
     ''';
   }
 }
