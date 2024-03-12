@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/upcoming_bill_enum.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
@@ -70,7 +71,7 @@ class _MainContentListViewState extends State<MainContentListView> {
           LoadingStatusEnum loadingStatus =
               context.watch<UpcomingBillStore>().status;
           return loadingStatus == LoadingStatusEnum.loading
-              ? Text('loading...')
+              ? const CircularProgressIndicatorTwoArcs()
               : ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

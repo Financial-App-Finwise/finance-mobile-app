@@ -4,6 +4,9 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
@@ -36,6 +39,8 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     });
   }
 
+  late BudgetPlanStore store = context.read<BudgetPlanStore>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,17 +59,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
         Color(0xFF0ABDE3),
         Color(0xFF0B8AAF),
       ]),
-      centerContent: GeneralDatePicker(
-        prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
-        suffix: IconHelper.getSVG(SVGName.addSquare,
-            color: ColorConstant.secondary),
-        onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
-        onPreffix: () => setState(() => _isGrid = !_isGrid),
-        onDateChanged: (DateTime date) async {
-          context.read<BudgetPlanStore>().setSelectedDate(date);
-          await context.read<BudgetPlanStore>().read(refreshed: true);
-        },
-      ),
+      centerContent: _buildCenterContent(),
       mainContent: _buildContent(),
       centerContentPadding: const EdgeInsets.all(16),
       onNotification: (notification) {
@@ -77,6 +72,83 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
         }
         return true;
       },
+    );
+  }
+
+  Widget _buildCenterContent() {
+    return _isGrid
+        ? _buildCenterOfGrid()
+        : GeneralDatePicker(
+            prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+            suffix: IconHelper.getSVG(SVGName.addSquare,
+                color: ColorConstant.secondary),
+            onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
+            onPreffix: () async {
+              setState(() => _isGrid = !_isGrid);
+              await store.readYearly();
+            },
+            date: store.selectedDate,
+            onDateChanged: (DateTime date) async {
+              context.read<BudgetPlanStore>().setSelectedDate(date);
+              await context.read<BudgetPlanStore>().read(refreshed: true);
+            },
+          );
+  }
+
+  Widget _buildCenterOfGrid() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: TextButton(
+                onPressed: () {
+                  setState(() => _isGrid = !_isGrid);
+                  store.read(refreshed: true);
+                },
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
+                ),
+                child: IconHelper.getSVG(SVGName.burgerMenu),
+              ),
+            ),
+            const SizedBox(width: 24),
+            Observer(
+              builder: (context) => Text(
+                '${UIHelper.getDateFormat(store.selectedDate.toString(), 'yyyy')}',
+                style: TextStyleHelper.getw500size(18).copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+
+            // const Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () async {
+                store.addSelectedDateYear(addYear: false);
+                print('llll ${store.selectedDate}');
+                await store.readYearly();
+              },
+              child: const Icon(Icons.keyboard_arrow_left),
+            ),
+            const SizedBox(width: 16),
+            GestureDetector(
+              onTap: () async {
+                store.addSelectedDateYear();
+                await store.readYearly();
+              },
+              child: const Icon(Icons.keyboard_arrow_right),
+            ),
+          ],
+        )
+      ],
     );
   }
 
@@ -137,23 +209,44 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     });
   }
 
+  late final List<List<dynamic>> _gridData = [
+    ['January', store.budgetPlanYearly.data.jan],
+    ['February', store.budgetPlanYearly.data.feb],
+    ['March', store.budgetPlanYearly.data.mar],
+    ['April', store.budgetPlanYearly.data.apr],
+    ['May', store.budgetPlanYearly.data.may],
+    ['June', store.budgetPlanYearly.data.jun],
+    ['July', store.budgetPlanYearly.data.jul],
+    ['August', store.budgetPlanYearly.data.aug],
+    ['September', store.budgetPlanYearly.data.sep],
+    ['Octoboer', store.budgetPlanYearly.data.oct],
+    ['November', store.budgetPlanYearly.data.nov],
+    ['December', store.budgetPlanYearly.data.dec],
+  ];
+
 // Main content grid view
   Widget _mainContentGridView() {
-    return Container(
-      color: const Color(0xFFF5F7F8),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 12,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          crossAxisCount: 3,
-        ),
-        itemBuilder: (context, index) =>
-            const BudgetGridTile(month: 'January', budget: 3),
-      ),
-    );
+    return Observer(builder: (context) {
+      return store.status == LoadingStatusEnum.loading
+          ? Center(
+              child: CircularProgressIndicatorTwoArcs(),
+            )
+          : Container(
+              color: const Color(0xFFF5F7F8),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _gridData.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  crossAxisCount: 3,
+                ),
+                itemBuilder: (context, index) => BudgetGridTile(
+                    month: _gridData[index][0], budget: _gridData[index][1]),
+              ),
+            );
+    });
   }
 
 // No content

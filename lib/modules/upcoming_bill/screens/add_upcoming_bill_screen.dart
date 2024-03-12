@@ -100,6 +100,9 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
       children: [
         AmountInput(
           controller: _billAmountController,
+          onChange: (value) => setState(() {
+            _isFormFilled;
+          }),
         ),
         const SizedBox(
           height: 20,
@@ -113,6 +116,7 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
                 _upcomingDateController.text =
                     UIHelper.getInputDate(selectedDay.toString());
                 _selectedUpcomingDay = selectedDay;
+                _isFormFilled;
               },
             );
           },
@@ -125,6 +129,7 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
             // debugPrint('${category.id}');
             setState(() {
               _selectedCategory = category;
+              _isFormFilled;
             });
             debugPrint(_selectedCategory.name);
           },
@@ -161,55 +166,85 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
     );
   }
 
-  Widget _addButton() {
-    return InkWell(
-      onTap: () async {
-        String upcomingBillDate = UIHelper.getDateFormat(
-          _selectedUpcomingDay.toString(),
-          'yyyy-MM-dd',
-        );
+  bool get _isFormFilled =>
+      _billAmountController.text.isNotEmpty &&
+      _selectedCategory.id != 0 &&
+      _selectedUpcomingDay.toString().isNotEmpty;
 
-        bool success = await context.read<UpcomingBillStore>().post(
-              UpcomingBillData(
-                categoryID: _selectedCategory.id,
-                amount: double.parse(_billAmountController.text),
-                date: "$upcomingBillDate 12:00:00",
-                name: _expenseNameController.text == ''
-                    ? _selectedCategory.name
-                    : _expenseNameController.text,
-                note: _noteController.text,
+  Widget _addButton() {
+    return _isFormFilled
+        ? InkWell(
+            onTap: () async {
+              String upcomingBillDate = UIHelper.getDateFormat(
+                _selectedUpcomingDay.toString(),
+                'yyyy-MM-dd',
+              );
+
+              bool success = await context.read<UpcomingBillStore>().post(
+                    UpcomingBillData(
+                      categoryID: _selectedCategory.id,
+                      amount: double.parse(_billAmountController.text),
+                      date: "$upcomingBillDate 12:00:00",
+                      name: _expenseNameController.text == ''
+                          ? _selectedCategory.name
+                          : _expenseNameController.text,
+                      note: _noteController.text,
+                    ),
+                  );
+              if (success) {
+                await context.read<UpcomingBillStore>().read(refreshed: true);
+                Navigator.pop(context);
+              }
+            },
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 24,
               ),
-            );
-        if (success) {
-          await context.read<UpcomingBillStore>().read(refreshed: true);
-          Navigator.pop(context);
-        }
-      },
-      child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 24,
-        ),
-        decoration: BoxDecoration(
-          color: ColorConstant.secondary,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: ColorConstant.secondary,
-            width: 1,
-          ),
-        ),
-        child: const Text(
-          'Add upcoming bill',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            letterSpacing: 1,
-            color: ColorConstant.white,
-          ),
-        ),
-      ),
-    );
+              decoration: BoxDecoration(
+                color: ColorConstant.secondary,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: ColorConstant.secondary,
+                  width: 1,
+                ),
+              ),
+              child: const Text(
+                'Add upcoming bill',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  letterSpacing: 1,
+                  color: ColorConstant.white,
+                ),
+              ),
+            ),
+          )
+        : Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 24,
+            ),
+            decoration: BoxDecoration(
+              color: ColorConstant.secondary.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: ColorConstant.secondary.withOpacity(0.4),
+                width: 1,
+              ),
+            ),
+            child: const Text(
+              'Add upcoming bill',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                letterSpacing: 1,
+                color: ColorConstant.white,
+              ),
+            ),
+          );
   }
 
   Widget _buildDate({

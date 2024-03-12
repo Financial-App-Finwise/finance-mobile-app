@@ -1,13 +1,9 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/modules/onboarding_question/models/budgeting_model.dart';
-import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
-import 'package:finwise/modules/onboarding_question/models/spending_model.dart';
 import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/account_creation/main_account_creation.dart';
 import 'package:finwise/modules/onboarding_question/widgets/account_creation/start_account_creation.dart';
 import 'package:finwise/modules/onboarding_question/widgets/budgeting/main_budgeting.dart';
 import 'package:finwise/modules/onboarding_question/widgets/budgeting/start_budgeting.dart';
-import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
 import 'package:finwise/modules/onboarding_question/widgets/finance_snapshots/main_finance_snapshot.dart';
 import 'package:finwise/modules/onboarding_question/widgets/finance_snapshots/start_finance_snapshot.dart';
 import 'package:finwise/modules/onboarding_question/widgets/onboarding_header.dart';
@@ -71,19 +67,6 @@ class _OnboardingQuestionMainScreenState
       ),
     );
   }
-
-  // Financial snapshots
-  TextEditingController _netWorth = TextEditingController();
-  TextEditingController _expenseController = TextEditingController();
-  late final SpendingModel _expense = SpendingModel(
-    type: 'Daily',
-    controller: _expenseController,
-  );
-  TextEditingController _incomeController = TextEditingController();
-  late final SpendingModel _income = SpendingModel(
-    type: 'Daily',
-    controller: _incomeController,
-  );
 
   Widget _getCurrentWidget() {
     return Observer(builder: (context) {

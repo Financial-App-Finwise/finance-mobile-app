@@ -1,3 +1,7 @@
+import 'package:dio/dio.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
+import 'package:finwise/core/services/api_service.dart';
+import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/onboarding_question/models/budgeting_model.dart';
 import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
 import 'package:finwise/modules/onboarding_question/models/spending_model.dart';
@@ -129,9 +133,11 @@ abstract class _OnboardingQuestionStoreBase with Store {
   @observable
   TextEditingController networth = TextEditingController();
   @observable
-  late SpendingModel expense = SpendingModel();
+  SpendingModel expense = SpendingModel();
   @observable
-  late SpendingModel income = SpendingModel();
+  SpendingModel income = SpendingModel();
+  @observable
+  ObservableList<CategoryData> categories = ObservableList();
 
   // Budgeting
   @observable
@@ -164,6 +170,15 @@ abstract class _OnboardingQuestionStoreBase with Store {
   TextEditingController password = TextEditingController();
   @observable
   TextEditingController passwordConfirmation = TextEditingController();
+
+  @action
+  void setCategory(CategoryData category) {
+    if (categories.contains(category)) {
+      categories.remove(category);
+    } else {
+      categories.add(category);
+    }
+  }
 
   @action
   void setSaveForGoalMoneyOption(int value) {
@@ -201,17 +216,29 @@ abstract class _OnboardingQuestionStoreBase with Store {
     }
   }
 
-  @computed
-  Map<String, List<bool>> get checkContinue {
-    Map<String, List<bool>> res = {
-      "personalQuestion": [
-        gender.name != null ? true : false,
-        age.text.isNotEmpty ? true : true,
-        martialStatus.name != null ? true : false,
-        profression.name != null ? true : false,
-      ],
-    };
+  @observable
+  LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
-    return res;
+  // Create onboarding quesitons
+  @action
+  Future<bool> post(Map<String, dynamic> data) async {
+    debugPrint('--> START: post, onboarding questions');
+    loadingStatus = LoadingStatusEnum.loading;
+    bool success = false;
+
+    try {
+      Response response = await ApiService.dio.post(
+        'onboardinginfo/create',
+        data: data,
+      );
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      success = false;
+      loadingStatus = LoadingStatusEnum.error;
+    } finally {
+      debugPrint('<-- END: post, finance');
+    }
+
+    return success;
   }
 }

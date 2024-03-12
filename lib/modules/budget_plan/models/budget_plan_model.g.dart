@@ -20,6 +20,7 @@ BudgetPlanItem _$BudgetPlanItemFromJson(Map<String, dynamic> json) =>
       totalBudget: json['total_budgets'] as int? ?? 0,
       available: json['available'] as int? ?? 0,
       spent: json['spent'] as int? ?? 0,
+      date: json['date'] as String? ?? 'no date',
       plannedBudget: json['planned_budgets'] as int? ?? 0,
       overBudget: json['over_budget'] as int? ?? 0,
       budgetPlans: (json['budget_plans'] as List<dynamic>)
@@ -32,6 +33,7 @@ Map<String, dynamic> _$BudgetPlanItemToJson(BudgetPlanItem instance) =>
       'total_budgets': instance.totalBudget,
       'available': instance.available,
       'spent': instance.spent,
+      'date': instance.date,
       'planned_budgets': instance.plannedBudget,
       'over_budget': instance.overBudget,
       'budget_plans': instance.budgetPlans,
@@ -46,9 +48,7 @@ BudgetPlanData _$BudgetPlanDataFromJson(Map<String, dynamic> json) =>
           ? false
           : BudgetPlanData._intToBool(json['isMonthly'] as int),
       name: json['name'] as String? ?? 'no name',
-      amount: json['amount'] == null
-          ? 0.0
-          : BudgetPlanData._stringToDouble(json['amount'] as String),
+      amount: json['amount'] as int? ?? 0,
       date: json['date'] as String? ?? 'no date',
       isRecurring: json['isRecurring'] == null
           ? false
@@ -66,7 +66,7 @@ Map<String, dynamic> _$BudgetPlanDataToJson(BudgetPlanData instance) =>
       'categoryID': instance.categoryID,
       'isMonthly': BudgetPlanData._boolToInt(instance.isMonthly),
       'name': instance.name,
-      'amount': BudgetPlanData._doubleToString(instance.amount),
+      'amount': instance.amount,
       'date': instance.date,
       'isRecurring': BudgetPlanData._boolToInt(instance.isRecurring),
       'transaction_counts': instance.transactionCount,

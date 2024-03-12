@@ -223,7 +223,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
                       name: _expenseNameController.text == ''
                           ? _selectedCategory.name
                           : _expenseNameController.text,
-                      amount: double.parse(_budgetAmountController.text),
+                      amount: int.parse(_budgetAmountController.text),
                     ),
                   );
             },

@@ -4,6 +4,7 @@ import 'package:finwise/core/enums/upcoming_bill_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/upcoming_bill/helpers/upcoming_bill_helper.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_yearly_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
@@ -34,6 +35,15 @@ abstract class _UpcomingBillStoreBase with Store {
   DateTime get endDate {
     DateTime date = DateTime(startDate.year, startDate.month + 1, 1);
     return date;
+  }
+
+  @action
+  void addSelectedDateYear({bool addYear = true}) {
+    if (addYear) {
+      startDate = DateTime(startDate.year + 1, startDate.month, startDate.day);
+    } else {
+      startDate = DateTime(startDate.year - 1, startDate.month, startDate.day);
+    }
   }
 
   @action
@@ -68,10 +78,35 @@ abstract class _UpcomingBillStoreBase with Store {
     return parameter;
   }
 
+  @observable
+  ObservableMap<String, UpcomingBillMonth> upcomingBillYearly = ObservableMap();
+
+  @action
+  Future readYearly() async {
+    debugPrint('--> START: read upcomingbill yearly');
+    status = LoadingStatusEnum.loading;
+    try {
+      Response response =
+          await ApiService.dio.get('upcomingbills?year=${startDate.year}');
+      if (response.statusCode == 200) {
+        upcomingBillYearly = ObservableMap.of(await compute(
+            getUpcomingBillYearly, response.data as Map<String, dynamic>));
+        status = LoadingStatusEnum.done;
+      } else {
+        debugPrint('--> Something went wrong, code: ${response.statusCode}');
+        status = LoadingStatusEnum.error;
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      status = LoadingStatusEnum.error;
+    } finally {
+      debugPrint('<-- END: read upcomingbill yearly');
+    }
+  }
+
   @action
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
-
 
     if (refreshed) {
       status = LoadingStatusEnum.loading;

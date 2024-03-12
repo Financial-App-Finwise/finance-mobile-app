@@ -7,6 +7,7 @@ import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
 import 'package:finwise/modules/finance/models/finance_post_model.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';
@@ -29,6 +30,8 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   late AuthStore authStore = context.read<AuthStore>();
   late FinanceStore financeStore = context.read<FinanceStore>();
+  late OnboardingQuestionStore onboardingStore =
+      context.read<OnboardingQuestionStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +68,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
 
                   // ---------- Create Finance Account ----------
-                  success = await financeStore.post(FinancePost());
+                  success = await financeStore.post(
+                    FinancePost(
+                      totalbalance:
+                          double.tryParse(onboardingStore.networth.text) ?? 0,
+                    ),
+                  );
+
+                  // ---------- Create Onboarding (Optional) ----------
+                  
                   if (success) {
                     if (success) {
                       Navigator.pushNamed(context, RouteName.verifyEmail);
                     } else {}
                   }
-
-                  // ---------- Create Onboarding (Optional) ----------
                 }
               },
             );

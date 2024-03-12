@@ -5,6 +5,7 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/budget_plan/helpers/budget_plan_helper.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_yearly_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
@@ -14,8 +15,10 @@ class BudgetPlanStore = _BudgetPlanStoreBase with _$BudgetPlanStore;
 
 abstract class _BudgetPlanStoreBase with Store {
   @observable
-  // Declare the right data type
   BudgetPlan budgetPlan = BudgetPlan(data: BudgetPlanItem(budgetPlans: []));
+
+  @observable
+  BudgetPlanYearly budgetPlanYearly = BudgetPlanYearly(data: BudgetPlanMonth());
 
   @observable
   LoadingStatusEnum status = LoadingStatusEnum.none;
@@ -30,6 +33,17 @@ abstract class _BudgetPlanStoreBase with Store {
   @action
   void setSelectedDate(DateTime date) {
     selectedDate = date;
+  }
+
+  @action
+  void addSelectedDateYear({bool addYear = true}) {
+    if (addYear) {
+      selectedDate =
+          DateTime(selectedDate.year + 1, selectedDate.month, selectedDate.day);
+    } else {
+      selectedDate =
+          DateTime(selectedDate.year - 1, selectedDate.month, selectedDate.day);
+    }
   }
 
   @observable
@@ -48,6 +62,26 @@ abstract class _BudgetPlanStoreBase with Store {
     }
 
     return parameter;
+  }
+
+  @action
+  Future readYearly() async {
+    debugPrint('--> START: read budgetplan yearly');
+    status = LoadingStatusEnum.loading;
+    try {
+      Response response =
+          await ApiService.dio.get('budgetplans/summary/${selectedDate.year}');
+      if (response.statusCode == 200) {
+        budgetPlanYearly = await compute(
+            getBudgetPlanYearly, response.data as Map<String, dynamic>);
+        status = LoadingStatusEnum.done;
+        print('llll ${budgetPlanYearly.data.mar}');
+      }
+    } catch (e) {
+      debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+    } finally {
+      debugPrint('<-- End: fetching budget plan');
+    }
   }
 
   @action
@@ -75,9 +109,13 @@ abstract class _BudgetPlanStoreBase with Store {
     }
   }
 
+  @observable
+  LoadingStatusEnum createStatus = LoadingStatusEnum.none;
+
   @action
   Future<bool> post(BudgetPlanData budgetPlanData) async {
     debugPrint('--> START: post, budget plan');
+    createStatus = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Map<String, dynamic> jsonData = budgetPlanData.toJson();
@@ -85,15 +123,16 @@ abstract class _BudgetPlanStoreBase with Store {
           await ApiService.dio.post('budgetplans', data: jsonData);
       if (response.statusCode == 200) {
         success = true;
+        createStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        createStatus = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+      createStatus = LoadingStatusEnum.error;
     } finally {
-      debugPrint('$success');
       debugPrint('<-- End: posting budget plan');
     }
 

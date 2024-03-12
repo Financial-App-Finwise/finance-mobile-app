@@ -1,6 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
@@ -46,7 +47,7 @@ class _FilteredBudgetState extends State<FilteredBudget> {
           LoadingStatusEnum loadingStatus =
               context.watch<BudgetPlanStore>().status;
           return loadingStatus == LoadingStatusEnum.loading
-              ? Text('Loading...')
+              ? const CircularProgressIndicatorTwoArcs()
               : Column(
                   children: [
                     for (int index = 0;

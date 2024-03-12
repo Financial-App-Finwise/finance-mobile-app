@@ -1,9 +1,11 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
+import 'package:finwise/modules/budget_plan/widgets/calendar_month_widget.dart';
 import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
@@ -23,6 +25,7 @@ class MonthlyBudget extends StatefulWidget {
 }
 
 class _MonthlyBudgetState extends State<MonthlyBudget> {
+  late BudgetPlanStore store = context.read<BudgetPlanStore>();
   final _expenseNameController = TextEditingController();
   final _budgetAmountController = TextEditingController();
 
@@ -98,6 +101,7 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
   }
 
   CategoryData _selectedCategory = CategoryData();
+  DateTime _selectedDate = DateTime.now();
 
   Widget _form() {
     return Column(
@@ -108,18 +112,33 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
           children: [
             CategoryButton(
               setCategory: (category) {
-                // debugPrint('${category.id}');
                 setState(() {
                   _selectedCategory = category;
+                  _isFormFilled;
                 });
-                debugPrint(_selectedCategory.name);
               },
               category: _selectedCategory,
             ),
             const SizedBox(
               height: 20,
             ),
-            AmountInput(controller: _budgetAmountController),
+            CalendarMonthWidget(
+              date: _selectedDate,
+              selected: DateTime(_selectedDate.year, _selectedDate.month),
+              onChange: (value) {
+                setState(() {
+                  _selectedDate = value;
+                });
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            AmountInput(
+                controller: _budgetAmountController,
+                onChange: (value) => setState(() {
+                      _isFormFilled;
+                    })),
             const SizedBox(
               height: 8,
             ),
@@ -165,6 +184,9 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
     );
   }
 
+  bool get _isFormFilled =>
+      _selectedCategory.id != 0 && _budgetAmountController.text.isNotEmpty;
+
   Widget _buttons() {
     return Row(
       children: [
@@ -178,24 +200,32 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
           width: 12,
         ),
         Expanded(
-          child: InkWell(
-            onTap: () async {
-              bool success = await context.read<BudgetPlanStore>().post(
-                    BudgetPlanData(
-                      categoryID: _selectedCategory.id,
-                      isMonthly: true,
-                      name: _expenseNameController.text == ''
-                          ? _selectedCategory.name
-                          : _expenseNameController.text,
-                      amount: double.parse(_budgetAmountController.text),
-                    ),
-                  );
-              if (success) {
-                Navigator.pop(context);
-              }
-            },
-            child: _createButton(),
-          ),
+          child: _isFormFilled
+              ? InkWell(
+                  onTap: () async {
+                    String budgetPlanDate = UIHelper.getDateFormat(
+                        _selectedDate.toString(), 'yyyy-MM-dd');
+
+                    bool success = await context.read<BudgetPlanStore>().post(
+                          BudgetPlanData(
+                            categoryID: _selectedCategory.id,
+                            isMonthly: true,
+                            name: _expenseNameController.text == ''
+                                ? _selectedCategory.name
+                                : _expenseNameController.text,
+                            amount: int.parse(_budgetAmountController.text),
+                            date: budgetPlanDate,
+                            isRecurring: false,
+                          ),
+                        );
+                    if (success) {
+                      context.read<BudgetPlanStore>().read(refreshed: true);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: _createButton(),
+                )
+              : _createButton(isFormFill: false),
         ),
       ],
     );
@@ -227,30 +257,55 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
     );
   }
 
-  Widget _createButton() {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: 24,
-      ),
-      decoration: BoxDecoration(
-        color: ColorConstant.secondary,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: ColorConstant.secondary,
-          width: 1,
-        ),
-      ),
-      child: const Text(
-        'Create',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          letterSpacing: 1,
-          color: ColorConstant.white,
-        ),
-      ),
-    );
+  Widget _createButton({bool isFormFill = true}) {
+    return isFormFill
+        ? Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 24,
+            ),
+            decoration: BoxDecoration(
+              color: ColorConstant.secondary,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: ColorConstant.secondary,
+                width: 1,
+              ),
+            ),
+            child: const Text(
+              'Create',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                letterSpacing: 1,
+                color: ColorConstant.white,
+              ),
+            ),
+          )
+        : Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 24,
+            ),
+            decoration: BoxDecoration(
+              color: ColorConstant.secondary.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: ColorConstant.secondary.withOpacity(0.4),
+                width: 1,
+              ),
+            ),
+            child: const Text(
+              'Create',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                letterSpacing: 1,
+                color: ColorConstant.white,
+              ),
+            ),
+          );
   }
 }
