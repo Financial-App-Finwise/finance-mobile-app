@@ -12,28 +12,61 @@ class FinanceStore = _FinanceStoreBase with _$FinanceStore;
 
 abstract class _FinanceStoreBase with Store {
   // -------------------- Loading --------------------
+  // General
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
-
-  @observable
-  LoadingStatusEnum barChartLoading = LoadingStatusEnum.none;
-
-  @action
-  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
 
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
 
-  // ---------- Finance ----------
+  // Bar Chart
   @observable
-  Finance finance = Finance(
-    data: FinanceData(
-      items: [],
-      topCategories: [],
-      allTransactions: AllTransaction(today: [], yesterday: []),
-      total: {},
-    ),
-  );
+  LoadingStatusEnum loadingBarChart = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingBarChart => loadingBarChart == LoadingStatusEnum.loading;
+
+  // Pie Chart
+  @observable
+  LoadingStatusEnum loadingPieChart = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingPieChart => loadingPieChart == LoadingStatusEnum.loading;
+
+  // Update Balance
+  @observable
+  LoadingStatusEnum loadingUpdate = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingUpdate => loadingUpdate == LoadingStatusEnum.loading;
+
+  // -------------------- Finance --------------------
+  // Default finance
+  Finance get _defaultFinance => Finance(
+        data: FinanceData(
+          items: [],
+          topCategories: [],
+          allTransactions: AllTransaction(today: [], yesterday: []),
+          total: {},
+        ),
+      );
+
+  // General Finance
+  @observable
+  late Finance finance = _defaultFinance;
+
+  // Dollar Account
+  @computed
+  FinanceItem get dollarAccount => finance.data.items.firstWhere(
+        (element) => element.currency.code == 'USD',
+        orElse: () {
+          return FinanceItem(currency: Currency());
+        },
+      );
+
+  // Keep track of previous bar chart data
+  @observable
+  ObservableMap<String, IncomeExpenseCompare> previousBarData = ObservableMap();
 
   // -------------------- Period Filter --------------------
   @observable
@@ -48,14 +81,26 @@ abstract class _FinanceStoreBase with Store {
   String get queryParemeter {
     String isIncome = 'isIncome=${this.isIncome}';
     String period = 'period=${this.period}';
-
-    // combine
     String parameter = '$isIncome&$period';
+    return '$isIncome$period'.isEmpty ? '' : '?$parameter';
+  }
 
-    if ('$isIncome$period'.isEmpty) {
-      return '';
-    }
-    return '?$parameter';
+  // Query parameter for income
+  @computed
+  String get queryParemeterIncome {
+    String isIncome = 'isIncome=1';
+    String period = 'period=${this.period}';
+    String parameter = '$isIncome&$period';
+    return '$isIncome$period'.isEmpty ? '' : '?$parameter';
+  }
+
+  // Query parameter for expense
+  @computed
+  String get queryParemeterExpense {
+    String isIncome = 'isIncome=0';
+    String period = 'period=${this.period}';
+    String parameter = '$isIncome&$period';
+    return '$isIncome$period'.isEmpty ? '' : '?$parameter';
   }
 
   // -------------------- Filtered SmartGoal --------------------
@@ -67,99 +112,62 @@ abstract class _FinanceStoreBase with Store {
   @action
   void initialize(String key) {
     if (filteredFinanceMap[key] == null) {
-      filteredFinanceMap[key] = Finance(
-        data: FinanceData(
-          items: [],
-          topCategories: [],
-          allTransactions: AllTransaction(today: [], yesterday: []),
-          total: {},
-        ),
-      );
+      filteredFinanceMap[key] = _defaultFinance;
     }
   }
 
-  @computed
-  String get queryParemeterIncome {
-    String isIncome = 'isIncome=1';
-    String period = 'period=${this.period}';
-
-    // combine
-    String parameter = '$isIncome&$period';
-
-    if ('$isIncome$period'.isEmpty) {
-      return '';
-    }
-    return '?$parameter';
-  }
-
-  @observable
-  ObservableMap<String, IncomeExpenseCompare> previousBarData = ObservableMap();
-
-  @computed
-  String get queryParemeterExpense {
-    String isIncome = 'isIncome=0';
-    String period = 'period=${this.period}';
-
-    // combine
-    String parameter = '$isIncome&$period';
-
-    if ('$isIncome$period'.isEmpty) {
-      return '';
-    }
-    return '?$parameter';
-  }
-
-  Finance get _defaultFinance => Finance(
-        data: FinanceData(
-          items: [],
-          topCategories: [],
-          allTransactions: AllTransaction(today: [], yesterday: []),
-          total: {},
-        ),
-      );
-
+  // Filtered finance
   @computed
   Finance get filteredFinance => filteredFinanceMap[queryParemeter] == null
       ? _defaultFinance
       : filteredFinanceMap[queryParemeter]!;
 
+  // Filtered income finance
   @computed
   Finance get incomeFinance => filteredFinanceMap[queryParemeterIncome] == null
       ? _defaultFinance
       : filteredFinanceMap[queryParemeterIncome]!;
 
+  // Filtered expense finance
   @computed
   Finance get expenseFinance =>
       filteredFinanceMap[queryParemeterExpense] == null
           ? _defaultFinance
           : filteredFinanceMap[queryParemeterExpense]!;
 
-  @computed
-  FinanceItem get dollarAccount => filteredFinance.data.items.firstWhere(
-        (element) => element.currency.code == 'USD',
-        orElse: () {
-          return FinanceItem(currency: Currency());
-        },
-      );
+  // -------------------- Set Loading Status --------------------
+  void setLoadingDone() {
+    loadingStatus = LoadingStatusEnum.done;
+    loadingBarChart = LoadingStatusEnum.done;
+    loadingPieChart = LoadingStatusEnum.done;
+  }
 
+  void setLoadingError() {
+    loadingStatus = LoadingStatusEnum.error;
+    loadingBarChart = LoadingStatusEnum.error;
+    loadingPieChart = LoadingStatusEnum.error;
+  }
+
+  // -------------------- Has Loaded --------------------
   @observable
-  LoadingStatusEnum loadingPieChart = LoadingStatusEnum.none;
+  bool _hasReadOnce = false;
 
   // -------------------- Read Finance --------------------
   @action
-  Future read({bool? isIncome}) async {
+  Future read({
+    bool? isIncome,
+    VoidCallback? setLoading,
+  }) async {
     debugPrint('--> START: read finance');
-    loadingStatus = LoadingStatusEnum.loading;
+
+    // check if it's required to set loading
+    if (setLoading != null) {
+      setLoading();
+    }
 
     // check if required to load income, or expense from other screen
     if (isIncome != null) {
       this.isIncome = isIncome ? 1 : 0;
-    }
-
-    initialize(queryParemeter);
-
-    if (filteredFinance.data.items.isEmpty) {
-      barChartLoading = LoadingStatusEnum.loading;
     }
 
     try {
@@ -168,36 +176,27 @@ abstract class _FinanceStoreBase with Store {
 
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
-        finance = await compute(
+        Finance finance = await compute(
           getFinanceModel,
           response.data as Map<String, dynamic>,
         );
 
-        filteredFinanceMap[queryParemeter] = finance;
-
-        if (finance.data.total.runtimeType.toString() !=
-            "_Map<String, dynamic>") {
-          // Map<String, dynamic> map = {};
-          // map.forEach((key, value) {});
-          // finance.data.total.forEach((key, value) {
-          //   print('$key: $value');
-          // });
+        // read general finance only once
+        if (!_hasReadOnce) {
+          this.finance = finance;
+          _hasReadOnce = true;
         }
 
-        loadingStatus = LoadingStatusEnum.done;
-        barChartLoading = LoadingStatusEnum.done;
-        loadingPieChart = LoadingStatusEnum.done;
+        // store the read finance in a map of {'key': Finance}
+        filteredFinanceMap[queryParemeter] = finance;
+        setLoadingDone();
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
-        loadingStatus = LoadingStatusEnum.error;
-        barChartLoading = LoadingStatusEnum.error;
-        loadingPieChart = LoadingStatusEnum.error;
+        setLoadingError();
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
-      loadingStatus = LoadingStatusEnum.error;
-      barChartLoading = LoadingStatusEnum.error;
-      loadingPieChart = LoadingStatusEnum.error;
+      setLoadingError();
     } finally {
       debugPrint('<-- END: read finance');
     }
@@ -207,7 +206,7 @@ abstract class _FinanceStoreBase with Store {
   @action
   Future<bool> post(FinancePost data) async {
     debugPrint('--> START: post, finance');
-    setLoadingStatus(LoadingStatusEnum.loading);
+    loadingStatus = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Response response = await ApiService.dio.post(
@@ -218,16 +217,16 @@ abstract class _FinanceStoreBase with Store {
       if (response.statusCode == 201) {
         success = true;
         await read();
-        setLoadingStatus(LoadingStatusEnum.done);
+        loadingStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        loadingStatus = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      loadingStatus = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: post, finance');
     }
@@ -235,10 +234,6 @@ abstract class _FinanceStoreBase with Store {
   }
 
   // -------------------- Update Total Balance --------------------
-  // Loading Status for Update
-  @observable
-  LoadingStatusEnum loadingUpdate = LoadingStatusEnum.none;
-
   @action
   Future<bool> update(double totalbalance) async {
     debugPrint('--> START: update, finance');
@@ -271,8 +266,9 @@ abstract class _FinanceStoreBase with Store {
 
   // -------------------- Dispose --------------------
   void dispose() {
+    // reinitialize fields
     loadingStatus = LoadingStatusEnum.none;
-    barChartLoading = LoadingStatusEnum.none;
+    loadingBarChart = LoadingStatusEnum.none;
     finance = Finance(
       data: FinanceData(
         items: [],
@@ -284,5 +280,6 @@ abstract class _FinanceStoreBase with Store {
     period = 'this_month';
     isIncome = 1;
     filteredFinanceMap = ObservableMap();
+    _hasReadOnce = false;
   }
 }
