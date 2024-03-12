@@ -3,7 +3,7 @@ import 'package:finwise/core/models/income_expense_model/income_expense_model.da
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class IncomeExpensePieChart extends StatelessWidget {
+class IncomeExpensePieChart extends StatefulWidget {
   const IncomeExpensePieChart({
     super.key,
     required this.data,
@@ -16,18 +16,25 @@ class IncomeExpensePieChart extends StatelessWidget {
   final Color color;
 
   @override
+  State<IncomeExpensePieChart> createState() => _IncomeExpensePieChartState();
+}
+
+class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildPieChart(data),
+        _buildPieChart(),
         const SizedBox(height: 30),
-        _buildPieChartLegend(data),
+        _buildPieChartLegend(),
       ],
     );
   }
 
   // bool _showMorePieChartInfo = false;
-  Widget _buildPieChart(List<IncomeExpense> values) {
+  final List opacities = const [1.0, 0.75, 0.5, 0.25];
+
+  Widget _buildPieChart() {
     return SizedBox.fromSize(
       size: const Size(140, 140),
       child: PieChart(
@@ -53,12 +60,10 @@ class IncomeExpensePieChart extends StatelessWidget {
           ),
           sectionsSpace: 0,
           startDegreeOffset: 180,
-          sections: [
-            _buildPieChartItem(value: values[0].amount, opacity: 0.95),
-            _buildPieChartItem(value: values[1].amount, opacity: 0.60),
-            _buildPieChartItem(value: values[2].amount, opacity: 0.40),
-            _buildPieChartItem(value: values[3].amount, opacity: 0.30),
-          ],
+          sections: widget.data
+              .map((e) => _buildPieChartItem(
+                  value: e.amount, opacity: opacities[widget.data.indexOf(e)]))
+              .toList(),
         ),
         swapAnimationDuration: const Duration(seconds: 1),
       ),
@@ -76,55 +81,43 @@ class IncomeExpensePieChart extends StatelessWidget {
         color: Colors.white,
         fontSize: 10,
       ),
-      color: color.withOpacity(opacity),
+      color: widget.color.withOpacity(opacity),
       showTitle: false,
       radius: 25,
     );
   }
 
-  Widget _buildPieChartLegend(List<IncomeExpense> values) {
+  Widget _buildPieChartLegend() {
     return Column(
       children: [
         Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: values[0].category,
-                    amount: '\$${values[0].amount}',
-                    color: color.withOpacity(0.8),
-                  ),
-                ),
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: values[1].category,
-                    amount: '\$${values[1].amount}',
-                    color: color.withOpacity(0.5),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: values[2].category,
-                    amount: '\$${values[2].amount}',
-                    color: color.withOpacity(0.2),
-                  ),
-                ),
-                Expanded(
-                  child: _buildPieChartLegendItem(
-                    category: values[3].category,
-                    amount: '\$${values[3].amount}',
-                    color: color.withOpacity(0.1),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+            children: widget.data.map(
+          (e) {
+            int index = widget.data.indexOf(e);
+            int nextIndex = index + 1;
+
+            if (index % 2 == 0) {
+              return Row(
+                children: [
+                  Expanded(
+                      child: _buildPieChartLegendItem(
+                          category: e.category,
+                          amount: e.amount.toString(),
+                          color: widget.color.withOpacity(opacities[index]))),
+                  Expanded(
+                      child: nextIndex < widget.data.length
+                          ? _buildPieChartLegendItem(
+                              category: widget.data[nextIndex].category,
+                              amount: widget.data[nextIndex].amount.toString(),
+                              color: widget.color
+                                  .withOpacity(opacities[nextIndex]))
+                          : const SizedBox()),
+                ],
+              );
+            }
+            return const SizedBox();
+          },
+        ).toList()),
       ],
     );
   }

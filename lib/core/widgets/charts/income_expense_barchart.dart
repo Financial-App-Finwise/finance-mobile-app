@@ -44,9 +44,9 @@ class IncomeExpenseBarChart extends StatelessWidget {
     return SizedBox(
       height: 200,
       child: BarChart(
-        swapAnimationDuration: const Duration(milliseconds: 750),
+        swapAnimationDuration: const Duration(milliseconds: 500),
         // swapAnimationDuration: Duration.zero,
-        swapAnimationCurve: Curves.easeInOut,
+        swapAnimationCurve: Curves.easeInOutCubicEmphasized,
         BarChartData(
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(
@@ -84,7 +84,7 @@ class IncomeExpenseBarChart extends StatelessWidget {
               sideTitles: SideTitles(
                 reservedSize: 48,
                 showTitles: true,
-                interval: 1000,
+                // interval: 50,
                 getTitlesWidget: (value, meta) {
                   return _barChartleftTitles(value, meta);
                 },
@@ -109,7 +109,7 @@ class IncomeExpenseBarChart extends StatelessWidget {
             // verticalInterval: 0.25,
             verticalInterval:
                 barGroups.isNotEmpty ? 1 / barGroups.length : 0.25,
-            horizontalInterval: 1000,
+            // horizontalInterval: 1000,
           ),
           borderData: FlBorderData(
             border: const DashedBorder.fromBorderSide(
@@ -118,12 +118,6 @@ class IncomeExpenseBarChart extends StatelessWidget {
             ),
           ),
           alignment: BarChartAlignment.spaceAround,
-          // barGroups: [
-          //   _buildBarChartGroup(x: 0, income: 6000, expense: 4000),
-          //   _buildBarChartGroup(x: 1, income: 4000, expense: 2000),
-          //   _buildBarChartGroup(x: 2, income: 8000, expense: 6000),
-          //   _buildBarChartGroup(x: 3, income: 7000, expense: 3000),
-          // ],
           barGroups: barGroups
               .map(
                 (e) => _buildBarChartGroup(
@@ -168,13 +162,6 @@ class IncomeExpenseBarChart extends StatelessWidget {
     data.forEach((key, value) {
       titles.add(key);
     });
-    // if (data.isEmpty) {
-    //   titles = ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'];
-    // } else {
-    //   data.forEach((key, value) {
-    //     titles.add(key);
-    //   });
-    // }
 
     return SideTitleWidget(
       axisSide: meta.axisSide,

@@ -3,17 +3,19 @@ import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:flutter/material.dart';
 
 class EmptyDataWidget extends StatefulWidget {
-  Widget? icon;
-  late String description;
-  late String buttonLabel;
-  late void Function() onButtonTap;
+  final Widget? icon;
+  final String description;
+  final String buttonLabel;
+  final void Function() onButtonTap;
+  final Size? iconSize;
 
-  EmptyDataWidget({
+  const EmptyDataWidget({
     super.key,
     this.icon,
     this.description = '',
     this.buttonLabel = '',
     required this.onButtonTap,
+    this.iconSize,
   });
 
   @override
@@ -31,7 +33,8 @@ class _EmptyDataWidgetState extends State<EmptyDataWidget> {
   Widget _buildEmptyData() {
     return Column(
       children: [
-        SizedBox.fromSize(size: const Size(100, 100), child: widget.icon),
+        SizedBox.fromSize(
+            size: widget.iconSize ?? const Size(100, 100), child: widget.icon),
         const SizedBox(height: 8),
         Text(
           widget.description,
