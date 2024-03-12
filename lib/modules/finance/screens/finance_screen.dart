@@ -27,9 +27,7 @@ import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/test/test_container_pos.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -44,19 +42,9 @@ class FinanceScreen extends StatefulWidget {
 class _FinanceScreenState extends State<FinanceScreen> {
   late FinanceStore store = context.read<FinanceStore>();
 
-  //
-
-  
-  //
-
   @override
   void initState() {
     super.initState();
-    // Future.delayed(Duration.zero, () async {
-    //   // await _readAll();
-    //   // await context.read<FinanceStore>().read();
-    // });
-    // store.setUpReaction();
     store.isIncome = 1;
   }
 
@@ -106,7 +94,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                       style: FiancialTextStyle.totalBalanceTitle),
                   const SizedBox(height: 4),
                   Text(
-                    '\$${context.watch<FinanceStore>().dollarAccount.totalbalance}',
+                    '\$${store.dollarAccount.totalbalance}',
                     style: FiancialTextStyle.totalBalance,
                   ),
                 ],
@@ -178,26 +166,40 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return RoundedContainer(
       child: Column(
         children: [
-          Row(children: [
-            Visibility(
-              visible: store.barChartLoading == LoadingStatusEnum.loading,
-              child: const LinearProgressDots(),
-            ),
-            const Expanded(child: SizedBox()),
-            _buildGeneralPeriodButton(
-              selectedValue: store.period,
-              onChange: (value) async {
-                // save previous value, to aviod UI error in the bar chart
-                store.previousBarData =
-                    ObservableMap.of(store.filteredFinance.data.total);
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // check if it's loading
+              Visibility(
+                visible: store.isLoadingBarChart,
+                child: const LinearProgressDots(),
+              ),
+              const Expanded(child: SizedBox()),
+              _buildGeneralPeriodButton(
+                selectedValue: store.period,
+                onChange: (value) async {
+                  // save previous value, to aviod UI error in the bar chart
+                  store.previousBarData =
+                      ObservableMap.of(store.filteredFinance.data.total);
 
-                store.period = value;
-                store.initialize(store.queryParemeter);
-                await store.read(isIncome: false);
-                await store.read(isIncome: true);
-              },
-            ),
-          ]),
+                  // change the period
+                  store.period = value;
+
+                  // initialize the map item value
+                  store.initialize(store.queryParemeter);
+
+                  // if the filteredFinance is empty, read to get data
+                  if (store.filteredFinance.data.items.isEmpty) {
+                    await store.read(
+                      isIncome: true,
+                      setLoading: () =>
+                          store.loadingBarChart = LoadingStatusEnum.loading,
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
           store.finance.data.total.isEmpty
               ? Column(
@@ -249,17 +251,11 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => ScrollPositionChecker()));
-          },
-          child: _buildFinanceItem(
-            text: 'Income',
-            amount: '\$${store.finance.data.totalIncomes}',
-            icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
-            color: ColorConstant.income,
-          ),
+        _buildFinanceItem(
+          text: 'Income',
+          amount: '\$${store.finance.data.totalIncomes}',
+          icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
+          color: ColorConstant.income,
         ),
         _buildFinanceItem(
           text: 'Expense',
@@ -312,11 +308,23 @@ class _FinanceScreenState extends State<FinanceScreen> {
           onTap: (value) async {
             store.isIncome = value ? 1 : 0;
             if (store.filteredFinance.data.items.isEmpty) {
-              // set loading for pie chart section
-              store.loadingPieChart = LoadingStatusEnum.loading;
-        
-              // read
-              await store.read();
+              // save previous value, to aviod UI error in the bar chart
+              // store.previousBarData =
+              //     ObservableMap.of(store.filteredFinance.data.total);
+
+              // // change the period
+              // store.period = value;
+
+              // initialize the map item value
+              store.initialize(store.queryParemeter);
+
+              // if the filteredFinance is empty, read to get data
+              if (store.filteredFinance.data.items.isEmpty) {
+                await store.read(
+                  setLoading: () =>
+                      store.loadingPieChart = LoadingStatusEnum.loading,
+                );
+              }
             }
           },
         ),
@@ -342,8 +350,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                 selectedValue: 'this_month',
                 onChange: (value) async {
                   store.period = value;
-                  store.previousBarData =
-                      ObservableMap.of(store.filteredFinance.data.total);
+                  
                   if (store.previousBarData.isEmpty) {
                     store.loadingPieChart = LoadingStatusEnum.loading;
                   }

@@ -39,15 +39,18 @@ class _LinearProgressDotsState extends State<LinearProgressDots> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(3, (index) {
             return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _dotCount == index
-                  ? Text('. ',
-                      style:
-                          TextStyle(fontSize: 28, color: ColorConstant.primary))
-                  : Text('. ',
-                      style: TextStyle(
-                          fontSize: 28, color: ColorConstant.colorA4A7C6)),
-            );
+                duration: const Duration(milliseconds: 300),
+                child: Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _dotCount == index
+                        ? ColorConstant.primary
+                        : ColorConstant.colorA4A7C6,
+                  ),
+                  margin: const EdgeInsets.only(right: 5),
+                ));
           }),
         ),
       ],

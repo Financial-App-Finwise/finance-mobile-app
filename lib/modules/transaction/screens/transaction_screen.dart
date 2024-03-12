@@ -274,7 +274,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ),
         TransactionItem(
           transactionData: item,
-          title: item.note,
           date: UIHelper.getDateFormat(item.date, 'dd MMM, yyy'),
           amount: item.amount.toString(),
           icon: item.isIncome

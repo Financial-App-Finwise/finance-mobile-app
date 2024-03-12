@@ -40,21 +40,19 @@ class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
   }
 
   Widget _buildLoadingScreen() {
-    return Observer(
-      builder: (context) {
-        return store.loadingUpdate == LoadingStatusEnum.done
-            ? LoadingScreen(
-                title: 'Balance Updated Successfully!',
-                description:
-                    'Please wait...\nYou will be directed to your finance.',
-                icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
-              )
-            : LoadingScreen(
-                title: 'Just a moment',
-                description: 'Please wait...\nWe are preparing for you...',
-                icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
-              );
-      }
-    );
+    return Observer(builder: (context) {
+      return store.isLoadingUpdate
+          ? LoadingScreen(
+              title: 'Balance Updated Successfully!',
+              description:
+                  'Please wait...\nYou will be directed to your finance.',
+              icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
+            )
+          : LoadingScreen(
+              title: 'Just a moment',
+              description: 'Please wait...\nWe are preparing for you...',
+              icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
+            );
+    });
   }
 }

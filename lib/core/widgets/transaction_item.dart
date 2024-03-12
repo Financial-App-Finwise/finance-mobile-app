@@ -40,6 +40,11 @@ class _TransactionItemState extends State<TransactionItem> {
   }
 
   Widget _buildTransactionItem() {
+    String title = widget.transactionData.budgetplanID != null
+        ? 'Budget Plan ID ${widget.transactionData.budgetplanID}'
+        : widget.transactionData.upcomingbillID != null
+            ? 'Upcoming Bill ID ${widget.transactionData.upcomingbillID}'
+            : 'Category ID ${widget.transactionData.categoryID}';
     return TextButton(
       onPressed: () => Navigator.pushNamed(
         context,
@@ -69,9 +74,10 @@ class _TransactionItemState extends State<TransactionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.transactionData.note.isEmpty
-                              ? '${widget.transactionData.isIncome ? 'Income' : 'Expense'}'
-                              : widget.transactionData.note,
+                          // widget.transactionData.note.isEmpty
+                          //     ? '${widget.transactionData.isIncome ? 'Income' : 'Expense'}'
+                          //     : widget.transactionData.note,
+                          title,
                           style: HomeTextStyleConstant.transactionItemTitle,
                           overflow: TextOverflow.ellipsis,
                         ),
