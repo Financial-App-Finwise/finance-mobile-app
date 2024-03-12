@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
+import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/budget_plan_create_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/calendar_month_widget.dart';
@@ -205,9 +206,13 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
                   onTap: () async {
                     String budgetPlanDate = UIHelper.getDateFormat(
                         _selectedDate.toString(), 'yyyy-MM-dd');
+                    bool success = false;
 
-                    bool success = await context.read<BudgetPlanStore>().post(
-                          BudgetPlanData(
+                    success = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BudgetPlanCreateScreen(
+                          budgetPlanData: BudgetPlanData(
                             categoryID: _selectedCategory.id,
                             isMonthly: true,
                             name: _expenseNameController.text == ''
@@ -217,7 +222,9 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
                             date: budgetPlanDate,
                             isRecurring: false,
                           ),
-                        );
+                        ),
+                      ),
+                    );
                     if (success) {
                       context.read<BudgetPlanStore>().read(refreshed: true);
                       Navigator.pop(context);

@@ -141,9 +141,13 @@ abstract class _UpcomingBillStoreBase with Store {
     }
   }
 
+  @observable
+  LoadingStatusEnum createStatus = LoadingStatusEnum.none;
+
   @action
   Future<bool> post(UpcomingBillData upcomingBillData) async {
     debugPrint('-->START: post, upcoming bill');
+    createStatus = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Map<String, dynamic> jsonData = upcomingBillData.toJson();
@@ -152,14 +156,15 @@ abstract class _UpcomingBillStoreBase with Store {
           await ApiService.dio.post('upcomingbills', data: jsonData);
       if (response.statusCode == 201) {
         success = true;
-        setLoadingStatus(LoadingStatusEnum.done);
+        createStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        createStatus = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+      createStatus = LoadingStatusEnum.error;
     } finally {
       debugPrint('$success');
       debugPrint('<-- End: posting upcoming bill');

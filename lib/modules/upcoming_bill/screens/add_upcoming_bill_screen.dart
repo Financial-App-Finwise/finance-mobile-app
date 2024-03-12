@@ -8,6 +8,7 @@ import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_create_screen.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/amount_input.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/expenses_name_input.dart';
@@ -180,8 +181,13 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
                 'yyyy-MM-dd',
               );
 
-              bool success = await context.read<UpcomingBillStore>().post(
-                    UpcomingBillData(
+              bool success = false;
+
+              success = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpcomingBillCreateScreen(
+                    upcomingBillData: UpcomingBillData(
                       categoryID: _selectedCategory.id,
                       amount: double.parse(_billAmountController.text),
                       date: "$upcomingBillDate 12:00:00",
@@ -190,10 +196,13 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
                           : _expenseNameController.text,
                       note: _noteController.text,
                     ),
-                  );
+                  ),
+                ),
+              );
+
               if (success) {
-                await context.read<UpcomingBillStore>().read(refreshed: true);
                 Navigator.pop(context);
+                await context.read<UpcomingBillStore>().read(refreshed: true);
               }
             },
             child: Container(

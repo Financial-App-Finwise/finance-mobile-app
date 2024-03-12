@@ -205,11 +205,15 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
                   onTap: () async {
                     String budgetPlanDate = UIHelper.getDateFormat(
                         _selectedDate.toString(), 'yyyy-MM-dd');
+                    bool success = false;
 
-                    bool success = await context.read<BudgetPlanStore>().post(
-                          BudgetPlanData(
+                    success = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BudgetPlanCreateScreen(
+                          budgetPlanData: BudgetPlanData(
                             categoryID: _selectedCategory.id,
-                            isMonthly: true,
+                            isMonthly: false,
                             name: _expenseNameController.text == ''
                                 ? _selectedCategory.name
                                 : _expenseNameController.text,
@@ -217,7 +221,22 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
                             date: budgetPlanDate,
                             isRecurring: false,
                           ),
-                        );
+                        ),
+                      ),
+                    );
+
+                    // success = await context.read<BudgetPlanStore>().post(
+                    //       BudgetPlanData(
+                    //         categoryID: _selectedCategory.id,
+                    //         isMonthly: true,
+                    //         name: _expenseNameController.text == ''
+                    //             ? _selectedCategory.name
+                    //             : _expenseNameController.text,
+                    //         amount: int.parse(_budgetAmountController.text),
+                    //         date: budgetPlanDate,
+                    //         isRecurring: false,
+                    //       ),
+                    //     );
                     if (success) {
                       context.read<BudgetPlanStore>().read(refreshed: true);
                       Navigator.pop(context);
