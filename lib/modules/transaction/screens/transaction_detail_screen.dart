@@ -120,38 +120,47 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             '\$${args.amount}',
             defaultStyle,
           ),
-          overviewCard(
-            IconHelper.getSVG(
-              SVGName.budgetPlan,
-              color: args.isIncome
-                  ? ColorConstant.incomeIcon
-                  : ColorConstant.expense,
+          Visibility(
+            visible: args.budgetplanID != null,
+            child: overviewCard(
+              IconHelper.getSVG(
+                SVGName.budgetPlan,
+                color: args.isIncome
+                    ? ColorConstant.incomeIcon
+                    : ColorConstant.expense,
+              ),
+              'Budget Plan',
+              '${args.budgetplanID}',
+              defaultStyle,
             ),
-            'Budget Plan',
-            '${args.budgetplanID}',
-            defaultStyle,
           ),
-          overviewCard(
-            IconHelper.getSVG(
-              SVGName.upcomingBill,
-              color: args.isIncome
-                  ? ColorConstant.incomeIcon
-                  : ColorConstant.expense,
+          Visibility(
+            visible: args.upcomingbillID != null,
+            child: overviewCard(
+              IconHelper.getSVG(
+                SVGName.upcomingBill,
+                color: args.isIncome
+                    ? ColorConstant.incomeIcon
+                    : ColorConstant.expense,
+              ),
+              'Upcoming Bill',
+              '${args.upcomingbillID}',
+              defaultStyle,
             ),
-            'Upcoming Bill',
-            '${args.upcomingbillID}',
-            defaultStyle,
           ),
-          overviewCard(
-            IconHelper.getSVG(
-              SVGName.internet,
-              color: args.isIncome
-                  ? ColorConstant.incomeIcon
-                  : ColorConstant.expense,
+          Visibility(
+            visible: args.categoryID != null,
+            child: overviewCard(
+              IconHelper.getSVG(
+                SVGName.internet,
+                color: args.isIncome
+                    ? ColorConstant.incomeIcon
+                    : ColorConstant.expense,
+              ),
+              'Category',
+              '${args.categoryID}',
+              defaultStyle,
             ),
-            'Category',
-            '${args.categoryID}',
-            defaultStyle,
           ),
           overviewCard(
             IconHelper.getSVG(
