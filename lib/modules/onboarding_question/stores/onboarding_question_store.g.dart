@@ -23,13 +23,6 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
           Computed<double>(() => super.incomeAfterBudget,
               name: '_OnboardingQuestionStoreBase.incomeAfterBudget'))
       .value;
-  Computed<Map<String, List<bool>>>? _$checkContinueComputed;
-
-  @override
-  Map<String, List<bool>> get checkContinue => (_$checkContinueComputed ??=
-          Computed<Map<String, List<bool>>>(() => super.checkContinue,
-              name: '_OnboardingQuestionStoreBase.checkContinue'))
-      .value;
 
   late final _$mainIndexAtom =
       Atom(name: '_OnboardingQuestionStoreBase.mainIndex', context: context);
@@ -238,14 +231,10 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
     return super.expense;
   }
 
-  bool _expenseIsInitialized = false;
-
   @override
   set expense(SpendingModel value) {
-    _$expenseAtom
-        .reportWrite(value, _expenseIsInitialized ? super.expense : null, () {
+    _$expenseAtom.reportWrite(value, super.expense, () {
       super.expense = value;
-      _expenseIsInitialized = true;
     });
   }
 
@@ -258,14 +247,26 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
     return super.income;
   }
 
-  bool _incomeIsInitialized = false;
-
   @override
   set income(SpendingModel value) {
-    _$incomeAtom.reportWrite(value, _incomeIsInitialized ? super.income : null,
-        () {
+    _$incomeAtom.reportWrite(value, super.income, () {
       super.income = value;
-      _incomeIsInitialized = true;
+    });
+  }
+
+  late final _$categoriesAtom =
+      Atom(name: '_OnboardingQuestionStoreBase.categories', context: context);
+
+  @override
+  ObservableList<CategoryData> get categories {
+    _$categoriesAtom.reportRead();
+    return super.categories;
+  }
+
+  @override
+  set categories(ObservableList<CategoryData> value) {
+    _$categoriesAtom.reportWrite(value, super.categories, () {
+      super.categories = value;
     });
   }
 
@@ -485,6 +486,30 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
     });
   }
 
+  late final _$loadingStatusAtom = Atom(
+      name: '_OnboardingQuestionStoreBase.loadingStatus', context: context);
+
+  @override
+  LoadingStatusEnum get loadingStatus {
+    _$loadingStatusAtom.reportRead();
+    return super.loadingStatus;
+  }
+
+  @override
+  set loadingStatus(LoadingStatusEnum value) {
+    _$loadingStatusAtom.reportWrite(value, super.loadingStatus, () {
+      super.loadingStatus = value;
+    });
+  }
+
+  late final _$postAsyncAction =
+      AsyncAction('_OnboardingQuestionStoreBase.post', context: context);
+
+  @override
+  Future<bool> post(Map<String, dynamic> data) {
+    return _$postAsyncAction.run(() => super.post(data));
+  }
+
   late final _$_OnboardingQuestionStoreBaseActionController =
       ActionController(name: '_OnboardingQuestionStoreBase', context: context);
 
@@ -494,6 +519,17 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
         .startAction(name: '_OnboardingQuestionStoreBase.nextPage');
     try {
       return super.nextPage();
+    } finally {
+      _$_OnboardingQuestionStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setCategory(CategoryData category) {
+    final _$actionInfo = _$_OnboardingQuestionStoreBaseActionController
+        .startAction(name: '_OnboardingQuestionStoreBase.setCategory');
+    try {
+      return super.setCategory(category);
     } finally {
       _$_OnboardingQuestionStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -528,6 +564,7 @@ profression: ${profression},
 networth: ${networth},
 expense: ${expense},
 income: ${income},
+categories: ${categories},
 budgetingType: ${budgetingType},
 housing: ${housing},
 food: ${food},
@@ -541,9 +578,9 @@ email: ${email},
 username: ${username},
 password: ${password},
 passwordConfirmation: ${passwordConfirmation},
+loadingStatus: ${loadingStatus},
 incomeAmount: ${incomeAmount},
-incomeAfterBudget: ${incomeAfterBudget},
-checkContinue: ${checkContinue}
+incomeAfterBudget: ${incomeAfterBudget}
     ''';
   }
 }

@@ -104,6 +104,30 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     });
   }
 
+  late final _$upcomingBillYearlyAtom =
+      Atom(name: '_UpcomingBillStoreBase.upcomingBillYearly', context: context);
+
+  @override
+  ObservableMap<String, UpcomingBillMonth> get upcomingBillYearly {
+    _$upcomingBillYearlyAtom.reportRead();
+    return super.upcomingBillYearly;
+  }
+
+  @override
+  set upcomingBillYearly(ObservableMap<String, UpcomingBillMonth> value) {
+    _$upcomingBillYearlyAtom.reportWrite(value, super.upcomingBillYearly, () {
+      super.upcomingBillYearly = value;
+    });
+  }
+
+  late final _$readYearlyAsyncAction =
+      AsyncAction('_UpcomingBillStoreBase.readYearly', context: context);
+
+  @override
+  Future<dynamic> readYearly() {
+    return _$readYearlyAsyncAction.run(() => super.readYearly());
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_UpcomingBillStoreBase.read', context: context);
 
@@ -151,6 +175,17 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
   }
 
   @override
+  void addSelectedDateYear({bool addYear = true}) {
+    final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
+        name: '_UpcomingBillStoreBase.addSelectedDateYear');
+    try {
+      return super.addSelectedDateYear(addYear: addYear);
+    } finally {
+      _$_UpcomingBillStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setStartDate(DateTime date) {
     final _$actionInfo = _$_UpcomingBillStoreBaseActionController.startAction(
         name: '_UpcomingBillStoreBase.setStartDate');
@@ -191,6 +226,7 @@ upcomingBill: ${upcomingBill},
 status: ${status},
 startDate: ${startDate},
 filter: ${filter},
+upcomingBillYearly: ${upcomingBillYearly},
 endDate: ${endDate},
 queryParameter: ${queryParameter}
     ''';

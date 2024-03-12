@@ -3,14 +3,14 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneralDatePicker extends StatefulWidget {
-  const GeneralDatePicker({
+  GeneralDatePicker({
     super.key,
     this.prefix,
     this.suffix,
     this.onPreffix,
     this.onSuffix,
     this.onDateChanged,
-    
+    this.date,
   });
 
   final Widget? prefix;
@@ -18,6 +18,7 @@ class GeneralDatePicker extends StatefulWidget {
   final void Function()? onSuffix;
   final void Function()? onPreffix;
   final void Function(DateTime)? onDateChanged;
+  DateTime? date;
 
   @override
   State<GeneralDatePicker> createState() => _GeneralDatePickerState();
@@ -113,6 +114,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
         GestureDetector(
           onTap: () {
             setState(() {
+              widget.date = subtractMonth(widget.date!);
               currentDate = subtractMonth(currentDate);
               widget.onDateChanged!(currentDate);
             });
@@ -121,7 +123,9 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
         ),
         const SizedBox(width: 12),
         Text(
-          '${monthNames[currentDate.month - 1]} ${currentDate.year}',
+          widget.date != null
+              ? '${monthNames[widget.date!.month - 1]} ${widget.date!.year}'
+              : '${monthNames[currentDate.month - 1]} ${currentDate.year}',
           style: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 18,
@@ -133,6 +137,7 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
         GestureDetector(
           onTap: () {
             setState(() {
+              widget.date = addMonth(widget.date!);
               currentDate = addMonth(currentDate);
               widget.onDateChanged!(currentDate);
             });

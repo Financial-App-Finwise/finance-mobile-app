@@ -35,6 +35,14 @@ abstract class _CategoryStoreBase with Store {
     }
   }
 
+  // Get onboarding categories
+  @computed
+  ObservableList<CategoryData> get onboardingCategory {
+    return ObservableList.of(
+      categoryModel.categoryDataList.where((e) => e.isIncome == false),
+    );
+  }
+
   @observable
   bool isIncome = false;
 

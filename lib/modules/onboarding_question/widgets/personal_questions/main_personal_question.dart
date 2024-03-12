@@ -23,6 +23,13 @@ class MainPersonalQuestion extends StatefulWidget {
 class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
 
+  List<bool> get isFormFilled => [
+        store.gender.name != null ? true : false,
+        store.age.text.isNotEmpty,
+        store.martialStatus.name != null ? true : false,
+        store.profression.name != null ? true : false,
+      ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,55 +38,50 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: CustomProgressBar(
-                        value: store.personalQuestionIndex /
-                            store.personalQuestionMaxPage,
-                        gradient1: ColorConstant.secondary,
-                        gradient2: ColorConstant.primary,
-                      ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: CustomProgressBar(
+                      value: store.personalQuestionIndex /
+                          store.personalQuestionMaxPage,
+                      gradient1: ColorConstant.secondary,
+                      gradient2: ColorConstant.primary,
                     ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.topLeft,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(microseconds: 500),
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                              scale: animation,
-                              child: child,
-                            );
-                          },
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: _getCurrentWidget(),
-                          ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(microseconds: 500),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: child,
+                          );
+                        },
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: _getCurrentWidget(),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(
               height: 20,
             ),
             Observer(builder: (context) {
-              List<bool>? checkContinue =
-                  store.checkContinue['personalQuestion'];
-
-              print('llll ${store.personalQuestionIndex} | ${store.age.text}');
-              return checkContinue![store.personalQuestionIndex - 1]
-                  ? ContinueButton(nextPage: store.nextPage)
-                  : Text('Continue');
+              return ContinueButton(
+                nextPage: store.nextPage,
+              isFormFilled: isFormFilled[store.personalQuestionIndex - 1],
+              );
             }),
           ],
         ),
@@ -159,6 +161,9 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
             label: 'Age',
             hintText: '20 year old',
             controller: store.age,
+            onChange: (value) => setState(() {
+              isFormFilled;
+            }),
           ),
           const SizedBox(
             height: 24,

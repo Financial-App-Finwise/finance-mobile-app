@@ -9,6 +9,14 @@ part of 'category_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$CategoryStore on _CategoryStoreBase, Store {
+  Computed<ObservableList<CategoryData>>? _$onboardingCategoryComputed;
+
+  @override
+  ObservableList<CategoryData> get onboardingCategory =>
+      (_$onboardingCategoryComputed ??= Computed<ObservableList<CategoryData>>(
+              () => super.onboardingCategory,
+              name: '_CategoryStoreBase.onboardingCategory'))
+          .value;
   Computed<ObservableList<CategoryData>>? _$filterCategoryComputed;
 
   @override
@@ -130,6 +138,7 @@ categoryModel: ${categoryModel},
 status: ${status},
 isIncome: ${isIncome},
 searchText: ${searchText},
+onboardingCategory: ${onboardingCategory},
 filterCategory: ${filterCategory},
 searchCategory: ${searchCategory}
     ''';

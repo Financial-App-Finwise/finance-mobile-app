@@ -1,4 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/onboarding_question/screens/onboarding_question_main_screen.dart';
 import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/start_page.dart';
@@ -15,7 +16,19 @@ class OnboardingQuestionScreen extends StatefulWidget {
 
 class _OnboardingQuestionScreenState extends State<OnboardingQuestionScreen> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
+  late CategoryStore categoryStore = context.read<CategoryStore>();
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 0), () async {
+      if (mounted) {
+        await categoryStore.read();
+      }
+    });
+  }
 
   void nextPage() {
     setState(() {

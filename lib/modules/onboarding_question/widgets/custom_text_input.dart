@@ -7,6 +7,7 @@ class CustomTextInput extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   int? textLimit;
+  void Function(String)? onChange;
 
   CustomTextInput({
     super.key,
@@ -14,6 +15,7 @@ class CustomTextInput extends StatelessWidget {
     required this.hintText,
     required this.controller,
     this.textLimit,
+    this.onChange
   });
 
   @override
@@ -40,6 +42,7 @@ class CustomTextInput extends StatelessWidget {
 
   Widget textInput() {
     return TextField(
+      onChanged: onChange,
       controller: controller,
       style: const TextStyle(
         fontWeight: FontWeight.w600,

@@ -33,6 +33,22 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
     });
   }
 
+  late final _$budgetPlanYearlyAtom =
+      Atom(name: '_BudgetPlanStoreBase.budgetPlanYearly', context: context);
+
+  @override
+  BudgetPlanYearly get budgetPlanYearly {
+    _$budgetPlanYearlyAtom.reportRead();
+    return super.budgetPlanYearly;
+  }
+
+  @override
+  set budgetPlanYearly(BudgetPlanYearly value) {
+    _$budgetPlanYearlyAtom.reportWrite(value, super.budgetPlanYearly, () {
+      super.budgetPlanYearly = value;
+    });
+  }
+
   late final _$statusAtom =
       Atom(name: '_BudgetPlanStoreBase.status', context: context);
 
@@ -79,6 +95,30 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
     _$filterAtom.reportWrite(value, super.filter, () {
       super.filter = value;
     });
+  }
+
+  late final _$createStatusAtom =
+      Atom(name: '_BudgetPlanStoreBase.createStatus', context: context);
+
+  @override
+  LoadingStatusEnum get createStatus {
+    _$createStatusAtom.reportRead();
+    return super.createStatus;
+  }
+
+  @override
+  set createStatus(LoadingStatusEnum value) {
+    _$createStatusAtom.reportWrite(value, super.createStatus, () {
+      super.createStatus = value;
+    });
+  }
+
+  late final _$readYearlyAsyncAction =
+      AsyncAction('_BudgetPlanStoreBase.readYearly', context: context);
+
+  @override
+  Future<dynamic> readYearly() {
+    return _$readYearlyAsyncAction.run(() => super.readYearly());
   }
 
   late final _$readAsyncAction =
@@ -139,6 +179,17 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   }
 
   @override
+  void addSelectedDateYear({bool addYear = true}) {
+    final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
+        name: '_BudgetPlanStoreBase.addSelectedDateYear');
+    try {
+      return super.addSelectedDateYear(addYear: addYear);
+    } finally {
+      _$_BudgetPlanStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setFilter(BudgetPlanFilterEnum type) {
     final _$actionInfo = _$_BudgetPlanStoreBaseActionController.startAction(
         name: '_BudgetPlanStoreBase.setFilter');
@@ -153,9 +204,11 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   String toString() {
     return '''
 budgetPlan: ${budgetPlan},
+budgetPlanYearly: ${budgetPlanYearly},
 status: ${status},
 selectedDate: ${selectedDate},
 filter: ${filter},
+createStatus: ${createStatus},
 queryParameter: ${queryParameter}
     ''';
   }

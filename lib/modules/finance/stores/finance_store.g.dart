@@ -278,6 +278,14 @@ queryParemeterExpense: ${queryParemeterExpense},
 filteredFinance: ${filteredFinance},
 incomeFinance: ${incomeFinance},
 expenseFinance: ${expenseFinance},
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
+loadingUpdate: ${loadingUpdate},
+isLoading: ${isLoading},
+>>>>>>> Stashed changes
 dollarAccount: ${dollarAccount}
     ''';
   }

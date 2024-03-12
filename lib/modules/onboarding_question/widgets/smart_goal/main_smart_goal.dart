@@ -26,6 +26,14 @@ class MainSmartGoal extends StatefulWidget {
 
 class _MainSmartGoalState extends State<MainSmartGoal> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
+
+  List<bool> get isFormFilled => [
+        store.financialGoal.text.isNotEmpty,
+        store.saveForGoal.text.isNotEmpty,
+        store.goalDate.text.isNotEmpty,
+        true
+      ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +81,10 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
             const SizedBox(
               height: 20,
             ),
-            ContinueButton(nextPage: store.nextPage)
+            ContinueButton(
+              nextPage: store.nextPage,
+              isFormFilled: isFormFilled[store.smartGoalIndex - 1],
+            )
           ],
         ),
       ),
@@ -107,6 +118,9 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
           hintText: 'Eg. Travel around the world',
           controller: store.financialGoal,
           textLimit: 6,
+          onChange: (value) => setState(() {
+            isFormFilled;
+          }),
         ),
         const SizedBox(
           height: 24,
@@ -133,6 +147,9 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
           hintText: '\$ 2000',
           controller: store.saveForGoal,
           isMoney: true,
+          onChange: (value) => setState(() {
+            isFormFilled;
+          }),
         ),
         const SizedBox(
           height: 24,
@@ -140,6 +157,7 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
         MoneyOption(
           setMoney: (value) {
             store.setSaveForGoalMoneyOption(value);
+            isFormFilled;
           },
         ),
         const SizedBox(

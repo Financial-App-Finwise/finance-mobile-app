@@ -25,6 +25,10 @@ class MainBudgeting extends StatefulWidget {
 class _MainBudgetingState extends State<MainBudgeting> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
 
+  List<bool> get isFormFilled => [
+        store.housing > 0 && store.food > 0 && store.utilities > 0,
+      ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,47 +37,48 @@ class _MainBudgetingState extends State<MainBudgeting> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: CustomProgressBar(
-                        value: store.budgetingIndex / store.budgetingMaxPage,
-                        gradient1: ColorConstant.secondary,
-                        gradient2: ColorConstant.primary,
-                      ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: CustomProgressBar(
+                      value: store.budgetingIndex / store.budgetingMaxPage,
+                      gradient1: ColorConstant.secondary,
+                      gradient2: ColorConstant.primary,
                     ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.topLeft,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(microseconds: 500),
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                              scale: animation,
-                              child: child,
-                            );
-                          },
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: _getCurrentWidget(),
-                          ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(microseconds: 500),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: child,
+                          );
+                        },
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: _getCurrentWidget(),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            ContinueButton(nextPage: store.nextPage)
+            ContinueButton(
+              nextPage: store.nextPage,
+              isFormFilled: isFormFilled[store.budgetingIndex - 1],
+            )
           ],
         ),
       ),

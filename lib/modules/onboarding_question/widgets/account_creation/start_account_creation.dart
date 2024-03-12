@@ -1,6 +1,8 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/modules/auth/screens/sign_in_screen.dart';
+import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
 import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/onboarding_question/widgets/continue_button.dart';
 import 'package:finwise/modules/onboarding_question/widgets/full_height_container.dart';
@@ -63,7 +65,10 @@ class _StartAccountCreationState extends State<StartAccountCreation> {
           const SizedBox(
             height: 24,
           ),
-          ContinueButton(nextPage: store.nextPage),
+          ContinueButton(nextPage: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SignUpScreen()));
+          }),
         ],
       ),
     );

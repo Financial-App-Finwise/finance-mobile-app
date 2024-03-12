@@ -6,12 +6,18 @@ import 'package:flutter/services.dart';
 
 class AmountInput extends StatelessWidget {
   final TextEditingController controller;
+  void Function(String)? onChange;
 
-  const AmountInput({super.key, required this.controller});
+  AmountInput({
+    super.key,
+    required this.controller,
+    this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: onChange,
       controller: controller,
       keyboardType: TextInputType.number,
       inputFormatters: [

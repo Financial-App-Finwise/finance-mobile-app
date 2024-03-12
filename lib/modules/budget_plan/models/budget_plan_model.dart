@@ -24,6 +24,7 @@ class BudgetPlanItem {
   late int totalBudget;
   late int available;
   late int spent;
+  late String date;
 
   @JsonKey(name: 'planned_budgets')
   late int plannedBudget;
@@ -38,6 +39,7 @@ class BudgetPlanItem {
     this.totalBudget = 0,
     this.available = 0,
     this.spent = 0,
+    this.date = 'no date',
     this.plannedBudget = 0,
     this.overBudget = 0,
     required this.budgetPlans,
@@ -60,10 +62,7 @@ class BudgetPlanData {
   @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
   late bool isMonthly;
   late String name;
-
-  @JsonKey(fromJson: _stringToDouble, toJson: _doubleToString)
-  late double amount;
-
+  late int amount;
   late String date;
 
   @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
@@ -90,7 +89,7 @@ class BudgetPlanData {
     this.categoryID = 0,
     this.isMonthly = false,
     this.name = 'no name',
-    this.amount = 0.0,
+    this.amount = 0,
     this.date = 'no date',
     this.isRecurring = false,
     this.createdAt = 'no date',
@@ -113,14 +112,3 @@ class BudgetPlanData {
 
   static int _boolToInt(bool value) => value ? 1 : 0;
 }
-
-// {
-//   "id": 1,
-//   "userID": 17,
-//   "categoryID": 3,
-//   "isMonthly": 0,
-//   "name": "ea",
-//   "amount": "822.08",
-//   "created_at": "2023-12-27T03:46:04.000000Z",
-//   "updated_at": "2023-09-10T21:08:29.000000Z"
-// },

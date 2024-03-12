@@ -6,14 +6,17 @@ class CustomNumberInput extends StatelessWidget {
   final String label;
   final String hintText;
   final TextEditingController controller;
+  void Function(String)? onChange;
   bool? isMoney;
 
-  CustomNumberInput(
-      {super.key,
-      required this.label,
-      required this.hintText,
-      required this.controller,
-      this.isMoney});
+  CustomNumberInput({
+    super.key,
+    required this.label,
+    required this.hintText,
+    required this.controller,
+    this.isMoney,
+    this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,7 @@ class CustomNumberInput extends StatelessWidget {
 
   Widget textInput() {
     return TextField(
+      onChanged: onChange,
       controller: controller,
       keyboardType: TextInputType.number,
       inputFormatters: [
