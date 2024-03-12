@@ -16,6 +16,48 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
       (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
               name: '_FinanceStoreBase.isLoading'))
           .value;
+  Computed<String>? _$queryParemeterComputed;
+
+  @override
+  String get queryParemeter =>
+      (_$queryParemeterComputed ??= Computed<String>(() => super.queryParemeter,
+              name: '_FinanceStoreBase.queryParemeter'))
+          .value;
+  Computed<String>? _$queryParemeterIncomeComputed;
+
+  @override
+  String get queryParemeterIncome => (_$queryParemeterIncomeComputed ??=
+          Computed<String>(() => super.queryParemeterIncome,
+              name: '_FinanceStoreBase.queryParemeterIncome'))
+      .value;
+  Computed<String>? _$queryParemeterExpenseComputed;
+
+  @override
+  String get queryParemeterExpense => (_$queryParemeterExpenseComputed ??=
+          Computed<String>(() => super.queryParemeterExpense,
+              name: '_FinanceStoreBase.queryParemeterExpense'))
+      .value;
+  Computed<Finance>? _$filteredFinanceComputed;
+
+  @override
+  Finance get filteredFinance => (_$filteredFinanceComputed ??=
+          Computed<Finance>(() => super.filteredFinance,
+              name: '_FinanceStoreBase.filteredFinance'))
+      .value;
+  Computed<Finance>? _$incomeFinanceComputed;
+
+  @override
+  Finance get incomeFinance =>
+      (_$incomeFinanceComputed ??= Computed<Finance>(() => super.incomeFinance,
+              name: '_FinanceStoreBase.incomeFinance'))
+          .value;
+  Computed<Finance>? _$expenseFinanceComputed;
+
+  @override
+  Finance get expenseFinance => (_$expenseFinanceComputed ??= Computed<Finance>(
+          () => super.expenseFinance,
+          name: '_FinanceStoreBase.expenseFinance'))
+      .value;
   Computed<FinanceItem>? _$dollarAccountComputed;
 
   @override
@@ -72,22 +114,6 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
-  late final _$periodAtom =
-      Atom(name: '_FinanceStoreBase.period', context: context);
-
-  @override
-  String get period {
-    _$periodAtom.reportRead();
-    return super.period;
-  }
-
-  @override
-  set period(String value) {
-    _$periodAtom.reportWrite(value, super.period, () {
-      super.period = value;
-    });
-  }
-
   late final _$isIncomeAtom =
       Atom(name: '_FinanceStoreBase.isIncome', context: context);
 
@@ -104,50 +130,82 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
-  late final _$incomeFinanceAtom =
-      Atom(name: '_FinanceStoreBase.incomeFinance', context: context);
+  late final _$periodAtom =
+      Atom(name: '_FinanceStoreBase.period', context: context);
 
   @override
-  Finance get incomeFinance {
-    _$incomeFinanceAtom.reportRead();
-    return super.incomeFinance;
+  String get period {
+    _$periodAtom.reportRead();
+    return super.period;
   }
 
   @override
-  set incomeFinance(Finance value) {
-    _$incomeFinanceAtom.reportWrite(value, super.incomeFinance, () {
-      super.incomeFinance = value;
+  set period(String value) {
+    _$periodAtom.reportWrite(value, super.period, () {
+      super.period = value;
     });
   }
 
-  late final _$expenseFinanceAtom =
-      Atom(name: '_FinanceStoreBase.expenseFinance', context: context);
+  late final _$filteredFinanceMapAtom =
+      Atom(name: '_FinanceStoreBase.filteredFinanceMap', context: context);
 
   @override
-  Finance get expenseFinance {
-    _$expenseFinanceAtom.reportRead();
-    return super.expenseFinance;
+  ObservableMap<String, Finance> get filteredFinanceMap {
+    _$filteredFinanceMapAtom.reportRead();
+    return super.filteredFinanceMap;
   }
 
   @override
-  set expenseFinance(Finance value) {
-    _$expenseFinanceAtom.reportWrite(value, super.expenseFinance, () {
-      super.expenseFinance = value;
+  set filteredFinanceMap(ObservableMap<String, Finance> value) {
+    _$filteredFinanceMapAtom.reportWrite(value, super.filteredFinanceMap, () {
+      super.filteredFinanceMap = value;
     });
   }
 
-  late final _$updateLoadingAtom =
-      Atom(name: '_FinanceStoreBase.updateLoading', context: context);
+  late final _$previousBarDataAtom =
+      Atom(name: '_FinanceStoreBase.previousBarData', context: context);
+
+  @override
+  ObservableMap<String, IncomeExpenseCompare> get previousBarData {
+    _$previousBarDataAtom.reportRead();
+    return super.previousBarData;
+  }
+
+  @override
+  set previousBarData(ObservableMap<String, IncomeExpenseCompare> value) {
+    _$previousBarDataAtom.reportWrite(value, super.previousBarData, () {
+      super.previousBarData = value;
+    });
+  }
+
+  late final _$loadingPieChartAtom =
+      Atom(name: '_FinanceStoreBase.loadingPieChart', context: context);
+
+  @override
+  LoadingStatusEnum get loadingPieChart {
+    _$loadingPieChartAtom.reportRead();
+    return super.loadingPieChart;
+  }
+
+  @override
+  set loadingPieChart(LoadingStatusEnum value) {
+    _$loadingPieChartAtom.reportWrite(value, super.loadingPieChart, () {
+      super.loadingPieChart = value;
+    });
+  }
+
+  late final _$loadingUpdateAtom =
+      Atom(name: '_FinanceStoreBase.loadingUpdate', context: context);
 
   @override
   LoadingStatusEnum get loadingUpdate {
-    _$updateLoadingAtom.reportRead();
+    _$loadingUpdateAtom.reportRead();
     return super.loadingUpdate;
   }
 
   @override
   set loadingUpdate(LoadingStatusEnum value) {
-    _$updateLoadingAtom.reportWrite(value, super.loadingUpdate, () {
+    _$loadingUpdateAtom.reportWrite(value, super.loadingUpdate, () {
       super.loadingUpdate = value;
     });
   }
@@ -156,8 +214,8 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
       AsyncAction('_FinanceStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read() {
-    return _$readAsyncAction.run(() => super.read());
+  Future<dynamic> read({bool? isIncome}) {
+    return _$readAsyncAction.run(() => super.read(isIncome: isIncome));
   }
 
   late final _$postAsyncAction =
@@ -191,17 +249,35 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
   }
 
   @override
+  void initialize(String key) {
+    final _$actionInfo = _$_FinanceStoreBaseActionController.startAction(
+        name: '_FinanceStoreBase.initialize');
+    try {
+      return super.initialize(key);
+    } finally {
+      _$_FinanceStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 loadingStatus: ${loadingStatus},
 barChartLoading: ${barChartLoading},
 finance: ${finance},
-period: ${period},
 isIncome: ${isIncome},
+period: ${period},
+filteredFinanceMap: ${filteredFinanceMap},
+previousBarData: ${previousBarData},
+loadingPieChart: ${loadingPieChart},
+loadingUpdate: ${loadingUpdate},
+isLoading: ${isLoading},
+queryParemeter: ${queryParemeter},
+queryParemeterIncome: ${queryParemeterIncome},
+queryParemeterExpense: ${queryParemeterExpense},
+filteredFinance: ${filteredFinance},
 incomeFinance: ${incomeFinance},
 expenseFinance: ${expenseFinance},
-updateLoading: ${loadingUpdate},
-isLoading: ${isLoading},
 dollarAccount: ${dollarAccount}
     ''';
   }

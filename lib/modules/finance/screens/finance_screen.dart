@@ -1,4 +1,3 @@
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/financial_text_style_constant.dart';
@@ -13,12 +12,14 @@ import 'package:finwise/core/models/income_expense_model/income_expense_model.da
 import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
-import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
+import 'package:finwise/core/widgets/circular_progress/linear_progress_dots.dart';
 import 'package:finwise/core/widgets/custom_refresh_indicator.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
 import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
-import 'package:finwise/core/widgets/general_filter_bar/general_filter_bar.dart';
+import 'package:finwise/core/widgets/empty_data_widget.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
+import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
@@ -26,10 +27,11 @@ import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
-import 'package:finwise/test/test_3_dots.dart';
+import 'package:finwise/test/test_container_pos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class FinanceScreen extends StatefulWidget {
@@ -42,14 +44,27 @@ class FinanceScreen extends StatefulWidget {
 class _FinanceScreenState extends State<FinanceScreen> {
   late FinanceStore store = context.read<FinanceStore>();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(Duration.zero, () async {
-  //     // await _readAll();
-  //     // await context.read<FinanceStore>().read();
-  //   });
-  // }
+  //
+
+  
+  //
+
+  @override
+  void initState() {
+    super.initState();
+    // Future.delayed(Duration.zero, () async {
+    //   // await _readAll();
+    //   // await context.read<FinanceStore>().read();
+    // });
+    // store.setUpReaction();
+    store.isIncome = 1;
+  }
+
+  @override
+  void dispose() {
+    store.dispose(); //test
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,27 +137,38 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return Observer(builder: (context) {
       return CustomRefreshIndicator(
         onRefresh: () async {
-          await context.read<FinanceStore>().read();
+          await store.read();
         },
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
                 children: [
-                  const SizedBox(height: 20),
-                  _buildBarChart(),
-                  const SizedBox(height: 12),
-                  _buildIncomeExpense(),
-                  const SizedBox(height: 16),
-                  _buildIncomeExpenseFilter(),
-                  const SizedBox(height: 48),
+                  ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: [
+                      const SizedBox(height: 20),
+                      _buildBarChart(),
+                      const SizedBox(height: 12),
+                      _buildIncomeExpense(),
+                      const SizedBox(height: 16),
+                      _buildIncomeExpenseFilter(),
+                      const SizedBox(height: 48),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+            Visibility(
+              visible: false,
+              child: Container(
+                height: 100,
+                color: Colors.amber,
+              ),
+            ),
+          ],
         ),
       );
     });
@@ -155,14 +181,20 @@ class _FinanceScreenState extends State<FinanceScreen> {
           Row(children: [
             Visibility(
               visible: store.barChartLoading == LoadingStatusEnum.loading,
-              child: LinearProgressWithDots(),
+              child: const LinearProgressDots(),
             ),
             const Expanded(child: SizedBox()),
             _buildGeneralPeriodButton(
               selectedValue: store.period,
               onChange: (value) async {
+                // save previous value, to aviod UI error in the bar chart
+                store.previousBarData =
+                    ObservableMap.of(store.filteredFinance.data.total);
+
                 store.period = value;
-                await store.read();
+                store.initialize(store.queryParemeter);
+                await store.read(isIncome: false);
+                await store.read(isIncome: true);
               },
             ),
           ]),
@@ -187,7 +219,10 @@ class _FinanceScreenState extends State<FinanceScreen> {
                     ),
                   ],
                 )
-              : IncomeExpenseBarChart(data: store.finance.data.total),
+              : IncomeExpenseBarChart(
+                  data: store.filteredFinance.data.total.isEmpty
+                      ? store.previousBarData
+                      : store.filteredFinance.data.total),
         ],
       ),
     );
@@ -214,11 +249,17 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildFinanceItem(
-          text: 'Income',
-          amount: '\$${store.finance.data.totalIncomes}',
-          icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
-          color: ColorConstant.income,
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => ScrollPositionChecker()));
+          },
+          child: _buildFinanceItem(
+            text: 'Income',
+            amount: '\$${store.finance.data.totalIncomes}',
+            icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
+            color: ColorConstant.income,
+          ),
         ),
         _buildFinanceItem(
           text: 'Expense',
@@ -259,40 +300,31 @@ class _FinanceScreenState extends State<FinanceScreen> {
     );
   }
 
-  // int _incomeIndex = 0;
-
   Widget _buildIncomeExpenseFilter() {
     return Column(
       children: [
-        GeneralFilterBar(
-          filterTitles: const ['Income', 'Expense'],
-          children: [
-            Column(
-              children: [
-                _buildIncomeExpensePieChart(),
-                const SizedBox(),
-                _buildTransactionItems(),
-              ],
-            ),
-            Column(
-              children: [
-                _buildIncomeExpensePieChart(isIncome: false),
-                const SizedBox(),
-                _buildTransactionItems(isIncome: false),
-              ],
-            ),
+        GeneralFilterBarHeader(
+          items: [
+            FilterBarHeaderItem(title: 'Income', value: true),
+            FilterBarHeaderItem(title: 'Expense', value: false),
           ],
+          currentValue: store.isIncome == 1,
+          onTap: (value) async {
+            store.isIncome = value ? 1 : 0;
+            if (store.filteredFinance.data.items.isEmpty) {
+              // set loading for pie chart section
+              store.loadingPieChart = LoadingStatusEnum.loading;
+        
+              // read
+              await store.read();
+            }
+          },
         ),
+        _buildIncomeExpensePieChart(isIncome: store.isIncome == 1),
+        _buildTransactionItems(isIncome: store.isIncome == 1),
       ],
     );
   }
-
-  List<Map<String, dynamic>> json = [
-    {'category': 'Transportation', 'amount': 40},
-    {'category': 'Groceries', 'amount': 30},
-    {'category': 'Utilitties', 'amount': 20},
-    {'category': 'Entertainment', 'amount': 10},
-  ];
 
   Widget _buildIncomeExpensePieChart({bool isIncome = true}) {
     return RoundedContainer(
@@ -301,16 +333,51 @@ class _FinanceScreenState extends State<FinanceScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Visibility(
+                visible: store.loadingPieChart == LoadingStatusEnum.loading,
+                child: const LinearProgressDots(),
+              ),
               const Expanded(child: SizedBox()),
               _buildGeneralPeriodButton(
-                  selectedValue: 'this_month', onChange: (value) {}),
+                selectedValue: 'this_month',
+                onChange: (value) async {
+                  store.period = value;
+                  store.previousBarData =
+                      ObservableMap.of(store.filteredFinance.data.total);
+                  if (store.previousBarData.isEmpty) {
+                    store.loadingPieChart = LoadingStatusEnum.loading;
+                  }
+                  store.period = value;
+                  // avoid null
+                  store.initialize(store.queryParemeter);
+                  await store.read(isIncome: isIncome);
+                },
+              ),
             ],
           ),
           const SizedBox(height: 30),
-          IncomeExpensePieChart(
-            data: getIncomeExpenseList(json),
-            color: isIncome ? ColorConstant.income : ColorConstant.expense,
-          ),
+          store.finance.data.topCategories.isEmpty
+              ? EmptyDataWidget(
+                  icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
+                  buttonLabel: 'Add Transaction',
+                  description:
+                      'You have no ${isIncome ? 'income' : 'expense'} transaction history yet.',
+                  onButtonTap: () =>
+                      Navigator.pushNamed(context, RouteName.transactionAdd),
+                )
+              : IncomeExpensePieChart(
+                  data: getIncomeExpenseList(
+                      store.filteredFinance.data.topCategories
+                          .map(
+                            (e) => {
+                              'category': e.category.name,
+                              'amount': e.amount,
+                            },
+                          )
+                          .toList()),
+                  color:
+                      isIncome ? ColorConstant.income : ColorConstant.expense,
+                ),
         ],
       ),
     );
@@ -318,15 +385,11 @@ class _FinanceScreenState extends State<FinanceScreen> {
 
 // -------------------- Transactions --------------------
   Widget _buildTransactionItems({bool isIncome = true}) {
-    print('${store.finance.data.allTransactions.toJson()}');
-    List<TransactionData> todayIncomeTransactions =
-        store.incomeFinance.data.allTransactions.today;
-    List<TransactionData> yesterdayIncomeTransactions =
-        store.incomeFinance.data.allTransactions.yesterday;
-    List<TransactionData> todayExpenseTransactions =
-        store.expenseFinance.data.allTransactions.today;
-    List<TransactionData> yesterdayExpenseTransactions =
-        store.expenseFinance.data.allTransactions.yesterday;
+    List<TransactionData> todayTransactions =
+        store.filteredFinance.data.allTransactions.today;
+
+    List<TransactionData> yesterdayTransactions =
+        store.filteredFinance.data.allTransactions.yesterday;
 
     return Column(
       children: [
@@ -344,16 +407,13 @@ class _FinanceScreenState extends State<FinanceScreen> {
         const SizedBox(height: 12),
         _buildTransactionItemsDays(
           isIncome: isIncome,
-          transactions:
-              isIncome ? todayIncomeTransactions : todayExpenseTransactions,
+          transactions: todayTransactions,
         ),
         const SizedBox(height: 16),
         _buildTransactionItemsDays(
           day: 'Yesterday',
           isIncome: isIncome,
-          transactions: isIncome
-              ? yesterdayIncomeTransactions
-              : yesterdayExpenseTransactions,
+          transactions: yesterdayTransactions,
         ),
       ],
     );
@@ -373,24 +433,35 @@ class _FinanceScreenState extends State<FinanceScreen> {
         ]),
         const SizedBox(height: 12),
         RoundedContainer(
-          child: ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: transactions.length,
-            itemBuilder: ((context, index) {
-              return TransactionItem(
-                transactionData: transactions[index],
-                date: UIHelper.getDateFormat(
-                    transactions[index].date, 'dd MMM, yyyy'),
-                icon: isIncome
-                    ? IconConstant.getEarn()
-                    : IconConstant.getExpense(),
-                color: isIncome ? ColorConstant.income : ColorConstant.expense,
-              );
-            }),
-            separatorBuilder: (context, index) =>
-                const Divider(color: ColorConstant.divider),
-          ),
+          child: transactions.isEmpty
+              ? EmptyDataWidget(
+                  icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
+                  buttonLabel: 'Add Transaction',
+                  description:
+                      'You have no ${isIncome ? 'income' : 'expense'} transaction history yet.',
+                  onButtonTap: () =>
+                      Navigator.pushNamed(context, RouteName.transactionAdd),
+                )
+              : ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: transactions.length,
+                  itemBuilder: ((context, index) {
+                    return TransactionItem(
+                      transactionData: transactions[index],
+                      date: UIHelper.getDateFormat(
+                          transactions[index].date, 'dd MMM, yyyy'),
+                      icon: isIncome
+                          ? IconConstant.getEarn()
+                          : IconConstant.getExpense(),
+                      color: isIncome
+                          ? ColorConstant.income
+                          : ColorConstant.expense,
+                    );
+                  }),
+                  separatorBuilder: (context, index) =>
+                      const Divider(color: ColorConstant.divider),
+                ),
         ),
       ],
     );

@@ -22,8 +22,8 @@ FinanceData _$FinanceDataFromJson(Map<String, dynamic> json) => FinanceData(
           .toList(),
       totalExpenses: (json['total_expenses'] as num?)?.toDouble() ?? 0,
       totalIncomes: (json['total_incomes'] as num?)?.toDouble() ?? 0,
-      topTransactions: (json['top_transactions'] as List<dynamic>)
-          .map((e) => TopTransaction.fromJson(e as Map<String, dynamic>))
+      topCategories: (json['top_transactions'] as List<dynamic>)
+          .map((e) => TopCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
       allTransactions: AllTransaction.fromJson(
           json['all_transactions'] as Map<String, dynamic>),
@@ -35,7 +35,7 @@ Map<String, dynamic> _$FinanceDataToJson(FinanceData instance) =>
       'finance': instance.items,
       'total_expenses': instance.totalExpenses,
       'total_incomes': instance.totalIncomes,
-      'top_transactions': instance.topTransactions,
+      'top_transactions': instance.topCategories,
       'all_transactions': instance.allTransactions,
       'totals': instance.total,
     };
@@ -67,15 +67,14 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
       'name': instance.name,
     };
 
-TopTransaction _$TopTransactionFromJson(Map<String, dynamic> json) =>
-    TopTransaction(
-      note: json['note'] as String? ?? '',
-      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+TopCategory _$TopCategoryFromJson(Map<String, dynamic> json) => TopCategory(
+      category: CategoryData.fromJson(json['category'] as Map<String, dynamic>),
+      amount: (json['amount'] as num?)?.toDouble() ?? 0,
     );
 
-Map<String, dynamic> _$TopTransactionToJson(TopTransaction instance) =>
+Map<String, dynamic> _$TopCategoryToJson(TopCategory instance) =>
     <String, dynamic>{
-      'note': instance.note,
+      'category': instance.category,
       'amount': instance.amount,
     };
 

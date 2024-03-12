@@ -29,61 +29,142 @@ abstract class _FinanceStoreBase with Store {
   Finance finance = Finance(
     data: FinanceData(
       items: [],
-      topTransactions: [],
+      topCategories: [],
       allTransactions: AllTransaction(today: [], yesterday: []),
-      total: [],
+      total: {},
     ),
   );
 
+  // -------------------- Period Filter --------------------
+  @observable
+  int isIncome = 1;
+
+  @observable
+  String period = 'this_month';
+
+  // -------------------- Query Paremeter --------------------
+  // Convert the value of selected filtering button to the query Paremeter
   @computed
-  FinanceItem get dollarAccount => finance.data.items.firstWhere(
+  String get queryParemeter {
+    String isIncome = 'isIncome=${this.isIncome}';
+    String period = 'period=${this.period}';
+
+    // combine
+    String parameter = '$isIncome&$period';
+
+    if ('$isIncome$period'.isEmpty) {
+      return '';
+    }
+    return '?$parameter';
+  }
+
+  // -------------------- Filtered SmartGoal --------------------
+  // Map from a query paremeter to the Finance
+  @observable
+  ObservableMap<String, Finance> filteredFinanceMap = ObservableMap();
+
+  // -------------------- Initialize Map Item to Avoid Null --------------------
+  @action
+  void initialize(String key) {
+    if (filteredFinanceMap[key] == null) {
+      filteredFinanceMap[key] = Finance(
+        data: FinanceData(
+          items: [],
+          topCategories: [],
+          allTransactions: AllTransaction(today: [], yesterday: []),
+          total: {},
+        ),
+      );
+    }
+  }
+
+  @computed
+  String get queryParemeterIncome {
+    String isIncome = 'isIncome=1';
+    String period = 'period=${this.period}';
+
+    // combine
+    String parameter = '$isIncome&$period';
+
+    if ('$isIncome$period'.isEmpty) {
+      return '';
+    }
+    return '?$parameter';
+  }
+
+  @observable
+  ObservableMap<String, IncomeExpenseCompare> previousBarData = ObservableMap();
+
+  @computed
+  String get queryParemeterExpense {
+    String isIncome = 'isIncome=0';
+    String period = 'period=${this.period}';
+
+    // combine
+    String parameter = '$isIncome&$period';
+
+    if ('$isIncome$period'.isEmpty) {
+      return '';
+    }
+    return '?$parameter';
+  }
+
+  Finance get _defaultFinance => Finance(
+        data: FinanceData(
+          items: [],
+          topCategories: [],
+          allTransactions: AllTransaction(today: [], yesterday: []),
+          total: {},
+        ),
+      );
+
+  @computed
+  Finance get filteredFinance => filteredFinanceMap[queryParemeter] == null
+      ? _defaultFinance
+      : filteredFinanceMap[queryParemeter]!;
+
+  @computed
+  Finance get incomeFinance => filteredFinanceMap[queryParemeterIncome] == null
+      ? _defaultFinance
+      : filteredFinanceMap[queryParemeterIncome]!;
+
+  @computed
+  Finance get expenseFinance =>
+      filteredFinanceMap[queryParemeterExpense] == null
+          ? _defaultFinance
+          : filteredFinanceMap[queryParemeterExpense]!;
+
+  @computed
+  FinanceItem get dollarAccount => filteredFinance.data.items.firstWhere(
         (element) => element.currency.code == 'USD',
         orElse: () {
           return FinanceItem(currency: Currency());
         },
       );
 
-  // ---------- Period Filter ----------
   @observable
-  String period = 'this_month';
+  LoadingStatusEnum loadingPieChart = LoadingStatusEnum.none;
 
-  @observable
-  int isIncome = 0;
-
-  @observable
-  Finance incomeFinance = Finance(
-    data: FinanceData(
-      items: [],
-      topTransactions: [],
-      allTransactions: AllTransaction(today: [], yesterday: []),
-      total: [],
-    ),
-  );
-
-  @observable
-  Finance expenseFinance = Finance(
-    data: FinanceData(
-      items: [],
-      topTransactions: [],
-      allTransactions: AllTransaction(today: [], yesterday: []),
-      total: [],
-    ),
-  );
-
-  // -------------------- read finance --------------------
+  // -------------------- Read Finance --------------------
   @action
-  Future read() async {
+  Future read({bool? isIncome}) async {
     debugPrint('--> START: read finance');
     loadingStatus = LoadingStatusEnum.loading;
-    barChartLoading = LoadingStatusEnum.loading;
-    try {
-      // get expense
-      Response response = await ApiService.dio
-          .get('myfinances/view-my-finance?isIncome=1&period=$period');
 
-      // get income
-      Response response2 = await ApiService.dio
-          .get('myfinances/view-my-finance?isIncome=0&period=$period');
+    // check if required to load income, or expense from other screen
+    if (isIncome != null) {
+      this.isIncome = isIncome ? 1 : 0;
+    }
+
+    initialize(queryParemeter);
+
+    if (filteredFinance.data.items.isEmpty) {
+      barChartLoading = LoadingStatusEnum.loading;
+    }
+
+    try {
+      Response response =
+          await ApiService.dio.get('myfinances/view-my-finance$queryParemeter');
 
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
@@ -92,18 +173,9 @@ abstract class _FinanceStoreBase with Store {
           response.data as Map<String, dynamic>,
         );
 
-        incomeFinance = await compute(
-          getFinanceModel,
-          response.data as Map<String, dynamic>,
-        );
+        filteredFinanceMap[queryParemeter] = finance;
 
-        expenseFinance = await compute(
-          getFinanceModel,
-          response2.data as Map<String, dynamic>,
-        );
-
-        // print('fetched and converted: ${finance.data.total}');
-        if (finance.data.total.runtimeType.toString() ==
+        if (finance.data.total.runtimeType.toString() !=
             "_Map<String, dynamic>") {
           // Map<String, dynamic> map = {};
           // map.forEach((key, value) {});
@@ -111,17 +183,21 @@ abstract class _FinanceStoreBase with Store {
           //   print('$key: $value');
           // });
         }
+
         loadingStatus = LoadingStatusEnum.done;
         barChartLoading = LoadingStatusEnum.done;
+        loadingPieChart = LoadingStatusEnum.done;
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
         loadingStatus = LoadingStatusEnum.error;
         barChartLoading = LoadingStatusEnum.error;
+        loadingPieChart = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       loadingStatus = LoadingStatusEnum.error;
       barChartLoading = LoadingStatusEnum.error;
+      loadingPieChart = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: read finance');
     }
@@ -200,28 +276,13 @@ abstract class _FinanceStoreBase with Store {
     finance = Finance(
       data: FinanceData(
         items: [],
-        topTransactions: [],
+        topCategories: [],
         allTransactions: AllTransaction(today: [], yesterday: []),
-        total: [],
+        total: {},
       ),
     );
     period = 'this_month';
-    isIncome = 0;
-    incomeFinance = Finance(
-      data: FinanceData(
-        items: [],
-        topTransactions: [],
-        allTransactions: AllTransaction(today: [], yesterday: []),
-        total: [],
-      ),
-    );
-    expenseFinance = Finance(
-      data: FinanceData(
-        items: [],
-        topTransactions: [],
-        allTransactions: AllTransaction(today: [], yesterday: []),
-        total: [],
-      ),
-    );
+    isIncome = 1;
+    filteredFinanceMap = ObservableMap();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,7 +28,7 @@ class FinanceData {
     required this.items,
     this.totalExpenses = 0,
     this.totalIncomes = 0,
-    required this.topTransactions,
+    required this.topCategories,
     required this.allTransactions,
     required this.total,
   });
@@ -42,13 +43,13 @@ class FinanceData {
   late final double totalIncomes;
 
   @JsonKey(name: 'top_transactions')
-  late final List<TopTransaction> topTransactions;
+  late final List<TopCategory> topCategories;
 
   @JsonKey(name: 'all_transactions')
   late final AllTransaction allTransactions;
 
   @JsonKey(name: 'totals', fromJson: _totalFromJson)
-  late final dynamic total;
+  late Map<String, IncomeExpenseCompare> total;
 
   factory FinanceData.fromJson(Map<String, dynamic> json) =>
       _$FinanceDataFromJson(json);
@@ -65,7 +66,7 @@ class FinanceData {
         ),
       );
     }
-    return [];
+    return <String, IncomeExpenseCompare>{};
   }
 }
 
@@ -108,19 +109,19 @@ class Currency {
 }
 
 @JsonSerializable()
-class TopTransaction {
-  TopTransaction({
-    this.note = '',
-    this.amount = 0.0,
+class TopCategory {
+  late CategoryData category;
+  late double amount;
+
+  TopCategory({
+    required this.category,
+    this.amount = 0,
   });
 
-  late final String note;
-  late final double amount;
+  factory TopCategory.fromJson(Map<String, dynamic> json) =>
+      _$TopCategoryFromJson(json);
 
-  factory TopTransaction.fromJson(Map<String, dynamic> json) =>
-      _$TopTransactionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TopTransactionToJson(this);
+  Map<String, dynamic> toJson() => _$TopCategoryToJson(this);
 }
 
 @JsonSerializable()
@@ -138,32 +139,6 @@ class AllTransaction {
 
   Map<String, dynamic> toJson() => _$AllTransactionToJson(this);
 }
-
-// @JsonSerializable()
-// class Total {
-//   Total({
-//     required this.week1,
-//     required this.week2,
-//     required this.week3,
-//     required this.week4,
-//   });
-
-//   @JsonKey(name: 'Week 1')
-//   late final IncomeExpenseCompare week1;
-
-//   @JsonKey(name: 'Week 2')
-//   late final IncomeExpenseCompare week2;
-
-//   @JsonKey(name: 'Week 3')
-//   late final IncomeExpenseCompare week3;
-
-//   @JsonKey(name: 'Week 4')
-//   late final IncomeExpenseCompare week4;
-
-//   factory Total.fromJson(Map<String, dynamic> json) => _$TotalFromJson(json);
-
-//   Map<String, dynamic> toJson() => _$TotalToJson(this);
-// }
 
 @JsonSerializable()
 class IncomeExpenseCompare {
