@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 class ApiService {
-  static Dio dio = Dio(
+  static final Dio dio = Dio(
     BaseOptions(
       baseUrl: 'https://finwise-api-test.up.railway.app/api/',
     )
