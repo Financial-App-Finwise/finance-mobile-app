@@ -96,6 +96,10 @@ abstract class _AuthStoreBase with Store {
       ..options.headers['Authorization'] = 'Bearer ${user!.apiToken}';
   }
 
+  void _detachToken() {
+    ApiService.dio..options.headers['Authorization'] = '';
+  }
+
   @action
   Future<bool> signIn(UserSignIn userSignIn) async {
     debugPrint('--> START: signIn');
@@ -133,6 +137,7 @@ abstract class _AuthStoreBase with Store {
   Future<void> signOut() async {
     debugPrint('--> START: signOut');
     user = null;
+    _detachToken();
     try {
       Response response = await ApiService.dio.post('auth/logout');
       if (response.statusCode == 200) {
