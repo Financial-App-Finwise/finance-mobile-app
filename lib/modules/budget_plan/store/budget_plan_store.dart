@@ -75,7 +75,6 @@ abstract class _BudgetPlanStoreBase with Store {
         budgetPlanYearly = await compute(
             getBudgetPlanYearly, response.data as Map<String, dynamic>);
         status = LoadingStatusEnum.done;
-        print('llll ${budgetPlanYearly.data.mar}');
       }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');

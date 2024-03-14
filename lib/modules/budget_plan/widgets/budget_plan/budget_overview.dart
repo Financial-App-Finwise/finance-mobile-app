@@ -1,5 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/modules/onboarding_question/screens/onboarding_question_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -153,7 +155,10 @@ class _BudgetOverviewState extends State<BudgetOverview> {
               children: [
                 Expanded(
                   child: _budgetOverviewCardSection(
-                    IconConstant.overBudget,
+                    IconHelper.getSVG(
+                      SVGName.warning,
+                      color: ColorConstant.overbudgetIcon,
+                    ),
                     'Over Budget',
                     widget.overBudget,
                     const Color(0xFFEF6007),

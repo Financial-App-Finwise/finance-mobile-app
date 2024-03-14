@@ -34,6 +34,7 @@ class UpcomingBillData {
   late String date;
   late String name;
   late String note;
+  late String status;
 
   @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;
@@ -49,6 +50,7 @@ class UpcomingBillData {
     this.date = 'no date',
     this.name = 'no name',
     this.note = 'no note',
+    this.status = 'no status',
     this.createdAt = 'no date',
     this.updatedAt = 'no date',
   });

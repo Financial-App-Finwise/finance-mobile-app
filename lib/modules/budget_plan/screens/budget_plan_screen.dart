@@ -228,7 +228,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   Widget _mainContentGridView() {
     return Observer(builder: (context) {
       return store.status == LoadingStatusEnum.loading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicatorTwoArcs(),
             )
           : Container(
@@ -243,7 +243,18 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) => BudgetGridTile(
-                    month: _gridData[index][0], budget: _gridData[index][1]),
+                  month: _gridData[index][0],
+                  budget: _gridData[index][1],
+                  monthNumber: index + 1,
+                  date: store.selectedDate,
+                  setList: (date) {
+                    setState(() {
+                      store.selectedDate = date;
+                      _isGrid = false;
+                      store.read(refreshed: true);
+                    });
+                  },
+                ),
               ),
             );
     });

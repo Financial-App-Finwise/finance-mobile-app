@@ -1,12 +1,16 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/upcoming_bill_enum.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
@@ -81,20 +85,7 @@ class _MainContentListViewState extends State<MainContentListView> {
 
                     return Column(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              RouteName.upcomingBillDetail,
-                              arguments: data[index],
-                            );
-                          },
-                          child: _upcomingBillCard(
-                            data[index].date,
-                            data[index].amount,
-                            data[index].name,
-                          ),
-                        ),
+                        _upcomingBillCard(data[index]),
                         if (index < data.length - 1)
                           const SizedBox(
                             height: 16,
@@ -160,7 +151,7 @@ class _MainContentListViewState extends State<MainContentListView> {
     );
   }
 
-  Widget _upcomingBillCard(String date, double amount, String name) {
+  Widget _upcomingBillCard(UpcomingBillData upcomingBill) {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 12,
@@ -174,27 +165,42 @@ class _MainContentListViewState extends State<MainContentListView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: ColorConstant.overbudgetIcon,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: IconConstant.internet,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: ColorConstant.overbudgetIcon,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: IconConstant.internet,
+                  ),
+                  const SizedBox(
+                    width: 11,
+                  ),
+                  Text(
+                    UIHelper.getDateFormat(upcomingBill.date, 'dd MMM, yyyy'),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      letterSpacing: 1,
+                      color: ColorConstant.black,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                width: 11,
-              ),
-              Text(
-                UIHelper.getInputDate(date),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  letterSpacing: 1,
-                  color: ColorConstant.black,
-                ),
-              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouteName.upcomingBillDetail,
+                    arguments: upcomingBill,
+                  );
+                },
+                child: IconHelper.getSVGDefault(SVGName.more),
+              )
             ],
           ),
           const Divider(
@@ -204,7 +210,7 @@ class _MainContentListViewState extends State<MainContentListView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                name,
+                upcomingBill.name,
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
@@ -216,7 +222,7 @@ class _MainContentListViewState extends State<MainContentListView> {
                 height: 1,
               ),
               Text(
-                '\$$amount',
+                '\$${upcomingBill.amount}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 24,
@@ -224,6 +230,53 @@ class _MainContentListViewState extends State<MainContentListView> {
                   color: ColorConstant.black,
                 ),
               ),
+              upcomingBill.status == 'unpaid'
+                  ? Column(
+                      children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            bool success = false;
+                            success = await context
+                                .read<TransactionStore>()
+                                .post(TransactionData(
+                                    categoryID: upcomingBill.categoryID,
+                                    isIncome: false,
+                                    amount: upcomingBill.amount,
+                                    upcomingbillID: upcomingBill.id,
+                                    date: DateTime.now().toString(),
+                                    expenseType: 'Upcoming Bill'));
+                            if (success) {
+                              await context
+                                  .read<UpcomingBillStore>()
+                                  .read(refreshed: true);
+                              print('jkjk sheesh');
+                            }
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: ColorConstant.overbudgetIcon,
+                            ),
+                            child: const Text(
+                              'Pay yet?',
+                              style: TextStyle(
+                                color: ColorConstant.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  : Container()
             ],
           )
         ],
