@@ -5,6 +5,8 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
@@ -12,6 +14,7 @@ import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/amount_input.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/expenses_name_input.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/note_input.dart';
+import 'package:finwise/modules/upcoming_bill/widgets/upcoming_bill_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -95,7 +98,10 @@ class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
       TextEditingController(text: '${args.amount}');
   late final _expenseNameController = TextEditingController(text: args.name);
   late final _noteController = TextEditingController(text: args.note);
-  CategoryData _selectedCategory = CategoryData();
+  late List<CategoryData> categoryList =
+      context.read<CategoryStore>().categoryModel.categoryDataList;
+  late CategoryData _selectedCategory =
+      categoryList.firstWhere((category) => category.id == args.categoryID);
 
   late final _upcomingDateController =
       TextEditingController(text: UIHelper.getInputDate(args.date.toString()));
@@ -132,7 +138,6 @@ class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
             setState(() {
               _selectedCategory = category;
             });
-            debugPrint(_selectedCategory.name);
           },
           category: _selectedCategory,
           showTip: false,
@@ -189,20 +194,28 @@ class _EditUpcomingBuildScreenState extends State<EditUpcomingBuildScreen> {
                 'yyyy-MM-dd',
               );
 
-              bool success = await context.read<UpcomingBillStore>().edit(
-                    UpcomingBillData(
+              bool success = false;
+
+              success = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpcomingBillEditScreen(
+                    upcomingBillData: UpcomingBillData(
                       id: args.id,
                       categoryID: _selectedCategory.id,
-                      amount: double.parse(_billAmountController.text),
+                      amount: int.parse(_billAmountController.text),
                       date: "$upcomingBillDate 12:00:00",
                       name: _expenseNameController.text == ''
                           ? _selectedCategory.name
                           : _expenseNameController.text,
                       note: _noteController.text,
                     ),
-                  );
+                  ),
+                ),
+              );
+
               if (success) {
-                Navigator.pop(context);
+                Navigator.pop(context, success);
               }
             },
             child: _saveButton(),

@@ -29,8 +29,8 @@ class UpcomingBillData {
   late int userID;
   late int categoryID;
 
-  @JsonKey(fromJson: _stringToDouble)
-  late double amount;
+  // @JsonKey(fromJson: _stringToDouble)
+  late int amount;
   late String date;
   late String name;
   late String note;
@@ -46,10 +46,10 @@ class UpcomingBillData {
     this.id = 0,
     this.userID = 0,
     this.categoryID = 0,
-    this.amount = 0.0,
+    this.amount = 0,
     this.date = 'no date',
     this.name = 'no name',
-    this.note = 'no note',
+    this.note = "You don't have any note.",
     this.status = 'no status',
     this.createdAt = 'no date',
     this.updatedAt = 'no date',

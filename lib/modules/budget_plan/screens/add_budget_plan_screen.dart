@@ -1,9 +1,11 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/widgets/custom_progess_bar.dart';
+import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/monthly_budget.dart';
 import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/one_time_budget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddBudgetPlanScreen extends StatefulWidget {
   const AddBudgetPlanScreen({super.key});
@@ -15,6 +17,17 @@ class AddBudgetPlanScreen extends StatefulWidget {
 class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
   int _currentWidgetIndex = 0;
   double _progressBar = 0.5;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 0), () async {
+      if (mounted) {
+        await context.read<BudgetPlanStore>().readPrediction();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

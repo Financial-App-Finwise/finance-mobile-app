@@ -113,6 +113,54 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
     });
   }
 
+  late final _$editStatusAtom =
+      Atom(name: '_BudgetPlanStoreBase.editStatus', context: context);
+
+  @override
+  LoadingStatusEnum get editStatus {
+    _$editStatusAtom.reportRead();
+    return super.editStatus;
+  }
+
+  @override
+  set editStatus(LoadingStatusEnum value) {
+    _$editStatusAtom.reportWrite(value, super.editStatus, () {
+      super.editStatus = value;
+    });
+  }
+
+  late final _$predictionAtom =
+      Atom(name: '_BudgetPlanStoreBase.prediction', context: context);
+
+  @override
+  Prediction get prediction {
+    _$predictionAtom.reportRead();
+    return super.prediction;
+  }
+
+  @override
+  set prediction(Prediction value) {
+    _$predictionAtom.reportWrite(value, super.prediction, () {
+      super.prediction = value;
+    });
+  }
+
+  late final _$predictionStatusAtom =
+      Atom(name: '_BudgetPlanStoreBase.predictionStatus', context: context);
+
+  @override
+  LoadingStatusEnum get predictionStatus {
+    _$predictionStatusAtom.reportRead();
+    return super.predictionStatus;
+  }
+
+  @override
+  set predictionStatus(LoadingStatusEnum value) {
+    _$predictionStatusAtom.reportWrite(value, super.predictionStatus, () {
+      super.predictionStatus = value;
+    });
+  }
+
   late final _$readYearlyAsyncAction =
       AsyncAction('_BudgetPlanStoreBase.readYearly', context: context);
 
@@ -151,6 +199,14 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
   @override
   Future<bool> delete(BudgetPlanData budgetPlanData) {
     return _$deleteAsyncAction.run(() => super.delete(budgetPlanData));
+  }
+
+  late final _$readPredictionAsyncAction =
+      AsyncAction('_BudgetPlanStoreBase.readPrediction', context: context);
+
+  @override
+  Future<dynamic> readPrediction() {
+    return _$readPredictionAsyncAction.run(() => super.readPrediction());
   }
 
   late final _$_BudgetPlanStoreBaseActionController =
@@ -209,6 +265,9 @@ status: ${status},
 selectedDate: ${selectedDate},
 filter: ${filter},
 createStatus: ${createStatus},
+editStatus: ${editStatus},
+prediction: ${prediction},
+predictionStatus: ${predictionStatus},
 queryParameter: ${queryParameter}
     ''';
   }

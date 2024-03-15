@@ -189,7 +189,7 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
                   builder: (context) => UpcomingBillCreateScreen(
                     upcomingBillData: UpcomingBillData(
                       categoryID: _selectedCategory.id,
-                      amount: double.parse(_billAmountController.text),
+                      amount: int.parse(_billAmountController.text),
                       date: "$upcomingBillDate 12:00:00",
                       name: _expenseNameController.text == ''
                           ? _selectedCategory.name

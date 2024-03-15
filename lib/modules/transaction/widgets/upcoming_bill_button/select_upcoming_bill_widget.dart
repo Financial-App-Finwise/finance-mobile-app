@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class SelectUpcomingBillWidget extends StatefulWidget{
+class SelectUpcomingBillWidget extends StatefulWidget {
   late void Function(UpcomingBillData) onItemSelected;
 
   SelectUpcomingBillWidget({
@@ -32,7 +32,6 @@ class SelectUpcomingBillWidget extends StatefulWidget{
 }
 
 class _SelectUpcomingBillWidgetState extends State<SelectUpcomingBillWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -153,7 +152,7 @@ class _SelectUpcomingBillWidgetState extends State<SelectUpcomingBillWidget> {
                           },
                           child: _upcomingBillCard(
                             data[index].date,
-                            data[index].amount,
+                            data[index].amount.toDouble(),
                             data[index].name,
                           ),
                         ),

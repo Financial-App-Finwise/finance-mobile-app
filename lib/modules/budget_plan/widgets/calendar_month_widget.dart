@@ -67,7 +67,7 @@ class _CalendarMonthWidgetState extends State<CalendarMonthWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: 16),
       width: double.infinity,
       decoration: BoxDecoration(
         color: ColorConstant.white,

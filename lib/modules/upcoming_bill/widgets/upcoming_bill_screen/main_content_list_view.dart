@@ -244,7 +244,7 @@ class _MainContentListViewState extends State<MainContentListView> {
                                 .post(TransactionData(
                                     categoryID: upcomingBill.categoryID,
                                     isIncome: false,
-                                    amount: upcomingBill.amount,
+                                    amount: upcomingBill.amount.toDouble(),
                                     upcomingbillID: upcomingBill.id,
                                     date: DateTime.now().toString(),
                                     expenseType: 'Upcoming Bill'));
@@ -252,7 +252,6 @@ class _MainContentListViewState extends State<MainContentListView> {
                               await context
                                   .read<UpcomingBillStore>()
                                   .read(refreshed: true);
-                              print('jkjk sheesh');
                             }
                           },
                           child: Container(

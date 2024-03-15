@@ -9,12 +9,16 @@ class CategoryButton extends StatefulWidget {
   final void Function(CategoryData) setCategory;
   CategoryData? category;
   bool? showTip;
+  bool? isPost;
+  bool? parentOnly;
 
   CategoryButton({
     super.key,
     required this.setCategory,
     this.category,
     this.showTip = true,
+    this.isPost,
+    this.parentOnly = false,
   });
 
   @override
@@ -29,7 +33,10 @@ class _CategoryButtonState extends State<CategoryButton> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              CategoryScreen(setCategory: widget.setCategory),
+              CategoryScreen(
+            setCategory: widget.setCategory,
+            parentOnly: widget.parentOnly,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -48,7 +55,7 @@ class _CategoryButtonState extends State<CategoryButton> {
           Container(
             padding: const EdgeInsets.symmetric(
               vertical: 16,
-              horizontal: 20,
+              horizontal: 16,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -68,9 +75,13 @@ class _CategoryButtonState extends State<CategoryButton> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Category',
-                          style: TextStyle(
+                        Text(
+                          widget.isPost == null
+                              ? 'Category'
+                              : widget.isPost!
+                                  ? 'Parent Category'
+                                  : 'Category',
+                          style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                             letterSpacing: 0.75,
