@@ -8,6 +8,7 @@ import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_yearly_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
+
 part 'smart_goal_store.g.dart';
 
 class SmartGoalStore = _SmartGoalStoreBase with _$SmartGoalStore;
@@ -17,11 +18,65 @@ abstract class _SmartGoalStoreBase with Store {
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
+  @observable
+  LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingCreate => loadingCreate == LoadingStatusEnum.loading;
+
+  @observable
+  LoadingStatusEnum loadingUpdate = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingUpdate => loadingUpdate == LoadingStatusEnum.loading;
+
   @action
   void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
 
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
+
+  // -------------------- Smart Goal --------------------
+  // Default
+  SmartGoal get _defaultSmartGoal =>
+      SmartGoal(items: ObservableList.of([]), meta: SmartGoalMeta());
+
+  // General
+  @observable
+  late SmartGoal smartGoal = _defaultSmartGoal;
+
+  // -------------------- Filter --------------------
+  late final _currentDate = DateTime.now();
+
+// endDateGTE = DateTime(store.year, index + 1);
+//                 store.endDateLTE = DateTime(store.year, index + 2).subtract(
+//                   const Duration(days: 1),
+//                 );
+  @observable
+  late DateTime? endDateGTE = DateTime(
+    _currentDate.year,
+    _currentDate.month,
+  );
+
+  @observable
+  late DateTime? endDateLTE = DateTime(
+    _currentDate.year,
+    _currentDate.month + 1,
+  );
+
+  @computed
+  String get dateQuery {
+    String endGTE = '';
+    String endLT = '';
+    if (endDateGTE != null) {
+      endGTE = UIHelper.getDateFormat(endDateGTE.toString(), 'yyyy-MM-dd');
+    }
+    if (endDateLTE != null) {
+      endLT = UIHelper.getDateFormat(endDateLTE.toString(), 'yyyy-MM-dd');
+    }
+
+    return 'endDate[gte]=$endGTE&endDate[lt]=$endLT';
+  }
 
   // -------------------- Filtering Variable --------------------
   @observable
@@ -33,45 +88,74 @@ abstract class _SmartGoalStoreBase with Store {
 
   // -------------------- Query Paremeter --------------------
   // Convert the value of selected filtering button to the query Paremeter
+  // Base query parameter filter
   @computed
   String get queryParemeter {
-    String filter1 = SmartGoalHelper.enumToQuery[filteredProgress] ?? '';
+    String progress = SmartGoalHelper.enumToQuery[filteredProgress] ?? '';
 
-    if ('$filter1$dateQuery'.isEmpty) {
+    if ('$progress$dateQuery'.isEmpty) {
       return '';
     }
-    return '$filter1&$dateQuery';
+    return '$progress&$dateQuery';
   }
 
-  late final _currentDate = DateTime.now();
-
-  @observable
-  late DateTime? startDate = DateTime(
-    _currentDate.year,
-    _currentDate.month,
-  );
-
-  @observable
-  late DateTime? endDate = DateTime(
-    _currentDate.year,
-    _currentDate.month + 1,
-  );
-
+  // Query parameter for in progress
   @computed
-  String get dateQuery {
-    String date1 = '';
-    String date2 = '';
-    if (startDate != null) {
-      date1 = UIHelper.getDateFormat(startDate.toString(), 'yyyy-MM-dd');
-    }
-    if (endDate != null) {
-      date2 = UIHelper.getDateFormat(endDate.toString(), 'yyyy-MM-dd');
-    }
-
-    return 'startDate[gte]=$date1&endDate[lte]=$date2';
+  String get queryParemeterInProgress {
+    String progress =
+        SmartGoalHelper.enumToQuery[SmartGoalStatusEnum.inProgress] ?? '';
+    return dateQuery.isEmpty ? '$progress' : '$progress&$dateQuery';
   }
 
-  // -------------------- Smart Goal --------------------
+  // Query parameter for achieved
+  @computed
+  String get queryParemeterAchieved {
+    String progress =
+        SmartGoalHelper.enumToQuery[SmartGoalStatusEnum.achieved] ?? '';
+
+    return dateQuery.isEmpty ? '$progress' : '$progress&$dateQuery';
+  }
+
+  // -------------------- Filtered SmartGoal --------------------
+  // Map from a query paremeter to the SmartGoal
+  @observable
+  ObservableMap<String, SmartGoal> filteredSmartGoalMap = ObservableMap();
+
+  // Meta data
+  @observable
+  SmartGoalMeta meta = SmartGoalMeta();
+
+  // -------------------- Initialize Map Item to Avoid Null --------------------
+  @action
+  void initialize() {
+    if (filteredSmartGoalMap[queryParemeter] == null) {
+      filteredSmartGoalMap[queryParemeter] =
+          SmartGoal(items: ObservableList.of([]), meta: SmartGoalMeta());
+    }
+  }
+
+  // Filtered Smart Goal
+  @computed
+  SmartGoal get filteredSmartGoal =>
+      filteredSmartGoalMap[queryParemeter] == null
+          ? _defaultSmartGoal
+          : filteredSmartGoalMap[queryParemeter]!;
+
+  // Filtered in progress
+  @computed
+  SmartGoal get inProgressSmartGoal =>
+      filteredSmartGoalMap[queryParemeterInProgress] == null
+          ? _defaultSmartGoal
+          : filteredSmartGoalMap[queryParemeterInProgress]!;
+
+  // Filtered achieved
+  @computed
+  SmartGoal get achievedSmartGoal =>
+      filteredSmartGoalMap[queryParemeterAchieved] == null
+          ? _defaultSmartGoal
+          : filteredSmartGoalMap[queryParemeterAchieved]!;
+
+  // -------------------- Read --------------------
   @action
   Future read({SmartGoalStatusEnum status = SmartGoalStatusEnum.all}) async {
     debugPrint('--> START: read smart goal');
@@ -85,6 +169,9 @@ abstract class _SmartGoalStoreBase with Store {
           getSmartGoal,
           response.data as Map<String, dynamic>,
         );
+
+        meta = smartGoal.meta;
+
         loadingStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
@@ -98,23 +185,7 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
-  @observable
-  SmartGoal smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
-
-  // -------------------- Filtered SmartGoal --------------------
-  // Map from a query paremeter to the SmartGoal
-  @observable
-  ObservableMap<String, SmartGoal> filteredSmartGoal = ObservableMap();
-
-  // -------------------- Pagination --------------------
-  @action
-  void initialize() {
-    if (filteredSmartGoal[queryParemeter] == null) {
-      filteredSmartGoal[queryParemeter] =
-          SmartGoal(items: ObservableList.of([]), meta: SmartGoalMeta());
-    }
-  }
-
+  // -------------------- Pagination with Filter --------------------
   late List<ReactionDisposer> _disposers;
 
   void setUpReaction() {
@@ -125,34 +196,50 @@ abstract class _SmartGoalStoreBase with Store {
 
   // -------------------- Read one page at a time --------------------
   @action
-  Future readByPage({bool refreshed = false}) async {
+  Future readByPage({
+    bool refreshed = false,
+    VoidCallback? setLoading,
+    bool updateScreen = false,
+  }) async {
     debugPrint('--> START: read smart goal');
+
+    // check if it's required to set loading
+    if (setLoading != null) {
+      setLoading();
+    }
 
     // initialize value of map item
     initialize();
 
     // if the page is refreshed, reinitialized
     if (refreshed) {
-      filteredSmartGoal[queryParemeter]!.items = ObservableList();
-      filteredSmartGoal[queryParemeter]!.currentPage = 0;
+      filteredSmartGoalMap[queryParemeter]!.items = ObservableList();
+      filteredSmartGoalMap[queryParemeter]!.currentPage = 0;
       setLoadingStatus(LoadingStatusEnum.loading);
     }
 
     try {
-      int page = filteredSmartGoal[queryParemeter]!.currentPage;
+      int page = filteredSmartGoalMap[queryParemeter]!.currentPage + 1;
       Response response =
           await ApiService.dio.get('goals?$queryParemeter&page=$page');
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
 
-        smartGoal =
-            await compute(getSmartGoal, response.data as Map<String, dynamic>);
+        SmartGoal smartGoal = await compute(
+          getSmartGoal,
+          response.data as Map<String, dynamic>,
+        );
 
-        if (filteredSmartGoal[queryParemeter]!.items.length <
+        // update general smart goal
+        if (updateScreen) {
+          this.smartGoal = smartGoal;
+        }
+
+        if (filteredSmartGoalMap[queryParemeter]!.items.length <
             smartGoal.meta.total) {
-          filteredSmartGoal[queryParemeter]!.items.addAll(smartGoal.items);
+          filteredSmartGoalMap[queryParemeter]!.items.addAll(smartGoal.items);
           // increase the page number
-          filteredSmartGoal[queryParemeter]!.currentPage++;
+          filteredSmartGoalMap[queryParemeter]!.currentPage++;
         }
         setLoadingStatus(LoadingStatusEnum.done);
       } else {
@@ -202,9 +289,6 @@ abstract class _SmartGoalStoreBase with Store {
   }
 
   // -------------------- Create a Smart Goal --------------------
-  @observable
-  LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
-
   @action
   Future<bool> post(SmartGoalData smartGoalData) async {
     debugPrint('--> START: post, smart goal');
@@ -219,6 +303,7 @@ abstract class _SmartGoalStoreBase with Store {
       if (response.statusCode == 201) {
         success = true;
         loadingCreate = LoadingStatusEnum.done;
+        await read();
         await readByPage(refreshed: true);
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
@@ -239,7 +324,7 @@ abstract class _SmartGoalStoreBase with Store {
   @action
   Future<bool> update(SmartGoalData smartGoalData) async {
     debugPrint('--> START: update, smart goal');
-    setLoadingStatus(LoadingStatusEnum.loading);
+    loadingUpdate = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Response response = await ApiService.dio.put(
@@ -249,16 +334,16 @@ abstract class _SmartGoalStoreBase with Store {
       if (response.statusCode == 200) {
         success = true;
         await readByPage(refreshed: true);
-        setLoadingStatus(LoadingStatusEnum.done);
+        loadingUpdate = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        loadingUpdate = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      loadingUpdate = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: update, smart goal');
     }
@@ -298,7 +383,7 @@ abstract class _SmartGoalStoreBase with Store {
     // smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
     loadingStatus = LoadingStatusEnum.none;
     filteredProgress = SmartGoalStatusEnum.all;
-    filteredSmartGoal = ObservableMap();
+    filteredSmartGoalMap = ObservableMap();
 
     for (var d in _disposers) {
       d();

@@ -5,14 +5,14 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
+import 'package:finwise/core/widgets/buttons/general_outline_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
-import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
+import 'package:finwise/modules/smart_goal/screens/smart_goal_update_screen.dart';
 import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/forms/smart_goal_form_item.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_form_layout.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_prediction.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SmartGoalEditScreen extends StatefulWidget {
   const SmartGoalEditScreen({super.key});
@@ -127,8 +127,8 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
     );
   }
 
-  late DateTime _selectedStartDay;
-  late DateTime _selectedEndDay;
+  late String? _selectedStartDay = _args.startDate;
+  late String? _selectedEndDay = _args.endDate;
 
   Widget _buildTargetGoalPart() {
     return Column(
@@ -164,7 +164,7 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
                 controller: _startDateController,
                 onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
-                    _selectedStartDay = selectedDay;
+                    _selectedStartDay = selectedDay.toString();
                     _startDateController.text =
                         UIHelper.getInputDate(selectedDay.toString());
                   });
@@ -177,7 +177,7 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
                 controller: _endDateController,
                 onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
-                    _selectedEndDay = selectedDay;
+                    _selectedEndDay = selectedDay.toString();
                     _endDateController.text =
                         UIHelper.getInputDate(selectedDay.toString());
                   });
@@ -256,8 +256,8 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
     return Row(
       children: [
         Expanded(
-          child: GeneralBottomButton(
-            onButtonTap: () {},
+          child: GeneralOutlineButton(
+            onButtonTap: () => Navigator.pop(context),
             buttonLabel: 'Cancel',
           ),
         ),
@@ -295,11 +295,15 @@ class _SmartGoalEditScreenState extends State<SmartGoalEditScreen> {
                 monthlyContribution: monthlyContribution,
               );
 
-              bool success =
-                  await context.read<SmartGoalStore>().update(smartGoalData);
+              bool success = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      SmartGoalUpdateScreen(smartGoalData: smartGoalData),
+                ),
+              );
 
               if (success) {
-                print('updated successfully');
                 Navigator.pop(context);
                 Navigator.pop(context);
               }

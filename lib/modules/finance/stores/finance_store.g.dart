@@ -255,9 +255,12 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
       AsyncAction('_FinanceStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read({bool? isIncome, VoidCallback? setLoading}) {
-    return _$readAsyncAction
-        .run(() => super.read(isIncome: isIncome, setLoading: setLoading));
+  Future<dynamic> read(
+      {bool? isIncome, VoidCallback? setLoading, bool updateFinance = false}) {
+    return _$readAsyncAction.run(() => super.read(
+        isIncome: isIncome,
+        setLoading: setLoading,
+        updateFinance: updateFinance));
   }
 
   late final _$postAsyncAction =
@@ -312,20 +315,7 @@ queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},
 filteredFinance: ${filteredFinance},
 incomeFinance: ${incomeFinance},
-<<<<<<< HEAD
 expenseFinance: ${expenseFinance}
-=======
-expenseFinance: ${expenseFinance},
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
-loadingUpdate: ${loadingUpdate},
-isLoading: ${isLoading},
->>>>>>> Stashed changes
-dollarAccount: ${dollarAccount}
->>>>>>> a7e14309f940661842834645111f0328db2e9ba2
     ''';
   }
 }

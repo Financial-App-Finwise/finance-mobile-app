@@ -22,24 +22,16 @@ SmartGoalData _$SmartGoalDataFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
       name: json['name'] as String? ?? 'no name',
-      amount: json['amount'] == null
-          ? 0.0
-          : SmartGoalData._stringToDouble(json['amount'] as String),
-      currentSave: json['currentSave'] == null
-          ? 0.0
-          : SmartGoalData._stringToDouble(json['currentSave'] as String),
-      remainingSave: json['remainingSave'] == null
-          ? 0.0
-          : SmartGoalData._stringToDouble(json['remainingSave'] as String),
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+      currentSave: (json['currentSave'] as num?)?.toDouble() ?? 0.0,
+      remainingSave: (json['remainingSave'] as num?)?.toDouble() ?? 0.0,
       setDate: json['setDate'] == null
           ? false
           : SmartGoalData._intToBool(json['setDate'] as int),
       startDate: json['startDate'] as String? ?? 'no date',
       endDate: json['endDate'] as String? ?? 'no date',
-      monthlyContribution: json['monthlyContribution'] == null
-          ? 0.0
-          : SmartGoalData._stringToDouble(
-              json['monthlyContribution'] as String),
+      monthlyContribution:
+          (json['monthlyContribution'] as num?)?.toDouble() ?? 0.0,
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
     );

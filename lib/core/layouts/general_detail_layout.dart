@@ -153,9 +153,10 @@ class _GeneralDetailLayoutState extends State<GeneralDetailLayout> {
                     width: 24,
                     height: 24,
                     child: IconButton(
-                      onPressed: () {
-                        _showModal();
-                      },
+                      // onPressed: () {
+                      //   _showModal();
+                      // },
+                      onPressed: widget.onDelete,
                       icon: IconConstant.delete,
                       style: ButtonStyle(
                         padding:

@@ -7,6 +7,7 @@ import 'package:finwise/core/enums/transaction_period_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/utils/ui_util.dart';
 import 'package:finwise/core/widgets/charts/general_six_month_bar_chart.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
@@ -34,7 +35,6 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(args);
     return Scaffold(
       body: _buildBody(),
     );
@@ -48,20 +48,29 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
         SVGName.smartGoal,
         color: ColorConstant.income,
       ),
-      onEdit: () => Navigator.pushNamed(
-        context,
-        RouteName.smartGoalEdit,
-        arguments: args,
-      ),
+      onEdit: () {
+        Navigator.pushNamed(
+          context,
+          RouteName.smartGoalEdit,
+          arguments: args,
+        );
+      },
       onDelete: () async {
-        bool success = await context.read<SmartGoalStore>().delete(args);
-        if (success) {
-          if (mounted) {
-            context.read<SmartGoalStore>().readByPage(refreshed: true);
-            Navigator.pop(context);
-            Navigator.pop(context);
-          }
-        }
+        UIUtil.showModal(
+          context,
+          'Are you sure you want to delete this SMART gaol?',
+          'You will delete every transaction added to this goal.',
+          onTap: () async {
+            bool success = await context.read<SmartGoalStore>().delete(args);
+            if (success) {
+              if (mounted) {
+                context.read<SmartGoalStore>().readByPage(refreshed: true);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }
+            }
+          },
+        );
       },
       gradient: const LinearGradient(
         colors: [
@@ -165,7 +174,8 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
               const SizedBox(height: 16),
               _buildOverviewItem(
                 title: 'Start Date',
-                subTitle: UIHelper.getDateFormat(args.startDate, 'MMM dd, yyyy'),
+                subTitle:
+                    UIHelper.getDateFormat(args.startDate, 'MMM dd, yyyy'),
                 subTitleColor: ColorConstant.black,
                 icon: IconHelper.getSVG(
                   SVGName.calendarTick,
@@ -351,8 +361,7 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
 
   Widget _buildAddButton() {
     return TextButton(
-      onPressed: () =>
-          Navigator.pushNamed(context, RouteName.transactionAdd),
+      onPressed: () => Navigator.pushNamed(context, RouteName.transactionAdd),
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         shape: MaterialStateProperty.all(

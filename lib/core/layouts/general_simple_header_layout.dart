@@ -14,6 +14,7 @@ class GeneralSimpleHeaderLayout extends StatefulWidget {
     this.gradient,
     this.child,
     this.padding,
+    this.onNotification,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class GeneralSimpleHeaderLayout extends StatefulWidget {
   final LinearGradient? gradient;
   final Widget? child;
   final EdgeInsets? padding;
+  final bool Function(Notification)? onNotification;
 
   @override
   State<GeneralSimpleHeaderLayout> createState() =>
@@ -76,9 +78,13 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
               Expanded(
                 child: Container(
                   alignment: Alignment.topLeft,
-                  padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16),
+                  padding: widget.padding ??
+                      const EdgeInsets.symmetric(horizontal: 16),
                   color: ColorConstant.backgroundColor,
-                  child: widget.child ?? const SizedBox(),
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: widget.onNotification,
+                    child: widget.child ?? const SizedBox(),
+                  ),
                 ),
               ),
             ],
@@ -131,8 +137,7 @@ class _GeneralSimpleHeaderLayoutState extends State<GeneralSimpleHeaderLayout> {
 
   Widget _buildFloating() {
     return FloatingActionButton(
-      onPressed: () =>
-          Navigator.pushNamed(context, RouteName.transactionAdd),
+      onPressed: () => Navigator.pushNamed(context, RouteName.transactionAdd),
       elevation: 0,
       backgroundColor: const Color(0xff00A6FB),
       shape: const CircleBorder(),

@@ -1,9 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
-import 'package:finwise/core/layouts/general_simple_header_layout.dart';
-import 'package:finwise/core/services/api_service.dart';
-import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/modules/data_science/stores/insight_store.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +42,27 @@ class _InsightScreenState extends State<InsightScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Financial Insights'),
+        leading: CustomIconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: IconHelper.getSVG(SVGName.arrowBack, color: Colors.white),
+        ),
+        flexibleSpace: FlexibleSpaceBar(
+          title: const Text('My Financial Insights'),
+          background: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  ColorConstant.secondary,
+                  ColorConstant.primary,
+                ],
+                stops: [0, 1],
+              ),
+            ),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () {
               _store.done = false;
               _store.loadWebPage();
@@ -58,20 +72,21 @@ class _InsightScreenState extends State<InsightScreen> {
       ),
       body: SafeArea(child: _buildContent()),
     );
-    return GeneralSimpleHeaderLayout(
-      title: 'My Financial Analysis',
-      description:
-          'Gain useful insights from the data analysis of your financial pattern',
-      gradient: LinearGradient(colors: [
-        ColorConstant.secondary,
-        ColorConstant.primary,
-      ]),
-      padding: EdgeInsets.zero,
-      child: _buildContent(),
-    );
+    // return GeneralSimpleHeaderLayout(
+    //   title: 'My Financial Analysis',
+    //   description:
+    //       'Gain useful insights from the data analysis of your financial pattern',
+    //   gradient: LinearGradient(colors: [
+    //     ColorConstant.secondary,
+    //     ColorConstant.primary,
+    //   ]),
+    //   padding: EdgeInsets.zero,
+    //   child: _buildContent(),
+    // );
   }
 
   Widget _buildContent() {
+    
     return Observer(builder: (context) {
       return Column(
         children: [
@@ -89,21 +104,17 @@ class _InsightScreenState extends State<InsightScreen> {
           //   ),
           // ),
           Visibility(
-            visible: loadingPercentage < 100,
+            visible: _store.loadingPercentage < 100,
             child: LinearPercentIndicator(
               padding: EdgeInsets.zero,
               barRadius: const Radius.circular(10),
-              percent: loadingPercentage / 100,
+              percent: _store.loadingPercentage / 100,
               backgroundColor: Colors.grey,
               progressColor: Colors.blue,
             ),
           ),
           Expanded(
-            child: !_store.done
-                ? const Center(
-                    child: CircularProgressIndicatorTwoArcs(),
-                  )
-                : WebViewWidget(controller: _store.controller),
+            child: WebViewWidget(controller: _store.controller),
           ),
         ],
       );

@@ -8,14 +8,12 @@ import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/models/income_expense_model/income_expense_model.dart';
 import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
-import 'package:finwise/core/widgets/charts/empty_bar_chart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
 import 'package:finwise/core/widgets/custom_refresh_indicator.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
-import 'package:finwise/core/widgets/buttons/general_bottom_button.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
@@ -23,8 +21,9 @@ import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
+import 'package:finwise/modules/data_science/stores/insight_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
-import 'package:finwise/modules/data_science/screens/data_webview_screen.dart';
+import 'package:finwise/modules/data_science/screens/insight_screen.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
@@ -52,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
   late final AuthStore _authStore = context.read<AuthStore>();
   late final BudgetPlanStore _budgetPlanStore = context.read<BudgetPlanStore>();
   late final FinanceStore _financeStore = context.read<FinanceStore>();
+  late final InsightStore _insightStore = context.read<InsightStore>();
   late final SmartGoalStore _smartGoalStore = context.read<SmartGoalStore>();
   late final UpcomingBillStore _upcomingBillStore =
       context.read<UpcomingBillStore>();
@@ -66,8 +66,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   // -------------------- Read all Necessary Data --------------------
   Future _readAll() async {
+    _insightStore.loadWebPage();
     await _budgetPlanStore.read();
-    await _financeStore.read();
+    await _financeStore.read(updateFinance: true);
     await _financeStore.read(isIncome: false);
     await _smartGoalStore.read(status: SmartGoalStatusEnum.inProgress);
     await _upcomingBillStore.read();
@@ -100,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen>
           child: Observer(builder: (context) {
             return SingleChildScrollView(
               controller: widget.scrollController,
-              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   ListView(
@@ -265,10 +265,10 @@ class _HomeScreenState extends State<HomeScreen>
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => DataWebViewScreen(),
+                    builder: (_) => InsightScreen(),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Get Insights',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -431,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen>
                 // ---------- Smart Goal ----------
                 _buildFeatureItem(
                   text: 'Smart Goal',
-                  amount: ' ${_smartGoalStore.smartGoal.meta.total}',
+                  amount: ' ${_smartGoalStore.meta.total}',
                   icon:
                       IconHelper.getSVG(SVGName.smartGoal, color: Colors.white),
                   onPressed: () =>

@@ -4,6 +4,7 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/layouts/general_detail_layout.dart';
+import 'package:finwise/core/utils/ui_util.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
@@ -57,16 +58,23 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         RouteName.transactionEdit,
         arguments: args,
       ),
-      onDelete: () async {
-        bool success = await context.read<TransactionStore>().delete(args);
-        if (success) {
-          await context.read<FinanceStore>().read();
-          if (mounted) {
-            // await context.read<TransactionStore>().readByPage(refreshed: true);
-            Navigator.pop(context);
-            Navigator.pop(context);
-          }
-        }
+      onDelete: () {
+        UIUtil.showModal(
+          context,
+          'Are you sure you want to delete this TRANSACTION?',
+          '',
+          onTap: () async {
+            bool success = await context.read<TransactionStore>().delete(args);
+            if (success) {
+              await context.read<FinanceStore>().read();
+              if (mounted) {
+                // await context.read<TransactionStore>().readByPage(refreshed: true);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }
+            }
+          },
+        );
       },
       mainContent: _buildContent(),
     );

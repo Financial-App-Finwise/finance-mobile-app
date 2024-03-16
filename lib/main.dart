@@ -1,5 +1,6 @@
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
+import 'package:finwise/modules/data_science/stores/insight_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (context) => AuthStore()),
         Provider(create: (context) => CategoryStore()),
         Provider(create: (context) => BudgetPlanStore()),
+        Provider(create: (context) => InsightStore()),
         Provider(create: (context) => UpcomingBillStore()),
         Provider(create: (context) => TransactionStore()),
         Provider(create: (context) => FinanceStore()),

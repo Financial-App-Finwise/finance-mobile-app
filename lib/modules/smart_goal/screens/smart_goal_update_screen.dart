@@ -1,35 +1,39 @@
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/screens/loading_screen.dart';
-import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class FinanceUpdateScreen extends StatefulWidget {
-  final double totalBalance;
+class SmartGoalUpdateScreen extends StatefulWidget {
+  final SmartGoalData smartGoalData;
 
-  const FinanceUpdateScreen({
+  const SmartGoalUpdateScreen({
     super.key,
-    this.totalBalance = 0,
+    required this.smartGoalData,
   });
 
   @override
-  State<FinanceUpdateScreen> createState() => _FinanceUpdateScreenState();
+  State<SmartGoalUpdateScreen> createState() => _SmartGoalUpdateScreenState();
 }
 
-class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
-  late final store = context.read<FinanceStore>();
+class _SmartGoalUpdateScreenState extends State<SmartGoalUpdateScreen> {
+  late final store = context.read<SmartGoalStore>();
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      bool success = await store.update(widget.totalBalance);
+      bool success = await store.update(widget.smartGoalData);
 
       if (success) {
         // wait for finance to update on the screen
-        await store.read(updateFinance: true);
+        await store.readByPage(
+          refreshed: true,
+          updateScreen: true,
+        );
 
         // close the screen
         Navigator.pop(context, success);
@@ -51,7 +55,7 @@ class _FinanceUpdateScreenState extends State<FinanceUpdateScreen> {
               icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
             )
           : LoadingScreen(
-              title: 'Balance Updated Successfully!',
+              title: 'Smart Goal Updated Successfully!',
               description:
                   'Please wait...\nYou will be directed to your finance.',
               icon: IconHelper.getSVG(SVGName.check, color: Colors.white),

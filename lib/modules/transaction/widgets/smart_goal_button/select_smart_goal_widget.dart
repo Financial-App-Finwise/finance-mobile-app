@@ -102,10 +102,10 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
   );
 
   late final TextEditingController _startDayController = TextEditingController(
-    text: UIHelper.getDateFormat(store.startDate.toString(), 'dd MMM, yyyy'),
+    text: UIHelper.getDateFormat(store.endDateGTE.toString(), 'dd MMM, yyyy'),
   );
   late final TextEditingController _endDayController = TextEditingController(
-    text: UIHelper.getDateFormat(store.endDate.toString(), 'dd MMM, yyyy'),
+    text: UIHelper.getDateFormat(store.endDateLTE.toString(), 'dd MMM, yyyy'),
   );
 
   Widget _buildCenterContent() {
@@ -117,7 +117,7 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
               setState(() {
                 _startDayController.text = UIHelper.getDateFormat(
                     selectedDay.toString(), 'MMM dd, yyyy');
-                store.startDate = selectedDay;
+                store.endDateGTE = selectedDay;
               });
             }),
             hintText: 'Start Date',
@@ -130,7 +130,7 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
               setState(() {
                 _endDayController.text = UIHelper.getDateFormat(
                     selectedDay.toString(), 'MMM dd, yyyy');
-                store.endDate = selectedDay;
+                store.endDateLTE = selectedDay;
               });
             }),
             hintText: 'End Date',
@@ -210,12 +210,12 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
               store.changeFilteredProgress(value);
               store.initialize();
               if (store
-                  .filteredSmartGoal[store.queryParemeter]!.items.isEmpty) {
+                  .filteredSmartGoalMap[store.queryParemeter]!.items.isEmpty) {
                 store.readByPage(refreshed: true);
               }
             },
           ),
-          store.filteredSmartGoal[store.queryParemeter]!.items.isEmpty
+          store.filteredSmartGoalMap[store.queryParemeter]!.items.isEmpty
               ? EmptyDataWidget(
                   description: 'You have no smart goal yet for this month',
                   buttonLabel: 'Add Smart Goal',
@@ -235,7 +235,7 @@ class _SelectSmartGoalWidgetState extends State<SelectSmartGoalWidget> {
 
   Widget _buildFilteredSmartGoals() {
     List<SmartGoalData> items =
-        store.filteredSmartGoal[store.queryParemeter]!.items;
+        store.filteredSmartGoalMap[store.queryParemeter]!.items;
 
     return SingleChildScrollView(
       child: store.isLoading

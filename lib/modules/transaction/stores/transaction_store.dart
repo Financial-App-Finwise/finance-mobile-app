@@ -14,18 +14,46 @@ class TransactionStore = _TransactionStoreBase with _$TransactionStore;
 
 abstract class _TransactionStoreBase with Store {
   // -------------------- Loading --------------------
+  // General
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
-
-  @action
-  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
 
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
 
-  // -------------------- Transaction --------------------
+  // Create Transaction
   @observable
-  Transaction transaction = Transaction(items: [], meta: TransactionMeta());
+  LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingCreate => loadingStatus == LoadingStatusEnum.loading;
+
+  // Update Transaction
+  @observable
+  LoadingStatusEnum loadingUpdate = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingUpdate => loadingUpdate == LoadingStatusEnum.loading;
+
+  // Set Loading Status of General Loading
+  @action
+  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
+
+  // -------------------- Transaction --------------------
+  // Default
+  Transaction get _defaultTransaction =>
+      Transaction(items: [], meta: TransactionMeta());
+
+  // General
+  @observable
+  late Transaction transaction = _defaultTransaction;
+
+  // -------------------- Filter --------------------
+  @observable
+  int isIncome = 1;
+
+  @observable
+  String period = '';
 
   // -------------------- Filtering Variable --------------------
   @observable
@@ -43,60 +71,112 @@ abstract class _TransactionStoreBase with Store {
 
   // -------------------- Query Paremeter --------------------
   // Convert the value of selected filtering button to the query Paremeter
+  // Base query parameter filter
   @computed
   String get queryParemeter {
-    String filter1 = TransactionHelper.typeMap[filteredType] ?? '';
-    String filter2 = TransactionHelper.periodMap[filteredPeriod] ?? '';
+    String isIncome = TransactionHelper.typeMap[filteredType]!;
+    String period = TransactionHelper.periodMap[filteredPeriod]!;
+    String parameter = '$isIncome&$period';
+    return '$isIncome$period'.isEmpty ? '' : '$parameter';
+  }
 
-    if ('$filter1$filter2'.isEmpty) {
-      return '';
-    }
-    return '$filter1&$filter2';
+  // Query parameter for income
+  @computed
+  String get queryParemeterIncome {
+    String isIncome = 'isIncome=1';
+    String period = '';
+    String parameter = '$isIncome&$period';
+    return '$isIncome$period'.isEmpty ? '' : '$parameter';
+  }
+
+  // Query parameter for expense
+  @computed
+  String get queryParemeterExpense {
+    String isIncome = 'isIncome=0';
+    String period = '';
+    String parameter = '$isIncome&$period';
+    return '$isIncome$period'.isEmpty ? '' : '$parameter';
   }
 
   // -------------------- Filtered Transaction --------------------
   // Map from a query paremeter to the Transaction
   @observable
-  ObservableMap<String, Transaction> filteredTransaction = ObservableMap();
+  ObservableMap<String, Transaction> filteredTransactionMap = ObservableMap();
 
+  // -------------------- Initialize Map Item to Avoid Null --------------------
   @action
   void initialize() {
-    if (filteredTransaction[queryParemeter] == null) {
-      filteredTransaction[queryParemeter] =
-          Transaction(items: ObservableList.of([]), meta: TransactionMeta());
+    if (filteredTransactionMap[queryParemeter] == null) {
+      filteredTransactionMap[queryParemeter] = _defaultTransaction;
     }
   }
 
-  // -------------------- Pagination and Filter --------------------
+  // Filtered Transaction
+  @computed
+  Transaction get filteredTransaction =>
+      filteredTransactionMap[queryParemeter] == null
+          ? _defaultTransaction
+          : filteredTransactionMap[queryParemeter]!;
+
+  // Filtered income
+  @computed
+  Transaction get incomeTransaction =>
+      filteredTransactionMap[queryParemeterIncome] == null
+          ? _defaultTransaction
+          : filteredTransactionMap[queryParemeterIncome]!;
+
+  // Filtered expense
+  @computed
+  Transaction get expenseTransaction =>
+      filteredTransactionMap[queryParemeterExpense] == null
+          ? _defaultTransaction
+          : filteredTransactionMap[queryParemeterExpense]!;
+
+  // -------------------- Pagination with Filter --------------------
   @action
-  Future readByPage({bool refreshed = false}) async {
+  Future readByPage({
+    bool refreshed = false,
+    VoidCallback? setLoading,
+    bool updateScreen = false,
+  }) async {
     debugPrint('--> START: read transaction');
+
+    // check if it's required to set loading
+    if (setLoading != null) {
+      setLoading();
+    }
 
     // initialize value of map item
     initialize();
 
     // if the page is refreshed, reinitialized
     if (refreshed) {
-      filteredTransaction[queryParemeter]!.items = ObservableList();
-      filteredTransaction[queryParemeter]!.currentPage = 0;
+      filteredTransactionMap[queryParemeter]!.items = ObservableList();
+      filteredTransactionMap[queryParemeter]!.currentPage = 0;
       setLoadingStatus(LoadingStatusEnum.loading);
     }
 
     try {
-      int page = filteredTransaction[queryParemeter]!.currentPage;
+      int page = filteredTransactionMap[queryParemeter]!.currentPage + 1;
       Response response =
-          await ApiService.dio.get('transactions/?${queryParemeter}page=$page');
+          await ApiService.dio.get('transactions?${queryParemeter}&page=$page');
       if (response.statusCode == 200) {
         debugPrint('--> successfully fetched');
 
         transaction = await compute(
-            getTransactionModel, response.data as Map<String, dynamic>);
+          getTransactionModel,
+          response.data as Map<String, dynamic>,
+        );
 
-        if (filteredTransaction[queryParemeter]!.items.length <
+        if (filteredTransactionMap[queryParemeter]!.items.length <
             transaction.meta.total) {
-          filteredTransaction[queryParemeter]!.items.addAll(transaction.items);
+          // add items to the list
+          filteredTransactionMap[queryParemeter]!
+              .items
+              .addAll(transaction.items);
+
           // increase the page number
-          filteredTransaction[queryParemeter]!.currentPage++;
+          filteredTransactionMap[queryParemeter]!.currentPage++;
         }
         setLoadingStatus(LoadingStatusEnum.done);
       } else {
@@ -111,26 +191,12 @@ abstract class _TransactionStoreBase with Store {
     }
   }
 
-//   {
-//     "categoryID": 3,
-//     "isIncome": 1,
-//     "amount": "50.00",
-//     "hasContributed": 1,
-//     "upcomingbillID": null,
-//     "budgetplanID": null,
-//     "expenseType": "General",
-//     "date": "2023-11-01 12:00:00",
-//     "note": "Bought groceries abc"
-// }
-
   // -------------------- Create a Transaction --------------------
-  @observable
-  LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
-
   @action
   Future<bool> post(TransactionData transactionData) async {
     debugPrint('--> START: post, transaction');
     loadingCreate = LoadingStatusEnum.loading;
+    print(transactionData.toJson());
     bool success = false;
     try {
       Response response = await ApiService.dio.post(
@@ -157,13 +223,12 @@ abstract class _TransactionStoreBase with Store {
     return success;
   }
 
-    // -------------------- Update a Transaction --------------------
+  // -------------------- Update a Transaction --------------------
   @action
   Future<bool> update(TransactionData transactionData) async {
     debugPrint('--> START: update, transaction');
     setLoadingStatus(LoadingStatusEnum.loading);
     bool success = false;
-    print(transactionData.toJson());
     try {
       Response response = await ApiService.dio.put(
         'transactions/${transactionData.id}',
@@ -220,6 +285,6 @@ abstract class _TransactionStoreBase with Store {
     setLoadingStatus(LoadingStatusEnum.none);
     changeFilteredType(TransactionTypeEnum.all);
     changeFilteredPeriod(TransactionPeriodEnum.all);
-    filteredTransaction = ObservableMap();
+    filteredTransactionMap = ObservableMap();
   }
 }

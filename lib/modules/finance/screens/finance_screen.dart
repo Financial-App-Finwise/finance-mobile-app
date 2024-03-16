@@ -50,7 +50,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
 
   @override
   void dispose() {
-    store.dispose(); //test
+    // store.dispose(); //test
     super.dispose();
   }
 
@@ -124,9 +124,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
   Widget _buildContent() {
     return Observer(builder: (context) {
       return CustomRefreshIndicator(
-        onRefresh: () async {
-          await store.read();
-        },
+        onRefresh: () async => await store.read(updateFinance: true),
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -442,7 +440,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
         RoundedContainer(
           child: transactions.isEmpty
               ? EmptyDataWidget(
-                  icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
+                  icon: IconHelper.getSVGDefault(SVGName.transaction),
                   buttonLabel: 'Add Transaction',
                   description:
                       'You have no ${isIncome ? 'income' : 'expense'} transaction history yet.',

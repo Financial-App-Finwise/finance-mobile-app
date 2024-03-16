@@ -16,6 +16,20 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
       (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
               name: '_TransactionStoreBase.isLoading'))
           .value;
+  Computed<bool>? _$isLoadingCreateComputed;
+
+  @override
+  bool get isLoadingCreate =>
+      (_$isLoadingCreateComputed ??= Computed<bool>(() => super.isLoadingCreate,
+              name: '_TransactionStoreBase.isLoadingCreate'))
+          .value;
+  Computed<bool>? _$isLoadingUpdateComputed;
+
+  @override
+  bool get isLoadingUpdate =>
+      (_$isLoadingUpdateComputed ??= Computed<bool>(() => super.isLoadingUpdate,
+              name: '_TransactionStoreBase.isLoadingUpdate'))
+          .value;
   Computed<String>? _$queryParemeterComputed;
 
   @override
@@ -23,6 +37,41 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
       (_$queryParemeterComputed ??= Computed<String>(() => super.queryParemeter,
               name: '_TransactionStoreBase.queryParemeter'))
           .value;
+  Computed<String>? _$queryParemeterIncomeComputed;
+
+  @override
+  String get queryParemeterIncome => (_$queryParemeterIncomeComputed ??=
+          Computed<String>(() => super.queryParemeterIncome,
+              name: '_TransactionStoreBase.queryParemeterIncome'))
+      .value;
+  Computed<String>? _$queryParemeterExpenseComputed;
+
+  @override
+  String get queryParemeterExpense => (_$queryParemeterExpenseComputed ??=
+          Computed<String>(() => super.queryParemeterExpense,
+              name: '_TransactionStoreBase.queryParemeterExpense'))
+      .value;
+  Computed<Transaction>? _$filteredTransactionComputed;
+
+  @override
+  Transaction get filteredTransaction => (_$filteredTransactionComputed ??=
+          Computed<Transaction>(() => super.filteredTransaction,
+              name: '_TransactionStoreBase.filteredTransaction'))
+      .value;
+  Computed<Transaction>? _$incomeTransactionComputed;
+
+  @override
+  Transaction get incomeTransaction => (_$incomeTransactionComputed ??=
+          Computed<Transaction>(() => super.incomeTransaction,
+              name: '_TransactionStoreBase.incomeTransaction'))
+      .value;
+  Computed<Transaction>? _$expenseTransactionComputed;
+
+  @override
+  Transaction get expenseTransaction => (_$expenseTransactionComputed ??=
+          Computed<Transaction>(() => super.expenseTransaction,
+              name: '_TransactionStoreBase.expenseTransaction'))
+      .value;
 
   late final _$loadingStatusAtom =
       Atom(name: '_TransactionStoreBase.loadingStatus', context: context);
@@ -40,6 +89,38 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
     });
   }
 
+  late final _$loadingCreateAtom =
+      Atom(name: '_TransactionStoreBase.loadingCreate', context: context);
+
+  @override
+  LoadingStatusEnum get loadingCreate {
+    _$loadingCreateAtom.reportRead();
+    return super.loadingCreate;
+  }
+
+  @override
+  set loadingCreate(LoadingStatusEnum value) {
+    _$loadingCreateAtom.reportWrite(value, super.loadingCreate, () {
+      super.loadingCreate = value;
+    });
+  }
+
+  late final _$loadingUpdateAtom =
+      Atom(name: '_TransactionStoreBase.loadingUpdate', context: context);
+
+  @override
+  LoadingStatusEnum get loadingUpdate {
+    _$loadingUpdateAtom.reportRead();
+    return super.loadingUpdate;
+  }
+
+  @override
+  set loadingUpdate(LoadingStatusEnum value) {
+    _$loadingUpdateAtom.reportWrite(value, super.loadingUpdate, () {
+      super.loadingUpdate = value;
+    });
+  }
+
   late final _$transactionAtom =
       Atom(name: '_TransactionStoreBase.transaction', context: context);
 
@@ -49,10 +130,46 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
     return super.transaction;
   }
 
+  bool _transactionIsInitialized = false;
+
   @override
   set transaction(Transaction value) {
-    _$transactionAtom.reportWrite(value, super.transaction, () {
+    _$transactionAtom.reportWrite(
+        value, _transactionIsInitialized ? super.transaction : null, () {
       super.transaction = value;
+      _transactionIsInitialized = true;
+    });
+  }
+
+  late final _$isIncomeAtom =
+      Atom(name: '_TransactionStoreBase.isIncome', context: context);
+
+  @override
+  int get isIncome {
+    _$isIncomeAtom.reportRead();
+    return super.isIncome;
+  }
+
+  @override
+  set isIncome(int value) {
+    _$isIncomeAtom.reportWrite(value, super.isIncome, () {
+      super.isIncome = value;
+    });
+  }
+
+  late final _$periodAtom =
+      Atom(name: '_TransactionStoreBase.period', context: context);
+
+  @override
+  String get period {
+    _$periodAtom.reportRead();
+    return super.period;
+  }
+
+  @override
+  set period(String value) {
+    _$periodAtom.reportWrite(value, super.period, () {
+      super.period = value;
     });
   }
 
@@ -88,35 +205,20 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
     });
   }
 
-  late final _$filteredTransactionAtom =
-      Atom(name: '_TransactionStoreBase.filteredTransaction', context: context);
+  late final _$filteredTransactionMapAtom = Atom(
+      name: '_TransactionStoreBase.filteredTransactionMap', context: context);
 
   @override
-  ObservableMap<String, Transaction> get filteredTransaction {
-    _$filteredTransactionAtom.reportRead();
-    return super.filteredTransaction;
+  ObservableMap<String, Transaction> get filteredTransactionMap {
+    _$filteredTransactionMapAtom.reportRead();
+    return super.filteredTransactionMap;
   }
 
   @override
-  set filteredTransaction(ObservableMap<String, Transaction> value) {
-    _$filteredTransactionAtom.reportWrite(value, super.filteredTransaction, () {
-      super.filteredTransaction = value;
-    });
-  }
-
-  late final _$loadingCreateAtom =
-      Atom(name: '_TransactionStoreBase.loadingCreate', context: context);
-
-  @override
-  LoadingStatusEnum get loadingCreate {
-    _$loadingCreateAtom.reportRead();
-    return super.loadingCreate;
-  }
-
-  @override
-  set loadingCreate(LoadingStatusEnum value) {
-    _$loadingCreateAtom.reportWrite(value, super.loadingCreate, () {
-      super.loadingCreate = value;
+  set filteredTransactionMap(ObservableMap<String, Transaction> value) {
+    _$filteredTransactionMapAtom
+        .reportWrite(value, super.filteredTransactionMap, () {
+      super.filteredTransactionMap = value;
     });
   }
 
@@ -124,9 +226,14 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
       AsyncAction('_TransactionStoreBase.readByPage', context: context);
 
   @override
-  Future<dynamic> readByPage({bool refreshed = false}) {
-    return _$readByPageAsyncAction
-        .run(() => super.readByPage(refreshed: refreshed));
+  Future<dynamic> readByPage(
+      {bool refreshed = false,
+      VoidCallback? setLoading,
+      bool updateScreen = false}) {
+    return _$readByPageAsyncAction.run(() => super.readByPage(
+        refreshed: refreshed,
+        setLoading: setLoading,
+        updateScreen: updateScreen));
   }
 
   late final _$postAsyncAction =
@@ -204,13 +311,23 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
   String toString() {
     return '''
 loadingStatus: ${loadingStatus},
+loadingCreate: ${loadingCreate},
+loadingUpdate: ${loadingUpdate},
 transaction: ${transaction},
+isIncome: ${isIncome},
+period: ${period},
 filteredType: ${filteredType},
 filteredPeriod: ${filteredPeriod},
-filteredTransaction: ${filteredTransaction},
-loadingCreate: ${loadingCreate},
+filteredTransactionMap: ${filteredTransactionMap},
 isLoading: ${isLoading},
-queryParemeter: ${queryParemeter}
+isLoadingCreate: ${isLoadingCreate},
+isLoadingUpdate: ${isLoadingUpdate},
+queryParemeter: ${queryParemeter},
+queryParemeterIncome: ${queryParemeterIncome},
+queryParemeterExpense: ${queryParemeterExpense},
+filteredTransaction: ${filteredTransaction},
+incomeTransaction: ${incomeTransaction},
+expenseTransaction: ${expenseTransaction}
     ''';
   }
 }

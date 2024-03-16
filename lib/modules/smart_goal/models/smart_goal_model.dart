@@ -34,16 +34,10 @@ class SmartGoalData {
 
   @JsonKey(includeToJson: false)
   late int userID;
-  
+
   late String name;
-
-  @JsonKey(fromJson: _stringToDouble)
   late double amount;
-
-  @JsonKey(fromJson: _stringToDouble)
   late double currentSave;
-
-  @JsonKey(fromJson: _stringToDouble)
   late double remainingSave;
 
   @JsonKey(fromJson: _intToBool)
@@ -52,7 +46,6 @@ class SmartGoalData {
   String? startDate;
   String? endDate;
 
-  @JsonKey(fromJson: _stringToDouble)
   double? monthlyContribution;
 
   @JsonKey(name: 'created_at', includeToJson: false)

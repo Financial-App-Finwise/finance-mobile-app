@@ -68,7 +68,7 @@ abstract class _FinanceStoreBase with Store {
   @observable
   ObservableMap<String, IncomeExpenseCompare> previousBarData = ObservableMap();
 
-  // -------------------- Period Filter --------------------
+  // -------------------- Filter --------------------
   @observable
   int isIncome = 1;
 
@@ -103,7 +103,7 @@ abstract class _FinanceStoreBase with Store {
     return '$isIncome$period'.isEmpty ? '' : '?$parameter';
   }
 
-  // -------------------- Filtered SmartGoal --------------------
+  // -------------------- Filtered Finance --------------------
   // Map from a query paremeter to the Finance
   @observable
   ObservableMap<String, Finance> filteredFinanceMap = ObservableMap();
@@ -157,6 +157,7 @@ abstract class _FinanceStoreBase with Store {
   Future read({
     bool? isIncome,
     VoidCallback? setLoading,
+    bool updateFinance = false,
   }) async {
     debugPrint('--> START: read finance');
 
@@ -181,10 +182,9 @@ abstract class _FinanceStoreBase with Store {
           response.data as Map<String, dynamic>,
         );
 
-        // read general finance only once
-        if (!_hasReadOnce) {
+        // update general finance
+        if (updateFinance) {
           this.finance = finance;
-          _hasReadOnce = true;
         }
 
         // store the read finance in a map of {'key': Finance}
