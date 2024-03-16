@@ -151,7 +151,7 @@ abstract class _BudgetPlanStoreBase with Store {
       jsonData = {
         'name': budgetPlanData.name,
         'amount': budgetPlanData.amount,
-        'isMonthly': 0,
+        'isMonthly': budgetPlanData.isMonthly == true ? 1 : 0,
         'date': budgetPlanData.date,
         'categoryID': budgetPlanData.categoryID,
       };

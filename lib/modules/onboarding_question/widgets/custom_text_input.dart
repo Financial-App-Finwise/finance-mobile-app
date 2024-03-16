@@ -9,14 +9,13 @@ class CustomTextInput extends StatelessWidget {
   int? textLimit;
   void Function(String)? onChange;
 
-  CustomTextInput({
-    super.key,
-    required this.label,
-    required this.hintText,
-    required this.controller,
-    this.textLimit,
-    this.onChange
-  });
+  CustomTextInput(
+      {super.key,
+      required this.label,
+      required this.hintText,
+      required this.controller,
+      this.textLimit,
+      this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,6 @@ class CustomTextInput extends StatelessWidget {
         letterSpacing: 0.75,
         color: ColorConstant.mainText,
       ),
-      inputFormatters: [LengthLimitingTextInputFormatter(textLimit)],
       decoration: InputDecoration(
           alignLabelWithHint: true,
           hintText: hintText,

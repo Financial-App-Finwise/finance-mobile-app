@@ -109,8 +109,6 @@ class _SelectBudgetPlanWidgetState extends State<SelectBudgetPlanWidget> {
 // Main content list view
   Widget _mainContentListView() {
     return Observer(builder: (context) {
-      
-
       return Container(
         color: const Color(0xFFF5F7F8),
         child: _buildBudgetPlans(),
@@ -150,7 +148,7 @@ class _SelectBudgetPlanWidgetState extends State<SelectBudgetPlanWidget> {
           LoadingStatusEnum loadingStatus =
               context.watch<BudgetPlanStore>().status;
           List<BudgetPlanData> budgetPlans = store.budgetPlan.data.budgetPlans;
-            
+
           return loadingStatus == LoadingStatusEnum.loading
               ? Text('Loading...')
               : Column(
@@ -161,7 +159,7 @@ class _SelectBudgetPlanWidgetState extends State<SelectBudgetPlanWidget> {
                       Column(
                         children: [
                           _titleProgressCard(budgetPlans[index]),
-                          if (index <budgetPlans.length - 1)
+                          if (index < budgetPlans.length - 1)
                             const SizedBox(
                               height: 16,
                             ),
@@ -290,7 +288,7 @@ class _SelectBudgetPlanWidgetState extends State<SelectBudgetPlanWidget> {
           SizedBox(
             width: double.infinity,
             child: CustomProgressBar(
-              value: item.totalTransactionAmount / item.amount,
+              value: item.spent / item.amount,
               gradient1: const Color(0xFFFBA6A6),
               gradient2: ColorConstant.expense,
             ),
@@ -304,7 +302,7 @@ class _SelectBudgetPlanWidgetState extends State<SelectBudgetPlanWidget> {
               Row(
                 children: [
                   Text(
-                    '\$${item.totalTransactionAmount.toInt()}',
+                    '\$${item.spent.toInt()}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,

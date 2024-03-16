@@ -259,8 +259,11 @@ status: ${status},
 startDate: ${startDate},
 filter: ${filter},
 upcomingBillYearly: ${upcomingBillYearly},
+<<<<<<< Updated upstream
 createStatus: ${createStatus},
 editStatus: ${editStatus},
+=======
+>>>>>>> Stashed changes
 endDate: ${endDate},
 queryParameter: ${queryParameter}
     ''';

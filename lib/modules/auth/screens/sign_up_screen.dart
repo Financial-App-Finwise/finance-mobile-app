@@ -78,7 +78,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
 
                   // ---------- Create Onboarding (Optional) ----------
-
                   if (success) {
                     success = await onboardingStore
                         .post(categoryStore.categoryModel.categoryDataList);

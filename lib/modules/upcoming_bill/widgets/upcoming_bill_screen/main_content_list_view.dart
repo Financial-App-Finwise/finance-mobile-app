@@ -12,6 +12,7 @@ import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/screens/add_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/screens/upcoming_bill_detail_screen.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
@@ -76,24 +77,26 @@ class _MainContentListViewState extends State<MainContentListView> {
               context.watch<UpcomingBillStore>().status;
           return loadingStatus == LoadingStatusEnum.loading
               ? const CircularProgressIndicatorTwoArcs()
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.upcomingBillList.length,
-                  itemBuilder: (context, index) {
-                    List<UpcomingBillData> data = widget.upcomingBillList;
+              : widget.upcomingBillList.isEmpty
+                  ? _noContentView()
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.upcomingBillList.length,
+                      itemBuilder: (context, index) {
+                        List<UpcomingBillData> data = widget.upcomingBillList;
 
-                    return Column(
-                      children: [
-                        _upcomingBillCard(data[index]),
-                        if (index < data.length - 1)
-                          const SizedBox(
-                            height: 16,
-                          ),
-                      ],
+                        return Column(
+                          children: [
+                            _upcomingBillCard(data[index]),
+                            if (index < data.length - 1)
+                              const SizedBox(
+                                height: 16,
+                              ),
+                          ],
+                        );
+                      },
                     );
-                  },
-                );
         }),
       ],
     );
@@ -279,6 +282,75 @@ class _MainContentListViewState extends State<MainContentListView> {
             ],
           )
         ],
+      ),
+    );
+  }
+
+  Widget _noContentView() {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(top: 77, left: 16, right: 16, bottom: 16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        decoration: BoxDecoration(
+          color: ColorConstant.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 100,
+              width: 100,
+              child:
+                  IconConstant.getUpcomingBill(color: const Color(0xFFA4A7C6)),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              'You have no upcoming bill for this month.',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: ColorConstant.mainText,
+                height: 2,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 24,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: ColorConstant.secondary,
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddUpcomingBillScreen()));
+                },
+                child: const Text(
+                  'Add Upcoming Bill',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: ColorConstant.white,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

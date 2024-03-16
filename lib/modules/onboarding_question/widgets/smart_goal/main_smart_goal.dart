@@ -45,14 +45,14 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: double.infinity,
-                    child: CustomProgressBar(
-                      value: store.financialSnapshotIndex /
-                          store.financialSnapshotMaxPage,
-                      gradient1: ColorConstant.secondary,
-                      gradient2: ColorConstant.primary,
-                    ),
-                  ),
+                      width: double.infinity,
+                      child: Observer(builder: (context) {
+                        return CustomProgressBar(
+                          value: store.smartGoalIndex / store.smartGoalMaxPage,
+                          gradient1: ColorConstant.secondary,
+                          gradient2: ColorConstant.primary,
+                        );
+                      })),
                   const SizedBox(
                     height: 24,
                   ),

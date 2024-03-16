@@ -43,14 +43,15 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: double.infinity,
-                    child: CustomProgressBar(
-                      value: store.financialSnapshotIndex /
-                          store.financialSnapshotMaxPage,
-                      gradient1: ColorConstant.secondary,
-                      gradient2: ColorConstant.primary,
-                    ),
-                  ),
+                      width: double.infinity,
+                      child: Observer(builder: (context) {
+                        return CustomProgressBar(
+                          value: store.financialSnapshotIndex /
+                              store.financialSnapshotMaxPage,
+                          gradient1: ColorConstant.secondary,
+                          gradient2: ColorConstant.primary,
+                        );
+                      })),
                   const SizedBox(
                     height: 24,
                   ),
@@ -235,6 +236,46 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
         Observer(builder: (context) {
           ObservableList<CategoryData> categories =
               context.watch<CategoryStore>().onboardingCategory;
+
+          // return Column(
+          //   children: [
+          //     for (var category in categories)
+          //       if (category.level == 2)
+          //         Row(
+          //           children: [
+          //             SizedBox(
+          //               height: 28,
+          //               width: 28,
+          //               child: IconHelper.getSVGDefault(
+          //                   SVGName.pandaFinancialSnapshot),
+          //             ),
+          //             const SizedBox(
+          //               width: 12,
+          //             ),
+          //             Text(
+          //               category.name,
+          //               style: const TextStyle(
+          //                 fontWeight: FontWeight.w600,
+          //                 fontSize: 18,
+          //                 letterSpacing: 1,
+          //                 color: ColorConstant.black,
+          //               ),
+          //             )
+          //           ],
+          //         ),
+          //     const SizedBox(
+          //       height: 20,
+          //     ),
+          //     SizedBox(
+          //       width: double.infinity,
+          //       child: _buildSubcategory(category.subcategory ?? []),
+          //     ),
+          //     if (index < categories.length - 1)
+          //       const SizedBox(
+          //         height: 20,
+          //       ),
+          //   ],
+          // );
 
           return ListView.builder(
             physics: const NeverScrollableScrollPhysics(),

@@ -55,9 +55,12 @@ BudgetPlanData _$BudgetPlanDataFromJson(Map<String, dynamic> json) =>
           : BudgetPlanData._intToBool(json['isRecurring'] as int),
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
-      transactionCount: json['transaction_counts'] as int? ?? 0,
-      totalTransactionAmount: json['total_transactions_amount'] as int? ?? 0,
+      transactionCount: json['transactions_count'] as int? ?? 0,
+      spent: json['spent'] as int? ?? 0,
       remainingAmount: json['remaining_amount'] as int? ?? 0,
+      transactions: (json['transactions'] as List<dynamic>?)
+          ?.map((e) => TransactionData.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$BudgetPlanDataToJson(BudgetPlanData instance) =>
@@ -69,7 +72,8 @@ Map<String, dynamic> _$BudgetPlanDataToJson(BudgetPlanData instance) =>
       'amount': instance.amount,
       'date': instance.date,
       'isRecurring': BudgetPlanData._boolToInt(instance.isRecurring),
-      'transaction_counts': instance.transactionCount,
-      'total_transactions_amount': instance.totalTransactionAmount,
+      'transactions_count': instance.transactionCount,
+      'spent': instance.spent,
       'remaining_amount': instance.remainingAmount,
+      'transactions': instance.transactions,
     };

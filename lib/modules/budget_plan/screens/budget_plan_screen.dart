@@ -191,20 +191,23 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             const SizedBox(
               height: 16,
             ),
-            FilteredBudget(filterTitles: [
-              FilterBarHeaderItem(
-                title: 'All',
-                value: BudgetPlanFilterEnum.all,
-              ),
-              FilterBarHeaderItem(
-                title: 'One-time budget',
-                value: BudgetPlanFilterEnum.oneTimeBudget,
-              ),
-              FilterBarHeaderItem(
-                title: 'Monthly budget',
-                value: BudgetPlanFilterEnum.monthlyBudget,
-              ),
-            ], budgetCards: budgetPlan.data.budgetPlans),
+            FilteredBudget(
+              filterTitles: [
+                FilterBarHeaderItem(
+                  title: 'All',
+                  value: BudgetPlanFilterEnum.all,
+                ),
+                FilterBarHeaderItem(
+                  title: 'One-time budget',
+                  value: BudgetPlanFilterEnum.oneTimeBudget,
+                ),
+                FilterBarHeaderItem(
+                  title: 'Monthly budget',
+                  value: BudgetPlanFilterEnum.monthlyBudget,
+                ),
+              ],
+              budgetCards: budgetPlan.data.budgetPlans,
+            ),
           ],
         ),
       );
@@ -260,71 +263,5 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
               ),
             );
     });
-  }
-
-// No content
-  Widget _noContentView() {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.only(top: 77, left: 16, right: 16, bottom: 16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-        decoration: BoxDecoration(
-          color: ColorConstant.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            // Icon(
-            //   Icons.circle,
-            //   color: ColorConstant.primary,
-            //   size: 100,
-            // ),
-            SizedBox(
-              height: 100,
-              width: 100,
-              child: IconConstant.myBudget(color: const Color(0xFFA4A7C6)),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              'You have no budget plan for this month.',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: ColorConstant.mainText,
-                height: 2,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 24,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: ColorConstant.secondary,
-              ),
-              child: const Text(
-                'Add Budget Plan',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: ColorConstant.white,
-                  letterSpacing: 1,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

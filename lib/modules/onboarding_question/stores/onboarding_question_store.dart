@@ -32,7 +32,7 @@ abstract class _OnboardingQuestionStoreBase with Store {
   int budgetingMaxPage = 1;
   @observable
   int smartGoalIndex = 1;
-  int smartGoalMaxPage = 4;
+  int smartGoalMaxPage = 3;
   @observable
   int accountCreationIndex = 1;
   int accountCreationMaxPage = 4;
@@ -227,7 +227,6 @@ abstract class _OnboardingQuestionStoreBase with Store {
     debugPrint('--> START: post, onboarding questions');
     loadingStatus = LoadingStatusEnum.loading;
     bool success = false;
-
     double monthlyExpense = moneyConverter(
       expense.type,
       double.parse(
@@ -275,6 +274,7 @@ abstract class _OnboardingQuestionStoreBase with Store {
 
     List<String> components = goalDate.text.split("/");
     String postDate = "${components[2]}-${components[1]}-${components[0]}";
+    print('lulz');
 
     Map<String, dynamic> data = {
       "gender": gender.name,
@@ -292,8 +292,6 @@ abstract class _OnboardingQuestionStoreBase with Store {
       "envision_date": postDate,
     };
 
-    print('lulz $data');
-
     try {
       Response response = await ApiService.dio.post(
         'onboardinginfo/create',
@@ -301,7 +299,6 @@ abstract class _OnboardingQuestionStoreBase with Store {
       );
       if (response.statusCode == 200) {
         success = true;
-        print('lulz wedid');
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
