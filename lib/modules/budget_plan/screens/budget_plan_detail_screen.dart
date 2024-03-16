@@ -141,12 +141,18 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     width: 24,
                     height: 24,
                     child: IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
+                      onPressed: () async {
+                        var result = await Navigator.pushNamed(
                           context,
                           RouteName.editBudget,
                           arguments: args,
                         );
+                        if (result.toString().toLowerCase() == "true") {
+                          Navigator.pop(context);
+                          await context
+                              .read<BudgetPlanStore>()
+                              .read(refreshed: true);
+                        }
                       },
                       icon: IconHelper.getSVG(
                         SVGName.edit,

@@ -98,12 +98,36 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
     });
   }
 
+  late final _$createStatusAtom =
+      Atom(name: '_CategoryStoreBase.createStatus', context: context);
+
+  @override
+  LoadingStatusEnum get createStatus {
+    _$createStatusAtom.reportRead();
+    return super.createStatus;
+  }
+
+  @override
+  set createStatus(LoadingStatusEnum value) {
+    _$createStatusAtom.reportWrite(value, super.createStatus, () {
+      super.createStatus = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_CategoryStoreBase.read', context: context);
 
   @override
   Future<dynamic> read() {
     return _$readAsyncAction.run(() => super.read());
+  }
+
+  late final _$postAsyncAction =
+      AsyncAction('_CategoryStoreBase.post', context: context);
+
+  @override
+  Future<bool> post(CategoryData categoryData) {
+    return _$postAsyncAction.run(() => super.post(categoryData));
   }
 
   late final _$_CategoryStoreBaseActionController =
@@ -138,6 +162,7 @@ categoryModel: ${categoryModel},
 status: ${status},
 isIncome: ${isIncome},
 searchText: ${searchText},
+createStatus: ${createStatus},
 onboardingCategory: ${onboardingCategory},
 filterCategory: ${filterCategory},
 searchCategory: ${searchCategory}

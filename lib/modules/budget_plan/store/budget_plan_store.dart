@@ -6,6 +6,7 @@ import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/budget_plan/helpers/budget_plan_helper.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_yearly_model.dart';
+import 'package:finwise/modules/budget_plan/models/prediction_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
@@ -75,7 +76,6 @@ abstract class _BudgetPlanStoreBase with Store {
         budgetPlanYearly = await compute(
             getBudgetPlanYearly, response.data as Map<String, dynamic>);
         status = LoadingStatusEnum.done;
-        print('llll ${budgetPlanYearly.data.mar}');
       }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
@@ -95,7 +95,6 @@ abstract class _BudgetPlanStoreBase with Store {
 
     try {
       String url = 'budgetplans$queryParameter';
-      debugPrint('llll $url');
       Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
         budgetPlan =
@@ -139,25 +138,37 @@ abstract class _BudgetPlanStoreBase with Store {
     return success;
   }
 
+  @observable
+  LoadingStatusEnum editStatus = LoadingStatusEnum.none;
+
   @action
   Future<bool> edit(BudgetPlanData budgetPlanData) async {
     debugPrint('--> START: edit, budget plan');
+    editStatus = LoadingStatusEnum.loading;
     bool success = false;
     try {
-      Map<String, dynamic> jsonData = budgetPlanData.toJson();
-      Response response = await ApiService.dio
-          .put('budgetplans/${budgetPlanData.id}', data: jsonData);
+      Map<String, dynamic> jsonData;
+      jsonData = {
+        'name': budgetPlanData.name,
+        'amount': budgetPlanData.amount,
+        'isMonthly': 0,
+        'date': budgetPlanData.date,
+        'categoryID': budgetPlanData.categoryID,
+      };
+      String url = 'budgetplans/${budgetPlanData.id}';
+      Response response = await ApiService.dio.put(url, data: jsonData);
       if (response.statusCode == 200) {
         success = true;
+        editStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        editStatus = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      editStatus = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: edit, budget plan');
     }
@@ -188,5 +199,37 @@ abstract class _BudgetPlanStoreBase with Store {
       debugPrint('<-- END: delete, budget plan');
     }
     return success;
+  }
+
+  @observable
+  Prediction prediction = Prediction(data: PredictionData());
+
+  @observable
+  LoadingStatusEnum predictionStatus = LoadingStatusEnum.none;
+
+  @action
+  Future readPrediction() async {
+    debugPrint('--> START: fetching budget prediciton');
+    predictionStatus = LoadingStatusEnum.loading;
+    try {
+      Response response = await ApiService.dio.get('predictions');
+      if (response.statusCode == 200) {
+        if (response.data['data'] == null) {
+          prediction = Prediction(data: PredictionData());
+        } else {
+          prediction = await compute(
+              getPrediction, response.data as Map<String, dynamic>);
+        }
+        predictionStatus = LoadingStatusEnum.done;
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        predictionStatus = LoadingStatusEnum.error;
+      }
+    } catch (e) {
+      debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+      predictionStatus = LoadingStatusEnum.error;
+    } finally {
+      debugPrint('--> END: fetching budget prediciton');
+    }
   }
 }

@@ -24,12 +24,11 @@ UpcomingBillData _$UpcomingBillDataFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
       categoryID: json['categoryID'] as int? ?? 0,
-      amount: json['amount'] == null
-          ? 0.0
-          : UpcomingBillData._stringToDouble(json['amount'] as String),
+      amount: json['amount'] as int? ?? 0,
       date: json['date'] as String? ?? 'no date',
       name: json['name'] as String? ?? 'no name',
-      note: json['note'] as String? ?? 'no note',
+      note: json['note'] as String? ?? "You don't have any note.",
+      status: json['status'] as String? ?? 'no status',
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
     );
@@ -42,6 +41,7 @@ Map<String, dynamic> _$UpcomingBillDataToJson(UpcomingBillData instance) =>
       'date': instance.date,
       'name': instance.name,
       'note': instance.note,
+      'status': instance.status,
     };
 
 UpcomingBillMeta _$UpcomingBillMetaFromJson(Map<String, dynamic> json) =>

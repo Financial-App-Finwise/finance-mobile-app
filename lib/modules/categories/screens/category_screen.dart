@@ -3,8 +3,10 @@ import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/categories/screens/add_category_screen.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -13,9 +15,12 @@ import 'package:provider/provider.dart';
 
 class CategoryScreen extends StatefulWidget {
   final void Function(CategoryData) setCategory;
-  const CategoryScreen({
+  bool? parentOnly;
+
+  CategoryScreen({
     super.key,
     required this.setCategory,
+    this.parentOnly = false,
   });
 
   @override
@@ -51,6 +56,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
               const SizedBox(
                 height: 16,
               ),
+              widget.parentOnly! ? noneCategoryButton() : Container(),
+              const SizedBox(
+                height: 16,
+              ),
               Observer(
                 builder: (context) {
                   LoadingStatus status = context.watch<CategoryStore>().status;
@@ -59,7 +68,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     case LoadingStatus.loading:
                       return const Expanded(
                         child: Center(
-                          child: Text('Loading'),
+                          child: CircularProgressIndicatorTwoArcs(),
                         ),
                       );
                     case LoadingStatus.done:
@@ -67,7 +76,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     default:
                       return const Expanded(
                         child: Center(
-                          child: Text('Loading'),
+                          child: CircularProgressIndicatorTwoArcs(),
                         ),
                       );
                   }
@@ -105,7 +114,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           ),
           CustomIconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddCategoryScreen(),
+                ),
+              );
+            },
             icon: IconHelper.getSVG(
               SVGName.plus,
               color: ColorConstant.secondary,
@@ -198,6 +214,32 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ));
   }
 
+  Widget noneCategoryButton() {
+    return InkWell(
+      onTap: () {
+        widget.setCategory(CategoryData());
+        Navigator.pop(context);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: ColorConstant.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text(
+          'None',
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            letterSpacing: 0.75,
+            color: ColorConstant.black,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget categoryList() {
     return Observer(builder: (context) {
       ObservableList<CategoryData> categories =
@@ -213,21 +255,24 @@ class _CategoryScreenState extends State<CategoryScreen> {
           return Column(
             children: [
               if (categories[index].level == 2 ||
-                  (categories[index].level == 1 && searchText != ''))
+                  (categories[index].level == 1 && searchText != '') &&
+                      widget.parentOnly! == false)
                 categoryTile(categories[index]),
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: categories[index].subcategory?.length,
-                  itemBuilder: (context, innerIndex) {
-                    if (categories[index].subcategory != null) {
-                      return Container(
-                        padding: const EdgeInsets.only(left: 32),
-                        child: categoryTile(
-                            categories[index].subcategory![innerIndex]),
-                      );
-                    }
-                  })
+              widget.parentOnly!
+                  ? Container()
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: categories[index].subcategory?.length,
+                      itemBuilder: (context, innerIndex) {
+                        if (categories[index].subcategory != null) {
+                          return Container(
+                            padding: const EdgeInsets.only(left: 32),
+                            child: categoryTile(
+                                categories[index].subcategory![innerIndex]),
+                          );
+                        }
+                      })
             ],
           );
         },

@@ -120,6 +120,38 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     });
   }
 
+  late final _$createStatusAtom =
+      Atom(name: '_UpcomingBillStoreBase.createStatus', context: context);
+
+  @override
+  LoadingStatusEnum get createStatus {
+    _$createStatusAtom.reportRead();
+    return super.createStatus;
+  }
+
+  @override
+  set createStatus(LoadingStatusEnum value) {
+    _$createStatusAtom.reportWrite(value, super.createStatus, () {
+      super.createStatus = value;
+    });
+  }
+
+  late final _$editStatusAtom =
+      Atom(name: '_UpcomingBillStoreBase.editStatus', context: context);
+
+  @override
+  LoadingStatusEnum get editStatus {
+    _$editStatusAtom.reportRead();
+    return super.editStatus;
+  }
+
+  @override
+  set editStatus(LoadingStatusEnum value) {
+    _$editStatusAtom.reportWrite(value, super.editStatus, () {
+      super.editStatus = value;
+    });
+  }
+
   late final _$readYearlyAsyncAction =
       AsyncAction('_UpcomingBillStoreBase.readYearly', context: context);
 
@@ -227,6 +259,8 @@ status: ${status},
 startDate: ${startDate},
 filter: ${filter},
 upcomingBillYearly: ${upcomingBillYearly},
+createStatus: ${createStatus},
+editStatus: ${editStatus},
 endDate: ${endDate},
 queryParameter: ${queryParameter}
     ''';

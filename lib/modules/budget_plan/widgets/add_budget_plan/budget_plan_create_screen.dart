@@ -30,21 +30,23 @@ class _BudgetPlanCreateScreenState extends State<BudgetPlanCreateScreen> {
       bool success = await store.post(widget.budgetPlanData);
 
       if (success) {
-        Navigator.pop(context, success);
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pop(context, success);
+        });
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return _buildLoadingScreen();
   }
 
   Widget _buildLoadingScreen() {
     return Observer(builder: (context) {
       return store.createStatus == LoadingStatusEnum.done
           ? LoadingScreen(
-              title: 'Goal Created Successfully!',
+              title: 'Budget Added Successfully!',
               description: 'Please wait...\nYou will be directed back.',
               icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
             )

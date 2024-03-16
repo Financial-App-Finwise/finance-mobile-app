@@ -2,39 +2,38 @@ import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/screens/loading_screen.dart';
-import 'package:finwise/modules/finance/stores/finance_store.dart';
-import 'package:finwise/modules/transaction/models/transaction_model.dart';
-import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class TransactionCreateScreen extends StatefulWidget {
-  final TransactionData transactionData;
+class UpcomingBillEditScreen extends StatefulWidget {
+  final UpcomingBillData upcomingBillData;
 
-  const TransactionCreateScreen({
+  const UpcomingBillEditScreen({
     super.key,
-    required this.transactionData,
+    required this.upcomingBillData,
   });
 
   @override
-  State<TransactionCreateScreen> createState() =>
-      _TransactionCreateScreenState();
+  State<UpcomingBillEditScreen> createState() => _UpcomingBillEditScreenState();
 }
 
-class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
-  late final store = context.read<TransactionStore>();
-  late final financeStore = context.read<FinanceStore>();
+class _UpcomingBillEditScreenState extends State<UpcomingBillEditScreen> {
+  late final store = context.read<UpcomingBillStore>();
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      bool success = await store.post(widget.transactionData);
+      bool success = await store.edit(widget.upcomingBillData);
 
       if (success) {
-        await financeStore.read();
-        Navigator.pop(context, success);
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pop(context, success);
+        });
       }
     });
   }
@@ -46,9 +45,9 @@ class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
 
   Widget _buildLoadingScreen() {
     return Observer(builder: (context) {
-      return store.loadingCreate == LoadingStatusEnum.done
+      return store.createStatus == LoadingStatusEnum.done
           ? LoadingScreen(
-              title: 'Transaction Created Successfully!',
+              title: 'Upcoming Bill Edited Successfully!',
               description: 'Please wait...\nYou will be directed back.',
               icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
             )

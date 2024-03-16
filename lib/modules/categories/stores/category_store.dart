@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/constants/loading_status_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:flutter/foundation.dart';
@@ -74,5 +75,43 @@ abstract class _CategoryStoreBase with Store {
 
     return ObservableList.of(filterCategory
         .where((e) => e.name.toLowerCase().contains(searchText.toLowerCase())));
+  }
+
+  @observable
+  LoadingStatusEnum createStatus = LoadingStatusEnum.none;
+
+  @action
+  Future<bool> post(CategoryData categoryData) async {
+    debugPrint('-->START: post, category');
+    createStatus = LoadingStatusEnum.loading;
+    bool success = false;
+    try {
+      Map<String, dynamic> jsonData;
+      if (categoryData.id != 0) {
+        jsonData = categoryData.toJson();
+      } else {
+        jsonData = {
+          'name': categoryData.name,
+          'isIncome': categoryData.isIncome
+        };
+      }
+      Response response =
+          await ApiService.dio.post('categories', data: jsonData);
+      if (response.statusCode == 201) {
+        success = true;
+        createStatus = LoadingStatusEnum.done;
+      } else {
+        debugPrint('Something went wrong, code: ${response.statusCode}');
+        success = false;
+        createStatus = LoadingStatusEnum.error;
+      }
+    } catch (e) {
+      debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+      createStatus = LoadingStatusEnum.error;
+    } finally {
+      debugPrint('<-- End: posting categories');
+    }
+
+    return success;
   }
 }

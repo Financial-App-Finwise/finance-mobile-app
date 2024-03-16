@@ -2,7 +2,9 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
+import 'package:finwise/modules/budget_plan/models/prediction_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
+import 'package:finwise/modules/budget_plan/widgets/add_budget_plan/budget_plan_create_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/amount_input.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_recommendation.dart';
 import 'package:finwise/modules/budget_plan/widgets/calendar_month_widget.dart';
@@ -10,6 +12,7 @@ import 'package:finwise/modules/budget_plan/widgets/expenses_name_input.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class MonthlyBudget extends StatefulWidget {
@@ -104,84 +107,81 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
   DateTime _selectedDate = DateTime.now();
 
   Widget _form() {
-    return Column(
-      children: [
-        // Amount input
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CategoryButton(
-              setCategory: (category) {
-                setState(() {
-                  _selectedCategory = category;
-                  _isFormFilled;
-                });
-              },
-              category: _selectedCategory,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CalendarMonthWidget(
-              date: _selectedDate,
-              selected: DateTime(_selectedDate.year, _selectedDate.month),
-              onChange: (value) {
-                setState(() {
-                  _selectedDate = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            AmountInput(
-                controller: _budgetAmountController,
-                onChange: (value) => setState(() {
-                      _isFormFilled;
-                    })),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              'Amount needed to be spent in this category.',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-                letterSpacing: 0.5,
-                height: 1.5,
-                color: ColorConstant.mainText,
+    return Observer(builder: (context) {
+      PredictionData predictionData =
+          context.read<BudgetPlanStore>().prediction.data;
+
+      return Column(
+        children: [
+          // Amount input
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CategoryButton(
+                setCategory: (category) {
+                  setState(() {
+                    _selectedCategory = category;
+                    _isFormFilled;
+                  });
+                },
+                category: _selectedCategory,
               ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const BudgetRecommendation(amount: 74),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExpenseNameInput(controller: _expenseNameController),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              'Category name will be used if no custom name is set.',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-                letterSpacing: 0.5,
-                height: 1.5,
-                color: ColorConstant.mainText,
+              const SizedBox(
+                height: 20,
               ),
-            ),
-          ],
-        ),
-      ],
-    );
+              CalendarMonthWidget(
+                date: _selectedDate,
+                selected: DateTime(_selectedDate.year, _selectedDate.month),
+                onChange: (value) {
+                  setState(() {
+                    _selectedDate = value;
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AmountInput(
+                  controller: _budgetAmountController,
+                  onChange: (value) => setState(() {
+                        _isFormFilled;
+                      })),
+              predictionData.predictedBudget != '0'
+                  ? BudgetRecommendation(
+                      amount: int.parse(predictionData.predictedBudget),
+                      nullData: false,
+                    )
+                  : BudgetRecommendation(
+                      amount: int.parse(predictionData.predictedBudget),
+                      nullData: true,
+                    ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ExpenseNameInput(controller: _expenseNameController),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                'Category name will be used if no custom name is set.',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                  letterSpacing: 0.5,
+                  height: 1.5,
+                  color: ColorConstant.mainText,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    });
   }
 
   bool get _isFormFilled =>
@@ -205,9 +205,13 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
                   onTap: () async {
                     String budgetPlanDate = UIHelper.getDateFormat(
                         _selectedDate.toString(), 'yyyy-MM-dd');
+                    bool success = false;
 
-                    bool success = await context.read<BudgetPlanStore>().post(
-                          BudgetPlanData(
+                    success = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BudgetPlanCreateScreen(
+                          budgetPlanData: BudgetPlanData(
                             categoryID: _selectedCategory.id,
                             isMonthly: true,
                             name: _expenseNameController.text == ''
@@ -217,7 +221,9 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
                             date: budgetPlanDate,
                             isRecurring: false,
                           ),
-                        );
+                        ),
+                      ),
+                    );
                     if (success) {
                       context.read<BudgetPlanStore>().read(refreshed: true);
                       Navigator.pop(context);

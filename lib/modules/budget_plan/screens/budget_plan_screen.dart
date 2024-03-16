@@ -15,6 +15,8 @@ import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/filtered_budget.dart';
+import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -228,7 +230,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   Widget _mainContentGridView() {
     return Observer(builder: (context) {
       return store.status == LoadingStatusEnum.loading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicatorTwoArcs(),
             )
           : Container(
@@ -243,7 +245,18 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) => BudgetGridTile(
-                    month: _gridData[index][0], budget: _gridData[index][1]),
+                  month: _gridData[index][0],
+                  budget: _gridData[index][1],
+                  monthNumber: index + 1,
+                  date: store.selectedDate,
+                  setList: (date) {
+                    setState(() {
+                      store.selectedDate = date;
+                      _isGrid = false;
+                      store.read(refreshed: true);
+                    });
+                  },
+                ),
               ),
             );
     });

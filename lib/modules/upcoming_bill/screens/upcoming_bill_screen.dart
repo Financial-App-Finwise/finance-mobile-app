@@ -9,10 +9,13 @@ import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arc
 import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
+import 'package:finwise/modules/categories/screens/category_screen.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/upcoming_bill_screen/main_content_list_view.dart';
 import 'package:finwise/route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +37,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
     Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
         await context.read<UpcomingBillStore>().read(refreshed: true);
+        await context.read<CategoryStore>().read();
       }
     });
   }
@@ -173,8 +177,6 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
     return Observer(builder: (context) {
       late UpcomingBill upcomingBill =
           context.watch<UpcomingBillStore>().upcomingBill;
-      late UpcomingBillMeta upcomingBillMeta =
-          context.watch<UpcomingBillStore>().upcomingBillMeta;
 
       return MainContentListView(
         totalUpcomingBill: upcomingBill.data.length,
