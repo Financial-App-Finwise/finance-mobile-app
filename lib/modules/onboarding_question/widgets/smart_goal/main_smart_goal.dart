@@ -159,6 +159,9 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
             store.setSaveForGoalMoneyOption(value);
             isFormFilled;
           },
+          currentAmount: store.saveForGoal.text.isEmpty
+              ? 0
+              : int.parse(store.saveForGoal.text),
         ),
         const SizedBox(
           height: 24,

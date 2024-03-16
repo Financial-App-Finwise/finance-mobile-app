@@ -24,7 +24,7 @@ class StartPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconHelper.getSVG(
+                  IconHelper.getSVGDefault(
                     SVGName.pandaStartPage,
                   ),
                   const SizedBox(

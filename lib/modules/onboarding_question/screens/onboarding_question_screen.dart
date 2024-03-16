@@ -18,7 +18,7 @@ class _OnboardingQuestionScreenState extends State<OnboardingQuestionScreen> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
   late CategoryStore categoryStore = context.read<CategoryStore>();
   int _currentIndex = 0;
-
+  
   @override
   void initState() {
     super.initState();

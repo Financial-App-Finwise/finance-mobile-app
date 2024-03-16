@@ -10,8 +10,13 @@ import 'package:provider/provider.dart';
 
 class MoneyOption extends StatefulWidget {
   final void Function(int) setMoney;
+  final int currentAmount;
 
-  const MoneyOption({super.key, required this.setMoney});
+  const MoneyOption({
+    super.key,
+    required this.setMoney,
+    required this.currentAmount,
+  });
 
   @override
   State<MoneyOption> createState() => _MoneyOptionState();
@@ -101,13 +106,17 @@ class _MoneyOptionState extends State<MoneyOption> {
               ? BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: const Color(0xFFD3D5E4).withOpacity(0.3))
-              : BoxDecoration(
-                  color: const Color(0xFFECFDFF).withOpacity(0.5),
-                  border: Border.all(
-                    color: ColorConstant.secondary,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              : moneyOption.containsValue(widget.currentAmount)
+                  ? BoxDecoration(
+                      color: const Color(0xFFECFDFF).withOpacity(0.5),
+                      border: Border.all(
+                        color: ColorConstant.secondary,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    )
+                  : BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFFD3D5E4).withOpacity(0.3)),
           child: Text(
             text,
             style: const TextStyle(

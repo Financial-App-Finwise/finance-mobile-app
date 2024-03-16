@@ -236,46 +236,6 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
           ObservableList<CategoryData> categories =
               context.watch<CategoryStore>().onboardingCategory;
 
-          // return Column(
-          //   children: [
-          //     for (var category in categories)
-          //       if (category.level == 2)
-          //         Row(
-          //           children: [
-          //             SizedBox(
-          //               height: 28,
-          //               width: 28,
-          //               child: IconHelper.getSVGDefault(
-          //                   SVGName.pandaFinancialSnapshot),
-          //             ),
-          //             const SizedBox(
-          //               width: 12,
-          //             ),
-          //             Text(
-          //               category.name,
-          //               style: const TextStyle(
-          //                 fontWeight: FontWeight.w600,
-          //                 fontSize: 18,
-          //                 letterSpacing: 1,
-          //                 color: ColorConstant.black,
-          //               ),
-          //             )
-          //           ],
-          //         ),
-          //     const SizedBox(
-          //       height: 20,
-          //     ),
-          //     SizedBox(
-          //       width: double.infinity,
-          //       child: _buildSubcategory(category.subcategory ?? []),
-          //     ),
-          //     if (index < categories.length - 1)
-          //       const SizedBox(
-          //         height: 20,
-          //       ),
-          //   ],
-          // );
-
           return ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -353,7 +313,9 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
 
   Widget _categoryButton(CategoryData category, bool isSelected) {
     return InkWell(
-      onTap: () => store.setCategory(category),
+      onTap: () {
+        store.setCategory(category);
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: 8,
