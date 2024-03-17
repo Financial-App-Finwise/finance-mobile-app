@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/onboarding_question/models/budgeting_model.dart';
 import 'package:finwise/modules/onboarding_question/models/radio_button_model.dart';
 import 'package:finwise/modules/onboarding_question/models/spending_model.dart';
@@ -31,7 +32,7 @@ abstract class _OnboardingQuestionStoreBase with Store {
   int budgetingMaxPage = 1;
   @observable
   int smartGoalIndex = 1;
-  int smartGoalMaxPage = 4;
+  int smartGoalMaxPage = 3;
   @observable
   int accountCreationIndex = 1;
   int accountCreationMaxPage = 4;
@@ -205,6 +206,7 @@ abstract class _OnboardingQuestionStoreBase with Store {
     return incomeAmount - totalBudgeting;
   }
 
+  @action
   double moneyConverter(String type, double value) {
     switch (type) {
       case 'Weekly':
@@ -221,22 +223,89 @@ abstract class _OnboardingQuestionStoreBase with Store {
 
   // Create onboarding quesitons
   @action
-  Future<bool> post(Map<String, dynamic> data) async {
+  Future<bool> post(List<CategoryData> cat) async {
     debugPrint('--> START: post, onboarding questions');
     loadingStatus = LoadingStatusEnum.loading;
     bool success = false;
+    double monthlyExpense = moneyConverter(
+      expense.type,
+      double.parse(
+        expense.controller.text,
+      ),
+    );
+    double monthlyIncome = moneyConverter(
+      income.type,
+      double.parse(
+        income.controller.text,
+      ),
+    );
+    List<Map<String, int>> categoryList = [];
+    for (var category in categories) {
+      categoryList.add({'categoryID': category.id});
+    }
+
+    List<Map<String, dynamic>> parentCategories = [];
+    for (var category in cat) {
+      if (category.name == 'Houseware') {
+        parentCategories.add(
+          {
+            'parentID': category.id,
+            'amount': housing,
+          },
+        );
+      }
+      if (category.name == 'Food and Beverage') {
+        parentCategories.add(
+          {
+            'parentID': category.id,
+            'amount': food,
+          },
+        );
+      }
+      if (category.name == 'Bill & Utilities') {
+        parentCategories.add(
+          {
+            'parentID': category.id,
+            'amount': utilities,
+          },
+        );
+      }
+    }
+
+    List<String> components = goalDate.text.split("/");
+    String postDate = "${components[2]}-${components[1]}-${components[0]}";
+    print('lulz');
+
+    Map<String, dynamic> data = {
+      "gender": gender.name,
+      "age": int.parse(age.text),
+      "marital_status": martialStatus.name,
+      "life_stage": profression.name,
+      "net_worth": double.parse(networth.text),
+      "currencyID": 1,
+      "monthly_expense": monthlyExpense,
+      "monthly_income": monthlyIncome,
+      "categories": categoryList,
+      "parentCategories": parentCategories,
+      "financial_goal": financialGoal.text,
+      "dream_amount": saveForGoal.text,
+      "envision_date": postDate,
+    };
 
     try {
       Response response = await ApiService.dio.post(
         'onboardinginfo/create',
         data: data,
       );
+      if (response.statusCode == 200) {
+        success = true;
+      }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
       loadingStatus = LoadingStatusEnum.error;
     } finally {
-      debugPrint('<-- END: post, finance');
+      debugPrint('<-- END: post, onboarding questions');
     }
 
     return success;

@@ -27,6 +27,7 @@ abstract class _BudgetPlanStoreBase with Store {
   @action
   void setLoadingStatus(LoadingStatusEnum status) => status = status;
 
+  // Current date to fetch
   @observable
   DateTime selectedDate =
       DateTime(DateTime.now().year, DateTime.now().month, 1);
@@ -36,6 +37,7 @@ abstract class _BudgetPlanStoreBase with Store {
     selectedDate = date;
   }
 
+  // Add one year to current date
   @action
   void addSelectedDateYear({bool addYear = true}) {
     if (addYear) {
@@ -53,6 +55,7 @@ abstract class _BudgetPlanStoreBase with Store {
   @action
   void setFilter(BudgetPlanFilterEnum type) => filter = type;
 
+  // Use for filtering budget plan
   @computed
   String get queryParameter {
     String filterParameter = BudgetPlanHelper.enumToQuery[filter] ?? '';
@@ -65,6 +68,7 @@ abstract class _BudgetPlanStoreBase with Store {
     return parameter;
   }
 
+  // Fetch yearly data
   @action
   Future readYearly() async {
     debugPrint('--> START: read budgetplan yearly');
@@ -84,6 +88,7 @@ abstract class _BudgetPlanStoreBase with Store {
     }
   }
 
+  // Fetch monthly data
   @action
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching budget plan');
@@ -111,6 +116,7 @@ abstract class _BudgetPlanStoreBase with Store {
   @observable
   LoadingStatusEnum createStatus = LoadingStatusEnum.none;
 
+  // Create budget plan
   @action
   Future<bool> post(BudgetPlanData budgetPlanData) async {
     debugPrint('--> START: post, budget plan');
@@ -141,6 +147,7 @@ abstract class _BudgetPlanStoreBase with Store {
   @observable
   LoadingStatusEnum editStatus = LoadingStatusEnum.none;
 
+  // Edit budget plan
   @action
   Future<bool> edit(BudgetPlanData budgetPlanData) async {
     debugPrint('--> START: edit, budget plan');
@@ -151,7 +158,7 @@ abstract class _BudgetPlanStoreBase with Store {
       jsonData = {
         'name': budgetPlanData.name,
         'amount': budgetPlanData.amount,
-        'isMonthly': 0,
+        'isMonthly': budgetPlanData.isMonthly == true ? 1 : 0,
         'date': budgetPlanData.date,
         'categoryID': budgetPlanData.categoryID,
       };
@@ -175,6 +182,7 @@ abstract class _BudgetPlanStoreBase with Store {
     return success;
   }
 
+  // Delete budget plan
   @action
   Future<bool> delete(BudgetPlanData budgetPlanData) async {
     debugPrint('--> START: delete, budget plan');
@@ -207,6 +215,7 @@ abstract class _BudgetPlanStoreBase with Store {
   @observable
   LoadingStatusEnum predictionStatus = LoadingStatusEnum.none;
 
+  // Read budget prediction
   @action
   Future readPrediction() async {
     debugPrint('--> START: fetching budget prediciton');

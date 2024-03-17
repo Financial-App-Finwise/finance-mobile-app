@@ -86,7 +86,7 @@ class ProgressCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: CustomProgressBar(
-              value: 0.3,
+              value: spent / total,
               gradient1: gradient1,
               gradient2: gradient2,
             ),

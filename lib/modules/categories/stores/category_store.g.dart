@@ -162,7 +162,10 @@ categoryModel: ${categoryModel},
 status: ${status},
 isIncome: ${isIncome},
 searchText: ${searchText},
+<<<<<<< Updated upstream
 createStatus: ${createStatus},
+=======
+>>>>>>> Stashed changes
 onboardingCategory: ${onboardingCategory},
 filterCategory: ${filterCategory},
 searchCategory: ${searchCategory}

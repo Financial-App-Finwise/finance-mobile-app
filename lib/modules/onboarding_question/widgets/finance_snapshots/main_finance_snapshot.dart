@@ -43,14 +43,15 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: double.infinity,
-                    child: CustomProgressBar(
-                      value: store.financialSnapshotIndex /
-                          store.financialSnapshotMaxPage,
-                      gradient1: ColorConstant.secondary,
-                      gradient2: ColorConstant.primary,
-                    ),
-                  ),
+                      width: double.infinity,
+                      child: Observer(builder: (context) {
+                        return CustomProgressBar(
+                          value: store.financialSnapshotIndex /
+                              store.financialSnapshotMaxPage,
+                          gradient1: ColorConstant.secondary,
+                          gradient2: ColorConstant.primary,
+                        );
+                      })),
                   const SizedBox(
                     height: 24,
                   ),
@@ -353,7 +354,9 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
 
   Widget _categoryButton(CategoryData category, bool isSelected) {
     return InkWell(
-      onTap: () => store.setCategory(category),
+      onTap: () {
+        store.setCategory(category);
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: 8,

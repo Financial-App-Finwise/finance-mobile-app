@@ -42,7 +42,12 @@ class _OnboardingQuestionMainScreenState
           height: fullHeight,
           child: Column(
             children: [
-              OnboardingHeader(previousPage: store.previousPage),
+              Observer(builder: (context) {
+                return OnboardingHeader(
+                    previousPage: store.currentIndex == 1
+                        ? widget.startPage
+                        : store.previousPage);
+              }),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.only(top: 8),

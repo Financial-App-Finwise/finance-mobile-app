@@ -41,14 +41,15 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: double.infinity,
-                    child: CustomProgressBar(
-                      value: store.personalQuestionIndex /
-                          store.personalQuestionMaxPage,
-                      gradient1: ColorConstant.secondary,
-                      gradient2: ColorConstant.primary,
-                    ),
-                  ),
+                      width: double.infinity,
+                      child: Observer(builder: (context) {
+                        return CustomProgressBar(
+                          value: store.personalQuestionIndex /
+                              store.personalQuestionMaxPage,
+                          gradient1: ColorConstant.secondary,
+                          gradient2: ColorConstant.primary,
+                        );
+                      })),
                   const SizedBox(
                     height: 24,
                   ),
@@ -80,7 +81,7 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
             Observer(builder: (context) {
               return ContinueButton(
                 nextPage: store.nextPage,
-              isFormFilled: isFormFilled[store.personalQuestionIndex - 1],
+                isFormFilled: isFormFilled[store.personalQuestionIndex - 1],
               );
             }),
           ],

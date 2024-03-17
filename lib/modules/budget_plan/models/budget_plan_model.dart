@@ -1,3 +1,4 @@
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'budget_plan_model.g.dart';
@@ -74,14 +75,16 @@ class BudgetPlanData {
   @JsonKey(name: 'updated_at', includeToJson: false)
   late String updatedAt;
 
-  @JsonKey(name: 'transaction_counts')
+  @JsonKey(name: 'transactions_count')
   late int transactionCount;
 
-  @JsonKey(name: 'total_transactions_amount')
-  late int totalTransactionAmount;
+  @JsonKey(name: 'spent')
+  late int spent;
 
   @JsonKey(name: 'remaining_amount')
   late int remainingAmount;
+
+  late List<TransactionData> transactions;
 
   BudgetPlanData({
     this.id = 0,
@@ -95,9 +98,11 @@ class BudgetPlanData {
     this.createdAt = 'no date',
     this.updatedAt = 'no date',
     this.transactionCount = 0,
-    this.totalTransactionAmount = 0,
+    this.spent = 0,
     this.remainingAmount = 0,
-  });
+    List<TransactionData>?
+        transactions, 
+  }) : transactions = transactions ?? [];
 
   factory BudgetPlanData.fromJson(Map<String, dynamic> json) =>
       _$BudgetPlanDataFromJson(json);

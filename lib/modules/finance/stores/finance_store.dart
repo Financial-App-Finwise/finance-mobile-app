@@ -214,7 +214,7 @@ abstract class _FinanceStoreBase with Store {
         data: data.toJson(),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         success = true;
         await read();
         loadingStatus = LoadingStatusEnum.done;

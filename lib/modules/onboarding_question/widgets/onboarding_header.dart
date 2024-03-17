@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
+import 'package:finwise/modules/auth/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingHeader extends StatelessWidget {
@@ -46,13 +47,19 @@ class OnboardingHeader extends StatelessWidget {
             ),
           ],
         ),
-        const Text(
-          'Skip',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            letterSpacing: 0.75,
-            color: ColorConstant.mainText,
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SignUpScreen()));
+          },
+          child: const Text(
+            'Skip',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              letterSpacing: 0.75,
+              color: ColorConstant.mainText,
+            ),
           ),
         ),
       ],

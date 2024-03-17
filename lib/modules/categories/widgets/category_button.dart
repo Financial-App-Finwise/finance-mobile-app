@@ -142,7 +142,9 @@ class _CategoryButtonState extends State<CategoryButton> {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: ColorConstant.expenseIcon,
+        color: widget.category!.isIncome
+            ? ColorConstant.smartGoalLight
+            : ColorConstant.expenseIcon,
         borderRadius: BorderRadius.circular(50),
       ),
       child: IconHelper.getSVG(

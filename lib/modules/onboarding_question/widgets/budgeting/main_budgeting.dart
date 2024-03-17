@@ -40,13 +40,14 @@ class _MainBudgetingState extends State<MainBudgeting> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: double.infinity,
-                    child: CustomProgressBar(
-                      value: store.budgetingIndex / store.budgetingMaxPage,
-                      gradient1: ColorConstant.secondary,
-                      gradient2: ColorConstant.primary,
-                    ),
-                  ),
+                      width: double.infinity,
+                      child: Observer(builder: (context) {
+                        return CustomProgressBar(
+                          value: store.budgetingIndex / store.budgetingMaxPage,
+                          gradient1: ColorConstant.secondary,
+                          gradient2: ColorConstant.primary,
+                        );
+                      })),
                   const SizedBox(
                     height: 24,
                   ),

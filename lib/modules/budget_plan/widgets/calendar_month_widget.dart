@@ -23,46 +23,57 @@ class CalendarMonthWidget extends StatefulWidget {
 }
 
 class _CalendarMonthWidgetState extends State<CalendarMonthWidget> {
-  DateTime currentDate = DateTime.now();
+  late List<DropdownMenuItem<DateTime>> _dropdownItems;
 
-  late final List<DropdownMenuItem> _dropdownItems = [
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 1),
-        child: Text('Jan, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 2),
-        child: Text('Feb, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 3),
-        child: Text('Mar, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 4),
-        child: Text('Apr, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 5),
-        child: Text('May, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 6),
-        child: Text('Jun, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 7),
-        child: Text('Jul, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 8),
-        child: Text('Aug, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 9),
-        child: Text('Sep, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 10),
-        child: Text('Oct, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 11),
-        child: Text('Nov, ${widget.date.year}')),
-    DropdownMenuItem(
-        value: DateTime(widget.date.year, 12),
-        child: Text('Dec, ${widget.date.year}')),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _generateDropdownItems();
+  }
+
+  void _generateDropdownItems() {
+    _dropdownItems = List.generate(24, (index) {
+      final year = widget.date.year + index ~/ 12;
+      final month = index % 12 + 1;
+      return DropdownMenuItem(
+        value: DateTime(year, month),
+        child: Text(
+          '${_getMonthName(month)}, $year',
+        ),
+      );
+    });
+  }
+
+  String _getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Oct';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dec';
+      default:
+        return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +122,7 @@ class _CalendarMonthWidgetState extends State<CalendarMonthWidget> {
         ),
         const SizedBox(width: 12),
         Text(
-          '${currentDate.year}',
+          '${widget.date.year}',
           style: const TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 18,

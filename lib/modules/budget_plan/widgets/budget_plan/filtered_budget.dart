@@ -1,4 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
@@ -6,6 +7,7 @@ import 'package:finwise/core/widgets/custom_progess_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
+import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -48,24 +50,99 @@ class _FilteredBudgetState extends State<FilteredBudget> {
               context.watch<BudgetPlanStore>().status;
           return loadingStatus == LoadingStatusEnum.loading
               ? const CircularProgressIndicatorTwoArcs()
-              : Column(
-                  children: [
-                    for (int index = 0;
-                        index < widget.budgetCards.length;
-                        index++)
-                      Column(
-                        children: [
-                          _titleProgressCard(widget.budgetCards[index]),
-                          if (index < widget.budgetCards.length - 1)
-                            const SizedBox(
-                              height: 16,
-                            ),
-                        ],
-                      ),
-                  ],
-                );
+              : widget.budgetCards.isEmpty
+                  ? _noContentView()
+                  : Column(
+                      children: [
+                        for (int index = 0;
+                            index < widget.budgetCards.length;
+                            index++)
+                          Column(
+                            children: [
+                              _titleProgressCard(widget.budgetCards[index]),
+                              if (index < widget.budgetCards.length - 1)
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                            ],
+                          ),
+                      ],
+                    );
         })
       ],
+    );
+  }
+
+  // No content
+  Widget _noContentView() {
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        decoration: BoxDecoration(
+          color: ColorConstant.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            // Icon(
+            //   Icons.circle,
+            //   color: ColorConstant.primary,
+            //   size: 100,
+            // ),
+            SizedBox(
+              height: 100,
+              width: 100,
+              child: IconConstant.myBudget(color: const Color(0xFFA4A7C6)),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              'You have no budget plan for this month.',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: ColorConstant.mainText,
+                height: 2,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 24,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: ColorConstant.secondary,
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddBudgetPlanScreen()));
+                },
+                child: const Text(
+                  'Add Budget Plan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: ColorConstant.white,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -137,7 +214,7 @@ class _FilteredBudgetState extends State<FilteredBudget> {
                 children: [
                   // Transactions
                   Text(
-                    '${item.transactionCount.toInt()}',
+                    '${item.transactionCount}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -188,7 +265,7 @@ class _FilteredBudgetState extends State<FilteredBudget> {
           SizedBox(
             width: double.infinity,
             child: CustomProgressBar(
-              value: item.totalTransactionAmount / item.amount,
+              value: item.spent / item.amount,
               gradient1: const Color(0xFFFBA6A6),
               gradient2: ColorConstant.expense,
             ),
@@ -202,7 +279,7 @@ class _FilteredBudgetState extends State<FilteredBudget> {
               Row(
                 children: [
                   Text(
-                    '\$${item.totalTransactionAmount.toInt()}',
+                    '\$${item.spent}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,

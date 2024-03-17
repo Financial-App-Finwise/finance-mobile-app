@@ -5,6 +5,7 @@ import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
+import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/finance/models/finance_post_model.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
@@ -32,6 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late FinanceStore financeStore = context.read<FinanceStore>();
   late OnboardingQuestionStore onboardingStore =
       context.read<OnboardingQuestionStore>();
+  late CategoryStore categoryStore = context.read<CategoryStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +78,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
 
                   // ---------- Create Onboarding (Optional) ----------
-                  
                   if (success) {
+                    success = await onboardingStore
+                        .post(categoryStore.categoryModel.categoryDataList);
+
                     if (success) {
                       Navigator.pushNamed(context, RouteName.verifyEmail);
                     } else {}

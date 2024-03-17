@@ -45,14 +45,14 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: double.infinity,
-                    child: CustomProgressBar(
-                      value: store.financialSnapshotIndex /
-                          store.financialSnapshotMaxPage,
-                      gradient1: ColorConstant.secondary,
-                      gradient2: ColorConstant.primary,
-                    ),
-                  ),
+                      width: double.infinity,
+                      child: Observer(builder: (context) {
+                        return CustomProgressBar(
+                          value: store.smartGoalIndex / store.smartGoalMaxPage,
+                          gradient1: ColorConstant.secondary,
+                          gradient2: ColorConstant.primary,
+                        );
+                      })),
                   const SizedBox(
                     height: 24,
                   ),
@@ -81,10 +81,12 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
             const SizedBox(
               height: 20,
             ),
-            ContinueButton(
-              nextPage: store.nextPage,
-              isFormFilled: isFormFilled[store.smartGoalIndex - 1],
-            )
+            Observer(builder: (context) {
+              return ContinueButton(
+                nextPage: store.nextPage,
+                isFormFilled: isFormFilled[store.smartGoalIndex - 1],
+              );
+            })
           ],
         ),
       ),
@@ -135,6 +137,7 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
   }
 
   Widget _saveForGoal() {
+    debugPrint('wtff ${isFormFilled[1]}');
     return Column(
       children: [
         CustomQuestionText(
@@ -154,12 +157,19 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
         const SizedBox(
           height: 24,
         ),
-        MoneyOption(
-          setMoney: (value) {
-            store.setSaveForGoalMoneyOption(value);
-            isFormFilled;
-          },
-        ),
+        Observer(builder: (context) {
+          return MoneyOption(
+            setMoney: (value) {
+              setState(() {
+                store.setSaveForGoalMoneyOption(value);
+                isFormFilled;
+              });
+            },
+            currentAmount: store.saveForGoal.text.isEmpty
+                ? 0
+                : int.parse(store.saveForGoal.text),
+          );
+        }),
         const SizedBox(
           height: 24,
         ),
@@ -186,10 +196,13 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
           hintText: '${UIHelper.getInputDate(store.goalDateDay.toString())}',
           controller: store.goalDate,
           onDaySelected: (selectedDay, focusedDay) {
-            store.goalDate.text = UIHelper.getInputDate(
-              selectedDay.toString(),
-            );
-            store.goalDateDay = selectedDay;
+            setState(() {
+              store.goalDate.text = UIHelper.getInputDate(
+                selectedDay.toString(),
+              );
+              store.goalDateDay = selectedDay;
+              isFormFilled;
+            });
           },
         ),
         const SizedBox(

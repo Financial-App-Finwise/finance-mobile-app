@@ -81,22 +81,25 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
   Widget _buildCenterContent() {
     return _isGrid
         ? _buildCenterOfGrid()
-        : GeneralDatePicker(
-            prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
-            suffix: IconHelper.getSVG(SVGName.addSquare,
-                color: ColorConstant.secondary),
-            onSuffix: () =>
-                Navigator.pushNamed(context, RouteName.addUpcomingBill),
-            onPreffix: () async {
-              setState(() => _isGrid = !_isGrid);
-              await store.readYearly();
-            },
-            date: store.startDate,
-            onDateChanged: (DateTime date) async {
-              context.read<UpcomingBillStore>().setStartDate(date);
-              context.read<UpcomingBillStore>().read(refreshed: true);
-            },
-          );
+        : Observer(builder: (context) {
+            return GeneralDatePicker(
+              prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+              suffix: IconHelper.getSVG(SVGName.addSquare,
+                  color: ColorConstant.secondary),
+              onSuffix: () =>
+                  Navigator.pushNamed(context, RouteName.addUpcomingBill),
+              onPreffix: () async {
+                setState(() => _isGrid = !_isGrid);
+                await store.readYearly();
+              },
+              date: store.startDate,
+              onDateChanged: (DateTime date) async {
+                context.read<UpcomingBillStore>().setStartDate(date);
+                context.read<UpcomingBillStore>().read(refreshed: true);
+              },
+              loadingStatus: store.status,
+            );
+          });
   }
 
   Widget _buildCenterOfGrid() {
@@ -214,66 +217,5 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
               ),
             );
     });
-  }
-
-  Widget _noContentView() {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.only(top: 77, left: 16, right: 16, bottom: 16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-        decoration: BoxDecoration(
-          color: ColorConstant.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 100,
-              width: 100,
-              child:
-                  IconConstant.getUpcomingBill(color: const Color(0xFFA4A7C6)),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              'You have no upcoming bill for this month.',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: ColorConstant.mainText,
-                height: 2,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 24,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: ColorConstant.secondary,
-              ),
-              child: Text(
-                'Add Upcoming Bill',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: ColorConstant.white,
-                  letterSpacing: 1,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -203,10 +203,10 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
       child: Column(
         children: [
           ThisMonthContent(
-            transaction: args.amount.toInt(),
+            transaction: args.transactionCount.toInt(),
             total: args.amount.toInt(),
-            remain: args.amount.toInt(),
-            spent: args.amount.toInt(),
+            remain: args.remainingAmount.toInt(),
+            spent: args.spent.toInt(),
           ),
           const SizedBox(
             height: 16,
@@ -219,7 +219,9 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
           const SizedBox(
             height: 16,
           ),
-          const TransactionContent(),
+          TransactionContent(
+            data: args.transactions,
+          ),
         ],
       ),
     );

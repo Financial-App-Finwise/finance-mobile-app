@@ -37,6 +37,7 @@ abstract class _UpcomingBillStoreBase with Store {
     return date;
   }
 
+  // Add one year to the current date
   @action
   void addSelectedDateYear({bool addYear = true}) {
     if (addYear) {
@@ -57,6 +58,7 @@ abstract class _UpcomingBillStoreBase with Store {
   @action
   void setFilter(UpcomingBillFilterEnum type) => filter = type;
 
+  // Use for pagination (Check if all items are already fetch)
   @action
   void setNextPage() {
     if (upcomingBill.meta.perPage * upcomingBill.meta.currentPage <=
@@ -65,6 +67,7 @@ abstract class _UpcomingBillStoreBase with Store {
     }
   }
 
+  // Use for filter upcoming bills
   @computed
   String get queryParameter {
     String filterParameter = UpcomingBillHelper.enumToQuery[filter] ?? '';
@@ -81,6 +84,7 @@ abstract class _UpcomingBillStoreBase with Store {
   @observable
   ObservableMap<String, UpcomingBillMonth> upcomingBillYearly = ObservableMap();
 
+  // Fetch yearly data
   @action
   Future readYearly() async {
     debugPrint('--> START: read upcomingbill yearly');
@@ -104,6 +108,7 @@ abstract class _UpcomingBillStoreBase with Store {
     }
   }
 
+  // Fetch monthly data
   @action
   Future read({bool refreshed = false}) async {
     debugPrint('--> Start fetching upcoming bill');
@@ -144,6 +149,7 @@ abstract class _UpcomingBillStoreBase with Store {
   @observable
   LoadingStatusEnum createStatus = LoadingStatusEnum.none;
 
+  // Create upcoming bill
   @action
   Future<bool> post(UpcomingBillData upcomingBillData) async {
     debugPrint('-->START: post, upcoming bill');
@@ -176,6 +182,7 @@ abstract class _UpcomingBillStoreBase with Store {
   @observable
   LoadingStatusEnum editStatus = LoadingStatusEnum.none;
 
+  // Edit upcoming bill
   @action
   Future<bool> edit(UpcomingBillData upcomingBillData) async {
     debugPrint('-->START: edit, upcoming bill');
@@ -205,6 +212,7 @@ abstract class _UpcomingBillStoreBase with Store {
     return success;
   }
 
+  // Delete upcoming bill
   @action
   Future<bool> delete(UpcomingBillData upcomingBillData) async {
     debugPrint('-->START: delete, upcoming bill');

@@ -237,7 +237,7 @@ class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
               color: ColorConstant.overbudgetIcon,
             ),
             'Spent',
-            '-\$${args.amount}',
+            '\$${args.amount}',
             defaultStyle,
           ),
           dividerGap(),

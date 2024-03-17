@@ -506,8 +506,8 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
       AsyncAction('_OnboardingQuestionStoreBase.post', context: context);
 
   @override
-  Future<bool> post(Map<String, dynamic> data) {
-    return _$postAsyncAction.run(() => super.post(data));
+  Future<bool> post(List<CategoryData> cat) {
+    return _$postAsyncAction.run(() => super.post(cat));
   }
 
   late final _$_OnboardingQuestionStoreBaseActionController =
@@ -542,6 +542,17 @@ mixin _$OnboardingQuestionStore on _OnboardingQuestionStoreBase, Store {
             name: '_OnboardingQuestionStoreBase.setSaveForGoalMoneyOption');
     try {
       return super.setSaveForGoalMoneyOption(value);
+    } finally {
+      _$_OnboardingQuestionStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  double moneyConverter(String type, double value) {
+    final _$actionInfo = _$_OnboardingQuestionStoreBaseActionController
+        .startAction(name: '_OnboardingQuestionStoreBase.moneyConverter');
+    try {
+      return super.moneyConverter(type, value);
     } finally {
       _$_OnboardingQuestionStoreBaseActionController.endAction(_$actionInfo);
     }
