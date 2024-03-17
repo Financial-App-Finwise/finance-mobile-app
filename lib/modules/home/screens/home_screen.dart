@@ -1,6 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/home_text_style_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
@@ -10,6 +11,7 @@ import 'package:finwise/core/widgets/budget_card.dart';
 import 'package:finwise/core/widgets/budget_overview.dart';
 import 'package:finwise/core/widgets/charts/income_expense_barchart.dart';
 import 'package:finwise/core/widgets/charts/income_expense_pie_chart.dart';
+import 'package:finwise/core/widgets/circular_progress/linear_progress_dots.dart';
 import 'package:finwise/core/widgets/custom_refresh_indicator.dart';
 import 'package:finwise/core/widgets/duration_drop_down/duration_drop_down.dart';
 import 'package:finwise/core/widgets/duration_drop_down/models/duration_drop_down_item_model.dart';
@@ -31,6 +33,7 @@ import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -508,25 +511,46 @@ class _HomeScreenState extends State<HomeScreen>
             child: Column(
               children: [
                 Row(children: [
+                  // check if it's loading
+                  Visibility(
+                    visible: _financeStore.isLoadingBarChart,
+                    child: const LinearProgressDots(),
+                  ),
                   const Expanded(child: SizedBox()),
                   // ---------- Dropdown Button ----------
                   DurationDropDown(
                     items: [
                       DurationDropDownItem(
                           title: 'This Month', value: 'this_month'),
-                      DurationDropDownItem(
-                          title: 'This Week', value: 'this_week'),
+                      // DurationDropDownItem(
+                      //     title: 'This Week', value: 'this_week'),
                       DurationDropDownItem(
                           title: 'Last Month', value: 'last_month'),
                       DurationDropDownItem(
                           title: 'Last 3 Months', value: 'last_3_months'),
                       DurationDropDownItem(
-                          title: 'Last 6 Months', value: 'last_6_months'),
+                          title: 'Last 4 Months', value: 'last_4_months'),
                     ],
                     selectedValue: _financeStore.period,
                     onChange: (value) async {
+                      // save previous value, to aviod UI error in the bar chart
+                      _financeStore.previousBarData = ObservableMap.of(
+                          _financeStore.filteredFinance.data.total);
+
+                      // change the period
                       _financeStore.period = value;
-                      await _financeStore.read();
+
+                      // initialize the map item value
+                      _financeStore.initialize(_financeStore.queryParemeter);
+
+                      // if the filteredFinance is empty, read to get data
+                      if (_financeStore.filteredFinance.data.items.isEmpty) {
+                        await _financeStore.read(
+                          isIncome: true,
+                          setLoading: () => _financeStore.loadingBarChart =
+                              LoadingStatusEnum.loading,
+                        );
+                      }
                     },
                   )
                 ]),
@@ -546,7 +570,9 @@ class _HomeScreenState extends State<HomeScreen>
                         ],
                       )
                     : IncomeExpenseBarChart(
-                        data: _financeStore.finance.data.total),
+                        data: _financeStore.filteredFinance.data.total.isEmpty
+                            ? _financeStore.previousBarData
+                            : _financeStore.filteredFinance.data.total),
               ],
             ),
           ),

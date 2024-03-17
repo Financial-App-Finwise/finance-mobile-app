@@ -235,10 +235,10 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return DurationDropDown(
       items: [
         DurationDropDownItem(title: 'This Month', value: 'this_month'),
-        DurationDropDownItem(title: 'This Week', value: 'this_week'),
+        // DurationDropDownItem(title: 'This Week', value: 'this_week'),
         DurationDropDownItem(title: 'Last Month', value: 'last_month'),
         DurationDropDownItem(title: 'Last 3 Months', value: 'last_3_months'),
-        DurationDropDownItem(title: 'Last 6 Months', value: 'last_6_months'),
+        DurationDropDownItem(title: 'Last 4 Months', value: 'last_4_months'),
       ],
       selectedValue: selectedValue,
       onChange: onChange,

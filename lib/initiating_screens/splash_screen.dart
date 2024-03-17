@@ -4,7 +4,6 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
-import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
       debugPrint('<-- END: splash screen initState');
       await authStore.readCache();
       if (authStore.user != null) {
-        await financeStore.read();
+        await financeStore.read(updateFinance: true);
       }
 
       // if the state object is mounted
