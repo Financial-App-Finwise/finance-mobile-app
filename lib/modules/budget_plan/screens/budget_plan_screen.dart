@@ -11,6 +11,7 @@ import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_heade
 import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
+import 'package:finwise/modules/budget_plan/models/budget_plan_yearly_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
@@ -33,12 +34,15 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   @override
   void initState() {
     super.initState();
+    _performAsyncOperations();
+  }
 
-    Future.delayed(const Duration(seconds: 0), () async {
-      if (mounted) {
-        await context.read<BudgetPlanStore>().read(refreshed: true);
-      }
-    });
+  void _performAsyncOperations() async {
+    await Future.delayed(const Duration(seconds: 0));
+    if (mounted) {
+      await context.read<BudgetPlanStore>().read(refreshed: true);
+      await context.read<CategoryStore>().read();
+    }
   }
 
   late BudgetPlanStore store = context.read<BudgetPlanStore>();
@@ -216,24 +220,27 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
     });
   }
 
-  late final List<List<dynamic>> _gridData = [
-    ['January', store.budgetPlanYearly.data.jan],
-    ['February', store.budgetPlanYearly.data.feb],
-    ['March', store.budgetPlanYearly.data.mar],
-    ['April', store.budgetPlanYearly.data.apr],
-    ['May', store.budgetPlanYearly.data.may],
-    ['June', store.budgetPlanYearly.data.jun],
-    ['July', store.budgetPlanYearly.data.jul],
-    ['August', store.budgetPlanYearly.data.aug],
-    ['September', store.budgetPlanYearly.data.sep],
-    ['Octoboer', store.budgetPlanYearly.data.oct],
-    ['November', store.budgetPlanYearly.data.nov],
-    ['December', store.budgetPlanYearly.data.dec],
-  ];
-
 // Main content grid view
   Widget _mainContentGridView() {
     return Observer(builder: (context) {
+      BudgetPlanYearly budgetPlanYearly =
+          context.watch<BudgetPlanStore>().budgetPlanYearly;
+
+      late final List<List<dynamic>> gridData = [
+        ['January', budgetPlanYearly.data.jan],
+        ['February', budgetPlanYearly.data.feb],
+        ['March', budgetPlanYearly.data.mar],
+        ['April', budgetPlanYearly.data.apr],
+        ['May', budgetPlanYearly.data.may],
+        ['June', budgetPlanYearly.data.jun],
+        ['July', budgetPlanYearly.data.jul],
+        ['August', budgetPlanYearly.data.aug],
+        ['September', budgetPlanYearly.data.sep],
+        ['Octoboer', budgetPlanYearly.data.oct],
+        ['November', budgetPlanYearly.data.nov],
+        ['December', budgetPlanYearly.data.dec],
+      ];
+
       return store.status == LoadingStatusEnum.loading
           ? const Center(
               child: CircularProgressIndicatorTwoArcs(),
@@ -243,15 +250,15 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _gridData.length,
+                itemCount: gridData.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) => BudgetGridTile(
-                  month: _gridData[index][0],
-                  budget: _gridData[index][1],
+                  month: gridData[index][0],
+                  budget: gridData[index][1],
                   monthNumber: index + 1,
                   date: store.selectedDate,
                   setList: (date) {
