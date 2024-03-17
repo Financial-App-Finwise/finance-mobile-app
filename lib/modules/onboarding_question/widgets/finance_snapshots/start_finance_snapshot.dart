@@ -27,20 +27,31 @@ class _StartFinanceSnapshotState extends State<StartFinanceSnapshot> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconHelper.getSVGDefault(
-                SVGName.pandaFinancialSnapshot,
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              const Text(
-                "Now that we've had a glimpse of who you are, let's dive into the exciting world of your financial snapshot.",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24,
-                  height: 1.5,
-                  letterSpacing: 1,
-                  color: ColorConstant.black,
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconHelper.getSVGDefault(
+                        SVGName.pandaFinancialSnapshot,
+                      ),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      const Text(
+                        "Now that we've had a glimpse of who you are, let's dive into the exciting world of your financial snapshot.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 24,
+                          height: 1.5,
+                          letterSpacing: 1,
+                          color: ColorConstant.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -269,7 +269,7 @@ class _MainContentListViewState extends State<MainContentListView> {
                               color: ColorConstant.overbudgetIcon,
                             ),
                             child: const Text(
-                              'Pay yet?',
+                              'Pay',
                               style: TextStyle(
                                 color: ColorConstant.white,
                               ),
@@ -289,7 +289,6 @@ class _MainContentListViewState extends State<MainContentListView> {
   Widget _noContentView() {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.only(top: 77, left: 16, right: 16, bottom: 16),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),

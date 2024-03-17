@@ -80,21 +80,24 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
   Widget _buildCenterContent() {
     return _isGrid
         ? _buildCenterOfGrid()
-        : GeneralDatePicker(
-            prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
-            suffix: IconHelper.getSVG(SVGName.addSquare,
-                color: ColorConstant.secondary),
-            onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
-            onPreffix: () async {
-              setState(() => _isGrid = !_isGrid);
-              await store.readYearly();
-            },
-            date: store.selectedDate,
-            onDateChanged: (DateTime date) async {
-              context.read<BudgetPlanStore>().setSelectedDate(date);
-              await context.read<BudgetPlanStore>().read(refreshed: true);
-            },
-          );
+        : Observer(builder: (context) {
+            return GeneralDatePicker(
+              prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+              suffix: IconHelper.getSVG(SVGName.addSquare,
+                  color: ColorConstant.secondary),
+              onSuffix: () => Navigator.pushNamed(context, RouteName.addBudget),
+              onPreffix: () async {
+                setState(() => _isGrid = !_isGrid);
+                await store.readYearly();
+              },
+              date: store.selectedDate,
+              onDateChanged: (DateTime date) async {
+                context.read<BudgetPlanStore>().setSelectedDate(date);
+                await context.read<BudgetPlanStore>().read(refreshed: true);
+              },
+              loadingStatus: store.status,
+            );
+          });
   }
 
   Widget _buildCenterOfGrid() {
@@ -135,7 +138,6 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
             GestureDetector(
               onTap: () async {
                 store.addSelectedDateYear(addYear: false);
-                print('llll ${store.selectedDate}');
                 await store.readYearly();
               },
               child: const Icon(Icons.keyboard_arrow_left),

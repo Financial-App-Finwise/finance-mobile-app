@@ -1,23 +1,25 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:flutter/material.dart';
 
 class GeneralDatePicker extends StatefulWidget {
-  GeneralDatePicker({
-    super.key,
-    this.prefix,
-    this.suffix,
-    this.onPreffix,
-    this.onSuffix,
-    this.onDateChanged,
-    this.date,
-  });
+  GeneralDatePicker(
+      {super.key,
+      this.prefix,
+      this.suffix,
+      this.onPreffix,
+      this.onSuffix,
+      this.onDateChanged,
+      this.date,
+      this.loadingStatus});
 
   final Widget? prefix;
   final Widget? suffix;
   final void Function()? onSuffix;
   final void Function()? onPreffix;
   final void Function(DateTime)? onDateChanged;
+  LoadingStatusEnum? loadingStatus;
   DateTime? date;
 
   @override
@@ -114,9 +116,11 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
         GestureDetector(
           onTap: () {
             setState(() {
-              widget.date = subtractMonth(widget.date!);
-              currentDate = subtractMonth(currentDate);
-              widget.onDateChanged!(currentDate);
+              if (widget.loadingStatus != LoadingStatusEnum.loading) {
+                widget.date = subtractMonth(widget.date!);
+                currentDate = subtractMonth(currentDate);
+                widget.onDateChanged!(widget.date!);
+              }
             });
           },
           child: IconConstant.arrowLeft,
@@ -137,9 +141,11 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
         GestureDetector(
           onTap: () {
             setState(() {
-              widget.date = addMonth(widget.date!);
-              currentDate = addMonth(currentDate);
-              widget.onDateChanged!(currentDate);
+              if (widget.loadingStatus != LoadingStatusEnum.loading) {
+                widget.date = addMonth(widget.date!);
+                currentDate = addMonth(currentDate);
+                widget.onDateChanged!(widget.date!);
+              }
             });
           },
           child: IconConstant.arrowRight,

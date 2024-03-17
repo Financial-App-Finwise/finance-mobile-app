@@ -28,37 +28,48 @@ class _StartAccountCreationState extends State<StartAccountCreation> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconHelper.getSVGDefault(
-                  SVGName.pandaExcited,
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                const Text(
-                  '🎉 Congratulations on completing your onboarding! 🎉',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24,
-                    height: 1.5,
-                    letterSpacing: 1,
-                    color: ColorConstant.black,
+                Flexible(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconHelper.getSVGDefault(
+                          SVGName.pandaExcited,
+                        ),
+                        const SizedBox(
+                          height: 32,
+                        ),
+                        const Text(
+                          '🎉 Congratulations on completing your onboarding! 🎉',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24,
+                            height: 1.5,
+                            letterSpacing: 1,
+                            color: ColorConstant.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        const Text(
+                          "Your dedication to this process is the first step towards achieving your financial dreams. We're here to support and guide you every step of the way. Let's embark on this exciting journey together!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                            height: 1.5,
+                            letterSpacing: 0.5,
+                            color: ColorConstant.mainText,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
-                const Text(
-                  "Your dedication to this process is the first step towards achieving your financial dreams. We're here to support and guide you every step of the way. Let's embark on this exciting journey together!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    height: 1.5,
-                    letterSpacing: 0.5,
-                    color: ColorConstant.mainText,
-                  ),
-                )
               ],
             ),
           ),

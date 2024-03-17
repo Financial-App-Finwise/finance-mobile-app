@@ -81,22 +81,25 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
   Widget _buildCenterContent() {
     return _isGrid
         ? _buildCenterOfGrid()
-        : GeneralDatePicker(
-            prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
-            suffix: IconHelper.getSVG(SVGName.addSquare,
-                color: ColorConstant.secondary),
-            onSuffix: () =>
-                Navigator.pushNamed(context, RouteName.addUpcomingBill),
-            onPreffix: () async {
-              setState(() => _isGrid = !_isGrid);
-              await store.readYearly();
-            },
-            date: store.startDate,
-            onDateChanged: (DateTime date) async {
-              context.read<UpcomingBillStore>().setStartDate(date);
-              context.read<UpcomingBillStore>().read(refreshed: true);
-            },
-          );
+        : Observer(builder: (context) {
+            return GeneralDatePicker(
+              prefix: IconHelper.getSVG(SVGName.contentManagerDashboard),
+              suffix: IconHelper.getSVG(SVGName.addSquare,
+                  color: ColorConstant.secondary),
+              onSuffix: () =>
+                  Navigator.pushNamed(context, RouteName.addUpcomingBill),
+              onPreffix: () async {
+                setState(() => _isGrid = !_isGrid);
+                await store.readYearly();
+              },
+              date: store.startDate,
+              onDateChanged: (DateTime date) async {
+                context.read<UpcomingBillStore>().setStartDate(date);
+                context.read<UpcomingBillStore>().read(refreshed: true);
+              },
+              loadingStatus: store.status,
+            );
+          });
   }
 
   Widget _buildCenterOfGrid() {

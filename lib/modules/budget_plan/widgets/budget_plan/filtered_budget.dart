@@ -77,7 +77,6 @@ class _FilteredBudgetState extends State<FilteredBudget> {
   Widget _noContentView() {
     return Container(
       alignment: Alignment.topCenter,
-      padding: const EdgeInsets.only(top: 77, left: 16, right: 16, bottom: 16),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
