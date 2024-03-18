@@ -3,6 +3,7 @@ import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/layouts/transaction_form_layout.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
       amountExpenseController:
           TextEditingController(text: args.amount.toString()),
       noteController: TextEditingController(text: args.note),
+      dateController: TextEditingController(text: args.date),
       transactionData: args,
       title: 'Edit Transaction',
       isIncome: args.isIncome,
@@ -50,6 +52,7 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
         required BudgetPlanData selectedBudgetPlan,
         required UpcomingBillData selectedUpcomingBill,
         required CategoryData selectedCategory,
+        required TransactionPost transactionPost,
       }) async {
         selectedBudgetPlan = BudgetPlanData(id: args.budgetplanID ?? 0);
         selectedUpcomingBill = UpcomingBillData(id: args.upcomingbillID ?? 0);

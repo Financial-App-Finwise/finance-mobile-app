@@ -1,21 +1,16 @@
-import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/svg_name_constant.dart';
-import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/buttons/select_item_button.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/transaction/widgets/budget_plan_button/select_budget_plan_widget.dart';
 import 'package:flutter/material.dart';
 
 class BudgetPlanButton extends StatefulWidget {
+  final SelectItem<BudgetPlanData> currentItem;
   final void Function(BudgetPlanData) onItemSelected;
-  final int defaultBudgetId;
-  final String defaultBudgetName;
 
   const BudgetPlanButton({
     super.key,
+    required this.currentItem,
     required this.onItemSelected,
-    this.defaultBudgetId = 0,
-    this.defaultBudgetName = 'no name',
   });
 
   @override
@@ -23,14 +18,7 @@ class BudgetPlanButton extends StatefulWidget {
 }
 
 class _BudgetPlanButtonState extends State<BudgetPlanButton> {
-  late final SelectItem<BudgetPlanData> _currentItem = SelectItem(
-    title: 'Budget PLan',
-    subTitle: 'Select a budget plan',
-    pickedIcon: IconHelper.getSVG(SVGName.myBudget, color: Colors.white),
-    unpickedIcon: IconHelper.getSVG(SVGName.myBudget, color: Colors.white),
-    backgroundColor: ColorConstant.expense,
-    item: BudgetPlanData(),
-  );
+  late final SelectItem<BudgetPlanData> _currentItem = widget.currentItem;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/expense_type_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
@@ -16,6 +17,7 @@ import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/widgets/budget_plan_button/budget_plan_button.dart';
 import 'package:finwise/modules/transaction/widgets/smart_goal_button/select_smart_goal_widget.dart';
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
@@ -44,11 +46,13 @@ class TransactionFormLayout extends StatefulWidget {
     required BudgetPlanData selectedBudgetPlan,
     required UpcomingBillData selectedUpcomingBill,
     required CategoryData selectedCategory,
+    required TransactionPost transactionPost,
   }) onTap;
 
   final TextEditingController amountIncomeController;
   final TextEditingController amountExpenseController;
   final TextEditingController noteController;
+  final TextEditingController dateController;
 
   const TransactionFormLayout({
     super.key,
@@ -65,6 +69,7 @@ class TransactionFormLayout extends StatefulWidget {
     required this.amountIncomeController,
     required this.amountExpenseController,
     required this.noteController,
+    required this.dateController,
   });
 
   @override
@@ -397,13 +402,12 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
 
   Widget _buildItemSelection() {
     switch (_expenseType) {
-      case "Budget Plan":
+      case ExpenseTypeConstant.budgetPlan:
         return _buildBudgetplanSelection();
-      case "Upcoming Bill":
+      case ExpenseTypeConstant.upcomingBill:
         return _buildUpcomingBillSelection();
       default:
-        return _buildCategorySection(
-            color: ColorConstant.expense, svgName: SVGName.expense);
+        return _buildCategorySection();
     }
   }
 
@@ -451,21 +455,19 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   // -------------------- Category Field --------------------
-  late CategoryData _selectedCategory = CategoryData(
-    id: widget.transactionData.categoryID,
-  );
+  late CategoryData _selectedIncomeCategory = CategoryData();
+  late CategoryData _selectedExpenseCategory = CategoryData();
 
-  Widget _buildCategorySection({
-    Color color = ColorConstant.income,
-    String svgName = SVGName.earn,
-  }) {
+  Widget _buildCategorySection() {
     return CategoryButton(
       setCategory: (categoryData) {
         setState(() {
-          _selectedCategory = categoryData;
+          _isIncome
+              ? _selectedIncomeCategory = categoryData
+              : _selectedIncomeCategory = categoryData;
         });
       },
-      category: _selectedCategory,
+      category: _isIncome ? _selectedIncomeCategory : _selectedIncomeCategory,
       showTip: false,
     );
   }
@@ -475,15 +477,24 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
 
   Widget _buildBudgetplanSelection() {
     return BudgetPlanButton(
-      onItemSelected: (item) {
+      currentItem: SelectItem<BudgetPlanData>(
+        title: 'Budget PLan',
+        subTitle: _selectedBudgetPlan.id == 0
+            ? 'Select a budget plan'
+            : _selectedBudgetPlan.name,
+        pickedIcon: IconHelper.getSVG(SVGName.myBudget, color: Colors.white),
+        unpickedIcon: IconHelper.getSVG(SVGName.myBudget, color: Colors.white),
+        backgroundColor: ColorConstant.expense,
+        itemPicked: _selectedBudgetPlan.id != 0,
+        item: _selectedBudgetPlan,
+      ),
+      onItemSelected: (budgetPlanData) {
         setState(() {
-          _selectedBudgetPlan = item;
+          _selectedBudgetPlan = budgetPlanData;
         });
       },
     );
   }
-
-  // TODO: budplan, general, upcoming bill, select only one
 
   // -------------------- Upcoming Bill Selection --------------------
   late UpcomingBillData _selectedUpcomingBill = UpcomingBillData();
@@ -491,26 +502,28 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   Widget _buildUpcomingBillSelection() {
     return UpcomingBillButton(
       currentItem: SelectItem<UpcomingBillData>(
+        title: 'Upcoming Bill',
+        subTitle: 'Select an upcoming bill',
         pickedIcon:
             IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
         unpickedIcon:
             IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
         backgroundColor: ColorConstant.bill,
-        title: 'Upcoming Bill',
-        subTitle: 'upcoming bill id: ${widget.transactionData.upcomingbillID}',
-        itemPicked: true,
+        itemPicked: _selectedUpcomingBill.id != 0,
         item: _selectedUpcomingBill,
       ),
       onItemSelected: (upcomingBillData) {
         setState(() {
-          _selectedUpcomingBill = upcomingBillData;
           _amountExpenseController.text = upcomingBillData.amount.toString();
+          _selectedUpcomingBill = upcomingBillData;
         });
       },
     );
   }
 
   // -------------------- Date Field --------------------
+  late final _dateController = widget.dateController;
+
   Widget _buildDateField() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -519,6 +532,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
         borderRadius: BorderRadius.circular(16),
       ),
       child: DateTextFieldWidget(
+        controller: _dateController,
         enable: false,
         hintText: UIHelper.getDateFormat(
             widget.transactionData.date.toString(), 'dd MMMM, yyyy'),
@@ -555,9 +569,49 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   // -------------------- Post Data --------------------
+  late final TransactionPost _baseTransactionPost = TransactionPost(
+    amount: _isIncome
+        ? double.parse(_amountIncomeController.text)
+        : double.parse(_amountExpenseController.text),
+    note: _noteController.text,
+    date: widget.dateController.text,
+  );
+
+  late TransactionPost _transactionPost = TransactionPost();
+
+  void _chooseItem() {
+    setState(() {
+      switch (_isIncome) {
+        case true:
+          _transactionPost =
+              _baseTransactionPost.toIncome(TransactionPostIncome(
+            categoryID: _selectedIncomeCategory.id,
+          ));
+        case false:
+          switch (_expenseType) {
+            case ExpenseTypeConstant.budgetPlan:
+              _transactionPost = _baseTransactionPost.toExpenseBudgetPlan(
+                  TransactionPostExpenseBudgetPlan(
+                      budgetplanID: _selectedBudgetPlan.id));
+
+            case ExpenseTypeConstant.upcomingBill:
+              _transactionPost = _baseTransactionPost.toExpenseUpcomingBill(
+                  TransactionPostExpenseUpcomingBill(
+                      upcomingbillID: _selectedUpcomingBill.id));
+
+            case ExpenseTypeConstant.general:
+              _transactionPost = _baseTransactionPost.toExpense(
+                  TransactionPostExpense(
+                      categoryID: _selectedExpenseCategory.id));
+          }
+      }
+    });
+  }
+
   Widget _buildButton() {
     return GeneralBottomButton(
       onButtonTap: () {
+        _chooseItem();
         widget.onTap(
           isIncome: _isIncome,
           expenseType: _expenseType,
@@ -568,7 +622,8 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           note: _noteController.text,
           selectedBudgetPlan: _selectedBudgetPlan,
           selectedUpcomingBill: _selectedUpcomingBill,
-          selectedCategory: _selectedCategory,
+          selectedCategory: _selectedIncomeCategory,
+          transactionPost: _transactionPost,
         );
       },
       buttonLabel: widget.buttonLabel,

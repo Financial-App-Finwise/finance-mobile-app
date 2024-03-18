@@ -5,6 +5,7 @@ import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/layouts/transaction_form_layout.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
       amountIncomeController: TextEditingController(),
       amountExpenseController: TextEditingController(),
       noteController: TextEditingController(),
+      dateController: TextEditingController(),
       transactionData: TransactionData(
         date: UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMM, yyyy'),
       ),
@@ -60,43 +62,21 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
         required BudgetPlanData selectedBudgetPlan,
         required UpcomingBillData selectedUpcomingBill,
         required CategoryData selectedCategory,
+        required TransactionPost transactionPost,
       }) async {
-        int? selectedBudgetPlanId;
-        int? selectedUpcomingBillId;
-        int selectedCategoryId = 0;
 
-        if (selectedUpcomingBill.id != 0) {
-          selectedUpcomingBillId = selectedUpcomingBill.id;
-          selectedCategoryId = selectedUpcomingBill.categoryID;
-        } else if (selectedBudgetPlan.id != 0) {
-          selectedBudgetPlanId = selectedBudgetPlan.id;
-          selectedCategoryId = selectedBudgetPlan.categoryID;
-        } else {
-          selectedCategoryId = selectedCategory.id;
-        }
+        print(transactionPost.toJson());
 
-        bool success = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => TransactionCreateScreen(
-              transactionData: TransactionData(
-                categoryID: selectedCategoryId,
-                isIncome: isIncome,
-                amount: double.parse(amount),
-                hasContributed: hasContributed,
-                upcomingbillID: selectedUpcomingBillId,
-                budgetplanID: selectedBudgetPlanId,
-                expenseType: expenseType,
-                date: DateTime.now().toString(),
-                note: note,
-              ),
-            ),
-          ),
-        );
+        // bool success = await Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (_) =>
+        //           TransactionCreateScreen(transactionPost: transactionPost)),
+        // );
 
-        if (success) {
-          Navigator.pop(context);
-        }
+        // if (success) {
+        //   Navigator.pop(context);
+        // }
       },
     );
   }

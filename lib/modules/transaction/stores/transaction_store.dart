@@ -5,6 +5,7 @@ import 'package:finwise/core/enums/transaction_type_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/transaction/helpers/transaction_helper.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
@@ -193,15 +194,15 @@ abstract class _TransactionStoreBase with Store {
 
   // -------------------- Create a Transaction --------------------
   @action
-  Future<bool> post(TransactionData transactionData) async {
+  Future<bool> post(TransactionPost transactionPost) async {
     debugPrint('--> START: post, transaction');
     loadingCreate = LoadingStatusEnum.loading;
-    print(transactionData.toJson());
+    print(transactionPost.toJson());
     bool success = false;
     try {
       Response response = await ApiService.dio.post(
         'transactions',
-        data: transactionData.toJson(),
+        data: transactionPost.toJson(),
       );
 
       if (response.statusCode == 201) {

@@ -240,8 +240,8 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
       AsyncAction('_TransactionStoreBase.post', context: context);
 
   @override
-  Future<bool> post(TransactionData transactionData) {
-    return _$postAsyncAction.run(() => super.post(transactionData));
+  Future<bool> post(TransactionPost transactionPost) {
+    return _$postAsyncAction.run(() => super.post(transactionPost));
   }
 
   late final _$updateAsyncAction =

@@ -242,15 +242,15 @@ class _MainContentListViewState extends State<MainContentListView> {
                         InkWell(
                           onTap: () async {
                             bool success = false;
-                            success = await context
-                                .read<TransactionStore>()
-                                .post(TransactionData(
-                                    categoryID: upcomingBill.categoryID,
-                                    isIncome: false,
-                                    amount: upcomingBill.amount.toDouble(),
-                                    upcomingbillID: upcomingBill.id,
-                                    date: DateTime.now().toString(),
-                                    expenseType: 'Upcoming Bill'));
+                            // success = await context
+                            //     .read<TransactionStore>()
+                            //     .post(TransactionData(
+                            //         categoryID: upcomingBill.categoryID,
+                            //         isIncome: false,
+                            //         amount: upcomingBill.amount.toDouble(),
+                            //         upcomingbillID: upcomingBill.id,
+                            //         date: DateTime.now().toString(),
+                            //         expenseType: 'Upcoming Bill'));
                             if (success) {
                               await context
                                   .read<UpcomingBillStore>()

@@ -12,6 +12,7 @@ import 'package:finwise/core/layouts/general_simple_header_layout.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

@@ -4,17 +4,18 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/screens/loading_screen.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class TransactionCreateScreen extends StatefulWidget {
-  final TransactionData transactionData;
+  final TransactionPost transactionPost;
 
   const TransactionCreateScreen({
     super.key,
-    required this.transactionData,
+    required this.transactionPost,
   });
 
   @override
@@ -30,7 +31,7 @@ class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      bool success = await store.post(widget.transactionData);
+      bool success = await store.post(widget.transactionPost);
 
       if (success) {
         await financeStore.read();
