@@ -182,7 +182,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
           context.watch<UpcomingBillStore>().upcomingBill;
 
       return MainContentListView(
-        totalUpcomingBill: upcomingBill.data.length,
+        totalUpcomingBill: store.totalUpcomingBills,
         upcomingBillList: upcomingBill.data,
       );
     });

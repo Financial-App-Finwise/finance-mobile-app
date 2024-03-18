@@ -24,22 +24,6 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
               name: '_UpcomingBillStoreBase.queryParameter'))
           .value;
 
-  late final _$upcomingBillMetaAtom =
-      Atom(name: '_UpcomingBillStoreBase.upcomingBillMeta', context: context);
-
-  @override
-  UpcomingBillMeta get upcomingBillMeta {
-    _$upcomingBillMetaAtom.reportRead();
-    return super.upcomingBillMeta;
-  }
-
-  @override
-  set upcomingBillMeta(UpcomingBillMeta value) {
-    _$upcomingBillMetaAtom.reportWrite(value, super.upcomingBillMeta, () {
-      super.upcomingBillMeta = value;
-    });
-  }
-
   late final _$upcomingBillAtom =
       Atom(name: '_UpcomingBillStoreBase.upcomingBill', context: context);
 
@@ -117,6 +101,42 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
   set upcomingBillYearly(ObservableMap<String, UpcomingBillMonth> value) {
     _$upcomingBillYearlyAtom.reportWrite(value, super.upcomingBillYearly, () {
       super.upcomingBillYearly = value;
+    });
+  }
+
+  late final _$totalUpcomingBillsAtom =
+      Atom(name: '_UpcomingBillStoreBase.totalUpcomingBills', context: context);
+
+  @override
+  int get totalUpcomingBills {
+    _$totalUpcomingBillsAtom.reportRead();
+    return super.totalUpcomingBills;
+  }
+
+  bool _totalUpcomingBillsIsInitialized = false;
+
+  @override
+  set totalUpcomingBills(int value) {
+    _$totalUpcomingBillsAtom.reportWrite(value,
+        _totalUpcomingBillsIsInitialized ? super.totalUpcomingBills : null, () {
+      super.totalUpcomingBills = value;
+      _totalUpcomingBillsIsInitialized = true;
+    });
+  }
+
+  late final _$currentPageAtom =
+      Atom(name: '_UpcomingBillStoreBase.currentPage', context: context);
+
+  @override
+  int get currentPage {
+    _$currentPageAtom.reportRead();
+    return super.currentPage;
+  }
+
+  @override
+  set currentPage(int value) {
+    _$currentPageAtom.reportWrite(value, super.currentPage, () {
+      super.currentPage = value;
     });
   }
 
@@ -253,12 +273,13 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
   @override
   String toString() {
     return '''
-upcomingBillMeta: ${upcomingBillMeta},
 upcomingBill: ${upcomingBill},
 status: ${status},
 startDate: ${startDate},
 filter: ${filter},
 upcomingBillYearly: ${upcomingBillYearly},
+totalUpcomingBills: ${totalUpcomingBills},
+currentPage: ${currentPage},
 createStatus: ${createStatus},
 editStatus: ${editStatus},
 endDate: ${endDate},
