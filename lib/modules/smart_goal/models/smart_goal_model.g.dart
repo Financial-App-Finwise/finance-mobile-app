@@ -34,7 +34,18 @@ SmartGoalData _$SmartGoalDataFromJson(Map<String, dynamic> json) =>
           (json['monthlyContribution'] as num?)?.toDouble() ?? 0.0,
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
-    );
+      transactionCount: json['transactionCount'] as int? ?? 0,
+    )
+      ..transactionCountDetail = json['transactions_count'] as int
+      ..transactions = (json['transactions'] as List<dynamic>)
+          .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..contributions =
+          json['contribution_amounts_last_6_months'] as List<dynamic>
+      ..averageContribution =
+          (json['average_total_contribution'] as num).toDouble()
+      ..totalContributionLastMonth =
+          (json['total_contribution_last_month'] as num).toDouble();
 
 Map<String, dynamic> _$SmartGoalDataToJson(SmartGoalData instance) =>
     <String, dynamic>{

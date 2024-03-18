@@ -45,7 +45,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
   @override
   void initState() {
     super.initState();
-    store.isIncome = 1;
+    Future.delayed(Duration.zero, () async {
+      await store.read(isIncome: true);
+    });
   }
 
   @override
@@ -306,13 +308,6 @@ class _FinanceScreenState extends State<FinanceScreen> {
           onTap: (value) async {
             store.isIncome = value ? 1 : 0;
             if (store.filteredFinance.data.items.isEmpty) {
-              // save previous value, to aviod UI error in the bar chart
-              // store.previousBarData =
-              //     ObservableMap.of(store.filteredFinance.data.total);
-
-              // // change the period
-              // store.period = value;
-
               // initialize the map item value
               store.initialize(store.queryParemeter);
 
@@ -344,24 +339,24 @@ class _FinanceScreenState extends State<FinanceScreen> {
                 child: const LinearProgressDots(),
               ),
               const Expanded(child: SizedBox()),
-              _buildGeneralPeriodButton(
-                selectedValue: 'this_month',
-                onChange: (value) async {
-                  store.period = value;
-                  
-                  if (store.previousBarData.isEmpty) {
-                    store.loadingPieChart = LoadingStatusEnum.loading;
-                  }
-                  store.period = value;
-                  // avoid null
-                  store.initialize(store.queryParemeter);
-                  await store.read(isIncome: isIncome);
-                },
-              ),
+              // _buildGeneralPeriodButton(
+              //   selectedValue: 'this_month',
+              //   onChange: (value) async {
+              //     store.period = value;
+
+              //     if (store.previousBarData.isEmpty) {
+              //       store.loadingPieChart = LoadingStatusEnum.loading;
+              //     }
+              //     store.period = value;
+              //     // avoid null
+              //     store.initialize(store.queryParemeter);
+              //     await store.read(isIncome: isIncome);
+              //   },
+              // ),
             ],
           ),
           const SizedBox(height: 30),
-          store.finance.data.topCategories.isEmpty
+          store.filteredFinance.data.topCategories.isEmpty
               ? EmptyDataWidget(
                   icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
                   buttonLabel: 'Add Transaction',
@@ -388,7 +383,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
     );
   }
 
-// -------------------- Transactions --------------------
+  // -------------------- Transactions --------------------
   Widget _buildTransactionItems({bool isIncome = true}) {
     List<TransactionData> todayTransactions =
         store.filteredFinance.data.allTransactions.today;

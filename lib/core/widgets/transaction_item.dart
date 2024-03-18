@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class TransactionItem extends StatefulWidget {
-  TransactionItem({
+  const TransactionItem({
     super.key,
     this.title = '',
     this.date = '',
@@ -25,13 +25,24 @@ class TransactionItem extends StatefulWidget {
   final String amount;
   final Color? color;
   final Widget? icon;
-  late TransactionData transactionData;
+  final TransactionData transactionData;
 
   @override
   State<TransactionItem> createState() => _TransactionItemState();
 }
 
 class _TransactionItemState extends State<TransactionItem> {
+  late final String title;
+  @override
+  void initState() {
+    super.initState();
+    title = widget.transactionData.budgetplanID != null
+        ? 'Budget Plan ID ${widget.transactionData.budgetplanID}'
+        : widget.transactionData.upcomingbillID != null
+            ? 'Upcoming Bill ID ${widget.transactionData.upcomingbillID}'
+            : '${widget.transactionData.categoryData!.name}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,11 +51,6 @@ class _TransactionItemState extends State<TransactionItem> {
   }
 
   Widget _buildTransactionItem() {
-    String title = widget.transactionData.budgetplanID != null
-        ? 'Budget Plan ID ${widget.transactionData.budgetplanID}'
-        : widget.transactionData.upcomingbillID != null
-            ? 'Upcoming Bill ID ${widget.transactionData.upcomingbillID}'
-            : 'Category ID ${widget.transactionData.categoryID}';
     return TextButton(
       onPressed: () => Navigator.pushNamed(
         context,

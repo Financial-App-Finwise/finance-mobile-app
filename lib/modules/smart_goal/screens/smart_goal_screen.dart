@@ -6,19 +6,20 @@ import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
-import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/stores/ui_stores/smart_goal_ui_store.dart';
 import 'package:finwise/core/widgets/date_text_field_widget.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_grid_content.dart';
+import 'package:finwise/modules/smart_goal/widgets/smart_goal_list.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -33,35 +34,44 @@ class SmartGoalScreen extends StatefulWidget {
 }
 
 class _SmartGoalScreenState extends State<SmartGoalScreen> {
-  late SmartGoalUIStore uiStore = SmartGoalUIStore();
-  late SmartGoalStore store = context.read<SmartGoalStore>();
+  // -------------------- Initialization --------------------
+  late final SmartGoalUIStore _uiStore = SmartGoalUIStore();
+  late final SmartGoalStore _store = context.read<SmartGoalStore>();
 
+  // -------------------- InitState --------------------
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _setContainerHeight();
-    });
-
-    Future.delayed(Duration.zero, () async {
-      await _readAll();
-    });
-    store.setUpReaction();
-    store.initialize();
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => _setContainerHeight());
+    Future.delayed(Duration.zero, () async => await _readAll());
+    // _store.setUpReaction();
+    _store.initialize();
   }
 
+  // -------------------- Read --------------------
   Future _readAll() async {
-    await store.readByPage();
-    await store.readYearly();
+    await _store.readByPage(refreshed: true);
+    await _store.readYearly();
   }
 
-  @override
-  void dispose() {
-    print('disposed');
-    store.dispose();
-    super.dispose();
+  // // -------------------- Container Height --------------------
+  final _centerContainerKey = GlobalKey();
+  double _centerContainerHeight = 0;
+
+  double _getContainerHeight(GlobalKey containerKey) {
+    if (containerKey.currentContext != null) {
+      RenderBox renderBox =
+          containerKey.currentContext!.findRenderObject() as RenderBox;
+      return renderBox.size.height;
+    }
+    return 100;
   }
 
+  void _setContainerHeight() => setState(
+      () => _centerContainerHeight = _getContainerHeight(_centerContainerKey));
+
+  // -------------------- Build --------------------
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -83,105 +93,22 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           }
           return true;
         },
-        centerContentPadding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
-        ),
+        centerContentPadding:
+            const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         centerContent: _buildCenterContent(),
         mainContent: _buildContent(),
       ),
     );
   }
 
-  late final DateTime _currentDate = DateTime.now();
-  late final DateTime _startDay = DateTime(
-    _currentDate.year,
-    _currentDate.month,
-  );
-  late final DateTime _endDay = DateTime(
-    _currentDate.year,
-    _currentDate.month + 1,
-  );
-
-  late final TextEditingController _startDayController = TextEditingController(
-    text: UIHelper.getDateFormat(store.endDateGTE.toString(), 'dd MMM, yyyy'),
-  );
-  late final TextEditingController _endDayController = TextEditingController(
-    text: UIHelper.getDateFormat(store.endDateLTE.toString(), 'dd MMM, yyyy'),
-  );
-
-  final _centerContainerKey = GlobalKey();
-  double _centerContainerHeight = 0;
-
-  double _getContainerHeight(GlobalKey containerKey) {
-    if (containerKey.currentContext != null) {
-      RenderBox renderBox =
-          containerKey.currentContext!.findRenderObject() as RenderBox;
-      return renderBox.size.height;
-    }
-    return 100;
-  }
-
-  void _setContainerHeight() {
-    setState(() {
-      _centerContainerHeight = _getContainerHeight(_centerContainerKey);
-    });
-  }
-
+  // -------------------- Center Content --------------------
   Widget _buildCenterContent() {
-    return uiStore.showGrid
-        ? _buildCenterOfGrid()
-        : Container(
-            key: _centerContainerKey,
-            child: Row(
-              children: [
-                CustomIconButton(
-                  onPressed: () => uiStore.toggleShowGrid(),
-                  icon: IconHelper.getSVG(SVGName.contentManagerDashboard),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: DateTextFieldWidget(
-                    onDaySelected: ((selectedDay, focusedDay) async {
-                      // print(selectedDay);
-                      setState(() {
-                        _startDayController.text = UIHelper.getDateFormat(
-                            selectedDay.toString(), 'MMM dd, yyyy');
-                      });
-                      store.endDateGTE = selectedDay;
-                      await store.readByPage(refreshed: true);
-                    }),
-                    hintText: 'End Date From',
-                    controller: _startDayController,
-                  ),
-                ),
-                Expanded(
-                  child: DateTextFieldWidget(
-                    onDaySelected: ((selectedDay, focusedDay) async {
-                      setState(() {
-                        _endDayController.text = UIHelper.getDateFormat(
-                            selectedDay.toString(), 'MMM dd, yyyy');
-                      });
-                      store.endDateLTE = selectedDay;
-                      await store.readByPage(refreshed: true);
-                    }),
-                    hintText: 'End Date To',
-                    controller: _endDayController,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, RouteName.smartGoalAdd),
-                  icon: IconHelper.getSVG(SVGName.addSquare,
-                      color: ColorConstant.secondary),
-                ),
-              ],
-            ),
-          );
+    return _uiStore.showGrid ? _buildCenterOfGrid() : _buildCenterOfList();
   }
 
+  // -------------------- Grid View Center --------------------
   Widget _buildCenterOfGrid() {
-    return Container(
+    return SizedBox(
       height: _centerContainerHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,7 +119,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 width: 24,
                 height: 24,
                 child: TextButton(
-                  onPressed: () => uiStore.toggleShowGrid(),
+                  onPressed: () => _uiStore.toggleShowGrid(),
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                   ),
@@ -201,28 +128,28 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               ),
               const SizedBox(width: 24),
               Text(
-                '${store.year}',
+                '${_store.year}',
                 style: TextStyleHelper.getw500size(18).copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const Icon(Icons.keyboard_arrow_down),
+              // const Icon(Icons.keyboard_arrow_down),
             ],
           ),
           Row(
             children: [
               GestureDetector(
                 onTap: () async {
-                  store.year--;
-                  await store.readYearly();
+                  _store.year--;
+                  await _store.readYearly();
                 },
                 child: const Icon(Icons.keyboard_arrow_left),
               ),
               const SizedBox(width: 16),
               GestureDetector(
                 onTap: () async {
-                  store.year++;
-                  await store.readYearly();
+                  _store.year++;
+                  await _store.readYearly();
                 },
                 child: const Icon(Icons.keyboard_arrow_right),
               ),
@@ -233,42 +160,100 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     );
   }
 
-  int currentMonth = DateTime.now().month;
-  int currentYear = DateTime.now().year;
+  // -------------------- List View Center --------------------
+  late final TextEditingController _startDayController = TextEditingController(
+    text: UIHelper.getDateFormat(_store.endDateGTE.toString(), 'dd MMM, yyyy'),
+  );
+  late final TextEditingController _endDayController = TextEditingController(
+    text: UIHelper.getDateFormat(_store.endDateLTE.toString(), 'dd MMM, yyyy'),
+  );
 
-  Widget _buildContent() {
+  Widget _buildCenterOfList() {
     return Container(
-      padding: const EdgeInsets.only(top: 20),
-      child: uiStore.showGrid
-          ? SmartGoalGridView(
-              data: store.smartGoalYearly,
-              onTap: (index) async {
-                uiStore.toggleShowGrid();
-                setState(() {
-                  _startDayController.text = UIHelper.getDateFormat(
-                      DateTime(store.year, index + 1).toString(),
-                      'MMM dd, yyyy');
-                  _endDayController.text = UIHelper.getDateFormat(
-                    DateTime(store.year, index + 2).toString(),
-                    'MMM dd, yyyy',
-                  );
-                });
-                store.endDateGTE = DateTime(store.year, index + 1);
-                store.endDateLTE = DateTime(store.year, index + 2);
-                store.initialize();
-                await store.readByPage(refreshed: true);
-              },
-            )
-          : _buildColumnContent(),
+      key: _centerContainerKey,
+      child: Row(
+        children: [
+          CustomIconButton(
+            onPressed: () => _uiStore.toggleShowGrid(),
+            icon: IconHelper.getSVG(SVGName.contentManagerDashboard),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: DateTextFieldWidget(
+              onDaySelected: ((selectedDay, focusedDay) async {
+                setState(() => _startDayController.text =
+                    UIHelper.getDateFormat(
+                        selectedDay.toString(), 'MMM dd, yyyy'));
+                _store.endDateGTE = selectedDay;
+                await _store.readByPage(refreshed: true);
+              }),
+              hintText: 'End Date From',
+              controller: _startDayController,
+            ),
+          ),
+          Expanded(
+            child: DateTextFieldWidget(
+              onDaySelected: ((selectedDay, focusedDay) async {
+                setState(() => _endDayController.text = UIHelper.getDateFormat(
+                    selectedDay.toString(), 'MMM dd, yyyy'));
+                _store.endDateLTE = selectedDay;
+                await _store.readByPage(refreshed: true);
+              }),
+              hintText: 'End Date To',
+              controller: _endDayController,
+            ),
+          ),
+          IconButton(
+            onPressed: () =>
+                Navigator.pushNamed(context, RouteName.smartGoalAdd),
+            icon: IconHelper.getSVG(SVGName.addSquare,
+                color: ColorConstant.secondary),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildColumnContent() {
+  // -------------------- Main Content --------------------
+  Widget _buildContent() {
+    return Container(
+      padding: const EdgeInsets.only(top: 20),
+      child: _uiStore.showGrid ? _buildGridContent() : _buildListContent(),
+    );
+  }
+
+  // -------------------- Grid View --------------------
+  Widget _buildGridContent() {
+    return _store.isLoadingYearly
+        ? const Center(child: CircularProgressIndicatorTwoArcs())
+        : SmartGoalGridView(
+            data: _store.smartGoalYearly,
+            onTap: (index) async {
+              _uiStore.toggleShowGrid();
+              setState(() {
+                _startDayController.text = UIHelper.getDateFormat(
+                    DateTime(_store.year, index + 1).toString(),
+                    'MMM dd, yyyy');
+                _endDayController.text = UIHelper.getDateFormat(
+                  DateTime(_store.year, index + 2).toString(),
+                  'MMM dd, yyyy',
+                );
+              });
+              _store.endDateGTE = DateTime(_store.year, index + 1);
+              _store.endDateLTE = DateTime(_store.year, index + 2);
+              _store.initialize();
+              await _store.readByPage(refreshed: true);
+            },
+          );
+  }
+
+  // -------------------- List View --------------------
+  Widget _buildListContent() {
     return RefreshIndicator(
       color: ColorConstant.primary,
       onRefresh: () async {
-        await store.read();
-        await store.readByPage(refreshed: true);
+        await _store.read();
+        await _store.readByPage(refreshed: true);
       },
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -276,7 +261,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           children: [
             _buildSummary(),
             const SizedBox(height: 16),
-            _buildSmartGoals(),
+            _buildSmartLoading(),
             const SizedBox(height: 48),
           ],
         ),
@@ -317,7 +302,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Total SMART Goal', style: SmartGoalTextStyle.totalTitle),
-                Text('${store.meta.total}',
+                Text('${_store.meta.total}',
                     style: SmartGoalTextStyle.totalNumber),
               ],
             ),
@@ -336,13 +321,14 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
     );
   }
 
-  Widget _buildSmartGoals() {
+  // -------------------- Smart Goal --------------------
+  Widget _buildSmartLoading() {
     return Observer(builder: (context) {
       return Column(
         children: [
           GeneralFilterBarHeader(
             padding: const EdgeInsets.only(left: 0, bottom: 12),
-            currentValue: store.filteredProgress,
+            currentValue: _store.filteredProgress,
             items: [
               FilterBarHeaderItem(
                 title: 'All',
@@ -358,36 +344,52 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               ),
             ],
             onTap: (value) {
-              store.changeFilteredProgress(value);
-              store.initialize();
-              if (store.filteredSmartGoal.items.isEmpty) {
-                store.readByPage(refreshed: true);
-              }
+              _store.changeFilteredProgress(value);
+              _store.initialize();
+              _store.readByPage(
+                refreshed: _store.filteredSmartGoal.items.isEmpty,
+                setLoading: () {
+                  if (_store.filteredSmartGoal.items.isEmpty) {
+                    _store.loadingStatus = LoadingStatusEnum.loading;
+                  }
+                },
+              );
             },
           ),
-          store.filteredSmartGoal.items.isEmpty
-              ? EmptyDataWidget(
-                  description: 'You have no smart goal yet for this month',
-                  buttonLabel: 'Add Smart Goal',
-                  icon: IconHelper.getSVG(
-                    SVGName.smartGoal,
-                    color: ColorConstant.colorA4A7C6,
-                  ),
-                  onButtonTap: () =>
-                      Navigator.pushNamed(context, RouteName.smartGoalAdd),
-                )
-              : _buildFilteredSmartGoals(),
+          Observer(builder: (_) {
+            switch (_store.loadingStatus) {
+              case LoadingStatusEnum.loading:
+              case LoadingStatusEnum.none:
+                return const CircularProgressIndicatorTwoArcs();
+              case LoadingStatusEnum.done:
+                return _store.filteredSmartGoal.items.isEmpty
+                    ? EmptyDataWidget(
+                        description:
+                            'You have no smart goal yet for this month',
+                        buttonLabel: 'Add Smart Goal',
+                        icon: IconHelper.getSVG(
+                          SVGName.smartGoal,
+                          color: ColorConstant.colorA4A7C6,
+                        ),
+                        onButtonTap: () => Navigator.pushNamed(
+                            context, RouteName.smartGoalAdd),
+                      )
+                    : _buildSmartGoals();
+              default:
+                return const Icon(Icons.error);
+            }
+          }),
           const SizedBox(height: 16),
         ],
       );
     });
   }
 
-  Widget _buildFilteredSmartGoals() {
-    List<SmartGoalData> items = store.filteredSmartGoal.items;
+  Widget _buildSmartGoals() {
+    List<SmartGoalData> items = _store.filteredSmartGoal.items;
 
     return SingleChildScrollView(
-      child: store.isLoading
+      child: _store.isLoading
           ? const CircularProgressIndicatorTwoArcs()
           : Column(
               children: [
@@ -465,7 +467,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
                 total: item.amount,
                 topLeft: Row(
                   children: [
-                    Text('7',
+                    Text('${item.transactionCount}',
                         style: SmartGoalTextStyle.getCardTitle(
                             color: ColorConstant.black)),
                     const SizedBox(width: 2),
@@ -490,5 +492,13 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
         ),
       ),
     );
+  }
+
+  // -------------------- Dispose --------------------
+  @override
+  void dispose() {
+    debugPrint('<-- SMART GOAL, dispose');
+    _store.dispose();
+    super.dispose();
   }
 }

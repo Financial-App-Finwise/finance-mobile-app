@@ -40,10 +40,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 ColorConstant.expenseIcon,
               ],
       ),
-      title: args.note.isEmpty
-          ? '${args.isIncome ? 'Income' : 'Expense'}'
-          : args.note,
-      subTitle: args.isIncome ? 'My Income' : 'My Expense',
+      title: '${args.isIncome ? 'My Income' : 'My Expense'}',
+      subTitle: args.categoryData == null ? '' : args.categoryData!.name,
       iconTitle: args.isIncome
           ? IconHelper.getSVG(
               SVGName.earn,
@@ -166,7 +164,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                     : ColorConstant.expense,
               ),
               'Category',
-              '${args.categoryID}',
+              '${args.categoryData!.name}',
               defaultStyle,
             ),
           ),

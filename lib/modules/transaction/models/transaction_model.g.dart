@@ -24,12 +24,15 @@ TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
       categoryID: json['categoryID'] as int? ?? 0,
+      categoryData: json['category'] == null
+          ? null
+          : CategoryData.fromJson(json['category'] as Map<String, dynamic>),
       isIncome: json['isIncome'] == null
           ? true
           : TransactionData._intToBool(json['isIncome'] as int),
       amount: json['amount'] == null
           ? 0
-          : TransactionData._stringToDouble(json['amount'] as String),
+          : TransactionData._stringToDouble(json['amount']),
       hasContributed: json['hasContributed'] == null
           ? false
           : TransactionData._intToBool(json['hasContributed'] as int),

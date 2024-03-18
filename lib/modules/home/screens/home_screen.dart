@@ -180,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
     Color color = Colors.black,
     Widget? icon,
     String selectedValue = '',
+    bool periodButtonVisible = true,
     required void Function(dynamic) onChanged,
   }) {
     return Row(
@@ -208,18 +209,21 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
         const SizedBox(width: 12),
-        DurationDropDown(
-          items: [
-            DurationDropDownItem(title: 'This Month', value: 'this_month'),
-            DurationDropDownItem(title: 'This Week', value: 'this_week'),
-            DurationDropDownItem(title: 'Last Month', value: 'last_month'),
-            DurationDropDownItem(
-                title: 'Last 3 Months', value: 'last_3_months'),
-            DurationDropDownItem(
-                title: 'Last 4 Months', value: 'last_4_months'),
-          ],
-          selectedValue: selectedValue,
-          onChange: onChanged,
+        Visibility(
+          visible: periodButtonVisible,
+          child: DurationDropDown(
+            items: [
+              DurationDropDownItem(title: 'This Month', value: 'this_month'),
+              DurationDropDownItem(title: 'This Week', value: 'this_week'),
+              DurationDropDownItem(title: 'Last Month', value: 'last_month'),
+              DurationDropDownItem(
+                  title: 'Last 3 Months', value: 'last_3_months'),
+              DurationDropDownItem(
+                  title: 'Last 4 Months', value: 'last_4_months'),
+            ],
+            selectedValue: selectedValue,
+            onChange: onChanged,
+          ),
         )
       ],
     );
@@ -414,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen>
                 // ---------- My Budget ----------
                 _buildFeatureItem(
                   text: 'My Budget',
-                  amount: '3',
+                  amount: '${_budgetPlanStore.budgetPlan.data.totalBudget}',
                   icon:
                       IconHelper.getSVG(SVGName.myBudget, color: Colors.white),
                   onPressed: () =>
@@ -594,6 +598,7 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
+                  periodButtonVisible: false,
                   amount:
                       '\$${_financeStore.expenseFinance.data.totalExpenses}',
                   color: ColorConstant.expense,
@@ -619,7 +624,7 @@ class _HomeScreenState extends State<HomeScreen>
                       )
                     : IncomeExpensePieChart(
                         data: getIncomeExpenseList(
-                            _financeStore.filteredFinance.data.topCategories
+                            _financeStore.expenseFinance.data.topCategories
                                 .map(
                                   (e) => {
                                     'category': e.category.name,
@@ -629,7 +634,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 .toList()),
                         color: ColorConstant.expense,
                       ),
-                // const SizedBox(height: 30),
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -1015,11 +1020,12 @@ class _HomeScreenState extends State<HomeScreen>
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextButton(
-        onPressed: () => Navigator.pushNamed(
-          context,
-          RouteName.upcomingBillDetail,
-          arguments: item,
-        ),
+        // onPressed: () => Navigator.pushNamed(
+        //   context,
+        //   RouteName.upcomingBillDetail,
+        //   arguments: item,
+        // ),
+        onPressed: null,
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
               const EdgeInsets.symmetric(vertical: 12, horizontal: 16)),

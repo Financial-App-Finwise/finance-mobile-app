@@ -29,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await authStore.readCache();
       if (authStore.user != null) {
         await financeStore.read(updateFinance: true);
+        await financeStore.read(isIncome: false);
       }
 
       // if the state object is mounted

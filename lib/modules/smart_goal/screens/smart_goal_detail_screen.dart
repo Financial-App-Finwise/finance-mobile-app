@@ -9,12 +9,16 @@ import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/utils/ui_util.dart';
 import 'package:finwise/core/widgets/charts/general_six_month_bar_chart.dart';
+import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
 import 'package:finwise/core/layouts/general_detail_layout.dart';
 import 'package:finwise/core/widgets/general_progress_widget.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
+import 'package:finwise/core/widgets/view_more_text_button.dart';
+import 'package:finwise/modules/finance/screens/finance_screen.dart';
+import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
@@ -352,9 +356,7 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
           },
         ),
         const SizedBox(height: 16),
-        _buildTransactionItemsDays(isIncome: isIncome),
-        const SizedBox(height: 16),
-        _buildTransactionItemsDays(day: 'Yesterday', isIncome: isIncome),
+        _buildTransactionItems(isIncome: isIncome),
       ],
     );
   }
@@ -390,9 +392,47 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     );
   }
 
+  // -------------------- Transactions --------------------
+  Widget _buildTransactionItems({bool isIncome = true}) {
+    final store = context.read<FinanceStore>();
+    List<TransactionData> todayTransactions =
+        store.incomeFinance.data.allTransactions.today;
+
+    List<TransactionData> yesterdayTransactions =
+        store.incomeFinance.data.allTransactions.yesterday;
+
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('All Transactions', style: GeneralTextStyle.getHeader()),
+            ViewMoreTextButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, RouteName.transaction),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _buildTransactionItemsDays(
+          isIncome: isIncome,
+          transactions: todayTransactions,
+        ),
+        const SizedBox(height: 16),
+        _buildTransactionItemsDays(
+          day: 'Yesterday',
+          isIncome: isIncome,
+          transactions: yesterdayTransactions,
+        ),
+      ],
+    );
+  }
+
   Widget _buildTransactionItemsDays({
     String? day,
     bool isIncome = true,
+    List<TransactionData> transactions = const [],
   }) {
     return Column(
       children: [
@@ -403,23 +443,35 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
         ]),
         const SizedBox(height: 12),
         RoundedContainer(
-          child: ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 2,
-            itemBuilder: ((context, index) {
-              return TransactionItem(
-                transactionData: TransactionData(),
-                icon: isIncome
-                    ? IconConstant.getEarn()
-                    : IconConstant.getExpense(),
-                color: isIncome ? ColorConstant.income : ColorConstant.expense,
-              );
-            }),
-            separatorBuilder: (context, index) {
-              return const Divider(color: ColorConstant.divider);
-            },
-          ),
+          child: transactions.isEmpty
+              ? EmptyDataWidget(
+                  icon: IconHelper.getSVGDefault(SVGName.transaction),
+                  buttonLabel: 'Add Transaction',
+                  description:
+                      'You have no ${isIncome ? 'income' : 'expense'} transaction history yet.',
+                  onButtonTap: () =>
+                      Navigator.pushNamed(context, RouteName.transactionAdd),
+                )
+              : ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: transactions.length,
+                  itemBuilder: ((context, index) {
+                    return TransactionItem(
+                      transactionData: transactions[index],
+                      date: UIHelper.getDateFormat(
+                          transactions[index].date, 'dd MMM, yyyy'),
+                      icon: isIncome
+                          ? IconConstant.getEarn()
+                          : IconConstant.getExpense(),
+                      color: isIncome
+                          ? ColorConstant.income
+                          : ColorConstant.expense,
+                    );
+                  }),
+                  separatorBuilder: (context, index) =>
+                      const Divider(color: ColorConstant.divider),
+                ),
         ),
       ],
     );

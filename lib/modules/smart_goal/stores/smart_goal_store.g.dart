@@ -9,6 +9,13 @@ part of 'smart_goal_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
+  Computed<bool>? _$isLoadingComputed;
+
+  @override
+  bool get isLoading =>
+      (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
+              name: '_SmartGoalStoreBase.isLoading'))
+          .value;
   Computed<bool>? _$isLoadingCreateComputed;
 
   @override
@@ -23,12 +30,12 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       (_$isLoadingUpdateComputed ??= Computed<bool>(() => super.isLoadingUpdate,
               name: '_SmartGoalStoreBase.isLoadingUpdate'))
           .value;
-  Computed<bool>? _$isLoadingComputed;
+  Computed<bool>? _$isLoadingYearlyComputed;
 
   @override
-  bool get isLoading =>
-      (_$isLoadingComputed ??= Computed<bool>(() => super.isLoading,
-              name: '_SmartGoalStoreBase.isLoading'))
+  bool get isLoadingYearly =>
+      (_$isLoadingYearlyComputed ??= Computed<bool>(() => super.isLoadingYearly,
+              name: '_SmartGoalStoreBase.isLoadingYearly'))
           .value;
   Computed<String>? _$dateQueryComputed;
 
@@ -125,6 +132,22 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   set loadingUpdate(LoadingStatusEnum value) {
     _$loadingUpdateAtom.reportWrite(value, super.loadingUpdate, () {
       super.loadingUpdate = value;
+    });
+  }
+
+  late final _$loadingYearlyAtom =
+      Atom(name: '_SmartGoalStoreBase.loadingYearly', context: context);
+
+  @override
+  LoadingStatusEnum get loadingYearly {
+    _$loadingYearlyAtom.reportRead();
+    return super.loadingYearly;
+  }
+
+  @override
+  set loadingYearly(LoadingStatusEnum value) {
+    _$loadingYearlyAtom.reportWrite(value, super.loadingYearly, () {
+      super.loadingYearly = value;
     });
   }
 
@@ -376,6 +399,7 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
 loadingStatus: ${loadingStatus},
 loadingCreate: ${loadingCreate},
 loadingUpdate: ${loadingUpdate},
+loadingYearly: ${loadingYearly},
 smartGoal: ${smartGoal},
 endDateGTE: ${endDateGTE},
 endDateLTE: ${endDateLTE},
@@ -384,9 +408,10 @@ filteredSmartGoalMap: ${filteredSmartGoalMap},
 meta: ${meta},
 smartGoalYearly: ${smartGoalYearly},
 year: ${year},
+isLoading: ${isLoading},
 isLoadingCreate: ${isLoadingCreate},
 isLoadingUpdate: ${isLoadingUpdate},
-isLoading: ${isLoading},
+isLoadingYearly: ${isLoadingYearly},
 dateQuery: ${dateQuery},
 queryParemeter: ${queryParemeter},
 queryParemeterInProgress: ${queryParemeterInProgress},

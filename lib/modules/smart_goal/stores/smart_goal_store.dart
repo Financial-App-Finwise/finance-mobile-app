@@ -18,6 +18,9 @@ abstract class _SmartGoalStoreBase with Store {
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
+  @computed
+  bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
+
   @observable
   LoadingStatusEnum loadingCreate = LoadingStatusEnum.none;
 
@@ -30,11 +33,14 @@ abstract class _SmartGoalStoreBase with Store {
   @computed
   bool get isLoadingUpdate => loadingUpdate == LoadingStatusEnum.loading;
 
-  @action
-  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
+  @observable
+  LoadingStatusEnum loadingYearly = LoadingStatusEnum.none;
 
   @computed
-  bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
+  bool get isLoadingYearly => loadingYearly == LoadingStatusEnum.loading;
+
+  @action
+  void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
 
   // -------------------- Smart Goal --------------------
   // Default
@@ -264,7 +270,7 @@ abstract class _SmartGoalStoreBase with Store {
   @action
   Future readYearly() async {
     debugPrint('--> START: read smart goal');
-    loadingStatus = LoadingStatusEnum.loading;
+    loadingYearly = LoadingStatusEnum.loading;
     try {
       Response response = await ApiService.dio.get('goals?year=$year');
       if (response.statusCode == 200) {
@@ -275,14 +281,14 @@ abstract class _SmartGoalStoreBase with Store {
             response.data as Map<String, dynamic>,
           ),
         );
-        loadingStatus = LoadingStatusEnum.done;
+        loadingYearly = LoadingStatusEnum.done;
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
-        loadingStatus = LoadingStatusEnum.error;
+        loadingYearly = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
-      loadingStatus = LoadingStatusEnum.error;
+      loadingYearly = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: read smart goal');
     }
@@ -380,6 +386,7 @@ abstract class _SmartGoalStoreBase with Store {
 
   @action
   void dispose() {
+    // TODO: check dispose again...
     // smartGoal = SmartGoal(items: [], meta: SmartGoalMeta());
     loadingStatus = LoadingStatusEnum.none;
     filteredProgress = SmartGoalStatusEnum.all;

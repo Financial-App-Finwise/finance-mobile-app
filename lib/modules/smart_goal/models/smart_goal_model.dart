@@ -1,3 +1,4 @@
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'smart_goal_model.g.dart';
@@ -48,6 +49,29 @@ class SmartGoalData {
 
   double? monthlyContribution;
 
+  @JsonKey(includeToJson: false)
+  late int transactionCount;
+
+// "transactions_count": 0,
+  @JsonKey(name: 'transactions_count', includeToJson: false)
+  late int transactionCountDetail;
+
+  //       "transactions": [],
+  @JsonKey(name: 'transactions', includeToJson: false)
+  late List<Transaction> transactions;
+
+  //       "contribution_amounts_last_6_months": [],
+  @JsonKey(name: 'contribution_amounts_last_6_months', includeToJson: false)
+  late List<dynamic> contributions;
+
+  //       "average_total_contribution": 0,
+  @JsonKey(name: 'average_total_contribution', includeToJson: false)
+  late double averageContribution;
+
+  //       "total_contribution_last_month": 0
+  @JsonKey(name: 'total_contribution_last_month', includeToJson: false)
+  late double totalContributionLastMonth;
+
   @JsonKey(name: 'created_at', includeToJson: false)
   late String createdAt;
 
@@ -67,6 +91,7 @@ class SmartGoalData {
     this.monthlyContribution = 0.0,
     this.createdAt = 'no date',
     this.updatedAt = 'no date',
+    this.transactionCount = 0,
   });
 
   factory SmartGoalData.fromJson(Map<String, dynamic> json) =>

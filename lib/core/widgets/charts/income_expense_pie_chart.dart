@@ -32,9 +32,12 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
   }
 
   // bool _showMorePieChartInfo = false;
-  final List opacities = const [1.0, 0.75, 0.5, 0.25];
+  final List opacities = const [1.0, 0.8, 0.6, 0.4, 0.2];
 
   Widget _buildPieChart() {
+    List top5Data =
+        widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length);
+
     return SizedBox.fromSize(
       size: const Size(140, 140),
       child: PieChart(
@@ -60,9 +63,9 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
           ),
           sectionsSpace: 0,
           startDegreeOffset: 180,
-          sections: widget.data
+          sections: top5Data
               .map((e) => _buildPieChartItem(
-                  value: e.amount, opacity: opacities[widget.data.indexOf(e)]))
+                  value: e.amount, opacity: opacities[top5Data.indexOf(e)]))
               .toList(),
         ),
         swapAnimationDuration: const Duration(seconds: 1),
@@ -88,12 +91,14 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
   }
 
   Widget _buildPieChartLegend() {
+    List top5Data =
+        widget.data.sublist(0, widget.data.length > 5 ? 5 : widget.data.length);
     return Column(
       children: [
         Column(
-            children: widget.data.map(
+            children: top5Data.map(
           (e) {
-            int index = widget.data.indexOf(e);
+            int index = top5Data.indexOf(e);
             int nextIndex = index + 1;
 
             if (index % 2 == 0) {
@@ -105,10 +110,10 @@ class _IncomeExpensePieChartState extends State<IncomeExpensePieChart> {
                           amount: e.amount.toString(),
                           color: widget.color.withOpacity(opacities[index]))),
                   Expanded(
-                      child: nextIndex < widget.data.length
+                      child: nextIndex < top5Data.length
                           ? _buildPieChartLegendItem(
-                              category: widget.data[nextIndex].category,
-                              amount: widget.data[nextIndex].amount.toString(),
+                              category: top5Data[nextIndex].category,
+                              amount: top5Data[nextIndex].amount.toString(),
                               color: widget.color
                                   .withOpacity(opacities[nextIndex]))
                           : const SizedBox()),
