@@ -14,12 +14,11 @@ class UpcomingBillStore = _UpcomingBillStoreBase with _$UpcomingBillStore;
 
 abstract class _UpcomingBillStoreBase with Store {
   @observable
-  UpcomingBillMeta upcomingBillMeta = UpcomingBillMeta();
-
-  @observable
   UpcomingBill upcomingBill = UpcomingBill(
+    totalUpcomingBills: 0,
     data: ObservableList(),
-    meta: UpcomingBillMeta(),
+    totals: TotalData(),
+    links: LinkData(),
   );
 
   @observable
@@ -57,15 +56,6 @@ abstract class _UpcomingBillStoreBase with Store {
 
   @action
   void setFilter(UpcomingBillFilterEnum type) => filter = type;
-
-  // Use for pagination (Check if all items are already fetch)
-  @action
-  void setNextPage() {
-    if (upcomingBill.meta.perPage * upcomingBill.meta.currentPage <=
-        upcomingBill.meta.total) {
-      upcomingBill.meta.currentPage += 1;
-    }
-  }
 
   // Use for filter upcoming bills
   @computed
@@ -108,6 +98,22 @@ abstract class _UpcomingBillStoreBase with Store {
     }
   }
 
+  @observable
+  late int totalUpcomingBills = upcomingBill.totalUpcomingBills;
+
+  @observable
+  int currentPage = 1;
+  int perPage = 15;
+
+  // Use for pagination (Check if all items are already fetch)
+  @action
+  void setNextPage() {
+    print('llll $currentPage | ${upcomingBill.totalUpcomingBills}');
+    if (perPage * currentPage <= upcomingBill.totalUpcomingBills) {
+      currentPage += 1;
+    }
+  }
+
   // Fetch monthly data
   @action
   Future read({bool refreshed = false}) async {
@@ -116,12 +122,11 @@ abstract class _UpcomingBillStoreBase with Store {
     if (refreshed) {
       status = LoadingStatusEnum.loading;
       upcomingBill.data.clear();
-      upcomingBill.meta = UpcomingBillMeta();
-      upcomingBill.meta.currentPage = 1;
+      currentPage = 1;
     }
 
     try {
-      int page = upcomingBill.meta.currentPage;
+      int page = currentPage;
       String url = 'upcomingbills?$queryParameter&page=$page';
       debugPrint('llll $url');
 
@@ -129,18 +134,21 @@ abstract class _UpcomingBillStoreBase with Store {
       if (response.statusCode == 200) {
         UpcomingBill newUpcomingBill = await compute(
             getUpcomingBill, response.data as Map<String, dynamic>);
-        if (upcomingBill.data.length < newUpcomingBill.meta.total &&
+        totalUpcomingBills = newUpcomingBill.totalUpcomingBills;
+        if (upcomingBill.data.length < newUpcomingBill.totalUpcomingBills &&
             upcomingBill.data.length + newUpcomingBill.data.length <=
-                newUpcomingBill.meta.total) {
+                newUpcomingBill.totalUpcomingBills) {
           upcomingBill.data.addAll(newUpcomingBill.data);
-          upcomingBill.meta = newUpcomingBill.meta;
-          upcomingBillMeta = newUpcomingBill.meta;
+          upcomingBill.totalUpcomingBills = newUpcomingBill.totalUpcomingBills;
+          upcomingBill.totals = newUpcomingBill.totals;
+          upcomingBill.links = newUpcomingBill.links;
         }
         setNextPage();
         status = LoadingStatusEnum.done;
       }
     } catch (e) {
       debugPrint('--> ${e.runtimeType}, ${e.toString()}');
+      status = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- End: fetching upcoming bill');
     }

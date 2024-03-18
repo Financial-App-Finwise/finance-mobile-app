@@ -1,3 +1,4 @@
+import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/this_month_content.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'upcoming_bill_model.g.dart';
@@ -8,12 +9,21 @@ UpcomingBill getUpcomingBill(Map<String, dynamic> json) {
 
 @JsonSerializable()
 class UpcomingBill {
+  @JsonKey(name: 'totalUpcomingBills')
+  late int totalUpcomingBills;
+
+  @JsonKey(name: 'upcomingBills')
   late List<UpcomingBillData> data;
-  late UpcomingBillMeta meta;
+
+  late TotalData totals;
+
+  late LinkData links;
 
   UpcomingBill({
+    this.totalUpcomingBills = 0,
     required this.data,
-    required this.meta,
+    required this.totals,
+    required this.links,
   });
 
   factory UpcomingBill.fromJson(Map<String, dynamic> json) =>
@@ -64,24 +74,41 @@ class UpcomingBillData {
 }
 
 @JsonSerializable()
-class UpcomingBillMeta {
-  @JsonKey(name: 'current_page')
-  late int currentPage;
-  late int total;
+class TotalData {
+  late int thisMonth;
+  late int nextMonth;
+  late int next6Months;
+  late int thisYear;
+  late int nextYear;
 
-  @JsonKey(name: 'per_page')
-  late int perPage;
-
-  UpcomingBillMeta({
-    this.currentPage = 0,
-    this.total = 0,
-    this.perPage = 0,
+  TotalData({
+    this.thisMonth = 0,
+    this.nextMonth = 0,
+    this.next6Months = 0,
+    this.thisYear = 0,
+    this.nextYear = 0,
   });
 
-  factory UpcomingBillMeta.fromJson(Map<String, dynamic> json) =>
-      _$UpcomingBillMetaFromJson(json);
+  factory TotalData.fromJson(Map<String, dynamic> json) =>
+      _$TotalDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UpcomingBillMetaToJson(this);
+  Map<String, dynamic> toJson() => _$TotalDataToJson(this);
+}
+
+@JsonSerializable()
+class LinkData {
+  late String prev;
+  late String next;
+
+  LinkData({
+    this.prev = 'no link',
+    this.next = 'no link',
+  });
+
+  factory LinkData.fromJson(Map<String, dynamic> json) =>
+      _$LinkDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LinkDataToJson(this);
 }
 
 // {

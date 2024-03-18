@@ -7,16 +7,20 @@ part of 'upcoming_bill_model.dart';
 // **************************************************************************
 
 UpcomingBill _$UpcomingBillFromJson(Map<String, dynamic> json) => UpcomingBill(
-      data: (json['data'] as List<dynamic>)
+      totalUpcomingBills: json['totalUpcomingBills'] as int? ?? 0,
+      data: (json['upcomingBills'] as List<dynamic>)
           .map((e) => UpcomingBillData.fromJson(e as Map<String, dynamic>))
           .toList(),
-      meta: UpcomingBillMeta.fromJson(json['meta'] as Map<String, dynamic>),
+      totals: TotalData.fromJson(json['totals'] as Map<String, dynamic>),
+      links: LinkData.fromJson(json['links'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UpcomingBillToJson(UpcomingBill instance) =>
     <String, dynamic>{
-      'data': instance.data,
-      'meta': instance.meta,
+      'totalUpcomingBills': instance.totalUpcomingBills,
+      'upcomingBills': instance.data,
+      'totals': instance.totals,
+      'links': instance.links,
     };
 
 UpcomingBillData _$UpcomingBillDataFromJson(Map<String, dynamic> json) =>
@@ -44,16 +48,28 @@ Map<String, dynamic> _$UpcomingBillDataToJson(UpcomingBillData instance) =>
       'status': instance.status,
     };
 
-UpcomingBillMeta _$UpcomingBillMetaFromJson(Map<String, dynamic> json) =>
-    UpcomingBillMeta(
-      currentPage: json['current_page'] as int? ?? 0,
-      total: json['total'] as int? ?? 0,
-      perPage: json['per_page'] as int? ?? 0,
+TotalData _$TotalDataFromJson(Map<String, dynamic> json) => TotalData(
+      thisMonth: json['thisMonth'] as int? ?? 0,
+      nextMonth: json['nextMonth'] as int? ?? 0,
+      next6Months: json['next6Months'] as int? ?? 0,
+      thisYear: json['thisYear'] as int? ?? 0,
+      nextYear: json['nextYear'] as int? ?? 0,
     );
 
-Map<String, dynamic> _$UpcomingBillMetaToJson(UpcomingBillMeta instance) =>
-    <String, dynamic>{
-      'current_page': instance.currentPage,
-      'total': instance.total,
-      'per_page': instance.perPage,
+Map<String, dynamic> _$TotalDataToJson(TotalData instance) => <String, dynamic>{
+      'thisMonth': instance.thisMonth,
+      'nextMonth': instance.nextMonth,
+      'next6Months': instance.next6Months,
+      'thisYear': instance.thisYear,
+      'nextYear': instance.nextYear,
+    };
+
+LinkData _$LinkDataFromJson(Map<String, dynamic> json) => LinkData(
+      prev: json['prev'] as String? ?? 'no link',
+      next: json['next'] as String? ?? 'no link',
+    );
+
+Map<String, dynamic> _$LinkDataToJson(LinkData instance) => <String, dynamic>{
+      'prev': instance.prev,
+      'next': instance.next,
     };
