@@ -48,7 +48,9 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
       amountIncomeController: TextEditingController(),
       amountExpenseController: TextEditingController(),
       noteController: TextEditingController(),
-      dateController: TextEditingController(),
+      dateController: TextEditingController(
+          text: UIHelper.getDateFormat(
+              DateTime.now().toString(), 'dd MMM, yyyy')),
       transactionData: TransactionData(
         date: UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMM, yyyy'),
       ),
@@ -64,7 +66,6 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
         required CategoryData selectedCategory,
         required TransactionPost transactionPost,
       }) async {
-
         print(transactionPost.toJson());
 
         // bool success = await Navigator.push(
