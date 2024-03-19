@@ -6,20 +6,21 @@ import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
 import 'package:flutter/material.dart';
 
 class DateTextFieldWidget extends StatefulWidget {
-  late final String hintText;
-  late final void Function(DateTime selectedDay, DateTime focusedDay)
-      onDaySelected;
-  late bool enable;
+  final String hintText;
+  final void Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
+  final bool enable;
   final TextEditingController? controller;
   final TextStyle? hintStyle;
+  final TextStyle? textStyle;
 
-  DateTextFieldWidget({
+  const DateTextFieldWidget({
     super.key,
     this.hintText = '',
     this.hintStyle,
     this.enable = true,
     required this.onDaySelected,
     this.controller,
+    this.textStyle,
   });
 
   @override
@@ -47,7 +48,7 @@ class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
               );
             }
           : null,
-      style: TextStyleHelper.getw500size(14),
+      style: widget.textStyle ?? TextStyleHelper.getw500size(14),
       readOnly: true,
       decoration: InputDecoration(
         isDense: true,
