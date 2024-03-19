@@ -74,25 +74,28 @@ abstract class _UpcomingBillStoreBase with Store {
   @observable
   ObservableMap<String, UpcomingBillMonth> upcomingBillYearly = ObservableMap();
 
+  @observable
+  LoadingStatusEnum yearlyStatus = LoadingStatusEnum.done;
+
   // Fetch yearly data
   @action
   Future readYearly() async {
     debugPrint('--> START: read upcomingbill yearly');
-    status = LoadingStatusEnum.loading;
+    yearlyStatus = LoadingStatusEnum.loading;
     try {
       Response response =
           await ApiService.dio.get('upcomingbills?year=${startDate.year}');
       if (response.statusCode == 200) {
         upcomingBillYearly = ObservableMap.of(await compute(
             getUpcomingBillYearly, response.data as Map<String, dynamic>));
-        status = LoadingStatusEnum.done;
+        yearlyStatus = LoadingStatusEnum.done;
       } else {
         debugPrint('--> Something went wrong, code: ${response.statusCode}');
-        status = LoadingStatusEnum.error;
+        yearlyStatus = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
-      status = LoadingStatusEnum.error;
+      yearlyStatus = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: read upcomingbill yearly');
     }
@@ -108,7 +111,6 @@ abstract class _UpcomingBillStoreBase with Store {
   // Use for pagination (Check if all items are already fetch)
   @action
   void setNextPage() {
-    print('llll $currentPage | ${upcomingBill.totalUpcomingBills}');
     if (perPage * currentPage <= upcomingBill.totalUpcomingBills) {
       currentPage += 1;
     }
@@ -128,7 +130,6 @@ abstract class _UpcomingBillStoreBase with Store {
     try {
       int page = currentPage;
       String url = 'upcomingbills?$queryParameter&page=$page';
-      debugPrint('llll $url');
 
       Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {

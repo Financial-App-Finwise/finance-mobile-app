@@ -10,7 +10,7 @@ Map<String, UpcomingBillMonth> getUpcomingBillYearly(
 
 @JsonSerializable()
 class UpcomingBillMonth {
-  @JsonKey(name: 'Number of goals', includeToJson: false)
+  @JsonKey(name: 'Number of upcomingbills', includeToJson: false)
   late int numberOfGoals;
 
   UpcomingBillMonth({

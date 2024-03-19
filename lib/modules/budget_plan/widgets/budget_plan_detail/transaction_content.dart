@@ -1,9 +1,11 @@
+import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
+import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
@@ -127,7 +129,18 @@ class _TransactionContentState extends State<TransactionContent> {
           ),
           child: Column(
             children: [
-              _transactionCard(item),
+              // _transactionCard(item),
+              TransactionItem(
+                transactionData: item,
+                color: const Color(0xFFEE5353),
+                icon: IconHelper.getSVG(
+                  SVGName.schoolBus,
+                  color: ColorConstant.white,
+                ),
+                title: item.note,
+                date: item.date,
+                amount: item.amount.toString(),
+              )
               // const Divider(
               //   color: Color(0xFFE9EAF1),
               // ),

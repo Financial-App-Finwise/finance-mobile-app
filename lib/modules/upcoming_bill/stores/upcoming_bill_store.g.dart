@@ -104,6 +104,22 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     });
   }
 
+  late final _$yearlyStatusAtom =
+      Atom(name: '_UpcomingBillStoreBase.yearlyStatus', context: context);
+
+  @override
+  LoadingStatusEnum get yearlyStatus {
+    _$yearlyStatusAtom.reportRead();
+    return super.yearlyStatus;
+  }
+
+  @override
+  set yearlyStatus(LoadingStatusEnum value) {
+    _$yearlyStatusAtom.reportWrite(value, super.yearlyStatus, () {
+      super.yearlyStatus = value;
+    });
+  }
+
   late final _$totalUpcomingBillsAtom =
       Atom(name: '_UpcomingBillStoreBase.totalUpcomingBills', context: context);
 
@@ -278,6 +294,7 @@ status: ${status},
 startDate: ${startDate},
 filter: ${filter},
 upcomingBillYearly: ${upcomingBillYearly},
+yearlyStatus: ${yearlyStatus},
 totalUpcomingBills: ${totalUpcomingBills},
 currentPage: ${currentPage},
 createStatus: ${createStatus},

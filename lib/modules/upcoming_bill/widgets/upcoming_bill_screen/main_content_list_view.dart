@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
@@ -5,6 +6,7 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/enums/upcoming_bill_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/filter_bar.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
@@ -242,20 +244,43 @@ class _MainContentListViewState extends State<MainContentListView> {
                         InkWell(
                           onTap: () async {
                             bool success = false;
-                            success = await context
-                                .read<TransactionStore>()
-                                .post(TransactionData(
-                                    categoryID: upcomingBill.categoryID,
-                                    isIncome: false,
-                                    amount: upcomingBill.amount.toDouble(),
-                                    upcomingbillID: upcomingBill.id,
-                                    date: DateTime.now().toString(),
-                                    expenseType: 'Upcoming Bill'));
-                            if (success) {
-                              await context
-                                  .read<UpcomingBillStore>()
-                                  .read(refreshed: true);
+                            Map<String, dynamic> data = {
+                              "upcomingbillID": upcomingBill.id,
+                              "date": DateTime.now().toString(),
+                              "note": '${upcomingBill.name} Bill',
+                            };
+
+                            try {
+                              Response response = await ApiService.dio.post(
+                                'transactions',
+                                data: data,
+                              );
+                              if (response.statusCode == 201) {
+                                await context
+                                    .read<UpcomingBillStore>()
+                                    .read(refreshed: true);
+                              }
+                            } catch (e) {
+                              debugPrint('${e.runtimeType}: ${e.toString()}');
                             }
+
+                            // success =
+                            //     await context.read<TransactionStore>().post(
+                            //           TransactionData(
+                            //             // categoryID: upcomingBill.categoryID,
+                            //             // isIncome: false,
+                            //             // amount: upcomingBill.amount.toDouble(),
+                            //             upcomingbillID: upcomingBill.id,
+                            //             date: DateTime.now().toString(),
+                            //             // expenseType: 'General',
+                            //             note: '${upcomingBill.name} Bill',
+                            //           ),
+                            //         );
+                            // if (success) {
+                            //   await context
+                            //       .read<UpcomingBillStore>()
+                            //       .read(refreshed: true);
+                            // }
                           },
                           child: Container(
                             width: double.infinity,

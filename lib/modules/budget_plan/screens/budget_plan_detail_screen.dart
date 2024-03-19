@@ -103,9 +103,13 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     decoration: BoxDecoration(
                         color: const Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(4)),
-                    child: const Icon(
-                      Icons.car_rental_outlined,
-                      color: Color(0xFFEE5353),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: IconHelper.getSVG(
+                        SVGName.schoolBus,
+                        color: ColorConstant.expenseIcon,
+                      ),
                     ),
                   ),
                   const SizedBox(
