@@ -161,7 +161,9 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
   Widget _buildContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read<UpcomingBillStore>().read(refreshed: true);
+        _isGrid
+            ? await context.read<UpcomingBillStore>().readYearly()
+            : await context.read<UpcomingBillStore>().read(refreshed: true);
       },
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -188,15 +190,14 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
     });
   }
 
-  late List<String> months = [];
-
   Widget _mainContentGridView() {
-    store.upcomingBillYearly.forEach((key, value) {
-      months.add(key);
-    });
-
     return Observer(builder: (context) {
-      return store.status == LoadingStatusEnum.loading
+      List<String> months = [];
+      store.upcomingBillYearly.forEach((key, value) {
+        months.add(key);
+      });
+      // debugPrint('llll ${store.upcomingBillYearly['March']!.numberOfGoals}');
+      return store.yearlyStatus == LoadingStatusEnum.loading
           ? const Center(child: CircularProgressIndicatorTwoArcs())
           : Container(
               color: const Color(0xFFF5F7F8),
