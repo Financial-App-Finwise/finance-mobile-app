@@ -86,6 +86,13 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
           Computed<SmartGoal>(() => super.achievedSmartGoal,
               name: '_SmartGoalStoreBase.achievedSmartGoal'))
       .value;
+  Computed<bool>? _$isLoadingDetailComputed;
+
+  @override
+  bool get isLoadingDetail =>
+      (_$isLoadingDetailComputed ??= Computed<bool>(() => super.isLoadingDetail,
+              name: '_SmartGoalStoreBase.isLoadingDetail'))
+          .value;
 
   late final _$loadingStatusAtom =
       Atom(name: '_SmartGoalStoreBase.loadingStatus', context: context);
@@ -292,6 +299,38 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
+  late final _$smartGoalDetailAtom =
+      Atom(name: '_SmartGoalStoreBase.smartGoalDetail', context: context);
+
+  @override
+  SmartGoalDetailModel get smartGoalDetail {
+    _$smartGoalDetailAtom.reportRead();
+    return super.smartGoalDetail;
+  }
+
+  @override
+  set smartGoalDetail(SmartGoalDetailModel value) {
+    _$smartGoalDetailAtom.reportWrite(value, super.smartGoalDetail, () {
+      super.smartGoalDetail = value;
+    });
+  }
+
+  late final _$loadingDetailAtom =
+      Atom(name: '_SmartGoalStoreBase.loadingDetail', context: context);
+
+  @override
+  LoadingStatusEnum get loadingDetail {
+    _$loadingDetailAtom.reportRead();
+    return super.loadingDetail;
+  }
+
+  @override
+  set loadingDetail(LoadingStatusEnum value) {
+    _$loadingDetailAtom.reportWrite(value, super.loadingDetail, () {
+      super.loadingDetail = value;
+    });
+  }
+
   late final _$readAsyncAction =
       AsyncAction('_SmartGoalStoreBase.read', context: context);
 
@@ -320,6 +359,14 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   @override
   Future<dynamic> readYearly() {
     return _$readYearlyAsyncAction.run(() => super.readYearly());
+  }
+
+  late final _$showAsyncAction =
+      AsyncAction('_SmartGoalStoreBase.show', context: context);
+
+  @override
+  Future<dynamic> show(int id) {
+    return _$showAsyncAction.run(() => super.show(id));
   }
 
   late final _$postAsyncAction =
@@ -408,6 +455,8 @@ filteredSmartGoalMap: ${filteredSmartGoalMap},
 meta: ${meta},
 smartGoalYearly: ${smartGoalYearly},
 year: ${year},
+smartGoalDetail: ${smartGoalDetail},
+loadingDetail: ${loadingDetail},
 isLoading: ${isLoading},
 isLoadingCreate: ${isLoadingCreate},
 isLoadingUpdate: ${isLoadingUpdate},
@@ -418,7 +467,8 @@ queryParemeterInProgress: ${queryParemeterInProgress},
 queryParemeterAchieved: ${queryParemeterAchieved},
 filteredSmartGoal: ${filteredSmartGoal},
 inProgressSmartGoal: ${inProgressSmartGoal},
-achievedSmartGoal: ${achievedSmartGoal}
+achievedSmartGoal: ${achievedSmartGoal},
+isLoadingDetail: ${isLoadingDetail}
     ''';
   }
 }

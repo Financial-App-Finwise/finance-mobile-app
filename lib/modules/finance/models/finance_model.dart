@@ -26,8 +26,10 @@ class Finance {
 class FinanceData {
   FinanceData({
     required this.items,
-    this.totalExpenses = 0,
-    this.totalIncomes = 0,
+    this.totalExpense = 0,
+    this.totalIncome = 0,
+    this.filteredExpense = 0,
+    this.filteredIncome = 0,
     required this.topCategories,
     required this.allTransactions,
     required this.total,
@@ -36,11 +38,17 @@ class FinanceData {
   @JsonKey(name: 'finance')
   late final List<FinanceItem> items;
 
+  @JsonKey(name: 'filtered_expenses')
+  late final double filteredExpense;
+
+  @JsonKey(name: 'filtered_incomes')
+  late final double filteredIncome;
+
   @JsonKey(name: 'total_expenses')
-  late final double totalExpenses;
+  late final double totalExpense;
 
   @JsonKey(name: 'total_incomes')
-  late final double totalIncomes;
+  late final double totalIncome;
 
   @JsonKey(name: 'top_transactions')
   late final List<TopCategory> topCategories;

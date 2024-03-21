@@ -4,6 +4,7 @@ import 'package:finwise/core/enums/smart_goal_status_enum.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/services/api_service.dart';
 import 'package:finwise/modules/smart_goal/helpers/smart_goal_helper.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_detail_model.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_yearly_model.dart';
 import 'package:flutter/foundation.dart';
@@ -291,6 +292,45 @@ abstract class _SmartGoalStoreBase with Store {
       loadingYearly = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: read smart goal');
+    }
+  }
+
+  // -------------------- Show --------------------
+  @observable
+  SmartGoalDetailModel smartGoalDetail = SmartGoalDetailModel(
+      smartGoalDetail: SmartGoalDetail(
+    transactions: [],
+    contributions: [],
+  ));
+
+  @observable
+  LoadingStatusEnum loadingDetail = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingDetail => loadingDetail == LoadingStatusEnum.loading;
+
+  @action
+  Future show(int id) async {
+    debugPrint('--> START: show smart goal');
+    loadingDetail = LoadingStatusEnum.loading;
+    try {
+      Response response = await ApiService.dio.get('goals/$id');
+      if (response.statusCode == 200) {
+        debugPrint('--> successfully fetched');
+        smartGoalDetail = await compute(
+          getSmartGoalDetailModel,
+          response.data as Map<String, dynamic>,
+        );
+        loadingDetail = LoadingStatusEnum.done;
+      } else {
+        debugPrint('--> Something went wrong, code: ${response.statusCode}');
+        loadingDetail = LoadingStatusEnum.error;
+      }
+    } catch (e) {
+      debugPrint('${e.runtimeType}: ${e.toString()}');
+      loadingDetail = LoadingStatusEnum.error;
+    } finally {
+      debugPrint('<-- END: show smart goal');
     }
   }
 

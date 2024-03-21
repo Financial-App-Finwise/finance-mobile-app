@@ -3,26 +3,27 @@ import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/widgets/screens/loading_screen.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
+import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class TransactionCreateScreen extends StatefulWidget {
-  final TransactionPost transactionPost;
+class TransactionDeleteScreen extends StatefulWidget {
+  final TransactionData transactionData;
 
-  const TransactionCreateScreen({
+  const TransactionDeleteScreen({
     super.key,
-    required this.transactionPost,
+    required this.transactionData,
   });
 
   @override
-  State<TransactionCreateScreen> createState() =>
-      _TransactionCreateScreenState();
+  State<TransactionDeleteScreen> createState() =>
+      _TransactionDeleteScreenState();
 }
 
-class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
+class _TransactionDeleteScreenState extends State<TransactionDeleteScreen> {
   late final store = context.read<TransactionStore>();
   late final financeStore = context.read<FinanceStore>();
 
@@ -30,7 +31,7 @@ class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      bool success = await store.post(widget.transactionPost);
+      bool success = await store.delete(widget.transactionData);
 
       if (success) {
         await financeStore.read();
@@ -46,9 +47,9 @@ class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
 
   Widget _buildLoadingScreen() {
     return Observer(builder: (context) {
-      return store.loadingCreate == LoadingStatusEnum.done
+      return store.loadingDelete == LoadingStatusEnum.done
           ? LoadingScreen(
-              title: 'Transaction Created Successfully!',
+              title: 'Transaction Deleted Successfully!',
               description: 'Please wait...\nYou will be directed back.',
               icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
             )

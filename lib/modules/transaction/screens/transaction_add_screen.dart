@@ -8,6 +8,7 @@ import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/screens/transaction_create_screen.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,9 +49,7 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
       amountIncomeController: TextEditingController(),
       amountExpenseController: TextEditingController(),
       noteController: TextEditingController(),
-      dateController: TextEditingController(
-          text: UIHelper.getDateFormat(
-              DateTime.now().toString(), 'dd MMM, yyyy')),
+      dateController: TextEditingController(text: DateTime.now().toString()),
       transactionData: TransactionData(
         date: UIHelper.getDateFormat(DateTime.now().toString(), 'dd MMM, yyyy'),
       ),
@@ -66,18 +65,19 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
         required CategoryData selectedCategory,
         required TransactionPost transactionPost,
       }) async {
+        print('add transaction: ');
         print(transactionPost.toJson());
 
-        // bool success = await Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (_) =>
-        //           TransactionCreateScreen(transactionPost: transactionPost)),
-        // );
+        bool success = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) =>
+                  TransactionCreateScreen(transactionPost: transactionPost)),
+        );
 
-        // if (success) {
-        //   Navigator.pop(context);
-        // }
+        if (success) {
+          Navigator.pushReplacementNamed(context, RouteName.transaction);
+        }
       },
     );
   }

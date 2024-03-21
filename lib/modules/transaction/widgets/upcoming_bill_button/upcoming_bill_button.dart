@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 class UpcomingBillButton extends StatefulWidget {
   final SelectItem<UpcomingBillData> currentItem;
   final void Function(UpcomingBillData) onItemSelected;
+  final bool disable;
 
   const UpcomingBillButton({
     super.key,
+    this.disable = false,
     required this.currentItem,
     required this.onItemSelected,
   });
@@ -23,6 +25,7 @@ class _UpcomingBillButtonState extends State<UpcomingBillButton> {
   @override
   Widget build(BuildContext context) {
     return SelectItemButton(
+      disable: widget.disable,
       currentItem: _currentItem,
       title: _currentItem.title,
       subTitle: _currentItem.subTitle,

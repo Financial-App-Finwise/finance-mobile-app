@@ -71,26 +71,17 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
           selectedCategoryId = args.categoryID;
         }
 
-        bool success = await context.read<TransactionStore>().update(
-              TransactionData(
-                id: args.id,
-                categoryID: selectedCategoryId,
-                isIncome: isIncome,
-                amount: double.parse(amount),
-                hasContributed: hasContributed,
-                upcomingbillID: selectedUpcomingBillId,
-                budgetplanID: selectedBudgetPlanId,
-                expenseType: expenseType,
-                date: args.date,
-                note: note,
-              ),
-            );
-        if (success) {
-          await context.read<FinanceStore>().read();
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        }
+        print(args.toJson());
+
+        // bool success = await context.read<TransactionStore>().update(
+        //       TransactionData(id: args.id),
+        //     );
+        // if (success) {
+        //   await context.read<FinanceStore>().read();
+        //   if (mounted) {
+        //     Navigator.pop(context);
+        //   }
+        // }
       },
     );
   }

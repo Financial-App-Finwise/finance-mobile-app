@@ -8,9 +8,11 @@ class SelectItemButton extends StatefulWidget {
   final String subTitle;
   final SelectItem currentItem;
   final Widget selectionScreen;
+  final bool disable;
 
   const SelectItemButton({
     super.key,
+    this.disable = false,
     this.title = '',
     this.subTitle = '',
     required this.selectionScreen,
@@ -25,36 +27,38 @@ class _SelectItemButtonState extends State<SelectItemButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () async {
-        // wait for item selection
-        await Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (
-              context,
-              animation,
-              secondaryAnimation,
-            ) =>
-                widget.selectionScreen,
-            transitionsBuilder: (
-              context,
-              animation,
-              secondaryAnimation,
-              child,
-            ) {
-              const begin = Offset(1.0, 0.0);
-              const end = Offset.zero;
-              final tween = Tween(begin: begin, end: end);
-              final offsetAnimation = animation.drive(tween);
+      onTap: widget.disable
+          ? null
+          : () async {
+              // wait for item selection
+              await Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (
+                    context,
+                    animation,
+                    secondaryAnimation,
+                  ) =>
+                      widget.selectionScreen,
+                  transitionsBuilder: (
+                    context,
+                    animation,
+                    secondaryAnimation,
+                    child,
+                  ) {
+                    const begin = Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    final tween = Tween(begin: begin, end: end);
+                    final offsetAnimation = animation.drive(tween);
 
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
+                    return SlideTransition(
+                      position: offsetAnimation,
+                      child: child,
+                    );
+                  },
+                ),
               );
             },
-          ),
-        );
-      },
       child: Column(
         children: [
           Container(

@@ -1,4 +1,6 @@
+import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
+import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'transaction_model.g.dart';
@@ -76,8 +78,14 @@ class TransactionData {
 
   late int categoryID;
 
-  @JsonKey(name: 'category', includeToJson: false)
+  @JsonKey(name: 'category', includeFromJson: true, includeToJson: false)
   late CategoryData? categoryData;
+
+  @JsonKey(name: 'budgetPlan', includeFromJson: true, includeToJson: false)
+  late BudgetPlanData? budgetPlanData;
+
+  @JsonKey(name: 'upcomingBill', includeFromJson: true, includeToJson: false)
+  late UpcomingBillData? upcomingBillData;
 
   @JsonKey(fromJson: _intToBool, toJson: _boolToInt)
   late bool isIncome;
@@ -105,6 +113,8 @@ class TransactionData {
     this.userID = 0,
     this.categoryID = 0,
     this.categoryData,
+    this.budgetPlanData,
+    this.upcomingBillData,
     this.isIncome = true,
     this.amount = 0,
     this.hasContributed = false,

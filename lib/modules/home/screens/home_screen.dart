@@ -272,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen>
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => InsightScreen(),
+                    builder: (_) => const InsightScreen(),
                   ),
                 ),
                 child: const Text(
@@ -304,22 +304,41 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                       // ---------- Dropdown Button ----------
-                      DurationDropDown(
-                        items: [
-                          DurationDropDownItem(
-                              title: 'This Month', value: 'this_month'),
-                          DurationDropDownItem(
-                              title: 'This Week', value: 'this_week'),
-                          DurationDropDownItem(
-                              title: 'Last Month', value: 'last_month'),
-                          DurationDropDownItem(
-                              title: 'Last 3 Months', value: 'last_3_months'),
-                          DurationDropDownItem(
-                              title: 'Last 6 Months', value: 'last_6_months'),
-                        ],
-                        selectedValue: 'this_month',
-                        onChange: (value) {},
-                      ),
+                      // DurationDropDown(
+                      //   items: [
+                      //     DurationDropDownItem(
+                      //         title: 'This Month', value: 'this_month'),
+                      //     DurationDropDownItem(
+                      //         title: 'Last Month', value: 'last_month'),
+                      //     DurationDropDownItem(
+                      //         title: 'Last 3 Months', value: 'last_3_months'),
+                      //     DurationDropDownItem(
+                      //         title: 'Last 4 Months', value: 'last_4_months'),
+                      //   ],
+                      //   selectedValue: _financeStore.period,
+                      //   onChange: (value) async {
+                      //     // save previous value, to aviod UI error in the bar chart
+                      //     _financeStore.previousBarData = ObservableMap.of(
+                      //         _financeStore.filteredFinance.data.total);
+
+                      //     // change the period
+                      //     _financeStore.period = value;
+
+                      //     // initialize the map item value
+                      //     _financeStore
+                      //         .initialize(_financeStore.queryParemeter);
+
+                      //     // if the filteredFinance is empty, read to get data
+                      //     if (_financeStore
+                      //         .filteredFinance.data.items.isEmpty) {
+                      //       await _financeStore.read(
+                      //         isIncome: true,
+                      //         setLoading: () => _financeStore.loadingBarChart =
+                      //             LoadingStatusEnum.loading,
+                      //       );
+                      //     }
+                      //   },
+                      // ),
                     ],
                   ),
                   // ---------- Divider ----------
@@ -336,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen>
                           child: _buildFinanceItem(
                             text: 'Income',
                             amount:
-                                '\$${_financeStore.finance.data.totalIncomes}',
+                                '\$${_financeStore.filteredFinance.data.totalIncome}',
                             color: ColorConstant.income,
                             icon: IconHelper.getSVG(
                               SVGName.earn,
@@ -355,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen>
                           child: _buildFinanceItem(
                             text: 'Expense',
                             amount:
-                                '\$${_financeStore.finance.data.totalExpenses}',
+                                '\$${_financeStore.filteredFinance.data.totalExpense}',
                             color: ColorConstant.expense,
                             icon: IconHelper.getSVG(
                               SVGName.expense,
@@ -526,8 +545,6 @@ class _HomeScreenState extends State<HomeScreen>
                     items: [
                       DurationDropDownItem(
                           title: 'This Month', value: 'this_month'),
-                      // DurationDropDownItem(
-                      //     title: 'This Week', value: 'this_week'),
                       DurationDropDownItem(
                           title: 'Last Month', value: 'last_month'),
                       DurationDropDownItem(
@@ -599,8 +616,7 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
                   periodButtonVisible: false,
-                  amount:
-                      '\$${_financeStore.expenseFinance.data.totalExpenses}',
+                  amount: '\$${_financeStore.expenseFinance.data.totalExpense}',
                   color: ColorConstant.expense,
                   icon: IconHelper.getSVG(
                     SVGName.expense,
@@ -820,7 +836,7 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
-                  amount: '\$${_financeStore.finance.data.totalExpenses}',
+                  amount: '\$${_financeStore.finance.data.totalExpense}',
                   color: ColorConstant.expense,
                   icon: IconHelper.getSVG(
                     SVGName.expense,
@@ -874,7 +890,7 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 _buildGeneralContentHeading(
                   title: 'Totally Earned',
-                  amount: '\$${_financeStore.finance.data.totalIncomes}',
+                  amount: '\$${_financeStore.finance.data.totalIncome}',
                   color: ColorConstant.income,
                   icon: IconHelper.getSVG(
                     SVGName.earn,

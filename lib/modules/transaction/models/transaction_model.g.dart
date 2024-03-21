@@ -27,6 +27,13 @@ TransactionData _$TransactionDataFromJson(Map<String, dynamic> json) =>
       categoryData: json['category'] == null
           ? null
           : CategoryData.fromJson(json['category'] as Map<String, dynamic>),
+      budgetPlanData: json['budgetPlan'] == null
+          ? null
+          : BudgetPlanData.fromJson(json['budgetPlan'] as Map<String, dynamic>),
+      upcomingBillData: json['upcomingBill'] == null
+          ? null
+          : UpcomingBillData.fromJson(
+              json['upcomingBill'] as Map<String, dynamic>),
       isIncome: json['isIncome'] == null
           ? true
           : TransactionData._intToBool(json['isIncome'] as int),

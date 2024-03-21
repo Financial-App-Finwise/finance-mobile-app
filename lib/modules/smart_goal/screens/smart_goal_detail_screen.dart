@@ -17,7 +17,6 @@ import 'package:finwise/core/widgets/general_progress_widget.dart';
 import 'package:finwise/core/widgets/rounded_container.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
-import 'package:finwise/modules/finance/screens/finance_screen.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
@@ -36,6 +35,16 @@ class SmartGoalDetailScreen extends StatefulWidget {
 class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
   late final SmartGoalData args =
       ModalRoute.of(context)!.settings.arguments as SmartGoalData;
+
+  late final store = context.read<SmartGoalStore>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await store.show(args.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -36,6 +36,13 @@ abstract class _TransactionStoreBase with Store {
   @computed
   bool get isLoadingUpdate => loadingUpdate == LoadingStatusEnum.loading;
 
+  // Delete Transaction
+  @observable
+  LoadingStatusEnum loadingDelete = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingDelete => loadingDelete == LoadingStatusEnum.loading;
+
   // Set Loading Status of General Loading
   @action
   void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
@@ -258,7 +265,7 @@ abstract class _TransactionStoreBase with Store {
   @action
   Future<bool> delete(TransactionData transactionData) async {
     debugPrint('--> START: delete, transaction');
-    setLoadingStatus(LoadingStatusEnum.loading);
+    loadingDelete = LoadingStatusEnum.loading;
     bool success = false;
     try {
       Response response =
@@ -266,16 +273,16 @@ abstract class _TransactionStoreBase with Store {
       if (response.statusCode == 200) {
         success = true;
         await readByPage(refreshed: true);
-        setLoadingStatus(LoadingStatusEnum.done);
+        loadingDelete = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        loadingDelete = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      loadingDelete = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: delete, transaction');
     }

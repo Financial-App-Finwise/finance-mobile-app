@@ -20,8 +20,10 @@ FinanceData _$FinanceDataFromJson(Map<String, dynamic> json) => FinanceData(
       items: (json['finance'] as List<dynamic>)
           .map((e) => FinanceItem.fromJson(e as Map<String, dynamic>))
           .toList(),
-      totalExpenses: (json['total_expenses'] as num?)?.toDouble() ?? 0,
-      totalIncomes: (json['total_incomes'] as num?)?.toDouble() ?? 0,
+      totalExpense: (json['total_expenses'] as num?)?.toDouble() ?? 0,
+      totalIncome: (json['total_incomes'] as num?)?.toDouble() ?? 0,
+      filteredExpense: (json['filtered_expenses'] as num?)?.toDouble() ?? 0,
+      filteredIncome: (json['filtered_incomes'] as num?)?.toDouble() ?? 0,
       topCategories: (json['top_transactions'] as List<dynamic>)
           .map((e) => TopCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -33,8 +35,10 @@ FinanceData _$FinanceDataFromJson(Map<String, dynamic> json) => FinanceData(
 Map<String, dynamic> _$FinanceDataToJson(FinanceData instance) =>
     <String, dynamic>{
       'finance': instance.items,
-      'total_expenses': instance.totalExpenses,
-      'total_incomes': instance.totalIncomes,
+      'filtered_expenses': instance.filteredExpense,
+      'filtered_incomes': instance.filteredIncome,
+      'total_expenses': instance.totalExpense,
+      'total_incomes': instance.totalIncome,
       'top_transactions': instance.topCategories,
       'all_transactions': instance.allTransactions,
       'totals': instance.total,

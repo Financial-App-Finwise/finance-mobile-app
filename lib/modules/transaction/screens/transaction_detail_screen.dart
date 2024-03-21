@@ -7,6 +7,7 @@ import 'package:finwise/core/layouts/general_detail_layout.dart';
 import 'package:finwise/core/utils/ui_util.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/screens/transaction_delete_screen.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
@@ -62,15 +63,13 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           'Are you sure you want to delete this TRANSACTION?',
           '',
           onTap: () async {
-            bool success = await context.read<TransactionStore>().delete(args);
-            if (success) {
-              await context.read<FinanceStore>().read();
-              if (mounted) {
-                // await context.read<TransactionStore>().readByPage(refreshed: true);
-                Navigator.pop(context);
-                Navigator.pop(context);
-              }
-            }
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => TransactionDeleteScreen(transactionData: args),
+              ),
+            );
           },
         );
       },
@@ -126,34 +125,32 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             '\$${args.amount}',
             defaultStyle,
           ),
-          Visibility(
-            visible: args.budgetplanID != null,
-            child: overviewCard(
-              IconHelper.getSVG(
-                SVGName.budgetPlan,
-                color: args.isIncome
-                    ? ColorConstant.incomeIcon
-                    : ColorConstant.expense,
-              ),
-              'Budget Plan',
-              '${args.budgetplanID}',
-              defaultStyle,
-            ),
-          ),
-          Visibility(
-            visible: args.upcomingbillID != null,
-            child: overviewCard(
-              IconHelper.getSVG(
-                SVGName.upcomingBill,
-                color: args.isIncome
-                    ? ColorConstant.incomeIcon
-                    : ColorConstant.expense,
-              ),
-              'Upcoming Bill',
-              '${args.upcomingbillID}',
-              defaultStyle,
-            ),
-          ),
+          args.budgetPlanData != null
+              ? overviewCard(
+                  IconHelper.getSVG(
+                    SVGName.budgetPlan,
+                    color: args.isIncome
+                        ? ColorConstant.incomeIcon
+                        : ColorConstant.expense,
+                  ),
+                  'Budget Plan',
+                  '${args.budgetPlanData!.name}',
+                  defaultStyle,
+                )
+              : const SizedBox(),
+          args.upcomingBillData != null
+              ? overviewCard(
+                  IconHelper.getSVG(
+                    SVGName.upcomingBill,
+                    color: args.isIncome
+                        ? ColorConstant.incomeIcon
+                        : ColorConstant.expense,
+                  ),
+                  'Upcoming Bill',
+                  '${args.upcomingBillData!.name}',
+                  defaultStyle,
+                )
+              : const SizedBox(),
           Visibility(
             visible: args.categoryID != null,
             child: overviewCard(

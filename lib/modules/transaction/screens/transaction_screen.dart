@@ -12,7 +12,6 @@ import 'package:finwise/core/layouts/general_simple_header_layout.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/rect_filter_bar_header/rect_filter_bar_header.dart';
 import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
-import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -89,7 +88,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             const SizedBox(height: 8),
             RectFilterBarHeader(
               type: RectFilterBarHeaderType.expanded,
-              currentValue: TransactionTypeEnum.all,
+              currentValue: store.filteredType,
               fontSize: 16,
               items: [
                 FilterBarHeaderItem(
@@ -100,10 +99,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     title: 'Expense', value: TransactionTypeEnum.expense),
               ],
               onTap: (value) async {
-                store.changeFilteredType(value);
-                store.initialize();
-                if (store.filteredTransaction.items.isEmpty) {
-                  store.readByPage(refreshed: true);
+                if (!store.isLoading) {
+                  store.changeFilteredType(value);
+                  store.initialize();
+                  if (store.filteredTransaction.items.isEmpty) {
+                    await store.readByPage(refreshed: true);
+                  }
                 }
               },
             ),

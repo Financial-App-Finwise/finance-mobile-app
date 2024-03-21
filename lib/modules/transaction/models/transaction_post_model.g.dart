@@ -77,11 +77,11 @@ Map<String, dynamic> _$TransactionPostExpenseUpcomingBillToJson(
 TransactionPostIncome _$TransactionPostIncomeFromJson(
         Map<String, dynamic> json) =>
     TransactionPostIncome(
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+      note: json['note'] as String? ?? '',
+      date: json['date'] as String? ?? '',
       categoryID: json['categoryID'] as int? ?? 0,
-    )
-      ..amount = (json['amount'] as num).toDouble()
-      ..date = json['date'] as String
-      ..note = json['note'] as String;
+    );
 
 Map<String, dynamic> _$TransactionPostIncomeToJson(
         TransactionPostIncome instance) =>
@@ -95,14 +95,14 @@ Map<String, dynamic> _$TransactionPostIncomeToJson(
 TransactionPostGoalContribution _$TransactionPostGoalContributionFromJson(
         Map<String, dynamic> json) =>
     TransactionPostGoalContribution(
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+      note: json['note'] as String? ?? '',
+      date: json['date'] as String? ?? '',
+      categoryID: json['categoryID'] as int? ?? 0,
       goalID: json['goalID'] as int? ?? 0,
       contributionAmount:
           (json['contributionAmount'] as num?)?.toDouble() ?? 0.0,
-    )
-      ..amount = (json['amount'] as num).toDouble()
-      ..date = json['date'] as String
-      ..note = json['note'] as String
-      ..categoryID = json['categoryID'] as int;
+    );
 
 Map<String, dynamic> _$TransactionPostGoalContributionToJson(
         TransactionPostGoalContribution instance) =>

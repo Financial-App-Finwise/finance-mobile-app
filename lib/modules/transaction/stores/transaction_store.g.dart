@@ -30,6 +30,13 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
       (_$isLoadingUpdateComputed ??= Computed<bool>(() => super.isLoadingUpdate,
               name: '_TransactionStoreBase.isLoadingUpdate'))
           .value;
+  Computed<bool>? _$isLoadingDeleteComputed;
+
+  @override
+  bool get isLoadingDelete =>
+      (_$isLoadingDeleteComputed ??= Computed<bool>(() => super.isLoadingDelete,
+              name: '_TransactionStoreBase.isLoadingDelete'))
+          .value;
   Computed<String>? _$queryParemeterComputed;
 
   @override
@@ -118,6 +125,22 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
   set loadingUpdate(LoadingStatusEnum value) {
     _$loadingUpdateAtom.reportWrite(value, super.loadingUpdate, () {
       super.loadingUpdate = value;
+    });
+  }
+
+  late final _$loadingDeleteAtom =
+      Atom(name: '_TransactionStoreBase.loadingDelete', context: context);
+
+  @override
+  LoadingStatusEnum get loadingDelete {
+    _$loadingDeleteAtom.reportRead();
+    return super.loadingDelete;
+  }
+
+  @override
+  set loadingDelete(LoadingStatusEnum value) {
+    _$loadingDeleteAtom.reportWrite(value, super.loadingDelete, () {
+      super.loadingDelete = value;
     });
   }
 
@@ -313,6 +336,7 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
 loadingStatus: ${loadingStatus},
 loadingCreate: ${loadingCreate},
 loadingUpdate: ${loadingUpdate},
+loadingDelete: ${loadingDelete},
 transaction: ${transaction},
 isIncome: ${isIncome},
 period: ${period},
@@ -322,6 +346,7 @@ filteredTransactionMap: ${filteredTransactionMap},
 isLoading: ${isLoading},
 isLoadingCreate: ${isLoadingCreate},
 isLoadingUpdate: ${isLoadingUpdate},
+isLoadingDelete: ${isLoadingDelete},
 queryParemeter: ${queryParemeter},
 queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},

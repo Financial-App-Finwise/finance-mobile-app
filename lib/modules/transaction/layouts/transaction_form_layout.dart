@@ -3,6 +3,7 @@ import 'package:finwise/core/constants/expense_type_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/widgets/buttons/select_item_button.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
@@ -182,7 +183,8 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   late bool _isIncome = widget.isIncome;
-  late final _dateController = widget.dateController;
+  late final _dateController = TextEditingController(
+      text: UIHelper.getDateFormat(widget.dateController.text, 'dd MMM, yyyy'));
   late final _noteController = widget.noteController;
   late CategoryData _selectedIncomeCategory = CategoryData();
 
@@ -408,11 +410,13 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
             ],
             currentValue: _expenseType,
             readOnly: !widget.canChangeType,
-            onTap: (value) => setState(() {
-                  _resetItem();
-                  _expenseType = value;
-                  _amountExpenseController.clear();
-                })),
+            onTap: widget.canChangeType
+                ? (value) => setState(() {
+                      _resetItem();
+                      _expenseType = value;
+                      _amountExpenseController.clear();
+                    })
+                : (value) {}),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -443,9 +447,11 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   }
 
   // -------------------- Select Item --------------------
-  late CategoryData _selectedExpenseCategory = CategoryData();
+  late CategoryData _selectedExpenseCategory =
+      widget.transactionData.categoryData ?? CategoryData();
   late BudgetPlanData _selectedBudgetPlan = BudgetPlanData();
-  late UpcomingBillData _selectedUpcomingBill = UpcomingBillData();
+  late UpcomingBillData _selectedUpcomingBill =
+      widget.transactionData.upcomingBillData ?? UpcomingBillData();
 
   Widget _buildItemSelection() {
     switch (_expenseType) {
@@ -472,9 +478,12 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
         );
       case ExpenseTypeConstant.upcomingBill:
         return UpcomingBillButton(
+          disable: !widget.canChangeType,
           currentItem: SelectItem<UpcomingBillData>(
             title: 'Upcoming Bill',
-            subTitle: 'Select an upcoming bill',
+            subTitle: _selectedUpcomingBill.id == 0
+                ? 'Select an upcoming bill'
+                : _selectedUpcomingBill.name,
             pickedIcon:
                 IconHelper.getSVG(SVGName.upcomingBill, color: Colors.white),
             unpickedIcon:
@@ -512,7 +521,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           ? double.parse(_amountIncomeController.text)
           : double.parse(_amountExpenseController.text),
       note: _noteController.text,
-      date: _dateController.text,
+      date: widget.dateController.text,
     );
 
     _transactionPost = TransactionPost();
