@@ -30,7 +30,8 @@ class _TransactionUpdateScreenState extends State<TransactionUpdateScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      bool success = await store.post(widget.transactionData);
+      // bool success = await store.post(widget.transactionData);
+      bool success = true;
 
       if (success) {
         await financeStore.read();
@@ -45,21 +46,18 @@ class _TransactionUpdateScreenState extends State<TransactionUpdateScreen> {
   }
 
   Widget _buildLoadingScreen() {
-    return Observer(
-      builder: (context) {
-        return store.loadingCreate == LoadingStatusEnum.done
-            ? LoadingScreen(
-                title: 'Transaction Created Successfully!',
-                description:
-                    'Please wait...\nYou will be directed back.',
-                icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
-              )
-            : LoadingScreen(
-                title: 'Just a moment',
-                description: 'Please wait...\nWe are preparing for you...',
-                icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
-              );
-      }
-    );
+    return Observer(builder: (context) {
+      return store.loadingCreate == LoadingStatusEnum.done
+          ? LoadingScreen(
+              title: 'Transaction Created Successfully!',
+              description: 'Please wait...\nYou will be directed back.',
+              icon: IconHelper.getSVG(SVGName.check, color: Colors.white),
+            )
+          : LoadingScreen(
+              title: 'Just a moment',
+              description: 'Please wait...\nWe are preparing for you...',
+              icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
+            );
+    });
   }
 }

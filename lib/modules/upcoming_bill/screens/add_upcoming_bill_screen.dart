@@ -285,7 +285,7 @@ class _AddUpcomingBillScreenState extends State<AddUpcomingBillScreen> {
         fillColor: Colors.white,
         filled: true,
         prefixIcon: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: IconHelper.getSVG(
             SVGName.calendar,
             color: ColorConstant.mainText,

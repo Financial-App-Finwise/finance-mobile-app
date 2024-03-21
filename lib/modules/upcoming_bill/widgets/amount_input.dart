@@ -39,7 +39,7 @@ class AmountInput extends StatelessWidget {
           ),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(
-              left: 20,
+              left: 16,
               right: 6,
             ),
             child: IconHelper.getSVG(
