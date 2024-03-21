@@ -67,10 +67,6 @@ class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
                                 height: 16,
                               ),
                               overviewContent(),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              recurrringMonth(),
                             ],
                           ),
                         ),

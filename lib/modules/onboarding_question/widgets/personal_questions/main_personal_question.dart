@@ -80,7 +80,10 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
             ),
             Observer(builder: (context) {
               return ContinueButton(
-                nextPage: store.nextPage,
+                nextPage: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  store.nextPage();
+                },
                 isFormFilled: isFormFilled[store.personalQuestionIndex - 1],
               );
             }),
@@ -119,25 +122,29 @@ class _MainPersonalQuestionState extends State<MainPersonalQuestion> {
         RadioButtonModel(
           'Female',
           IconHelper.getSVG(
-            SVGName.addSquare,
+            SVGName.genderFemale,
+            color: ColorConstant.thin,
           ),
         ),
         RadioButtonModel(
           'Male',
           IconHelper.getSVG(
-            SVGName.addSquare,
+            SVGName.genderMale,
+            color: ColorConstant.thin,
           ),
         ),
         RadioButtonModel(
           'Non-binary',
           IconHelper.getSVG(
-            SVGName.addSquare,
+            SVGName.genderNonbinary,
+            color: ColorConstant.thin,
           ),
         ),
         RadioButtonModel(
           'I prefer not to say',
           IconHelper.getSVG(
-            SVGName.addSquare,
+            SVGName.genderNocomment,
+            color: ColorConstant.thin,
           ),
         ),
       ],

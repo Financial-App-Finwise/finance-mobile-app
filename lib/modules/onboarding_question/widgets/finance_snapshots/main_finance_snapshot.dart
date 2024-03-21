@@ -82,7 +82,10 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
             ),
             Observer(builder: (context) {
               return ContinueButton(
-                nextPage: store.nextPage,
+                nextPage: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  store.nextPage();
+                },
                 isFormFilled: isFormFilled[store.financialSnapshotIndex - 1],
               );
             })
@@ -237,46 +240,6 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
           ObservableList<CategoryData> categories =
               context.watch<CategoryStore>().onboardingCategory;
 
-          // return Column(
-          //   children: [
-          //     for (var category in categories)
-          //       if (category.level == 2)
-          //         Row(
-          //           children: [
-          //             SizedBox(
-          //               height: 28,
-          //               width: 28,
-          //               child: IconHelper.getSVGDefault(
-          //                   SVGName.pandaFinancialSnapshot),
-          //             ),
-          //             const SizedBox(
-          //               width: 12,
-          //             ),
-          //             Text(
-          //               category.name,
-          //               style: const TextStyle(
-          //                 fontWeight: FontWeight.w600,
-          //                 fontSize: 18,
-          //                 letterSpacing: 1,
-          //                 color: ColorConstant.black,
-          //               ),
-          //             )
-          //           ],
-          //         ),
-          //     const SizedBox(
-          //       height: 20,
-          //     ),
-          //     SizedBox(
-          //       width: double.infinity,
-          //       child: _buildSubcategory(category.subcategory ?? []),
-          //     ),
-          //     if (index < categories.length - 1)
-          //       const SizedBox(
-          //         height: 20,
-          //       ),
-          //   ],
-          // );
-
           return ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -287,27 +250,47 @@ class _MainFinanceSnapshotState extends State<MainFinanceSnapshot> {
                   if (categories[index].level == 2)
                     Column(
                       children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              height: 28,
-                              width: 28,
-                              child: IconHelper.getSVGDefault(
-                                  SVGName.pandaFinancialSnapshot),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              categories[index].name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18,
-                                letterSpacing: 1,
-                                color: ColorConstant.black,
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              store.setCategory(categories[index]);
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                height: 28,
+                                width: 28,
+                                child: IconHelper.getSVGDefault(
+                                    SVGName.pandaFinancialSnapshot),
                               ),
-                            )
-                          ],
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                categories[index].name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  letterSpacing: 1,
+                                  color: ColorConstant.black,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              store.categories.contains(categories[index])
+                                  ? SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: IconHelper.getSVG(
+                                        SVGName.tickBox,
+                                        color: ColorConstant.primary,
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 20,

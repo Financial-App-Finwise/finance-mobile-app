@@ -13,6 +13,8 @@ abstract class UpcomingBillHelper {
 
   static Map<UpcomingBillFilterEnum, String> enumToQuery = {
     UpcomingBillFilterEnum.all: '',
+    UpcomingBillFilterEnum.paid: 'paid',
+    UpcomingBillFilterEnum.unpaid: 'unpaid',
     UpcomingBillFilterEnum.tomorrow:
         'date[gte]=${startTomorrow.year}-${startTomorrow.month}-${startTomorrow.day}&date[lte]=${endTomorrow.year}-${endTomorrow.month}-${endTomorrow.day}',
     UpcomingBillFilterEnum.thisWeek:

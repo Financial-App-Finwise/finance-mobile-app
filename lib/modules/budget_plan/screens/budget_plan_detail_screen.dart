@@ -215,14 +215,14 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
           const SizedBox(
             height: 16,
           ),
-          SixMonthChart(
-            sixMonthBudget: data,
-            average: 10,
-            thisMonth: 50,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
+          // SixMonthChart(
+          //   sixMonthBudget: data,
+          //   average: 10,
+          //   thisMonth: 50,
+          // ),
+          // const SizedBox(
+          //   height: 16,
+          // ),
           TransactionContent(
             data: args.transactions,
           ),

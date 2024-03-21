@@ -58,6 +58,14 @@ class _MainContentListViewState extends State<MainContentListView> {
                 value: UpcomingBillFilterEnum.all,
               ),
               FilterBarHeaderItem(
+                title: 'Paid',
+                value: UpcomingBillFilterEnum.paid,
+              ),
+              FilterBarHeaderItem(
+                title: 'Unpaid',
+                value: UpcomingBillFilterEnum.unpaid,
+              ),
+              FilterBarHeaderItem(
                 title: 'Tomorrow',
                 value: UpcomingBillFilterEnum.tomorrow,
               ),

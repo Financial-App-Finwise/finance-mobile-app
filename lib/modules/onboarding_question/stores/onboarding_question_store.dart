@@ -274,7 +274,6 @@ abstract class _OnboardingQuestionStoreBase with Store {
 
     List<String> components = goalDate.text.split("/");
     String postDate = "${components[2]}-${components[1]}-${components[0]}";
-    print('lulz');
 
     Map<String, dynamic> data = {
       "gender": gender.name,
@@ -291,6 +290,8 @@ abstract class _OnboardingQuestionStoreBase with Store {
       "dream_amount": saveForGoal.text,
       "envision_date": postDate,
     };
+
+    print('lulz $data');
 
     try {
       Response response = await ApiService.dio.post(

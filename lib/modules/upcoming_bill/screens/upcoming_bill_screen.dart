@@ -214,6 +214,15 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
                   month: months[index],
                   budget:
                       store.upcomingBillYearly[months[index]]!.numberOfGoals,
+                  monthNumber: index + 1,
+                  date: store.startDate,
+                  setList: (date) {
+                    setState(() {
+                      store.startDate = date;
+                      _isGrid = false;
+                      store.read(refreshed: true);
+                    });
+                  },
                 ),
               ),
             );

@@ -117,7 +117,11 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
           onTap: () {
             setState(() {
               if (widget.loadingStatus != LoadingStatusEnum.loading) {
-                widget.date = subtractMonth(widget.date!);
+                widget.date = DateTime(
+                  widget.date!.year,
+                  widget.date!.month - 1,
+                  widget.date!.day,
+                );
                 currentDate = subtractMonth(currentDate);
                 widget.onDateChanged!(widget.date!);
               }
@@ -142,7 +146,11 @@ class _GeneralDatePickerState extends State<GeneralDatePicker> {
           onTap: () {
             setState(() {
               if (widget.loadingStatus != LoadingStatusEnum.loading) {
-                widget.date = addMonth(widget.date!);
+                widget.date = DateTime(
+                  widget.date!.year,
+                  widget.date!.month + 1,
+                  widget.date!.day,
+                );
                 currentDate = addMonth(currentDate);
                 widget.onDateChanged!(widget.date!);
               }

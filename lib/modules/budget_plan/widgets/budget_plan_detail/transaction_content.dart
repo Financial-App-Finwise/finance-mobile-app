@@ -1,4 +1,5 @@
 import 'package:finwise/core/constants/color_constant.dart';
+import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
@@ -12,6 +13,7 @@ import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
+import 'package:finwise/modules/transaction/screens/transaction_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,17 +69,96 @@ class _TransactionContentState extends State<TransactionContent> {
         const SizedBox(
           height: 16,
         ),
-        for (int index = 0; index < widget.data.length; index++)
-          Column(
-            children: [
-              _transaction(widget.data[index]),
-              if (index < widget.data.length - 1)
-                const SizedBox(
-                  height: 12,
-                ),
-            ],
-          ),
+        widget.data.isEmpty
+            ? _noContentView()
+            : Column(
+                children: [
+                  for (int index = 0; index < widget.data.length; index++)
+                    Column(
+                      children: [
+                        _transaction(widget.data[index]),
+                        if (index < widget.data.length - 1)
+                          const SizedBox(
+                            height: 12,
+                          ),
+                      ],
+                    ),
+                ],
+              ),
       ],
+    );
+  }
+
+  // No content
+  Widget _noContentView() {
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        decoration: BoxDecoration(
+          color: ColorConstant.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            // Icon(
+            //   Icons.circle,
+            //   color: ColorConstant.primary,
+            //   size: 100,
+            // ),
+            SizedBox(
+              height: 100,
+              width: 100,
+              child: IconConstant.myBudget(color: const Color(0xFFA4A7C6)),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              'You have no transaction for this budget.',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: ColorConstant.mainText,
+                height: 2,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 24,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: ColorConstant.secondary,
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TransactionAddScreen()));
+                },
+                child: const Text(
+                  'Add Transaction',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: ColorConstant.white,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -95,29 +176,6 @@ class _TransactionContentState extends State<TransactionContent> {
   Widget _transaction(TransactionData item) {
     return Column(
       children: [
-        // Row(
-        //   children: [
-        //     Text(
-        //       UIHelper.getDateFormat(item.date, "dd MMM, yyyy"),
-        //       style: const TextStyle(
-        //         fontSize: 14,
-        //         fontWeight: FontWeight.w500,
-        //         color: Color(0xFF333652),
-        //       ),
-        //     ),
-        //     const SizedBox(
-        //       width: 12,
-        //     ),
-        //     const Expanded(
-        //       child: Divider(
-        //         color: Color(0xFFE9EAF1),
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // const SizedBox(
-        //   height: 12,
-        // ),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
@@ -141,9 +199,6 @@ class _TransactionContentState extends State<TransactionContent> {
                 date: item.date,
                 amount: item.amount.toString(),
               )
-              // const Divider(
-              //   color: Color(0xFFE9EAF1),
-              // ),
             ],
           ),
         ),

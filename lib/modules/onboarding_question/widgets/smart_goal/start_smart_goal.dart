@@ -30,7 +30,13 @@ class _StartSmartGoalState extends State<StartSmartGoal> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconHelper.getSVGDefault(SVGName.smartFinancialGoal),
+                      Container(
+                        width: double.infinity,
+                        child: Image.asset(
+                          'assets/images/smart_financial_goal.png',
+                          fit: BoxFit.fill,
+                        ),
+                      ),
                       const SizedBox(
                         height: 32,
                       ),

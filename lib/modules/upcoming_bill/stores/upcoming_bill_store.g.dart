@@ -88,6 +88,22 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
     });
   }
 
+  late final _$homeFilterAtom =
+      Atom(name: '_UpcomingBillStoreBase.homeFilter', context: context);
+
+  @override
+  String get homeFilter {
+    _$homeFilterAtom.reportRead();
+    return super.homeFilter;
+  }
+
+  @override
+  set homeFilter(String value) {
+    _$homeFilterAtom.reportWrite(value, super.homeFilter, () {
+      super.homeFilter = value;
+    });
+  }
+
   late final _$upcomingBillYearlyAtom =
       Atom(name: '_UpcomingBillStoreBase.upcomingBillYearly', context: context);
 
@@ -200,8 +216,9 @@ mixin _$UpcomingBillStore on _UpcomingBillStoreBase, Store {
       AsyncAction('_UpcomingBillStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read({bool refreshed = false}) {
-    return _$readAsyncAction.run(() => super.read(refreshed: refreshed));
+  Future<dynamic> read({bool refreshed = false, bool isHome = false}) {
+    return _$readAsyncAction
+        .run(() => super.read(refreshed: refreshed, isHome: isHome));
   }
 
   late final _$postAsyncAction =
@@ -293,6 +310,7 @@ upcomingBill: ${upcomingBill},
 status: ${status},
 startDate: ${startDate},
 filter: ${filter},
+homeFilter: ${homeFilter},
 upcomingBillYearly: ${upcomingBillYearly},
 yearlyStatus: ${yearlyStatus},
 totalUpcomingBills: ${totalUpcomingBills},
