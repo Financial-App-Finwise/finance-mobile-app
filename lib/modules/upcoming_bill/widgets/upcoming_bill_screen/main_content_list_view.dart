@@ -253,32 +253,38 @@ class _MainContentListViewState extends State<MainContentListView> {
                                   transactionPost:
                                       TransactionPostExpenseUpcomingBill(
                                     upcomingbillID: upcomingBill.id,
-                                    amount: upcomingBill.amount.toDouble(),
                                     note: 'Paid for ${upcomingBill.name}',
                                     date: DateTime.now().toString(),
                                   ),
                                 ),
                               ),
                             );
-                            Map<String, dynamic> data = {
-                              "upcomingbillID": upcomingBill.id,
-                              "date": DateTime.now().toString(),
-                              "note": '${upcomingBill.name} Bill',
-                            };
 
-                            try {
-                              Response response = await ApiService.dio.post(
-                                'transactions',
-                                data: data,
-                              );
-                              if (response.statusCode == 201) {
-                                await context
-                                    .read<UpcomingBillStore>()
-                                    .read(refreshed: true);
-                              }
-                            } catch (e) {
-                              debugPrint('${e.runtimeType}: ${e.toString()}');
+                            if (success) {
+                              await context
+                                  .read<UpcomingBillStore>()
+                                  .read(refreshed: true);
                             }
+
+                            // Map<String, dynamic> data = {
+                            //   "upcomingbillID": upcomingBill.id,
+                            //   "date": DateTime.now().toString(),
+                            //   "note": '${upcomingBill.name} Bill',
+                            // };
+
+                            // try {
+                            //   Response response = await ApiService.dio.post(
+                            //     'transactions',
+                            //     data: data,
+                            //   );
+                            //   if (response.statusCode == 201) {
+                            //     await context
+                            //         .read<UpcomingBillStore>()
+                            //         .read(refreshed: true);
+                            //   }
+                            // } catch (e) {
+                            //   debugPrint('${e.runtimeType}: ${e.toString()}');
+                            // }
 
                             // success =
                             //     await context.read<TransactionStore>().post(
