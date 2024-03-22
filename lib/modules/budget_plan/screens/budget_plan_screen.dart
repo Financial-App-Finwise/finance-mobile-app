@@ -12,6 +12,7 @@ import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_yearly_model.dart';
+import 'package:finwise/modules/budget_plan/screens/add_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
@@ -261,6 +262,12 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
                   budget: gridData[index][1],
                   monthNumber: index + 1,
                   date: store.selectedDate,
+                  addItem: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddBudgetPlanScreen(),
+                    ),
+                  ),
                   setList: (date) {
                     setState(() {
                       store.selectedDate = date;
