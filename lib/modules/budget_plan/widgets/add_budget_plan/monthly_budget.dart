@@ -1,6 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/models/prediction_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
@@ -31,12 +32,13 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
   late BudgetPlanStore store = context.read<BudgetPlanStore>();
   final _expenseNameController = TextEditingController();
   final _budgetAmountController = TextEditingController();
+  late AuthStore authStore = context.read<AuthStore>();
 
   @override
   void initState() {
     super.initState();
 
-    _budgetAmountController.text = '';
+    context.read<BudgetPlanStore>().prediction.data.predictedBudget = 0;
   }
 
   @override
@@ -118,11 +120,16 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CategoryButton(
-                setCategory: (category) {
+                setCategory: (category) async {
                   setState(() {
                     _selectedCategory = category;
                     _isFormFilled;
                   });
+                  await context.read<BudgetPlanStore>().readPrediction(
+                        authStore.user!.apiToken,
+                        _selectedCategory.name,
+                        _selectedDate.month,
+                      );
                 },
                 category: _selectedCategory,
               ),
@@ -132,10 +139,15 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
               CalendarMonthWidget(
                 date: _selectedDate,
                 selected: DateTime(_selectedDate.year, _selectedDate.month),
-                onChange: (value) {
+                onChange: (value) async {
                   setState(() {
                     _selectedDate = value;
                   });
+                  await context.read<BudgetPlanStore>().readPrediction(
+                        authStore.user!.apiToken,
+                        _selectedCategory.name,
+                        _selectedDate.month,
+                      );
                 },
               ),
               const SizedBox(
@@ -148,11 +160,11 @@ class _MonthlyBudgetState extends State<MonthlyBudget> {
                       })),
               predictionData.predictedBudget != '0'
                   ? BudgetRecommendation(
-                      amount: int.parse(predictionData.predictedBudget),
+                      amount: predictionData.predictedBudget,
                       nullData: false,
                     )
                   : BudgetRecommendation(
-                      amount: int.parse(predictionData.predictedBudget),
+                      amount: predictionData.predictedBudget,
                       nullData: true,
                     ),
             ],

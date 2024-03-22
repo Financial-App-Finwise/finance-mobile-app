@@ -217,21 +217,61 @@ abstract class _BudgetPlanStoreBase with Store {
 
   // Read budget prediction
   @action
-  Future readPrediction() async {
+  Future readPrediction(String token, String category, int month) async {
     debugPrint('--> START: fetching budget prediciton');
     predictionStatus = LoadingStatusEnum.loading;
+
+    final dio = Dio();
+
+    // Disable followRedirects
+    dio.options.followRedirects = false;
+
+    // Configure validateStatus to allow 303 status code
+    dio.options.validateStatus = (status) {
+      return status! < 400 || status == 303;
+    };
+
+    List<String> months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+
     try {
-      Response response = await ApiService.dio.get('predictions');
-      if (response.statusCode == 200) {
-        if (response.data['data'] == null) {
-          prediction = Prediction(data: PredictionData());
+      String streamlitUrl =
+          "https://finwise-data.streamlit.app/predict_budget?token=$token&category='$category'&month=${months[month - 1]}";
+      Response streamlitResponse = await dio.get(
+        streamlitUrl,
+        options: Options(followRedirects: false),
+      );
+
+      if (streamlitResponse.statusCode == 200 ||
+          streamlitResponse.statusCode == 303) {
+        Response response = await ApiService.dio.get('predictions');
+        if (response.statusCode == 200 || response.statusCode == 303) {
+          if (response.data['data'] == null) {
+            prediction = Prediction(data: PredictionData());
+          } else {
+            prediction = await compute(
+                getPrediction, response.data as Map<String, dynamic>);
+          }
+          predictionStatus = LoadingStatusEnum.done;
         } else {
-          prediction = await compute(
-              getPrediction, response.data as Map<String, dynamic>);
+          debugPrint('Something went wrong, code: ${response.statusCode}');
+          predictionStatus = LoadingStatusEnum.error;
         }
-        predictionStatus = LoadingStatusEnum.done;
       } else {
-        debugPrint('Something went wrong, code: ${response.statusCode}');
+        debugPrint(
+            'Something went wrong, code: ${streamlitResponse.statusCode}');
         predictionStatus = LoadingStatusEnum.error;
       }
     } catch (e) {

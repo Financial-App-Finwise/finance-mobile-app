@@ -205,8 +205,9 @@ mixin _$BudgetPlanStore on _BudgetPlanStoreBase, Store {
       AsyncAction('_BudgetPlanStoreBase.readPrediction', context: context);
 
   @override
-  Future<dynamic> readPrediction() {
-    return _$readPredictionAsyncAction.run(() => super.readPrediction());
+  Future<dynamic> readPrediction(String token, String category, int month) {
+    return _$readPredictionAsyncAction
+        .run(() => super.readPrediction(token, category, month));
   }
 
   late final _$_BudgetPlanStoreBaseActionController =

@@ -19,7 +19,7 @@ PredictionData _$PredictionDataFromJson(Map<String, dynamic> json) =>
     PredictionData(
       id: json['id'] as int? ?? 0,
       userID: json['userID'] as int? ?? 0,
-      predictedBudget: json['predicted_budget'] as String? ?? '0',
+      predictedBudget: (json['predicted_budget'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$PredictionDataToJson(PredictionData instance) =>

@@ -21,12 +21,12 @@ class PredictionData {
   late int id;
   late int userID;
   @JsonKey(name: 'predicted_budget')
-  late String predictedBudget;
+  late double predictedBudget;
 
   PredictionData({
     this.id = 0,
     this.userID = 0,
-    this.predictedBudget = '0',
+    this.predictedBudget = 0,
   });
 
   factory PredictionData.fromJson(Map<String, dynamic> json) =>

@@ -1,5 +1,6 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
+import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/models/prediction_model.dart';
 import 'package:finwise/modules/budget_plan/screens/test_category.dart';
@@ -25,6 +26,7 @@ class EditBudgetPlanScreen extends StatefulWidget {
 }
 
 class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
+  late AuthStore authStore = context.read<AuthStore>();
   late final BudgetPlanData args =
       ModalRoute.of(context)!.settings.arguments as BudgetPlanData;
 
@@ -40,7 +42,11 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
 
     Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
-        await context.read<BudgetPlanStore>().readPrediction();
+        await context.read<BudgetPlanStore>().readPrediction(
+              authStore.user!.apiToken,
+              _selectedCategory.name,
+              _selectedDate.month,
+            );
       }
     });
   }
@@ -160,12 +166,16 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
         children: [
           // Category
           CategoryButton(
-            setCategory: (category) {
+            setCategory: (category) async {
               // debugPrint('${category.id}');
               setState(() {
                 _selectedCategory = category;
               });
-              debugPrint(_selectedCategory.name);
+              await context.read<BudgetPlanStore>().readPrediction(
+                    authStore.user!.apiToken,
+                    _selectedCategory.name,
+                    _selectedDate.month,
+                  );
             },
             category: _selectedCategory,
           ),
@@ -176,10 +186,15 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
           CalendarMonthWidget(
             date: _selectedDate,
             selected: DateTime(_selectedDate.year, _selectedDate.month),
-            onChange: (value) {
+            onChange: (value) async {
               setState(() {
                 _selectedDate = value;
               });
+              await context.read<BudgetPlanStore>().readPrediction(
+                    authStore.user!.apiToken,
+                    _selectedCategory.name,
+                    _selectedDate.month,
+                  );
             },
           ),
 
@@ -210,11 +225,11 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
               ),
               predictionData.predictedBudget != '0'
                   ? BudgetRecommendation(
-                      amount: int.parse(predictionData.predictedBudget),
+                      amount: predictionData.predictedBudget,
                       nullData: false,
                     )
                   : BudgetRecommendation(
-                      amount: int.parse(predictionData.predictedBudget),
+                      amount: predictionData.predictedBudget,
                       nullData: true,
                     ),
             ],
