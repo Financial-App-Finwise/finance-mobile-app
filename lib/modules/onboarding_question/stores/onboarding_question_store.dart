@@ -291,8 +291,6 @@ abstract class _OnboardingQuestionStoreBase with Store {
       "envision_date": postDate,
     };
 
-    print('lulz $data');
-
     try {
       Response response = await ApiService.dio.post(
         'onboardinginfo/create',

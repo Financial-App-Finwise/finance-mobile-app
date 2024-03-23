@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:finwise/core/constants/text_style_constants/auth_text_style_constant.dart';
+import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart';
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
@@ -9,6 +10,8 @@ import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/finance/models/finance_post_model.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/onboarding_question/stores/onboarding_question_store.dart';
+import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';
@@ -34,6 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late OnboardingQuestionStore onboardingStore =
       context.read<OnboardingQuestionStore>();
   late CategoryStore categoryStore = context.read<CategoryStore>();
+  late SmartGoalStore smartGoalStore = context.read<SmartGoalStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +86,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       .post(categoryStore.categoryModel.categoryDataList);
 
                   // ---------- Create Smart Goal ----------
-                  //
-                  
+                  bool createSmartGoal =
+                      onboardingStore.financialGoal.text.isNotEmpty &&
+                          onboardingStore.saveForGoal.text.isNotEmpty &&
+                          onboardingStore.goalDate.text.isNotEmpty;
+                  if (createSmartGoal) {
+                    success = await smartGoalStore.post(
+                      SmartGoalData(
+                        name: onboardingStore.financialGoal.text,
+                        amount: double.parse(onboardingStore.saveForGoal.text),
+                        currentSave: 0,
+                        remainingSave:
+                            double.parse(onboardingStore.saveForGoal.text),
+                        setDate: true,
+                        startDate: UIHelper.getDateFormat(
+                            DateTime.now().toString(), 'yyyy-MM-dd'),
+                        endDate: UIHelper.getDateFormat(
+                            onboardingStore.goalDate.text, 'yyyy-MM-dd'),
+                        monthlyContribution: null,
+                      ),
+                    );
+                  }
+
                   if (success) {
                     Navigator.pop(context);
                   }
