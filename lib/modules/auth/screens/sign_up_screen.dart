@@ -1,8 +1,12 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/auth_text_style_constant.dart';
+import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/core/widgets/screens/loading_screen.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart';
+import 'package:finwise/modules/auth/screens/auth_loading_data_screen.dart';
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
@@ -39,94 +43,104 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late CategoryStore categoryStore = context.read<CategoryStore>();
   late SmartGoalStore smartGoalStore = context.read<SmartGoalStore>();
 
+  bool _loading = false;
+
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return authStore.isLoading
-          ? const SignLoadingWidget()
-          : AuthScreenLayout(
-              title: 'Create Account',
-              subtitle: 'Please enter your email and password to sign up',
-              buttonLabel: 'Sign up',
-              bottomContent: _buildBottomContent(),
-              isFormFilled: _isFormFilled,
-              formArea: _buildTextFields(),
-              onButtonTap: () async {
-                if (_formKey.currentState!.validate()) {
-                  // ---------- Register ----------
-                  bool success = await authStore.signUp(
-                    UserPost(
-                      name: _nameController.text,
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                      passwordConfirmation: _passwordConfirmController.text,
+    return _loading
+        ? LoadingScreen(
+            title: 'Just a moment',
+            description: 'Please wait...\nWe are preparing for you...',
+            icon: IconHelper.getSVG(SVGName.transaction, color: Colors.white),
+          )
+        : AuthScreenLayout(
+            title: 'Create Account',
+            subtitle: 'Please enter your email and password to sign up',
+            buttonLabel: 'Sign up',
+            bottomContent: _buildBottomContent(),
+            isFormFilled: _isFormFilled,
+            formArea: _buildTextFields(),
+            onButtonTap: () async {
+              if (_formKey.currentState!.validate()) {
+                setState(() {
+                  _loading = true;
+                });
+                // ---------- Register ----------
+                bool success = await authStore.signUp(
+                  UserPost(
+                    name: _nameController.text,
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                    passwordConfirmation: _passwordConfirmController.text,
+                  ),
+                );
+                // ---------- Validate Email ----------
+                //
+
+                // ---------- Login ----------
+                success = await authStore.signIn(
+                  UserSignIn(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  ),
+                );
+
+                // ---------- Create Finance Account ----------
+                success = await financeStore.post(
+                  FinancePost(
+                    totalbalance:
+                        double.tryParse(onboardingStore.networth.text) ?? 0,
+                  ),
+                );
+
+                // ---------- Create Onboarding (Optional) ----------
+                success = await onboardingStore
+                    .post(categoryStore.categoryModel.categoryDataList);
+
+                // ---------- Create Smart Goal ----------
+                bool createSmartGoal =
+                    onboardingStore.financialGoal.text.isNotEmpty &&
+                        onboardingStore.saveForGoal.text.isNotEmpty &&
+                        onboardingStore.goalDate.text.isNotEmpty;
+                if (createSmartGoal) {
+                  List<String> dateParts =
+                      onboardingStore.goalDate.text.split('/');
+                  int day = int.parse(dateParts[0]);
+                  int month = int.parse(dateParts[1]);
+                  int year = int.parse(dateParts[2]);
+
+                  String startDate =
+                      '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+
+                  DateTime dateTime = DateTime(year, month, day);
+
+                  String endDate =
+                      '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+
+                  success = await smartGoalStore.post(
+                    SmartGoalData(
+                      name: onboardingStore.financialGoal.text,
+                      amount: double.parse(onboardingStore.saveForGoal.text),
+                      currentSave: 0,
+                      remainingSave:
+                          double.parse(onboardingStore.saveForGoal.text),
+                      setDate: true,
+                      startDate: startDate,
+                      endDate: endDate,
+                      monthlyContribution: null,
                     ),
                   );
-                  // ---------- Validate Email ----------
-                  //
-
-                  // ---------- Login ----------
-                  success = await authStore.signIn(
-                    UserSignIn(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    ),
-                  );
-
-                  // ---------- Create Finance Account ----------
-                  success = await financeStore.post(
-                    FinancePost(
-                      totalbalance:
-                          double.tryParse(onboardingStore.networth.text) ?? 0,
-                    ),
-                  );
-
-                  // ---------- Create Onboarding (Optional) ----------
-                  success = await onboardingStore
-                      .post(categoryStore.categoryModel.categoryDataList);
-
-                  // ---------- Create Smart Goal ----------
-                  bool createSmartGoal =
-                      onboardingStore.financialGoal.text.isNotEmpty &&
-                          onboardingStore.saveForGoal.text.isNotEmpty &&
-                          onboardingStore.goalDate.text.isNotEmpty;
-                  if (createSmartGoal) {
-                    List<String> dateParts =
-                        onboardingStore.goalDate.text.split('/');
-                    int day = int.parse(dateParts[0]);
-                    int month = int.parse(dateParts[1]);
-                    int year = int.parse(dateParts[2]);
-
-                    String startDate =
-                        '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-
-                    DateTime dateTime = DateTime(year, month, day);
-
-                    String endDate =
-                        '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
-
-                    success = await smartGoalStore.post(
-                      SmartGoalData(
-                        name: onboardingStore.financialGoal.text,
-                        amount: double.parse(onboardingStore.saveForGoal.text),
-                        currentSave: 0,
-                        remainingSave:
-                            double.parse(onboardingStore.saveForGoal.text),
-                        setDate: true,
-                        startDate: startDate,
-                        endDate: endDate,
-                        monthlyContribution: null,
-                      ),
-                    );
-                  }
-
-                  if (success) {
-                    Navigator.pop(context);
-                  }
                 }
-              },
-            );
-    });
+
+                if (success) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => AuthLoadingDataScreen()));
+                }
+              }
+            },
+          );
   }
 
   final TextEditingController _nameController = TextEditingController();
