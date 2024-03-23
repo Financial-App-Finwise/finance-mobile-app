@@ -26,7 +26,7 @@ abstract class _CategoryStoreBase with Store {
     if (defaultCat) {
       url = 'default_categories';
     }
-
+    print('lmao $url');
     try {
       Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {

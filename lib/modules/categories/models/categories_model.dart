@@ -27,8 +27,12 @@ class CategoryModel {
     required this.categoryDataList,
   });
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) =>
-      _$CategoryModelFromJson(json);
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    if (json['data'] == null) {
+      json['data'] = json['categories'];
+    }
+    return _$CategoryModelFromJson(json);
+  }
 
   Map<String, dynamic> toJson() => _$CategoryModelToJson(this);
 }
