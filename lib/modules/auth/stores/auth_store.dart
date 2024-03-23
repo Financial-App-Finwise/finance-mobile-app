@@ -138,6 +138,7 @@ abstract class _AuthStoreBase with Store {
     debugPrint('--> START: signOut');
     user = null;
     _detachToken();
+    _writeCache();
     try {
       Response response = await ApiService.dio.post('auth/logout');
       if (response.statusCode == 200) {

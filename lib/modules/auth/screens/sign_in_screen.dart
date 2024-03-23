@@ -60,6 +60,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     password: _passwordController.text,
                   ),
                 );
+                if (success) {
+                  Navigator.pop(context);
+                }
               },
             );
     });
@@ -157,10 +160,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: AuthScreenTextStyle.boldLink,
                 ),
                 onTap: () {
-                  // Navigator.of(context).pushNamed(RouteName.signUp);
-                  if (widget.changeScreen != null) {
-                    widget.changeScreen!();
-                  }
+                  Navigator.of(context).pushReplacementNamed(RouteName.signUp);
                 },
               ),
             ],
@@ -171,10 +171,7 @@ class _SignInScreenState extends State<SignInScreen> {
               style: AuthScreenTextStyle.boldLink,
             ),
             onTap: () {
-              // Navigator.of(context).pushNamed(RouteName.signUp);
-              if (widget.changeScreen != null) {
-                Navigator.of(context).pushNamed(RouteName.verifyEmail);
-              }
+              Navigator.of(context).pushNamed(RouteName.verifyEmail);
             },
           ),
         ],

@@ -78,13 +78,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
 
                   // ---------- Create Onboarding (Optional) ----------
-                  if (success) {
-                    success = await onboardingStore
-                        .post(categoryStore.categoryModel.categoryDataList);
+                  success = await onboardingStore
+                      .post(categoryStore.categoryModel.categoryDataList);
 
-                    if (success) {
-                      Navigator.pushNamed(context, RouteName.verifyEmail);
-                    } else {}
+                  // ---------- Create Smart Goal ----------
+                  //
+                  
+                  if (success) {
+                    Navigator.pop(context);
                   }
                 }
               },
@@ -240,10 +241,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: AuthScreenTextStyle.boldLink,
                 ),
                 onTap: () {
-                  // Navigator.of(context).pushReplacementNamed(RouteName.signIn);
-                  if (widget.changeScreen != null) {
-                    widget.changeScreen!();
-                  }
+                  Navigator.of(context).pushReplacementNamed(RouteName.signIn);
                 },
               ),
             ],
