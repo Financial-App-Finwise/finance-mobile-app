@@ -91,6 +91,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onboardingStore.saveForGoal.text.isNotEmpty &&
                           onboardingStore.goalDate.text.isNotEmpty;
                   if (createSmartGoal) {
+                    List<String> dateParts =
+                        onboardingStore.goalDate.text.split('/');
+                    int day = int.parse(dateParts[0]);
+                    int month = int.parse(dateParts[1]);
+                    int year = int.parse(dateParts[2]);
+
+                    String startDate =
+                        '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+
+                    DateTime dateTime = DateTime(year, month, day);
+
+                    String endDate =
+                        '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+
                     success = await smartGoalStore.post(
                       SmartGoalData(
                         name: onboardingStore.financialGoal.text,
@@ -99,10 +113,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         remainingSave:
                             double.parse(onboardingStore.saveForGoal.text),
                         setDate: true,
-                        startDate: UIHelper.getDateFormat(
-                            DateTime.now().toString(), 'yyyy-MM-dd'),
-                        endDate: UIHelper.getDateFormat(
-                            onboardingStore.goalDate.text, 'yyyy-MM-dd'),
+                        startDate: startDate,
+                        endDate: endDate,
                         monthlyContribution: null,
                       ),
                     );
