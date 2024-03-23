@@ -99,9 +99,9 @@ class _SelectItemButtonState extends State<SelectItemButton> {
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             letterSpacing: 0.75,
-                            color: widget.currentItem.title.isEmpty
-                                ? const Color(0xFF656B9F)
-                                : ColorConstant.mainText,
+                            color: widget.currentItem.itemPicked
+                                ? ColorConstant.mainText
+                                : const Color(0xFF656B9F),
                           ),
                         ),
                       ],
