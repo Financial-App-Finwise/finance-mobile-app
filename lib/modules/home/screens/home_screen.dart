@@ -24,6 +24,7 @@ import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
 import 'package:finwise/modules/data_science/stores/insight_store.dart';
+import 'package:finwise/modules/finance/helpers/finance_filter_constant.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/data_science/screens/insight_screen.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
@@ -50,7 +51,9 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // -------------------- Required Store --------------------
+  // **************************************************************************
+  // Required Stores
+  // **************************************************************************
   late final AuthStore _authStore = context.read<AuthStore>();
   late final BudgetPlanStore _budgetPlanStore = context.read<BudgetPlanStore>();
   late final FinanceStore _financeStore = context.read<FinanceStore>();
@@ -131,7 +134,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- User Profile --------------------
+  // **************************************************************************
+  // User Profile
+  // **************************************************************************
   Widget _buildProfile() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -166,69 +171,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- General --------------------
-  Widget _buildGeneralTitle(String text) {
-    return Container(
-      padding: const EdgeInsets.only(top: 20, bottom: 12),
-      child: Text(text, style: HomeTextStyleConstant.header),
-    );
-  }
-
-  Widget _buildGeneralContentHeading({
-    String title = 'title',
-    String amount = 'amount',
-    Color color = Colors.black,
-    Widget? icon,
-    String selectedValue = '',
-    bool periodButtonVisible = true,
-    required void Function(dynamic) onChanged,
-  }) {
-    return Row(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              icon ?? const SizedBox(),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: HomeTextStyleConstant.medium),
-                    Text(
-                      amount,
-                      style: TextStyleHelper.getw600size(
-                        24,
-                        color: color,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        Visibility(
-          visible: periodButtonVisible,
-          child: DurationDropDown(
-            items: [
-              DurationDropDownItem(title: 'This Month', value: 'this_month'),
-              DurationDropDownItem(title: 'Next Month', value: 'next_month'),
-              DurationDropDownItem(
-                  title: 'Next 6 Month', value: 'next_6_month'),
-              DurationDropDownItem(title: 'This Year', value: 'this_year'),
-              DurationDropDownItem(title: 'Next Year', value: 'next_year'),
-            ],
-            selectedValue: selectedValue,
-            onChange: onChanged,
-          ),
-        )
-      ],
-    );
-  }
-
-  // -------------------- Finance --------------------
+  // **************************************************************************
+  // Finance
+  // **************************************************************************
   Widget _buildFinance() {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteName.finance),
@@ -417,7 +362,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Other Features --------------------
+  // **************************************************************************
+  // Main Feature Options
+  // **************************************************************************
   Widget _buildMainFeatures() {
     return Container(
       alignment: Alignment.topLeft,
@@ -521,7 +468,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Spending Income --------------------
+  // **************************************************************************
+  // Income and Expense Bar Chart
+  // **************************************************************************
   Widget _buildSpendingIncome() {
     return Container(
       alignment: Alignment.topLeft,
@@ -617,7 +566,7 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
                   periodButtonVisible: false,
-                  amount: '\$${_financeStore.filteredFinanceExpense.data.totalExpense}',
+                  amount: '\$${_financeStore.financeExpense.data.totalExpense}',
                   color: ColorConstant.expense,
                   icon: IconHelper.getSVG(
                     SVGName.expense,
@@ -630,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                 ),
                 const SizedBox(height: 30),
-                _financeStore.finance.data.topCategories.isEmpty
+                _financeStore.financeExpense.data.topCategories.isEmpty
                     ? EmptyDataWidget(
                         icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
                         buttonLabel: 'Add Transaction',
@@ -641,7 +590,7 @@ class _HomeScreenState extends State<HomeScreen>
                       )
                     : IncomeExpensePieChart(
                         data: getIncomeExpenseList(
-                            _financeStore.filteredFinanceExpense.data.topCategories
+                            _financeStore.financeExpense.data.topCategories
                                 .map(
                                   (e) => {
                                     'category': e.category.name,
@@ -660,7 +609,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Budget Plan --------------------
+  // **************************************************************************
+  // Budget Plan
+  // **************************************************************************
   Widget _buildBudgetPlan() {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteName.budgetPlan),
@@ -814,7 +765,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Totally Spent --------------------
+  // **************************************************************************
+  // Total Spending
+  // **************************************************************************
   Widget _buildTotalSpend() {
     return Container(
       alignment: Alignment.topLeft,
@@ -836,22 +789,43 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   _buildGeneralContentHeading(
                     title: 'Totally Spent',
-                    amount: '\$${_financeStore.finance.data.totalExpense}',
+                    amount: '\$${_financeStore.finance.data.filteredExpense}',
                     color: ColorConstant.expense,
                     icon: IconHelper.getSVG(
                       SVGName.expense,
                       color: ColorConstant.expenseIcon,
                     ),
-                    selectedValue: 'this_month',
                     onChanged: (value) {},
+                    durationDropDown: DurationDropDown(
+                      items: [
+                        DurationDropDownItem(
+                            title: 'This Month',
+                            value: FinanceFilterConstant.thisMonth),
+                        DurationDropDownItem(
+                            title: 'This Week',
+                            value: FinanceFilterConstant.thisWeek),
+                        DurationDropDownItem(
+                            title: 'Last Month',
+                            value: FinanceFilterConstant.lastMonth),
+                        DurationDropDownItem(
+                            title: 'Last 3 Months',
+                            value: FinanceFilterConstant.last3Months),
+                        DurationDropDownItem(
+                            title: 'Last 6 Months',
+                            value: FinanceFilterConstant.last6Months),
+                      ],
+                      selectedValue: FinanceFilterConstant.thisMonth,
+                      onChange: (value) =>
+                          _financeStore.totalSpendPeriod = value,
+                    ),
                   ),
                   const Divider(color: ColorConstant.divider),
                   const SizedBox(height: 16),
                   const Text('Recent Transactions',
                       style: HomeTextStyleConstant.medium),
                   const SizedBox(height: 12),
-                  _financeStore
-                          .filteredFinanceExpense.data.allTransactions.today.isEmpty
+                  _financeStore.filteredFinanceExpense.data.allTransactions
+                          .today.isEmpty
                       ? EmptyDataWidget(
                           icon: IconHelper.getSVG(
                             SVGName.transaction,
@@ -866,8 +840,8 @@ class _HomeScreenState extends State<HomeScreen>
                               ))
                       : _buildTransactions(
                           color: ColorConstant.expense,
-                          transactions: _financeStore
-                              .filteredFinanceExpense.data.allTransactions.today,
+                          transactions: _financeStore.filteredFinanceExpense
+                              .data.allTransactions.today,
                         ),
                 ],
               ),
@@ -878,7 +852,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Totally Earned ---------------------
+  // **************************************************************************
+  // Total Earning
+  // **************************************************************************
   Widget _buildTotalEarn() {
     return Container(
       alignment: Alignment.topLeft,
@@ -908,7 +884,8 @@ class _HomeScreenState extends State<HomeScreen>
                   const Text('Recent Transactions',
                       style: HomeTextStyleConstant.medium),
                   const SizedBox(height: 12),
-                  _financeStore.filteredFinanceIncome.data.allTransactions.today.isEmpty
+                  _financeStore.filteredFinanceIncome.data.allTransactions.today
+                          .isEmpty
                       ? EmptyDataWidget(
                           icon: IconHelper.getSVG(
                             SVGName.transaction,
@@ -966,7 +943,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Upcoming Bill --------------------
+  // **************************************************************************
+  // Upcoming Bill
+  // **************************************************************************
   Widget _buildUpcomingBill() {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, RouteName.upcomingBill),
@@ -1095,7 +1074,74 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- General --------------------
+  // **************************************************************************
+  // General
+  // **************************************************************************
+  Widget _buildGeneralTitle(String text) {
+    return Container(
+      padding: const EdgeInsets.only(top: 20, bottom: 12),
+      child: Text(text, style: HomeTextStyleConstant.header),
+    );
+  }
+
+  Widget _buildGeneralContentHeading({
+    String title = 'title',
+    String amount = 'amount',
+    Color color = Colors.black,
+    Widget? icon,
+    String selectedValue = '',
+    bool periodButtonVisible = true,
+    DurationDropDown? durationDropDown,
+    required void Function(dynamic) onChanged,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              icon ?? const SizedBox(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: HomeTextStyleConstant.medium),
+                    Text(
+                      amount,
+                      style: TextStyleHelper.getw600size(
+                        24,
+                        color: color,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Visibility(
+          visible: periodButtonVisible,
+          child: durationDropDown ??
+              DurationDropDown(
+                items: [
+                  DurationDropDownItem(
+                      title: 'This Month', value: 'this_month'),
+                  DurationDropDownItem(
+                      title: 'Next Month', value: 'next_month'),
+                  DurationDropDownItem(
+                      title: 'Next 6 Month', value: 'next_6_month'),
+                  DurationDropDownItem(title: 'This Year', value: 'this_year'),
+                  DurationDropDownItem(title: 'Next Year', value: 'next_year'),
+                ],
+                selectedValue: selectedValue,
+                onChange: onChanged,
+              ),
+        )
+      ],
+    );
+  }
+
   DateTime currentDate = DateTime.now();
 
   List<String> monthNames = [

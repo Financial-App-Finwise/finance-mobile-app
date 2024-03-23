@@ -86,6 +86,13 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
           Computed<Finance>(() => super.filteredFinanceExpense,
               name: '_FinanceStoreBase.filteredFinanceExpense'))
       .value;
+  Computed<Finance>? _$financeExpenseComputed;
+
+  @override
+  Finance get financeExpense => (_$financeExpenseComputed ??= Computed<Finance>(
+          () => super.financeExpense,
+          name: '_FinanceStoreBase.financeExpense'))
+      .value;
 
   late final _$loadingStatusAtom =
       Atom(name: '_FinanceStoreBase.loadingStatus', context: context);
@@ -235,6 +242,22 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$totalSpendPeriodAtom =
+      Atom(name: '_FinanceStoreBase.totalSpendPeriod', context: context);
+
+  @override
+  String get totalSpendPeriod {
+    _$totalSpendPeriodAtom.reportRead();
+    return super.totalSpendPeriod;
+  }
+
+  @override
+  set totalSpendPeriod(String value) {
+    _$totalSpendPeriodAtom.reportWrite(value, super.totalSpendPeriod, () {
+      super.totalSpendPeriod = value;
+    });
+  }
+
   late final _$_hasReadOnceAtom =
       Atom(name: '_FinanceStoreBase._hasReadOnce', context: context);
 
@@ -305,6 +328,7 @@ previousBarData: ${previousBarData},
 isIncome: ${isIncome},
 period: ${period},
 filteredFinanceMap: ${filteredFinanceMap},
+totalSpendPeriod: ${totalSpendPeriod},
 isLoading: ${isLoading},
 isLoadingBarChart: ${isLoadingBarChart},
 isLoadingPieChart: ${isLoadingPieChart},
@@ -315,7 +339,8 @@ queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},
 filteredFinance: ${filteredFinance},
 filteredFinanceIncome: ${filteredFinanceIncome},
-filteredFinanceExpense: ${filteredFinanceExpense}
+filteredFinanceExpense: ${filteredFinanceExpense},
+financeExpense: ${financeExpense}
     ''';
   }
 }

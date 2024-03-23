@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
 import 'package:finwise/core/services/api_service.dart';
+import 'package:finwise/modules/finance/helpers/finance_filter_constant.dart';
 import 'package:finwise/modules/finance/models/finance_model.dart';
 import 'package:finwise/modules/finance/models/finance_post_model.dart';
 import 'package:flutter/foundation.dart';
@@ -59,7 +60,7 @@ abstract class _FinanceStoreBase with Store {
   @observable
   late Finance finance = _defaultFinance;
 
-  // Dollar Account
+  // -------------------- Dollar Account --------------------
   @computed
   FinanceItem get dollarAccount => finance.data.items.firstWhere(
         (element) => element.currency.code == 'USD',
@@ -72,7 +73,9 @@ abstract class _FinanceStoreBase with Store {
   @observable
   ObservableMap<String, IncomeExpenseCompare> previousBarData = ObservableMap();
 
-  // -------------------- Filter --------------------
+  // **************************************************************************
+  // Filtering Variables
+  // **************************************************************************
   @observable
   int isIncome = 1;
 
@@ -92,7 +95,7 @@ abstract class _FinanceStoreBase with Store {
   // Query parameter for income
   @computed
   String get queryParemeterIncome {
-    String isIncome = 'isIncome=1';
+    String isIncome = FinanceFilterConstant.income;
     String period = 'period=${this.period}';
     String parameter = '$isIncome&$period';
     return '$isIncome$period'.isEmpty ? '' : '?$parameter';
@@ -101,13 +104,15 @@ abstract class _FinanceStoreBase with Store {
   // Query parameter for expense
   @computed
   String get queryParemeterExpense {
-    String isIncome = 'isIncome=0';
+    String isIncome = FinanceFilterConstant.expense;
     String period = 'period=${this.period}';
     String parameter = '$isIncome&$period';
     return '$isIncome$period'.isEmpty ? '' : '?$parameter';
   }
 
-  // -------------------- Filtered Finance --------------------
+  // **************************************************************************
+  // Filtered Finance
+  // **************************************************************************
   // Map from a query paremeter to the Finance
   @observable
   ObservableMap<String, Finance> filteredFinanceMap = ObservableMap();
@@ -120,25 +125,36 @@ abstract class _FinanceStoreBase with Store {
     }
   }
 
-  // Filtered finance
+  // -------------------- Filtered finance --------------------
   @computed
   Finance get filteredFinance => filteredFinanceMap[queryParemeter] == null
       ? _defaultFinance
       : filteredFinanceMap[queryParemeter]!;
 
-  // Filtered income finance
+  // -------------------- Filtered income finance --------------------
   @computed
   Finance get filteredFinanceIncome =>
       filteredFinanceMap[queryParemeterIncome] == null
           ? _defaultFinance
           : filteredFinanceMap[queryParemeterIncome]!;
 
-  // Filtered expense finance
+  // -------------------- Filtered expense finance --------------------
   @computed
   Finance get filteredFinanceExpense =>
       filteredFinanceMap[queryParemeterExpense] == null
           ? _defaultFinance
           : filteredFinanceMap[queryParemeterExpense]!;
+
+  // -------------------- Filtered finance based on specific section in the UI --------------------
+  // Total Spending Period
+  @observable
+  String totalSpendPeriod = FinanceFilterConstant.thisMonth;
+
+  @computed
+  Finance get financeExpense =>
+      filteredFinanceMap[
+          '?${FinanceFilterConstant.expense}&period=$totalSpendPeriod'] ??
+      _defaultFinance;
 
   // -------------------- Set Loading Status --------------------
   void setLoadingDone() {
@@ -157,7 +173,9 @@ abstract class _FinanceStoreBase with Store {
   @observable
   bool _hasReadOnce = false;
 
-  // -------------------- Read Finance --------------------
+  // **************************************************************************
+  // Read Finance
+  // **************************************************************************
   @action
   Future read({
     bool? isIncome,
@@ -207,7 +225,9 @@ abstract class _FinanceStoreBase with Store {
     }
   }
 
-  // -------------------- Create a Finance --------------------
+  // **************************************************************************
+  // Create Finance
+  // **************************************************************************
   @action
   Future<bool> post(FinancePost data) async {
     debugPrint('--> START: post, finance');
@@ -238,7 +258,9 @@ abstract class _FinanceStoreBase with Store {
     return success;
   }
 
-  // -------------------- Update Total Balance --------------------
+  // **************************************************************************
+  // Update Finance Balance
+  // **************************************************************************
   @action
   Future<bool> update(double totalbalance) async {
     debugPrint('--> START: update, finance');
@@ -269,7 +291,9 @@ abstract class _FinanceStoreBase with Store {
     return success;
   }
 
-  // -------------------- Dispose --------------------
+  // **************************************************************************
+  // Dispose
+  // **************************************************************************
   void dispose() {
     // reinitialize fields
     loadingStatus = LoadingStatusEnum.none;
