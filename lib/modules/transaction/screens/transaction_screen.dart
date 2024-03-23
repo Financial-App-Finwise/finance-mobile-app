@@ -116,6 +116,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 
+  // **************************************************************************
+  // Income or Expense
+  // **************************************************************************
   // -------------------- All, Income or Expense --------------------
   Widget _buildTypeTransactions({
     TransactionTypeEnum type = TransactionTypeEnum.all,

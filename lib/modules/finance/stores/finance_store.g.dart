@@ -72,6 +72,13 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
           Computed<Finance>(() => super.filteredFinance,
               name: '_FinanceStoreBase.filteredFinance'))
       .value;
+  Computed<Finance>? _$financeExpenseComputed;
+
+  @override
+  Finance get financeExpense => (_$financeExpenseComputed ??= Computed<Finance>(
+          () => super.financeExpense,
+          name: '_FinanceStoreBase.financeExpense'))
+      .value;
   Computed<Finance>? _$filteredFinanceIncomeComputed;
 
   @override
@@ -86,12 +93,33 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
           Computed<Finance>(() => super.filteredFinanceExpense,
               name: '_FinanceStoreBase.filteredFinanceExpense'))
       .value;
-  Computed<Finance>? _$financeExpenseComputed;
+  Computed<String>? _$totalSpendQueryComputed;
 
   @override
-  Finance get financeExpense => (_$financeExpenseComputed ??= Computed<Finance>(
-          () => super.financeExpense,
-          name: '_FinanceStoreBase.financeExpense'))
+  String get totalSpendQuery => (_$totalSpendQueryComputed ??= Computed<String>(
+          () => super.totalSpendQuery,
+          name: '_FinanceStoreBase.totalSpendQuery'))
+      .value;
+  Computed<Finance>? _$totalSpendFinanceComputed;
+
+  @override
+  Finance get totalSpendFinance => (_$totalSpendFinanceComputed ??=
+          Computed<Finance>(() => super.totalSpendFinance,
+              name: '_FinanceStoreBase.totalSpendFinance'))
+      .value;
+  Computed<String>? _$totalEarnQueryComputed;
+
+  @override
+  String get totalEarnQuery =>
+      (_$totalEarnQueryComputed ??= Computed<String>(() => super.totalEarnQuery,
+              name: '_FinanceStoreBase.totalEarnQuery'))
+          .value;
+  Computed<Finance>? _$totalEarnFinanceComputed;
+
+  @override
+  Finance get totalEarnFinance => (_$totalEarnFinanceComputed ??=
+          Computed<Finance>(() => super.totalEarnFinance,
+              name: '_FinanceStoreBase.totalEarnFinance'))
       .value;
 
   late final _$loadingStatusAtom =
@@ -258,6 +286,22 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$totalEarnPeriodAtom =
+      Atom(name: '_FinanceStoreBase.totalEarnPeriod', context: context);
+
+  @override
+  String get totalEarnPeriod {
+    _$totalEarnPeriodAtom.reportRead();
+    return super.totalEarnPeriod;
+  }
+
+  @override
+  set totalEarnPeriod(String value) {
+    _$totalEarnPeriodAtom.reportWrite(value, super.totalEarnPeriod, () {
+      super.totalEarnPeriod = value;
+    });
+  }
+
   late final _$_hasReadOnceAtom =
       Atom(name: '_FinanceStoreBase._hasReadOnce', context: context);
 
@@ -279,11 +323,15 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
 
   @override
   Future<dynamic> read(
-      {bool? isIncome, VoidCallback? setLoading, bool updateFinance = false}) {
+      {bool? isIncome,
+      VoidCallback? setLoading,
+      bool updateFinance = false,
+      String? queryParemeter}) {
     return _$readAsyncAction.run(() => super.read(
         isIncome: isIncome,
         setLoading: setLoading,
-        updateFinance: updateFinance));
+        updateFinance: updateFinance,
+        queryParemeter: queryParemeter));
   }
 
   late final _$postAsyncAction =
@@ -329,6 +377,7 @@ isIncome: ${isIncome},
 period: ${period},
 filteredFinanceMap: ${filteredFinanceMap},
 totalSpendPeriod: ${totalSpendPeriod},
+totalEarnPeriod: ${totalEarnPeriod},
 isLoading: ${isLoading},
 isLoadingBarChart: ${isLoadingBarChart},
 isLoadingPieChart: ${isLoadingPieChart},
@@ -338,9 +387,13 @@ queryParemeter: ${queryParemeter},
 queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},
 filteredFinance: ${filteredFinance},
+financeExpense: ${financeExpense},
 filteredFinanceIncome: ${filteredFinanceIncome},
 filteredFinanceExpense: ${filteredFinanceExpense},
-financeExpense: ${financeExpense}
+totalSpendQuery: ${totalSpendQuery},
+totalSpendFinance: ${totalSpendFinance},
+totalEarnQuery: ${totalEarnQuery},
+totalEarnFinance: ${totalEarnFinance}
     ''';
   }
 }

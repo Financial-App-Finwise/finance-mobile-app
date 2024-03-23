@@ -95,7 +95,7 @@ abstract class _FinanceStoreBase with Store {
   // Query parameter for income
   @computed
   String get queryParemeterIncome {
-    String isIncome = FinanceFilterConstant.income;
+    String isIncome = FinanceFilterConstant.incomeQuery;
     String period = 'period=${this.period}';
     String parameter = '$isIncome&$period';
     return '$isIncome$period'.isEmpty ? '' : '?$parameter';
@@ -104,7 +104,7 @@ abstract class _FinanceStoreBase with Store {
   // Query parameter for expense
   @computed
   String get queryParemeterExpense {
-    String isIncome = FinanceFilterConstant.expense;
+    String isIncome = FinanceFilterConstant.expenseQuery;
     String period = 'period=${this.period}';
     String parameter = '$isIncome&$period';
     return '$isIncome$period'.isEmpty ? '' : '?$parameter';
@@ -117,7 +117,7 @@ abstract class _FinanceStoreBase with Store {
   @observable
   ObservableMap<String, Finance> filteredFinanceMap = ObservableMap();
 
-  // -------------------- Initialize Map Item to Avoid Null --------------------
+  // -------------------- Map Item Initialization --------------------
   @action
   void initialize(String key) {
     if (filteredFinanceMap[key] == null) {
@@ -125,11 +125,17 @@ abstract class _FinanceStoreBase with Store {
     }
   }
 
-  // -------------------- Filtered finance --------------------
+  // -------------------- General Filtered Finance --------------------
   @computed
   Finance get filteredFinance => filteredFinanceMap[queryParemeter] == null
       ? _defaultFinance
       : filteredFinanceMap[queryParemeter]!;
+
+  // -------------------- General Expense Finance --------------------
+  @computed
+  Finance get financeExpense =>
+      filteredFinanceMap['?${FinanceFilterConstant.expenseQuery}'] ??
+      _defaultFinance;
 
   // -------------------- Filtered income finance --------------------
   @computed
@@ -145,16 +151,32 @@ abstract class _FinanceStoreBase with Store {
           ? _defaultFinance
           : filteredFinanceMap[queryParemeterExpense]!;
 
-  // -------------------- Filtered finance based on specific section in the UI --------------------
-  // Total Spending Period
+  // **************************************************************************
+  // Filtered Finance on Specific UI
+  // **************************************************************************
+  // -------------------- Total Spending --------------------
   @observable
   String totalSpendPeriod = FinanceFilterConstant.thisMonth;
 
   @computed
-  Finance get financeExpense =>
-      filteredFinanceMap[
-          '?${FinanceFilterConstant.expense}&period=$totalSpendPeriod'] ??
-      _defaultFinance;
+  String get totalSpendQuery =>
+      '${FinanceFilterConstant.expenseQuery}&period=$totalSpendPeriod';
+
+  @computed
+  Finance get totalSpendFinance =>
+      filteredFinanceMap['?$totalSpendQuery'] ?? _defaultFinance;
+
+  // -------------------- Total Earning --------------------
+  @observable
+  String totalEarnPeriod = FinanceFilterConstant.thisMonth;
+
+  @computed
+  String get totalEarnQuery =>
+      '${FinanceFilterConstant.incomeQuery}&period=$totalEarnPeriod';
+
+  @computed
+  Finance get totalEarnFinance =>
+      filteredFinanceMap['?$totalEarnQuery'] ?? _defaultFinance;
 
   // -------------------- Set Loading Status --------------------
   void setLoadingDone() {
@@ -181,6 +203,7 @@ abstract class _FinanceStoreBase with Store {
     bool? isIncome,
     VoidCallback? setLoading,
     bool updateFinance = false,
+    String? queryParemeter,
   }) async {
     debugPrint('--> START: read finance');
 
@@ -193,6 +216,8 @@ abstract class _FinanceStoreBase with Store {
     if (isIncome != null) {
       this.isIncome = isIncome ? 1 : 0;
     }
+
+    queryParemeter ??= this.queryParemeter;
 
     try {
       Response response =

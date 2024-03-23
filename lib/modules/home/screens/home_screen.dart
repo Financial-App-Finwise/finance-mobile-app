@@ -62,21 +62,22 @@ class _HomeScreenState extends State<HomeScreen>
   late final UpcomingBillStore _upcomingBillStore =
       context.read<UpcomingBillStore>();
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () async {
-      await _readAll();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Future.delayed(Duration.zero, () async {
+  //     await _readAll();
+  //   });
+  // }
 
   // -------------------- Read all Necessary Data --------------------
   Future _readAll() async {
     _insightStore.loadWebPage();
     await _budgetPlanStore.read();
     await _financeStore.read(updateFinance: true);
-    await _financeStore.read(isIncome: false);
-    await _smartGoalStore.read(status: SmartGoalStatusEnum.inProgress);
+    await _financeStore.read(
+        queryParemeter: '?${FinanceFilterConstant.expenseQuery}');
+    await _smartGoalStore.read(status: SmartGoalStatusEnum.all);
     await _upcomingBillStore.read();
   }
 
@@ -478,71 +479,74 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Spending and Income'),
-          RoundedContainer(
-            child: Column(
-              children: [
-                Row(children: [
-                  // check if it's loading
-                  Visibility(
-                    visible: _financeStore.isLoadingBarChart,
-                    child: const LinearProgressDots(),
-                  ),
-                  const Expanded(child: SizedBox()),
-                  // ---------- Dropdown Button ----------
-                  DurationDropDown(
-                    items: [
-                      DurationDropDownItem(
-                          title: 'This Month', value: 'this_month'),
-                      DurationDropDownItem(
-                          title: 'Last Month', value: 'last_month'),
-                      DurationDropDownItem(
-                          title: 'Last 3 Months', value: 'last_3_months'),
-                      DurationDropDownItem(
-                          title: 'Last 4 Months', value: 'last_4_months'),
-                    ],
-                    selectedValue: _financeStore.period,
-                    onChange: (value) async {
-                      // save previous value, to aviod UI error in the bar chart
-                      _financeStore.previousBarData = ObservableMap.of(
-                          _financeStore.filteredFinance.data.total);
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, RouteName.finance),
+            child: RoundedContainer(
+              child: Column(
+                children: [
+                  Row(children: [
+                    // check if it's loading
+                    Visibility(
+                      visible: _financeStore.isLoadingBarChart,
+                      child: const LinearProgressDots(),
+                    ),
+                    const Expanded(child: SizedBox()),
+                    // ---------- Dropdown Button ----------
+                    DurationDropDown(
+                      items: [
+                        DurationDropDownItem(
+                            title: 'This Month', value: 'this_month'),
+                        DurationDropDownItem(
+                            title: 'Last Month', value: 'last_month'),
+                        DurationDropDownItem(
+                            title: 'Last 3 Months', value: 'last_3_months'),
+                        DurationDropDownItem(
+                            title: 'Last 4 Months', value: 'last_4_months'),
+                      ],
+                      selectedValue: _financeStore.period,
+                      onChange: (value) async {
+                        // save previous value, to aviod UI error in the bar chart
+                        _financeStore.previousBarData = ObservableMap.of(
+                            _financeStore.filteredFinance.data.total);
 
-                      // change the period
-                      _financeStore.period = value;
+                        // change the period
+                        _financeStore.period = value;
 
-                      // initialize the map item value
-                      _financeStore.initialize(_financeStore.queryParemeter);
+                        // initialize the map item value
+                        _financeStore.initialize(_financeStore.queryParemeter);
 
-                      // if the filteredFinance is empty, read to get data
-                      if (_financeStore.filteredFinance.data.items.isEmpty) {
-                        await _financeStore.read(
-                          isIncome: true,
-                          setLoading: () => _financeStore.loadingBarChart =
-                              LoadingStatusEnum.loading,
-                        );
-                      }
-                    },
-                  )
-                ]),
-                const SizedBox(height: 24),
-                _financeStore.finance.data.total.isEmpty
-                    ? Column(
-                        children: [
-                          EmptyDataWidget(
-                            icon:
-                                IconHelper.getSVGDefault(SVGName.emptyBarChart),
-                            iconSize: const Size(140, 140),
-                            buttonLabel: 'Add Transaction',
-                            description: 'You have no payment history yet.',
-                            onButtonTap: () => Navigator.pushNamed(
-                                context, RouteName.transactionAdd),
-                          ),
-                        ],
-                      )
-                    : IncomeExpenseBarChart(
-                        data: _financeStore.filteredFinance.data.total.isEmpty
-                            ? _financeStore.previousBarData
-                            : _financeStore.filteredFinance.data.total),
-              ],
+                        // if the filteredFinance is empty, read to get data
+                        if (_financeStore.filteredFinance.data.items.isEmpty) {
+                          await _financeStore.read(
+                            isIncome: true,
+                            setLoading: () => _financeStore.loadingBarChart =
+                                LoadingStatusEnum.loading,
+                          );
+                        }
+                      },
+                    )
+                  ]),
+                  const SizedBox(height: 24),
+                  _financeStore.finance.data.total.isEmpty
+                      ? Column(
+                          children: [
+                            EmptyDataWidget(
+                              icon: IconHelper.getSVGDefault(
+                                  SVGName.emptyBarChart),
+                              iconSize: const Size(140, 140),
+                              buttonLabel: 'Add Transaction',
+                              description: 'You have no payment history yet.',
+                              onButtonTap: () => Navigator.pushNamed(
+                                  context, RouteName.transactionAdd),
+                            ),
+                          ],
+                        )
+                      : IncomeExpenseBarChart(
+                          data: _financeStore.filteredFinance.data.total.isEmpty
+                              ? _financeStore.previousBarData
+                              : _financeStore.filteredFinance.data.total),
+                ],
+              ),
             ),
           ),
         ],
@@ -560,48 +564,52 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Top Spending Categories'),
-          RoundedContainer(
-            child: Column(
-              children: [
-                _buildGeneralContentHeading(
-                  title: 'Totally Spent',
-                  periodButtonVisible: false,
-                  amount: '\$${_financeStore.financeExpense.data.totalExpense}',
-                  color: ColorConstant.expense,
-                  icon: IconHelper.getSVG(
-                    SVGName.expense,
-                    color: ColorConstant.expenseIcon,
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, RouteName.finance),
+            child: RoundedContainer(
+              child: Column(
+                children: [
+                  _buildGeneralContentHeading(
+                    title: 'Totally Spent',
+                    periodButtonVisible: false,
+                    amount:
+                        '\$${_financeStore.financeExpense.data.totalExpense}',
+                    color: ColorConstant.expense,
+                    icon: IconHelper.getSVG(
+                      SVGName.expense,
+                      color: ColorConstant.expenseIcon,
+                    ),
+                    selectedValue: 'this_month',
+                    onChanged: (value) async {
+                      _financeStore.period = value;
+                      await _financeStore.read(isIncome: false);
+                    },
                   ),
-                  selectedValue: 'this_month',
-                  onChanged: (value) async {
-                    _financeStore.period = value;
-                    await _financeStore.read(isIncome: false);
-                  },
-                ),
-                const SizedBox(height: 30),
-                _financeStore.financeExpense.data.topCategories.isEmpty
-                    ? EmptyDataWidget(
-                        icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
-                        buttonLabel: 'Add Transaction',
-                        description:
-                            'You have no expense transaction history yet.',
-                        onButtonTap: () => Navigator.pushNamed(
-                            context, RouteName.transactionAdd),
-                      )
-                    : IncomeExpensePieChart(
-                        data: getIncomeExpenseList(
-                            _financeStore.financeExpense.data.topCategories
-                                .map(
-                                  (e) => {
-                                    'category': e.category.name,
-                                    'amount': e.amount,
-                                  },
-                                )
-                                .toList()),
-                        color: ColorConstant.expense,
-                      ),
-                const SizedBox(height: 30),
-              ],
+                  const SizedBox(height: 30),
+                  _financeStore.financeExpense.data.topCategories.isEmpty
+                      ? EmptyDataWidget(
+                          icon: IconHelper.getSVGDefault(SVGName.emptyPieChart),
+                          buttonLabel: 'Add Transaction',
+                          description:
+                              'You have no expense transaction history yet.',
+                          onButtonTap: () => Navigator.pushNamed(
+                              context, RouteName.transactionAdd),
+                        )
+                      : IncomeExpensePieChart(
+                          data: getIncomeExpenseList(
+                              _financeStore.financeExpense.data.topCategories
+                                  .map(
+                                    (e) => {
+                                      'category': e.category.name,
+                                      'amount': e.amount,
+                                    },
+                                  )
+                                  .toList()),
+                          color: ColorConstant.expense,
+                        ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ],
@@ -789,7 +797,8 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   _buildGeneralContentHeading(
                     title: 'Totally Spent',
-                    amount: '\$${_financeStore.finance.data.filteredExpense}',
+                    amount:
+                        '\$${_financeStore.totalSpendFinance.data.filteredExpense}',
                     color: ColorConstant.expense,
                     icon: IconHelper.getSVG(
                       SVGName.expense,
@@ -814,9 +823,13 @@ class _HomeScreenState extends State<HomeScreen>
                             title: 'Last 6 Months',
                             value: FinanceFilterConstant.last6Months),
                       ],
-                      selectedValue: FinanceFilterConstant.thisMonth,
-                      onChange: (value) =>
-                          _financeStore.totalSpendPeriod = value,
+                      selectedValue: _financeStore.totalSpendPeriod,
+                      onChange: (value) async {
+                        _financeStore.totalSpendPeriod = value;
+                        await _financeStore.read(
+                          queryParemeter: '?${_financeStore.totalSpendQuery}',
+                        );
+                      },
                     ),
                   ),
                   const Divider(color: ColorConstant.divider),
@@ -840,8 +853,8 @@ class _HomeScreenState extends State<HomeScreen>
                               ))
                       : _buildTransactions(
                           color: ColorConstant.expense,
-                          transactions: _financeStore.filteredFinanceExpense
-                              .data.allTransactions.today,
+                          transactions: _financeStore
+                              .totalSpendFinance.data.allTransactions.today,
                         ),
                 ],
               ),
@@ -870,7 +883,8 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   _buildGeneralContentHeading(
                     title: 'Totally Earned',
-                    amount: '\$${_financeStore.finance.data.totalIncome}',
+                    amount:
+                        '\$${_financeStore.totalEarnFinance.data.filteredIncome}',
                     color: ColorConstant.income,
                     icon: IconHelper.getSVG(
                       SVGName.earn,
@@ -878,6 +892,32 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     selectedValue: 'this_month',
                     onChanged: (value) {},
+                    durationDropDown: DurationDropDown(
+                      items: [
+                        DurationDropDownItem(
+                            title: 'This Month',
+                            value: FinanceFilterConstant.thisMonth),
+                        DurationDropDownItem(
+                            title: 'This Week',
+                            value: FinanceFilterConstant.thisWeek),
+                        DurationDropDownItem(
+                            title: 'Last Month',
+                            value: FinanceFilterConstant.lastMonth),
+                        DurationDropDownItem(
+                            title: 'Last 3 Months',
+                            value: FinanceFilterConstant.last3Months),
+                        DurationDropDownItem(
+                            title: 'Last 6 Months',
+                            value: FinanceFilterConstant.last6Months),
+                      ],
+                      selectedValue: _financeStore.totalEarnPeriod,
+                      onChange: (value) async {
+                        _financeStore.totalEarnPeriod = value;
+                        await _financeStore.read(
+                          queryParemeter: '?${_financeStore.totalEarnQuery}',
+                        );
+                      },
+                    ),
                   ),
                   const Divider(color: ColorConstant.divider),
                   const SizedBox(height: 16),
@@ -901,7 +941,7 @@ class _HomeScreenState extends State<HomeScreen>
                       : _buildTransactions(
                           color: ColorConstant.income,
                           transactions: _financeStore
-                              .filteredFinanceIncome.data.allTransactions.today,
+                              .totalEarnFinance.data.allTransactions.today,
                         ),
                 ],
               ),

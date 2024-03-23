@@ -1,6 +1,6 @@
 abstract class FinanceFilterConstant {
-  static const String income = 'isIncome=0';
-  static const String expense = 'isIncome=1';
+  static const String incomeQuery = 'isIncome=1';
+  static const String expenseQuery = 'isIncome=0';
   static const String lastMonthQuery = 'period=last_month';
   static const String lastWeekQuery = 'period=last_week';
   static const String thisMonthQuery = 'period=this_month';
