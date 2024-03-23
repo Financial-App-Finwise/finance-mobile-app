@@ -14,7 +14,6 @@ import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
 import 'package:finwise/modules/categories/widgets/category_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
-import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
 import 'package:finwise/modules/transaction/widgets/budget_plan_button/budget_plan_button.dart';
@@ -26,7 +25,6 @@ import 'package:finwise/modules/transaction/widgets/smart_goal_button/select_sma
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TransactionFormLayout extends StatefulWidget {
   final String title;
@@ -38,6 +36,10 @@ class TransactionFormLayout extends StatefulWidget {
   final TransactionData transactionData;
   final bool canChangeType;
   final String buttonLabel;
+  final TextEditingController amountIncomeController;
+  final TextEditingController amountExpenseController;
+  final TextEditingController noteController;
+  final TextEditingController dateController;
 
   final void Function({
     bool isIncome,
@@ -51,11 +53,6 @@ class TransactionFormLayout extends StatefulWidget {
     required TransactionPost transactionPost,
   }) onTap;
 
-  final TextEditingController amountIncomeController;
-  final TextEditingController amountExpenseController;
-  final TextEditingController noteController;
-  final TextEditingController dateController;
-
   const TransactionFormLayout({
     super.key,
     required this.transactionData,
@@ -66,12 +63,12 @@ class TransactionFormLayout extends StatefulWidget {
     this.defaultBillName = '',
     this.amount = 0.0,
     this.buttonLabel = '',
-    required this.onTap,
     this.canChangeType = true,
     required this.amountIncomeController,
     required this.amountExpenseController,
     required this.noteController,
     required this.dateController,
+    required this.onTap,
   });
 
   @override
@@ -79,18 +76,6 @@ class TransactionFormLayout extends StatefulWidget {
 }
 
 class _TransactionFormLayoutState extends State<TransactionFormLayout> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () async {
-      // await _readAll();
-    });
-  }
-
-  Future _readAll() async {
-    await context.read<SmartGoalStore>().readByPage();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,9 +97,9 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTopCloseIcon(),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             _buildTitle(),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
             Expanded(child: _buildForm()),
             const SizedBox(height: 16),
             _buildButton(),
@@ -124,28 +109,29 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
+  // **************************************************************************
+  // Title Section
+  // **************************************************************************
   // -------------------- Close Icon --------------------
   Widget _buildTopCloseIcon() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: Row(
-            children: [
-              SizedBox.fromSize(
-                size: const Size(24, 24),
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: IconHelper.getSVG(SVGName.close),
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
-                  ),
+        Row(
+          children: [
+            SizedBox.fromSize(
+              size: const Size(24, 24),
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: IconHelper.getSVG(SVGName.close),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+        const SizedBox(height: 12),
       ],
     );
   }
@@ -163,7 +149,9 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
-  // -------------------- Form --------------------
+  // **************************************************************************
+  // Form Section
+  // **************************************************************************
   void _resetItem() {
     setState(() {
       _selectedBudgetPlan = BudgetPlanData();
@@ -205,7 +193,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
             }),
             currentValue: _isIncome,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -221,10 +209,15 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
-  // -------------------- Add Income --------------------
+  // **************************************************************************
+  // Income Form
+  // **************************************************************************
   late final _amountIncomeController = widget.amountIncomeController;
-  late List<TextEditingController> _goalControllers = [];
-  late List<SmartGoalData> _selectedSmartGoals = [];
+
+  // map from goal id to text editing controller
+  late final Map<int, TextEditingController> _goalControllerMap = {};
+  late final List<SmartGoalData> _selectedSmartGoals = [];
+  late final List<GoalContribution> _contributions = [];
 
   Widget _buildIncomeForm() {
     return Column(
@@ -261,6 +254,9 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
+  // **************************************************************************
+  // Goal Contribution
+  // **************************************************************************
   Widget _buildGoalContributionSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +281,13 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
                         if (_selectedSmartGoals.every(
                             (element) => element.id != smartGoalData.id)) {
                           _selectedSmartGoals.add(smartGoalData);
-                          _goalControllers.add(TextEditingController());
+
+                          // add controller to each smart goal selected
+                          _goalControllerMap.addAll(
+                            {
+                              smartGoalData.id: TextEditingController(),
+                            },
+                          );
                         }
                       });
                     },
@@ -333,6 +335,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
+  // ------------ Contribution Item -----------------
   Widget _buildGoalContributionItem(
     int index, {
     String title = '',
@@ -350,7 +353,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
         ),
         Expanded(
           child: TextFormField(
-            controller: _goalControllers[index],
+            controller: _goalControllerMap[smartGoalData.id],
             onChanged: (value) => setState(() {}),
             decoration: InputDecoration(
               isDense: true,
@@ -366,7 +369,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
                 padding: const EdgeInsets.only(left: 16, right: 8),
                 child: IconHelper.getSVG(
                   SVGName.dollarSquare,
-                  color: _goalControllers[index].text.isEmpty
+                  color: _goalControllerMap[smartGoalData.id]!.text.isEmpty
                       ? ColorConstant.color292D32
                       : const Color.fromRGBO(16, 172, 132, 1),
                 ),
@@ -384,7 +387,8 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
         CustomIconButton(
           onPressed: () {
             setState(() {
-              _selectedSmartGoals.remove(smartGoalData);
+              _goalControllerMap.remove(smartGoalData.id);
+              _selectedSmartGoals.removeAt(index);
             });
           },
           icon: IconHelper.getSVG(SVGName.close, color: ColorConstant.expense),
@@ -393,7 +397,9 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
-  // -------------------- Add Expense --------------------
+  // **************************************************************************
+  // Expense Form
+  // **************************************************************************
   late String _expenseType = widget.expenseType;
   late final _amountExpenseController = widget.amountExpenseController;
 
@@ -401,12 +407,15 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     return Column(
       children: [
         RectFilterBarHeader(
-            physics: const BouncingScrollPhysics(),
+            type: RectFilterBarHeaderType.expanded,
+            padding: const EdgeInsets.only(bottom: 12),
             items: [
-              FilterBarHeaderItem(title: 'General', value: 'General'),
-              FilterBarHeaderItem(title: 'Budget Plan', value: 'Budget Plan'),
               FilterBarHeaderItem(
-                  title: 'Upcoming Bill', value: 'Upcoming Bill'),
+                  title: 'General', value: ExpenseTypeConstant.general),
+              FilterBarHeaderItem(
+                  title: 'Budget Plan', value: ExpenseTypeConstant.budgetPlan),
+              FilterBarHeaderItem(
+                  title: 'Bill', value: ExpenseTypeConstant.upcomingBill),
             ],
             currentValue: _expenseType,
             readOnly: !widget.canChangeType,
@@ -446,7 +455,10 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
-  // -------------------- Select Item --------------------
+  // **************************************************************************
+  // Selection Item
+  // Category, Budget Plan or Upcoming Bill
+  // **************************************************************************
   late CategoryData _selectedExpenseCategory =
       widget.transactionData.categoryData ?? CategoryData();
   late BudgetPlanData _selectedBudgetPlan = BudgetPlanData();
@@ -458,7 +470,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
       case ExpenseTypeConstant.budgetPlan:
         return BudgetPlanButton(
           currentItem: SelectItem<BudgetPlanData>(
-            title: 'Budget PLan',
+            title: 'Budget Plan',
             subTitle: _selectedBudgetPlan.id == 0
                 ? 'Select a budget plan'
                 : _selectedBudgetPlan.name,
@@ -512,45 +524,17 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     }
   }
 
-  // -------------------- Post Data --------------------
-  late TransactionPost _transactionPost = TransactionPost();
-
-  void _chooseItem() {
-    late final TransactionPost baseTransactionPost = TransactionPost(
-      amount: _isIncome
-          ? double.parse(_amountIncomeController.text)
-          : double.parse(_amountExpenseController.text),
-      note: _noteController.text,
-      date: widget.dateController.text,
+  // **************************************************************************
+  // Add Transaction Button
+  // **************************************************************************
+  Widget _buildButton() {
+    return GeneralBottomButton(
+      backgroundColor: !_isFormValid
+          ? ColorConstant.secondary.withOpacity(0.5)
+          : ColorConstant.secondary,
+      onButtonTap: !_isFormValid ? _validateForm : _postItem,
+      buttonLabel: widget.buttonLabel,
     );
-
-    _transactionPost = TransactionPost();
-
-    setState(() {
-      switch (_isIncome) {
-        case true:
-          _transactionPost = baseTransactionPost.toIncome(TransactionPostIncome(
-            categoryID: _selectedIncomeCategory.id,
-          ));
-        case false:
-          switch (_expenseType) {
-            case ExpenseTypeConstant.budgetPlan:
-              _transactionPost = baseTransactionPost.toExpenseBudgetPlan(
-                  TransactionPostExpenseBudgetPlan(
-                      budgetplanID: _selectedBudgetPlan.id));
-
-            case ExpenseTypeConstant.upcomingBill:
-              _transactionPost = baseTransactionPost.toExpenseUpcomingBill(
-                  TransactionPostExpenseUpcomingBill(
-                      upcomingbillID: _selectedUpcomingBill.id));
-
-            case ExpenseTypeConstant.general:
-              _transactionPost = baseTransactionPost.toExpense(
-                  TransactionPostExpense(
-                      categoryID: _selectedExpenseCategory.id));
-          }
-      }
-    });
   }
 
   // -------------------- Form Validation --------------------
@@ -606,31 +590,77 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     _validateItemSelection();
   }
 
-  // -------------------- Add Button --------------------
-  Widget _buildButton() {
-    return GeneralBottomButton(
-      backgroundColor: !_isFormValid
-          ? ColorConstant.secondary.withOpacity(0.5)
-          : ColorConstant.secondary,
-      onButtonTap: !_isFormValid
-          ? _validateForm
-          : () {
-              _chooseItem();
-              widget.onTap(
-                isIncome: _isIncome,
-                expenseType: _expenseType,
-                amount: _isIncome
-                    ? _amountIncomeController.text
-                    : _amountExpenseController.text,
-                hasContributed: _selectedSmartGoals.isNotEmpty,
-                note: _noteController.text,
-                selectedBudgetPlan: _selectedBudgetPlan,
-                selectedUpcomingBill: _selectedUpcomingBill,
-                selectedCategory: _selectedIncomeCategory,
-                transactionPost: _transactionPost,
+  // -------------------- Post Data --------------------
+  late TransactionPost _transactionPost = TransactionPost();
+
+  void _chooseItem() {
+    late final TransactionPost baseTransactionPost = TransactionPost(
+      amount: _isIncome
+          ? double.parse(_amountIncomeController.text)
+          : double.parse(_amountExpenseController.text),
+      note: _noteController.text,
+      date: widget.dateController.text,
+    );
+
+    _transactionPost = TransactionPost();
+
+    setState(() {
+      switch (_isIncome) {
+        case true:
+          _transactionPost = baseTransactionPost.toIncome(TransactionPostIncome(
+            categoryID: _selectedIncomeCategory.id,
+          ));
+          if (_selectedSmartGoals.isNotEmpty) {
+            // convert text field into GoalContribution
+            _goalControllerMap.forEach((key, value) {
+              _contributions.add(
+                GoalContribution(
+                  goalID: key,
+                  contributionAmount: double.parse(value.text),
+                ),
               );
-            },
-      buttonLabel: widget.buttonLabel,
+            });
+
+            _transactionPost = (_transactionPost as TransactionPostIncome)
+                .toContribution(TransactionPostGoalContribution(
+                    contributions: _contributions));
+          }
+        case false:
+          switch (_expenseType) {
+            case ExpenseTypeConstant.budgetPlan:
+              _transactionPost = baseTransactionPost.toExpenseBudgetPlan(
+                  TransactionPostExpenseBudgetPlan(
+                      budgetplanID: _selectedBudgetPlan.id));
+
+            case ExpenseTypeConstant.upcomingBill:
+              _transactionPost = baseTransactionPost.toExpenseUpcomingBill(
+                  TransactionPostExpenseUpcomingBill(
+                      upcomingbillID: _selectedUpcomingBill.id));
+
+            case ExpenseTypeConstant.general:
+              _transactionPost = baseTransactionPost.toExpense(
+                  TransactionPostExpense(
+                      categoryID: _selectedExpenseCategory.id));
+          }
+      }
+    });
+  }
+
+  // ---------- Post Item ----------
+  void _postItem() {
+    _chooseItem();
+    widget.onTap(
+      isIncome: _isIncome,
+      expenseType: _expenseType,
+      amount: _isIncome
+          ? _amountIncomeController.text
+          : _amountExpenseController.text,
+      hasContributed: _selectedSmartGoals.isNotEmpty,
+      note: _noteController.text,
+      selectedBudgetPlan: _selectedBudgetPlan,
+      selectedUpcomingBill: _selectedUpcomingBill,
+      selectedCategory: _selectedIncomeCategory,
+      transactionPost: _transactionPost,
     );
   }
 }
