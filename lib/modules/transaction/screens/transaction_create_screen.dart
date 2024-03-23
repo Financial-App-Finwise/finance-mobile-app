@@ -33,8 +33,10 @@ class _TransactionCreateScreenState extends State<TransactionCreateScreen> {
       bool success = await store.post(widget.transactionPost);
 
       if (success) {
-        await financeStore.read();
-        Navigator.pop(context, success);
+        await financeStore.read(updateFinance: true);
+        if (mounted) {
+          Navigator.pop(context, success);
+        }
       }
     });
   }
