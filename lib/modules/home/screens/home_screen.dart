@@ -601,7 +601,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // -------------------- Top Spending --------------------
+  // **************************************************************************
+  // Top Spending
+  // **************************************************************************
   Widget _buildTopSpending() {
     return Container(
       alignment: Alignment.topLeft,
@@ -615,7 +617,7 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildGeneralContentHeading(
                   title: 'Totally Spent',
                   periodButtonVisible: false,
-                  amount: '\$${_financeStore.expenseFinance.data.totalExpense}',
+                  amount: '\$${_financeStore.filteredFinanceExpense.data.totalExpense}',
                   color: ColorConstant.expense,
                   icon: IconHelper.getSVG(
                     SVGName.expense,
@@ -639,7 +641,7 @@ class _HomeScreenState extends State<HomeScreen>
                       )
                     : IncomeExpensePieChart(
                         data: getIncomeExpenseList(
-                            _financeStore.expenseFinance.data.topCategories
+                            _financeStore.filteredFinanceExpense.data.topCategories
                                 .map(
                                   (e) => {
                                     'category': e.category.name,
@@ -849,7 +851,7 @@ class _HomeScreenState extends State<HomeScreen>
                       style: HomeTextStyleConstant.medium),
                   const SizedBox(height: 12),
                   _financeStore
-                          .expenseFinance.data.allTransactions.today.isEmpty
+                          .filteredFinanceExpense.data.allTransactions.today.isEmpty
                       ? EmptyDataWidget(
                           icon: IconHelper.getSVG(
                             SVGName.transaction,
@@ -865,7 +867,7 @@ class _HomeScreenState extends State<HomeScreen>
                       : _buildTransactions(
                           color: ColorConstant.expense,
                           transactions: _financeStore
-                              .expenseFinance.data.allTransactions.today,
+                              .filteredFinanceExpense.data.allTransactions.today,
                         ),
                 ],
               ),
@@ -906,7 +908,7 @@ class _HomeScreenState extends State<HomeScreen>
                   const Text('Recent Transactions',
                       style: HomeTextStyleConstant.medium),
                   const SizedBox(height: 12),
-                  _financeStore.incomeFinance.data.allTransactions.today.isEmpty
+                  _financeStore.filteredFinanceIncome.data.allTransactions.today.isEmpty
                       ? EmptyDataWidget(
                           icon: IconHelper.getSVG(
                             SVGName.transaction,
@@ -922,7 +924,7 @@ class _HomeScreenState extends State<HomeScreen>
                       : _buildTransactions(
                           color: ColorConstant.income,
                           transactions: _financeStore
-                              .incomeFinance.data.allTransactions.today,
+                              .filteredFinanceIncome.data.allTransactions.today,
                         ),
                 ],
               ),

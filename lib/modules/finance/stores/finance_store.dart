@@ -11,37 +11,41 @@ part 'finance_store.g.dart';
 class FinanceStore = _FinanceStoreBase with _$FinanceStore;
 
 abstract class _FinanceStoreBase with Store {
-  // -------------------- Loading --------------------
-  // General
+  // **************************************************************************
+  // Loading
+  // **************************************************************************
+  // -------------------- General --------------------
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
   @computed
   bool get isLoading => loadingStatus == LoadingStatusEnum.loading;
 
-  // Bar Chart
+  // -------------------- Bar Chart --------------------
   @observable
   LoadingStatusEnum loadingBarChart = LoadingStatusEnum.none;
 
   @computed
   bool get isLoadingBarChart => loadingBarChart == LoadingStatusEnum.loading;
 
-  // Pie Chart
+  // -------------------- Pie Chart --------------------
   @observable
   LoadingStatusEnum loadingPieChart = LoadingStatusEnum.none;
 
   @computed
   bool get isLoadingPieChart => loadingPieChart == LoadingStatusEnum.loading;
 
-  // Update Balance
+  // -------------------- Update Balance --------------------
   @observable
   LoadingStatusEnum loadingUpdate = LoadingStatusEnum.none;
 
   @computed
   bool get isLoadingUpdate => loadingUpdate == LoadingStatusEnum.loading;
 
-  // -------------------- Finance --------------------
-  // Default finance
+  // **************************************************************************
+  // Finance
+  // **************************************************************************
+  // -------------------- Default --------------------
   Finance get _defaultFinance => Finance(
         data: FinanceData(
           items: [],
@@ -51,7 +55,7 @@ abstract class _FinanceStoreBase with Store {
         ),
       );
 
-  // General Finance
+  // -------------------- General --------------------
   @observable
   late Finance finance = _defaultFinance;
 
@@ -124,13 +128,14 @@ abstract class _FinanceStoreBase with Store {
 
   // Filtered income finance
   @computed
-  Finance get incomeFinance => filteredFinanceMap[queryParemeterIncome] == null
-      ? _defaultFinance
-      : filteredFinanceMap[queryParemeterIncome]!;
+  Finance get filteredFinanceIncome =>
+      filteredFinanceMap[queryParemeterIncome] == null
+          ? _defaultFinance
+          : filteredFinanceMap[queryParemeterIncome]!;
 
   // Filtered expense finance
   @computed
-  Finance get expenseFinance =>
+  Finance get filteredFinanceExpense =>
       filteredFinanceMap[queryParemeterExpense] == null
           ? _defaultFinance
           : filteredFinanceMap[queryParemeterExpense]!;

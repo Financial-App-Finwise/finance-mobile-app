@@ -72,19 +72,19 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
           Computed<Finance>(() => super.filteredFinance,
               name: '_FinanceStoreBase.filteredFinance'))
       .value;
-  Computed<Finance>? _$incomeFinanceComputed;
+  Computed<Finance>? _$filteredFinanceIncomeComputed;
 
   @override
-  Finance get incomeFinance =>
-      (_$incomeFinanceComputed ??= Computed<Finance>(() => super.incomeFinance,
-              name: '_FinanceStoreBase.incomeFinance'))
-          .value;
-  Computed<Finance>? _$expenseFinanceComputed;
+  Finance get filteredFinanceIncome => (_$filteredFinanceIncomeComputed ??=
+          Computed<Finance>(() => super.filteredFinanceIncome,
+              name: '_FinanceStoreBase.filteredFinanceIncome'))
+      .value;
+  Computed<Finance>? _$filteredFinanceExpenseComputed;
 
   @override
-  Finance get expenseFinance => (_$expenseFinanceComputed ??= Computed<Finance>(
-          () => super.expenseFinance,
-          name: '_FinanceStoreBase.expenseFinance'))
+  Finance get filteredFinanceExpense => (_$filteredFinanceExpenseComputed ??=
+          Computed<Finance>(() => super.filteredFinanceExpense,
+              name: '_FinanceStoreBase.filteredFinanceExpense'))
       .value;
 
   late final _$loadingStatusAtom =
@@ -314,8 +314,8 @@ queryParemeter: ${queryParemeter},
 queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},
 filteredFinance: ${filteredFinance},
-incomeFinance: ${incomeFinance},
-expenseFinance: ${expenseFinance}
+filteredFinanceIncome: ${filteredFinanceIncome},
+filteredFinanceExpense: ${filteredFinanceExpense}
     ''';
   }
 }
