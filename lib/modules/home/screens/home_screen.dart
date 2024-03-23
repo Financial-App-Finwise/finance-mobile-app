@@ -447,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen>
                 // ---------- Upcoming Bill ----------
                 _buildFeatureItem(
                   text: 'Upcoming Bill',
-                  amount: '3',
+                  amount: '${_upcomingBillStore.totalUpcomingBills}',
                   icon: IconHelper.getSVG(SVGName.upcomingBill,
                       color: Colors.white),
                   onPressed: () =>
@@ -825,50 +825,51 @@ class _HomeScreenState extends State<HomeScreen>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _buildGeneralTitle('Totally Spent'),
-              ViewMoreTextButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, RouteName.transaction))
             ],
           ),
-          RoundedContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildGeneralContentHeading(
-                  title: 'Totally Spent',
-                  amount: '\$${_financeStore.finance.data.totalExpense}',
-                  color: ColorConstant.expense,
-                  icon: IconHelper.getSVG(
-                    SVGName.expense,
-                    color: ColorConstant.expenseIcon,
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, RouteName.transaction),
+            child: RoundedContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildGeneralContentHeading(
+                    title: 'Totally Spent',
+                    amount: '\$${_financeStore.finance.data.totalExpense}',
+                    color: ColorConstant.expense,
+                    icon: IconHelper.getSVG(
+                      SVGName.expense,
+                      color: ColorConstant.expenseIcon,
+                    ),
+                    selectedValue: 'this_month',
+                    onChanged: (value) {},
                   ),
-                  selectedValue: 'this_month',
-                  onChanged: (value) {},
-                ),
-                const Divider(color: ColorConstant.divider),
-                const SizedBox(height: 16),
-                const Text('Recent Transactions',
-                    style: HomeTextStyleConstant.medium),
-                const SizedBox(height: 12),
-                _financeStore.expenseFinance.data.allTransactions.today.isEmpty
-                    ? EmptyDataWidget(
-                        icon: IconHelper.getSVG(
-                          SVGName.transaction,
-                          color: ColorConstant.colorA4A7C6,
+                  const Divider(color: ColorConstant.divider),
+                  const SizedBox(height: 16),
+                  const Text('Recent Transactions',
+                      style: HomeTextStyleConstant.medium),
+                  const SizedBox(height: 12),
+                  _financeStore
+                          .expenseFinance.data.allTransactions.today.isEmpty
+                      ? EmptyDataWidget(
+                          icon: IconHelper.getSVG(
+                            SVGName.transaction,
+                            color: ColorConstant.colorA4A7C6,
+                          ),
+                          description:
+                              'You currently have no spending transaction history.',
+                          buttonLabel: 'Add Transaction',
+                          onButtonTap: () => Navigator.pushNamed(
+                                context,
+                                RouteName.transactionAdd,
+                              ))
+                      : _buildTransactions(
+                          color: ColorConstant.expense,
+                          transactions: _financeStore
+                              .expenseFinance.data.allTransactions.today,
                         ),
-                        description:
-                            'You currently have no spending transaction history.',
-                        buttonLabel: 'Add Transaction',
-                        onButtonTap: () => Navigator.pushNamed(
-                              context,
-                              RouteName.transactionAdd,
-                            ))
-                    : _buildTransactions(
-                        color: ColorConstant.expense,
-                        transactions: _financeStore
-                            .expenseFinance.data.allTransactions.today,
-                      ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -884,45 +885,48 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGeneralTitle('Totally Earned'),
-          RoundedContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildGeneralContentHeading(
-                  title: 'Totally Earned',
-                  amount: '\$${_financeStore.finance.data.totalIncome}',
-                  color: ColorConstant.income,
-                  icon: IconHelper.getSVG(
-                    SVGName.earn,
-                    color: ColorConstant.incomeIcon,
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, RouteName.transaction),
+            child: RoundedContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildGeneralContentHeading(
+                    title: 'Totally Earned',
+                    amount: '\$${_financeStore.finance.data.totalIncome}',
+                    color: ColorConstant.income,
+                    icon: IconHelper.getSVG(
+                      SVGName.earn,
+                      color: ColorConstant.incomeIcon,
+                    ),
+                    selectedValue: 'this_month',
+                    onChanged: (value) {},
                   ),
-                  selectedValue: 'this_month',
-                  onChanged: (value) {},
-                ),
-                const Divider(color: ColorConstant.divider),
-                const SizedBox(height: 16),
-                const Text('Recent Transactions',
-                    style: HomeTextStyleConstant.medium),
-                const SizedBox(height: 12),
-                _financeStore.incomeFinance.data.allTransactions.today.isEmpty
-                    ? EmptyDataWidget(
-                        icon: IconHelper.getSVG(
-                          SVGName.transaction,
-                          color: ColorConstant.colorA4A7C6,
+                  const Divider(color: ColorConstant.divider),
+                  const SizedBox(height: 16),
+                  const Text('Recent Transactions',
+                      style: HomeTextStyleConstant.medium),
+                  const SizedBox(height: 12),
+                  _financeStore.incomeFinance.data.allTransactions.today.isEmpty
+                      ? EmptyDataWidget(
+                          icon: IconHelper.getSVG(
+                            SVGName.transaction,
+                            color: ColorConstant.colorA4A7C6,
+                          ),
+                          description:
+                              'You currently have no earning transaction history.',
+                          buttonLabel: 'Add Transaction',
+                          onButtonTap: () => Navigator.pushNamed(
+                                context,
+                                RouteName.transactionAdd,
+                              ))
+                      : _buildTransactions(
+                          color: ColorConstant.income,
+                          transactions: _financeStore
+                              .incomeFinance.data.allTransactions.today,
                         ),
-                        description:
-                            'You currently have no earning transaction history.',
-                        buttonLabel: 'Add Transaction',
-                        onButtonTap: () => Navigator.pushNamed(
-                              context,
-                              RouteName.transactionAdd,
-                            ))
-                    : _buildTransactions(
-                        color: ColorConstant.income,
-                        transactions: _financeStore
-                            .incomeFinance.data.allTransactions.today,
-                      ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -976,7 +980,7 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   _buildGeneralContentHeading(
                     title: 'Total',
-                    amount: '4',
+                    amount: '${_upcomingBillStore.totalUpcomingBills}',
                     color: ColorConstant.bill,
                     icon: IconHelper.getSVG(
                       SVGName.upcomingBill,

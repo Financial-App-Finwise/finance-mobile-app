@@ -44,9 +44,7 @@ SmartGoalDetail _$SmartGoalDetailFromJson(Map<String, dynamic> json) =>
       createdAt: json['created_at'] as String? ?? 'no date',
       updatedAt: json['updated_at'] as String? ?? 'no date',
       transactionCount: json['transactions_count'] as int? ?? 0,
-      transactions: (json['transactions'] as List<dynamic>)
-          .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      transactions: SmartGoalDetail._toMap(json['transactions']),
       contributions:
           json['contribution_amounts_last_6_months'] as List<dynamic>,
       averageContribution: json['average_total_contribution'] == null
@@ -69,3 +67,9 @@ Map<String, dynamic> _$SmartGoalDetailToJson(SmartGoalDetail instance) =>
       'endDate': instance.endDate,
       'monthlyContribution': instance.monthlyContribution,
     };
+
+ContributionItem _$ContributionItemFromJson(Map<String, dynamic> json) =>
+    ContributionItem();
+
+Map<String, dynamic> _$ContributionItemToJson(ContributionItem instance) =>
+    <String, dynamic>{};

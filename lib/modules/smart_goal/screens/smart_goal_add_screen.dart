@@ -9,13 +9,10 @@ import 'package:finwise/core/widgets/buttons/general_outline_button.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
 import 'package:finwise/modules/smart_goal/screens/smart_goal_create_screen.dart';
 import 'package:finwise/modules/smart_goal/widgets/calendar_widget.dart';
-import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/smart_goal/widgets/forms/smart_goal_form_item.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_form_layout.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_prediction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class SmartGoalAddScreen extends StatefulWidget {
   const SmartGoalAddScreen({super.key});

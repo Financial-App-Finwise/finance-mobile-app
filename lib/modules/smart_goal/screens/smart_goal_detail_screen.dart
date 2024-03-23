@@ -4,11 +4,13 @@ import 'package:finwise/core/constants/text_style_constants/general_text_style_c
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/text_style_constants/smart_goal_text_style_constant.dart';
 import 'package:finwise/core/enums/transaction_period_enum.dart';
+import 'package:finwise/core/enums/transaction_type_enum.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/utils/ui_util.dart';
 import 'package:finwise/core/widgets/charts/general_six_month_bar_chart.dart';
+import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/widgets/general_filter_bar_header/general_filter_bar_header.dart';
@@ -23,6 +25,7 @@ import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class SmartGoalDetailScreen extends StatefulWidget {
@@ -100,17 +103,21 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SingleChildScrollView(
-        child: ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+        child: Column(
           children: [
-            const SizedBox(height: 16),
-            _buildOverview(),
-            const SizedBox(height: 20),
-            _buildContribution(),
-            const SizedBox(height: 20),
-            _buildTransactions(),
-            const SizedBox(height: 48),
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                const SizedBox(height: 16),
+                _buildOverview(),
+                const SizedBox(height: 20),
+                _buildContribution(),
+                const SizedBox(height: 20),
+                _buildTypeTransactions(),
+                const SizedBox(height: 48),
+              ],
+            ),
           ],
         ),
       ),
@@ -330,46 +337,6 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
     );
   }
 
-  late TransactionPeriodEnum _current = TransactionPeriodEnum.all;
-
-  Widget _buildTransactions({bool isIncome = true}) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Transactions', style: TextStyleHelper.getw600size(20)),
-            _buildAddButton(),
-          ],
-        ),
-        const SizedBox(height: 16),
-        GeneralFilterBarHeader(
-          padding: EdgeInsets.zero,
-          physics: const BouncingScrollPhysics(),
-          items: [
-            FilterBarHeaderItem(title: 'All', value: TransactionPeriodEnum.all),
-            FilterBarHeaderItem(
-                title: 'Recently', value: TransactionPeriodEnum.recently),
-            FilterBarHeaderItem(
-                title: 'Earliest', value: TransactionPeriodEnum.earliest),
-            FilterBarHeaderItem(
-                title: 'Lowest', value: TransactionPeriodEnum.lowest),
-            FilterBarHeaderItem(
-                title: 'Highest', value: TransactionPeriodEnum.hightest),
-          ],
-          currentValue: _current,
-          onTap: (value) {
-            setState(() {
-              _current = value;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        _buildTransactionItems(isIncome: isIncome),
-      ],
-    );
-  }
-
   Widget _buildAddButton() {
     return TextButton(
       onPressed: () => Navigator.pushNamed(context, RouteName.transactionAdd),
@@ -402,87 +369,81 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
   }
 
   // -------------------- Transactions --------------------
-  Widget _buildTransactionItems({bool isIncome = true}) {
-    final store = context.read<FinanceStore>();
-    List<TransactionData> todayTransactions =
-        store.incomeFinance.data.allTransactions.today;
-
-    List<TransactionData> yesterdayTransactions =
-        store.incomeFinance.data.allTransactions.yesterday;
-
+  Widget _buildTypeTransactions() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('All Transactions', style: GeneralTextStyle.getHeader()),
-            ViewMoreTextButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, RouteName.transaction),
-            ),
+            Text('Transactions', style: TextStyleHelper.getw600size(20)),
+            _buildAddButton(),
           ],
         ),
         const SizedBox(height: 12),
-        _buildTransactionItemsDays(
-          isIncome: isIncome,
-          transactions: todayTransactions,
-        ),
-        const SizedBox(height: 16),
-        _buildTransactionItemsDays(
-          day: 'Yesterday',
-          isIncome: isIncome,
-          transactions: yesterdayTransactions,
-        ),
+        _buildTransactions(),
       ],
     );
   }
 
-  Widget _buildTransactionItemsDays({
-    String? day,
-    bool isIncome = true,
-    List<TransactionData> transactions = const [],
-  }) {
+  Widget _buildTransactions() {
+    return Observer(builder: (context) {
+      return store.isLoadingDetail
+          ? const CircularProgressIndicatorTwoArcs()
+          : ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: store
+                  .smartGoalDetail.smartGoalDetail.transactions.keys.length,
+              itemBuilder: ((context, index) {
+                return _buildTransactionDays(store
+                    .smartGoalDetail.smartGoalDetail.transactions.keys
+                    .elementAt(index));
+              }),
+              separatorBuilder: (context, index) =>
+                  const Divider(color: ColorConstant.divider),
+            );
+    });
+  }
+
+  Widget _buildTransactionDays(String key) {
     return Column(
       children: [
         Row(children: [
-          Text(day ?? 'Today', style: GeneralTextStyle.getSize(14)),
+          Text(UIHelper.getDateFormat(key, 'dd MMM, yyyy'),
+              style: TextStyleHelper.getw500size(14)),
           const SizedBox(width: 12),
           const Expanded(child: Divider(color: ColorConstant.divider))
         ]),
         const SizedBox(height: 12),
         RoundedContainer(
-          child: transactions.isEmpty
-              ? EmptyDataWidget(
-                  icon: IconHelper.getSVGDefault(SVGName.transaction),
-                  buttonLabel: 'Add Transaction',
-                  description:
-                      'You have no ${isIncome ? 'income' : 'expense'} transaction history yet.',
-                  onButtonTap: () =>
-                      Navigator.pushNamed(context, RouteName.transactionAdd),
-                )
-              : ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: transactions.length,
-                  itemBuilder: ((context, index) {
-                    return TransactionItem(
-                      transactionData: transactions[index],
-                      date: UIHelper.getDateFormat(
-                          transactions[index].date, 'dd MMM, yyyy'),
-                      icon: isIncome
-                          ? IconConstant.getEarn()
-                          : IconConstant.getExpense(),
-                      color: isIncome
-                          ? ColorConstant.income
-                          : ColorConstant.expense,
-                    );
-                  }),
-                  separatorBuilder: (context, index) =>
-                      const Divider(color: ColorConstant.divider),
-                ),
+          child: ListView.separated(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount:
+                store.smartGoalDetail.smartGoalDetail.transactions[key].length,
+            itemBuilder: ((context, index) {
+              return _buildTransactionItem(
+                TransactionData.fromJson(store
+                    .smartGoalDetail.smartGoalDetail.transactions[key][index]),
+              );
+            }),
+            separatorBuilder: (context, index) =>
+                const Divider(color: ColorConstant.divider),
+          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildTransactionItem(TransactionData item) {
+    print(item.toJson());
+    return TransactionItem(
+      transactionData: item,
+      date: UIHelper.getDateFormat(item.date, 'dd MMM, yyy'),
+      amount: item.amount.toString(),
+      icon: item.isIncome ? IconConstant.getEarn() : IconConstant.getExpense(),
+      color: item.isIncome ? ColorConstant.income : ColorConstant.expense,
     );
   }
 }

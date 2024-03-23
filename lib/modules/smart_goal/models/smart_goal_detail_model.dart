@@ -76,8 +76,8 @@ class SmartGoalDetail {
   late int transactionCount;
 
   // "transactions": [],
-  @JsonKey(name: 'transactions', includeToJson: false)
-  late List<Transaction> transactions;
+  @JsonKey(name: 'transactions', includeToJson: false, fromJson: _toMap)
+  late Map<String, dynamic> transactions;
 
   // "contribution_amounts_last_6_months": [],
   @JsonKey(name: 'contribution_amounts_last_6_months', includeToJson: false)
@@ -104,5 +104,23 @@ class SmartGoalDetail {
 
   static bool _intToBool(int value) => 1 == value;
 
-  static double _stringToDouble(dynamic value) => double.parse(value.toString());
+  static double _stringToDouble(dynamic value) =>
+      double.parse(value.toString());
+
+  static Map<String, dynamic> _toMap(dynamic value) {
+    if (value.runtimeType == [].runtimeType) {
+      return <String, dynamic>{};
+    }
+    return value;
+  }
+}
+
+@JsonSerializable()
+class ContributionItem {
+  // {
+  //               "year": 2024,
+  //               "month": "February",
+  //               "totalContribution": "10.00",
+  //               "laravel_through_key": 31
+  //           }
 }

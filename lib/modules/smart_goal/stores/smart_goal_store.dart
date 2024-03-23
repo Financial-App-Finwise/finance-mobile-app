@@ -299,8 +299,8 @@ abstract class _SmartGoalStoreBase with Store {
   @observable
   SmartGoalDetailModel smartGoalDetail = SmartGoalDetailModel(
       smartGoalDetail: SmartGoalDetail(
-    transactions: [],
-    contributions: [],
+    transactions: ObservableMap.of({}),
+    contributions: ObservableList.of([]),
   ));
 
   @observable
