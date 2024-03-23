@@ -18,14 +18,14 @@ class _OnboardingQuestionScreenState extends State<OnboardingQuestionScreen> {
   late OnboardingQuestionStore store = context.read<OnboardingQuestionStore>();
   late CategoryStore categoryStore = context.read<CategoryStore>();
   int _currentIndex = 0;
-  
+
   @override
   void initState() {
     super.initState();
 
     Future.delayed(const Duration(seconds: 0), () async {
       if (mounted) {
-        await categoryStore.read();
+        await categoryStore.read(defaultCat: true);
       }
     });
   }

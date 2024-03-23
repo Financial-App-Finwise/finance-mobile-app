@@ -118,8 +118,8 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
       AsyncAction('_CategoryStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read() {
-    return _$readAsyncAction.run(() => super.read());
+  Future<dynamic> read({dynamic defaultCat = false}) {
+    return _$readAsyncAction.run(() => super.read(defaultCat: defaultCat));
   }
 
   late final _$postAsyncAction =

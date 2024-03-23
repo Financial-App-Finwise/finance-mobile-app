@@ -18,12 +18,17 @@ abstract class _CategoryStoreBase with Store {
   LoadingStatus status = LoadingStatus.none;
 
   @action
-  Future read() async {
+  Future read({defaultCat = false}) async {
     debugPrint('--> Start fetching category');
     status = LoadingStatus.loading;
-    debugPrint('$status');
+
+    String url = 'categories';
+    if (defaultCat) {
+      url = 'default_categories';
+    }
+
     try {
-      Response response = await ApiService.dio.get('categories');
+      Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
         categoryModel = await compute(
             getCategoryModel, response.data as Map<String, dynamic>);
