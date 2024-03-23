@@ -123,8 +123,7 @@ class TransactionPostIncome extends TransactionPost {
         note: note,
         date: date,
         categoryID: categoryID,
-        goalID: goalContribution.goalID,
-        contributionAmount: goalContribution.contributionAmount,
+        contributions: goalContribution.contributions,
       );
 
   @override
@@ -132,23 +131,44 @@ class TransactionPostIncome extends TransactionPost {
 }
 
 // -------------------- Income and Contribution --------------------
+// "categoryID": 5,
+//     "amount": 300,
+//     "date": "2024-02-12 08:00:00",
+//     "note": "Test GoalID 19",
+//     "contributions": [
+//         {"goalID": 20, "contributionAmount": 150 },
+//         {"goalID": 21, "contributionAmount": 150 }
+//     ]
 @JsonSerializable()
 class TransactionPostGoalContribution extends TransactionPostIncome {
-  late int goalID;
-  late double contributionAmount;
+  late List<GoalContribution> contributions;
 
   TransactionPostGoalContribution({
     super.amount = 0.0,
     super.note = '',
     super.date = '',
     super.categoryID,
-    this.goalID = 0,
-    this.contributionAmount = 0.0,
+    required this.contributions,
   });
 
   @override
   Map<String, dynamic> toJson() =>
       _$TransactionPostGoalContributionToJson(this);
+}
+
+@JsonSerializable()
+class GoalContribution {
+  late int goalID;
+  late double contributionAmount;
+
+  GoalContribution({
+    this.goalID = 0,
+    this.contributionAmount = 0,
+  });
+
+  Map<String, dynamic> toJson() => _$GoalContributionToJson(this);
+
+  factory GoalContribution.fromJson(Map<String, dynamic> json) => _$GoalContributionFromJson(json);
 }
 
 abstract class ExpenseTypeJsonKey {

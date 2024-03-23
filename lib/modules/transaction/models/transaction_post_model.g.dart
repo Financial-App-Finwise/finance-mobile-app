@@ -99,9 +99,9 @@ TransactionPostGoalContribution _$TransactionPostGoalContributionFromJson(
       note: json['note'] as String? ?? '',
       date: json['date'] as String? ?? '',
       categoryID: json['categoryID'] as int? ?? 0,
-      goalID: json['goalID'] as int? ?? 0,
-      contributionAmount:
-          (json['contributionAmount'] as num?)?.toDouble() ?? 0.0,
+      contributions: (json['contributions'] as List<dynamic>)
+          .map((e) => GoalContribution.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$TransactionPostGoalContributionToJson(
@@ -111,6 +111,17 @@ Map<String, dynamic> _$TransactionPostGoalContributionToJson(
       'date': instance.date,
       'note': instance.note,
       'categoryID': instance.categoryID,
+      'contributions': instance.contributions,
+    };
+
+GoalContribution _$GoalContributionFromJson(Map<String, dynamic> json) =>
+    GoalContribution(
+      goalID: json['goalID'] as int? ?? 0,
+      contributionAmount: (json['contributionAmount'] as num?)?.toDouble() ?? 0,
+    );
+
+Map<String, dynamic> _$GoalContributionToJson(GoalContribution instance) =>
+    <String, dynamic>{
       'goalID': instance.goalID,
       'contributionAmount': instance.contributionAmount,
     };

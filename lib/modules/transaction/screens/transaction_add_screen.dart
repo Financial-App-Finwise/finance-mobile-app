@@ -28,6 +28,7 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
     });
   }
 
+  // -------------------- All Needed Items --------------------
   Future _readAll() async {
     await context.read<SmartGoalStore>().readByPage();
   }
@@ -46,7 +47,7 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
   Widget _buildBody() {
     return TransactionFormLayout(
       title: 'Add Transaction',
-      amountIncomeController: TextEditingController(),
+      amountController: TextEditingController(),
       amountExpenseController: TextEditingController(),
       noteController: TextEditingController(),
       dateController: TextEditingController(text: DateTime.now().toString()),
@@ -65,9 +66,6 @@ class _TransactionAddScreenState extends State<TransactionAddScreen> {
         required CategoryData selectedCategory,
         required TransactionPost transactionPost,
       }) async {
-        print('add transaction: ');
-        print(transactionPost.toJson());
-
         bool success = await Navigator.push(
           context,
           MaterialPageRoute(

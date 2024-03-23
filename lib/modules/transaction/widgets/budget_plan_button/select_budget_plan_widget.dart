@@ -1,5 +1,4 @@
 import 'package:finwise/core/constants/color_constant.dart';
-import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/enums/budget_plan_enum.dart';
 import 'package:finwise/core/enums/loading_status_enum.dart';
@@ -11,18 +10,15 @@ import 'package:finwise/core/widgets/general_date_picker.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
-import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile.dart';
-import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_overview.dart';
-import 'package:finwise/modules/budget_plan/widgets/budget_plan/filtered_budget.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class SelectBudgetPlanWidget extends StatefulWidget {
-  late void Function(BudgetPlanData) onPressed;
+  final void Function(BudgetPlanData) onPressed;
 
-  SelectBudgetPlanWidget({
+  const SelectBudgetPlanWidget({
     super.key,
     required this.onPressed,
   });

@@ -28,7 +28,7 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
   @override
   Widget build(BuildContext context) {
     return TransactionFormLayout(
-      amountIncomeController:
+      amountController:
           TextEditingController(text: args.amount.toString()),
       amountExpenseController:
           TextEditingController(text: args.amount.toString()),

@@ -25,6 +25,7 @@ import 'package:finwise/modules/transaction/widgets/smart_goal_button/select_sma
 import 'package:finwise/modules/transaction/widgets/upcoming_bill_button/upcoming_bill_button.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TransactionFormLayout extends StatefulWidget {
   final String title;
@@ -36,7 +37,7 @@ class TransactionFormLayout extends StatefulWidget {
   final TransactionData transactionData;
   final bool canChangeType;
   final String buttonLabel;
-  final TextEditingController amountIncomeController;
+  final TextEditingController amountController;
   final TextEditingController amountExpenseController;
   final TextEditingController noteController;
   final TextEditingController dateController;
@@ -64,7 +65,7 @@ class TransactionFormLayout extends StatefulWidget {
     this.amount = 0.0,
     this.buttonLabel = '',
     this.canChangeType = true,
-    required this.amountIncomeController,
+    required this.amountController,
     required this.amountExpenseController,
     required this.noteController,
     required this.dateController,
@@ -152,24 +153,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   // **************************************************************************
   // Form Section
   // **************************************************************************
-  void _resetItem() {
-    setState(() {
-      _selectedBudgetPlan = BudgetPlanData();
-      _selectedUpcomingBill = UpcomingBillData();
-      _selectedExpenseCategory = CategoryData();
-      _selectedIncomeCategory = CategoryData();
-
-      _resetErrorFields();
-    });
-  }
-
-  void _resetErrorFields() {
-    setState(() {
-      _amountError = false;
-      _itemSelectionError = false;
-    });
-  }
-
+  late final _amountController = widget.amountController;
   late bool _isIncome = widget.isIncome;
   late final _dateController = TextEditingController(
       text: UIHelper.getDateFormat(widget.dateController.text, 'dd MMM, yyyy'));
@@ -212,7 +196,6 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   // **************************************************************************
   // Income Form
   // **************************************************************************
-  late final _amountIncomeController = widget.amountIncomeController;
 
   // map from goal id to text editing controller
   late final Map<int, TextEditingController> _goalControllerMap = {};
@@ -224,16 +207,13 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TransactionAmountTextField(
-          controller: _amountIncomeController,
+          controller: _amountController,
           onChanged: (value) => _validateAmountForm(),
         ),
         ErrorField(
-            message: _amountError
-                ? 'Required'
-                : _amountZeroError
-                    ? 'Must be greater than 0'
-                    : '',
-            visible: _amountError || _amountZeroError),
+          message: _amountErrorMessage,
+          visible: _amountErrorMessage.isNotEmpty,
+        ),
         const SizedBox(height: 24),
         CategoryButton(
           setCategory: (categoryData) {
@@ -243,7 +223,10 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           category: _selectedIncomeCategory,
           showTip: false,
         ),
-        ErrorField(message: 'Required', visible: _itemSelectionError),
+        ErrorField(
+          message: 'Required',
+          visible: _itemSelectionErrorMessage.isNotEmpty,
+        ),
         const SizedBox(height: 24),
         _buildGoalContributionSection(),
         const SizedBox(height: 24),
@@ -352,35 +335,53 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           ),
         ),
         Expanded(
-          child: TextFormField(
-            controller: _goalControllerMap[smartGoalData.id],
-            onChanged: (value) => setState(() {}),
-            decoration: InputDecoration(
-              isDense: true,
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: ColorConstant.divider),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: ColorConstant.secondary),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 8),
-                child: IconHelper.getSVG(
-                  SVGName.dollarSquare,
-                  color: _goalControllerMap[smartGoalData.id]!.text.isEmpty
-                      ? ColorConstant.color292D32
-                      : const Color.fromRGBO(16, 172, 132, 1),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _goalControllerMap[smartGoalData.id],
+                onChanged: (value) => setState(() {
+                  _validateGoalContribution();
+                }),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,}'))
+                ],
+                decoration: InputDecoration(
+                  isDense: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: ColorConstant.divider),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: ColorConstant.secondary),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 8),
+                    child: IconHelper.getSVG(
+                      SVGName.dollarSquare,
+                      color: _goalControllerMap[smartGoalData.id]!.text.isEmpty
+                          ? ColorConstant.color292D32
+                          : const Color.fromRGBO(16, 172, 132, 1),
+                    ),
+                  ),
+                  prefixIconConstraints: const BoxConstraints(maxHeight: 24),
+                  hintText: 'Total Amount',
+                  hintStyle: TextStyleHelper.getw500size(12,
+                      color: ColorConstant.thin),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 ),
+                style: TextStyleHelper.getw500size(12,
+                    color: ColorConstant.income),
               ),
-              prefixIconConstraints: const BoxConstraints(maxHeight: 24),
-              hintText: 'Total Amount',
-              hintStyle:
-                  TextStyleHelper.getw500size(12, color: ColorConstant.thin),
-              contentPadding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            style: TextStyleHelper.getw500size(12, color: ColorConstant.income),
+              _goalErrorMessageMap[smartGoalData.id] != null
+                  ? ErrorField(
+                      visible:
+                          _goalErrorMessageMap[smartGoalData.id]!.isNotEmpty,
+                      message: _goalErrorMessageMap[smartGoalData.id]!)
+                  : const SizedBox(),
+            ],
           ),
         ),
         const SizedBox(width: 12),
@@ -388,6 +389,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           onPressed: () {
             setState(() {
               _goalControllerMap.remove(smartGoalData.id);
+              _goalErrorMessageMap.remove(smartGoalData.id);
               _selectedSmartGoals.removeAt(index);
             });
           },
@@ -401,7 +403,6 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   // Expense Form
   // **************************************************************************
   late String _expenseType = widget.expenseType;
-  late final _amountExpenseController = widget.amountExpenseController;
 
   Widget _buildExpenseForm() {
     return Column(
@@ -423,7 +424,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
                 ? (value) => setState(() {
                       _resetItem();
                       _expenseType = value;
-                      _amountExpenseController.clear();
+                      _amountController.clear();
                     })
                 : (value) {}),
         Column(
@@ -432,19 +433,20 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
             TransactionAmountTextField(
               onChanged: (value) => _validateAmountForm(),
               color: ColorConstant.expense,
-              controller: _amountExpenseController,
+              controller: _amountController,
               readOnly: _expenseType == 'Upcoming Bill',
             ),
             ErrorField(
-                message: _amountError
-                    ? 'Required'
-                    : _amountZeroError
-                        ? 'Must be greater than 0'
-                        : '',
-                visible: _amountError || _amountZeroError),
+              message: _amountErrorMessage,
+              visible: _amountErrorMessage.isNotEmpty &&
+                  _expenseType != ExpenseTypeConstant.upcomingBill,
+            ),
             const SizedBox(height: 24),
             _buildItemSelection(),
-            ErrorField(message: 'Required', visible: _itemSelectionError),
+            ErrorField(
+              message: 'Required',
+              visible: _itemSelectionErrorMessage.isNotEmpty,
+            ),
             const SizedBox(height: 24),
             TransactionDateTextField(controller: _dateController),
             const SizedBox(height: 24),
@@ -461,7 +463,8 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   // **************************************************************************
   late CategoryData _selectedExpenseCategory =
       widget.transactionData.categoryData ?? CategoryData();
-  late BudgetPlanData _selectedBudgetPlan = BudgetPlanData();
+  late BudgetPlanData _selectedBudgetPlan =
+      widget.transactionData.budgetPlanData ?? BudgetPlanData();
   late UpcomingBillData _selectedUpcomingBill =
       widget.transactionData.upcomingBillData ?? UpcomingBillData();
 
@@ -506,8 +509,7 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
           ),
           onItemSelected: (upcomingBillData) {
             setState(() {
-              _amountExpenseController.text =
-                  upcomingBillData.amount.toString();
+              _amountController.text = upcomingBillData.amount.toString();
               _selectedUpcomingBill = upcomingBillData;
             });
           },
@@ -537,40 +539,51 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     );
   }
 
-  // -------------------- Form Validation --------------------
-  bool _amountError = false;
-  bool _amountZeroError = false;
-  bool _itemSelectionError = false;
+  // **************************************************************************
+  // Form Validation
+  // **************************************************************************
+  String _amountErrorMessage = '';
+  String _itemSelectionErrorMessage = '';
+  final Map<int, String> _goalErrorMessageMap = {};
 
   // ---------- Validate Amount ----------
   void _validateAmountForm() => setState(
         () {
-          _amountError = !_amountFilled;
-          _amountZeroError = !_amountIsValid;
+          if (!_amountFilled) {
+            _amountErrorMessage = 'Required';
+          } else if (!_amountIsValid) {
+            _amountErrorMessage = 'Must be greater than 0';
+          } else {
+            _amountErrorMessage = '';
+          }
         },
       );
 
-  bool get _amountFilled => _isIncome
-      ? _amountIncomeController.text.isNotEmpty
-      : _amountExpenseController.text.isNotEmpty;
+  bool get _amountFilled => _amountController.text.isNotEmpty;
 
   bool get _amountIsValid {
-    if (_isIncome && _amountIncomeController.text.isNotEmpty) {
-      return double.parse(_amountIncomeController.text) != 0;
+    if (_amountController.text.isNotEmpty) {
+      return double.parse(_amountController.text) != 0;
     }
 
-    if (_amountExpenseController.text.isNotEmpty) {
-      return double.parse(_amountExpenseController.text) != 0;
-    }
-
-    return true;
+    return false;
   }
 
   // ---------- Validate Item Selection ----------
   void _validateItemSelection() => setState(
-        () => _itemSelectionError = _isIncome
-            ? !_incomeItemSelected
-            : _itemSelectionError = !_expenseItemSelected,
+        () {
+          if (_isIncome) {
+            if (!_incomeItemSelected) {
+              _itemSelectionErrorMessage = 'Required';
+            }
+          } else {
+            if (!_expenseItemSelected) {
+              _itemSelectionErrorMessage = 'Required';
+            } else {
+              _itemSelectionErrorMessage = '';
+            }
+          }
+        },
       );
 
   bool get _incomeItemSelected => _selectedIncomeCategory.id > 0;
@@ -580,30 +593,53 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
       _selectedBudgetPlan.id > 0 ||
       _selectedUpcomingBill.id > 0;
 
-  // validate all
+  // ---------- Validate Goal Contribution ----------
+  void _validateGoalContribution() => setState(() {
+        _goalControllerMap.forEach((goalID, value) {
+          if (value.text.isEmpty) {
+            _goalErrorMessageMap[goalID] = 'Required';
+          } else {
+            if (double.parse(value.text) == 0) {
+              _goalErrorMessageMap[goalID] = 'Must be greater than 0';
+            } else {
+              _goalErrorMessageMap[goalID] = '';
+            }
+          }
+        });
+      });
+
+  bool get _goalContributionValid =>
+      _goalErrorMessageMap.values.every((element) => element.isEmpty);
+
+  // ---------- Validate All ----------
   bool get _isFormValid => _isIncome
-      ? _amountFilled && _amountIsValid && _incomeItemSelected
+      ? _amountFilled &&
+          _amountIsValid &&
+          _incomeItemSelected &&
+          _goalContributionValid
       : _amountFilled && _amountIsValid && _expenseItemSelected;
 
   void _validateForm() {
     _validateAmountForm();
     _validateItemSelection();
+    _validateGoalContribution();
   }
 
-  // -------------------- Post Data --------------------
+  // **************************************************************************
+  // Prepare Data for Posting
+  // **************************************************************************
   late TransactionPost _transactionPost = TransactionPost();
 
   void _chooseItem() {
+    // base transaction
     late final TransactionPost baseTransactionPost = TransactionPost(
-      amount: _isIncome
-          ? double.parse(_amountIncomeController.text)
-          : double.parse(_amountExpenseController.text),
+      amount: double.parse(_amountController.text),
       note: _noteController.text,
       date: widget.dateController.text,
     );
 
+    // add more fields
     _transactionPost = TransactionPost();
-
     setState(() {
       switch (_isIncome) {
         case true:
@@ -646,15 +682,15 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
     });
   }
 
-  // ---------- Post Item ----------
+  // **************************************************************************
+  // Post Item
+  // **************************************************************************
   void _postItem() {
     _chooseItem();
     widget.onTap(
       isIncome: _isIncome,
       expenseType: _expenseType,
-      amount: _isIncome
-          ? _amountIncomeController.text
-          : _amountExpenseController.text,
+      amount: _amountController.text,
       hasContributed: _selectedSmartGoals.isNotEmpty,
       note: _noteController.text,
       selectedBudgetPlan: _selectedBudgetPlan,
@@ -662,5 +698,29 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
       selectedCategory: _selectedIncomeCategory,
       transactionPost: _transactionPost,
     );
+  }
+
+  // **************************************************************************
+  // Other Functions
+  // **************************************************************************
+  void _resetItem() {
+    setState(() {
+      _selectedBudgetPlan = BudgetPlanData();
+      _selectedUpcomingBill = UpcomingBillData();
+      _selectedExpenseCategory = CategoryData();
+      _selectedIncomeCategory = CategoryData();
+
+      _resetErrorFields();
+    });
+  }
+
+  void _resetErrorFields() {
+    setState(() {
+      _amountErrorMessage = '';
+      _itemSelectionErrorMessage = '';
+      _goalErrorMessageMap.forEach((key, value) {
+        _goalControllerMap[key] = TextEditingController();
+      });
+    });
   }
 }

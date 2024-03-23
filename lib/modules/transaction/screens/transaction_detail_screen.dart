@@ -5,14 +5,11 @@ import 'package:finwise/core/helpers/icon_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/layouts/general_detail_layout.dart';
 import 'package:finwise/core/utils/ui_util.dart';
-import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/screens/transaction_delete_screen.dart';
-import 'package:finwise/modules/transaction/stores/transaction_store.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 class TransactionDetailScreen extends StatefulWidget {
   const TransactionDetailScreen({super.key});
@@ -41,7 +38,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 ColorConstant.expenseIcon,
               ],
       ),
-      title: '${args.isIncome ? 'My Income' : 'My Expense'}',
+      title: args.isIncome ? 'My Income' : 'My Expense',
       subTitle: args.categoryData == null ? '' : args.categoryData!.name,
       iconTitle: args.isIncome
           ? IconHelper.getSVG(
@@ -134,7 +131,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                         : ColorConstant.expense,
                   ),
                   'Budget Plan',
-                  '${args.budgetPlanData!.name}',
+                  args.budgetPlanData!.name,
                   defaultStyle,
                 )
               : const SizedBox(),
@@ -147,24 +144,23 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                         : ColorConstant.expense,
                   ),
                   'Upcoming Bill',
-                  '${args.upcomingBillData!.name}',
+                  args.upcomingBillData!.name,
                   defaultStyle,
                 )
               : const SizedBox(),
-          Visibility(
-            visible: args.categoryID != null,
-            child: overviewCard(
-              IconHelper.getSVG(
-                SVGName.internet,
-                color: args.isIncome
-                    ? ColorConstant.incomeIcon
-                    : ColorConstant.expense,
-              ),
-              'Category',
-              '${args.categoryData!.name}',
-              defaultStyle,
-            ),
-          ),
+          args.categoryData != null
+              ? overviewCard(
+                  IconHelper.getSVG(
+                    SVGName.internet,
+                    color: args.isIncome
+                        ? ColorConstant.incomeIcon
+                        : ColorConstant.expense,
+                  ),
+                  'Category',
+                  args.categoryData!.name,
+                  defaultStyle,
+                )
+              : const SizedBox(),
           overviewCard(
             IconHelper.getSVG(
               SVGName.calendarTick,
