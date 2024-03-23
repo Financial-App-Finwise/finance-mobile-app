@@ -7,7 +7,6 @@ import 'package:finwise/core/widgets/small_rounded_square.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TransactionItem extends StatefulWidget {
   const TransactionItem({
@@ -33,14 +32,17 @@ class TransactionItem extends StatefulWidget {
 
 class _TransactionItemState extends State<TransactionItem> {
   late final String title;
+
   @override
   void initState() {
     super.initState();
-    title = widget.transactionData.budgetplanID != null
-        ? 'Budget Plan ID ${widget.transactionData.budgetplanID}'
-        : widget.transactionData.upcomingbillID != null
-            ? 'Upcoming Bill ID ${widget.transactionData.upcomingbillID}'
-            : '${widget.transactionData.categoryData!.name}';
+    title = widget.transactionData.budgetPlanData != null
+        ? widget.transactionData.budgetPlanData!.name
+        : widget.transactionData.upcomingBillData != null
+            ? widget.transactionData.upcomingBillData!.name
+            : widget.transactionData.categoryData != null
+                ? widget.transactionData.categoryData!.name
+                : widget.transactionData.note;
   }
 
   @override
@@ -80,10 +82,11 @@ class _TransactionItemState extends State<TransactionItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          // widget.transactionData.note.isEmpty
-                          //     ? '${widget.transactionData.isIncome ? 'Income' : 'Expense'}'
-                          //     : widget.transactionData.note,
-                          title,
+                          title.isEmpty
+                              ? widget.transactionData.isIncome
+                                  ? 'My Income'
+                                  : 'My Expense'
+                              : title,
                           style: HomeTextStyleConstant.transactionItemTitle,
                           overflow: TextOverflow.ellipsis,
                         ),
