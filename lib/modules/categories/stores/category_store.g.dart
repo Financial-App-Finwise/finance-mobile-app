@@ -118,8 +118,8 @@ mixin _$CategoryStore on _CategoryStoreBase, Store {
       AsyncAction('_CategoryStoreBase.read', context: context);
 
   @override
-  Future<dynamic> read() {
-    return _$readAsyncAction.run(() => super.read());
+  Future<dynamic> read({dynamic defaultCat = false}) {
+    return _$readAsyncAction.run(() => super.read(defaultCat: defaultCat));
   }
 
   late final _$postAsyncAction =
@@ -162,10 +162,7 @@ categoryModel: ${categoryModel},
 status: ${status},
 isIncome: ${isIncome},
 searchText: ${searchText},
-<<<<<<< Updated upstream
 createStatus: ${createStatus},
-=======
->>>>>>> Stashed changes
 onboardingCategory: ${onboardingCategory},
 filterCategory: ${filterCategory},
 searchCategory: ${searchCategory}
