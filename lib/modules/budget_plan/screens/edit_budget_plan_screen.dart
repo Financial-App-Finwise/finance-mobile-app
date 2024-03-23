@@ -128,7 +128,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             SizedBox(
               width: 72,
               height: 72,
-              child: IconConstant.myBudget(
+              child:  IconConstant.myBudget(
                 color: ColorConstant.primary,
               ),
             ),

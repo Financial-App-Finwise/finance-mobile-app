@@ -11,6 +11,7 @@ import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
 import 'package:finwise/modules/upcoming_bill/screens/edit_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
+import 'package:finwise/modules/upcoming_bill/widgets/upcoming_bill_delete_screen.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -471,13 +472,22 @@ class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () async {
-                          bool success = await context
-                              .read<UpcomingBillStore>()
-                              .delete(args);
+                          bool success = false;
+
+                          success = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpcomingBillDeleteScreen(
+                                  upcomingBillData: args),
+                            ),
+                          );
 
                           if (success) {
                             Navigator.of(context).pop();
                             Navigator.pop(context);
+                            await context
+                                .read<UpcomingBillStore>()
+                                .read(refreshed: true);
                           }
                         },
                         child: Container(
