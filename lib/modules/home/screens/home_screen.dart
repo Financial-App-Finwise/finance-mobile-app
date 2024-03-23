@@ -214,12 +214,11 @@ class _HomeScreenState extends State<HomeScreen>
           child: DurationDropDown(
             items: [
               DurationDropDownItem(title: 'This Month', value: 'this_month'),
-              DurationDropDownItem(title: 'This Week', value: 'this_week'),
-              DurationDropDownItem(title: 'Last Month', value: 'last_month'),
+              DurationDropDownItem(title: 'Next Month', value: 'next_month'),
               DurationDropDownItem(
-                  title: 'Last 3 Months', value: 'last_3_months'),
-              DurationDropDownItem(
-                  title: 'Last 4 Months', value: 'last_4_months'),
+                  title: 'Next 6 Month', value: 'next_6_month'),
+              DurationDropDownItem(title: 'This Year', value: 'this_year'),
+              DurationDropDownItem(title: 'Next Year', value: 'next_year'),
             ],
             selectedValue: selectedValue,
             onChange: onChanged,
@@ -980,14 +979,20 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   _buildGeneralContentHeading(
                     title: 'Total',
-                    amount: '${_upcomingBillStore.totalUpcomingBills}',
+                    amount: _upcomingBillStore.totalUpcomingBills.toString(),
                     color: ColorConstant.bill,
                     icon: IconHelper.getSVG(
                       SVGName.upcomingBill,
                       color: ColorConstant.billIcon,
                     ),
                     selectedValue: 'this_month',
-                    onChanged: (value) {},
+                    onChanged: (value) async {
+                      String filter = value.toString();
+                      filter = filter.replaceAll('_', ' ');
+                      _upcomingBillStore.homeFilter = filter;
+                      await _upcomingBillStore.read(
+                          refreshed: true, isHome: true);
+                    },
                   ),
                   const Divider(color: ColorConstant.divider),
                   const SizedBox(height: 16),

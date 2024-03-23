@@ -52,7 +52,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Column(
             children: [
               categoryHeader(),
-              headerFilter(),
+              widget.parentOnly! ? Container() : headerFilter(),
               const SizedBox(
                 height: 16,
               ),

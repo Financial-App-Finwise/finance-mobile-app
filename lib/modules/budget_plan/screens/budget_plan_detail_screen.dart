@@ -6,6 +6,7 @@ import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/screens/edit_budget_plan_screen.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
+import 'package:finwise/modules/budget_plan/widgets/budget_plan_delete_screen.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/six_month_chart.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/this_month_content.dart';
 import 'package:finwise/modules/budget_plan/widgets/budget_plan_detail/transaction_content.dart';
@@ -215,14 +216,14 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
           const SizedBox(
             height: 16,
           ),
-          SixMonthChart(
-            sixMonthBudget: data,
-            average: 10,
-            thisMonth: 50,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
+          // SixMonthChart(
+          //   sixMonthBudget: data,
+          //   average: 10,
+          //   thisMonth: 50,
+          // ),
+          // const SizedBox(
+          //   height: 16,
+          // ),
           TransactionContent(
             data: args.transactions,
           ),
@@ -316,13 +317,22 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () async {
-                          bool success = await context
-                              .read<BudgetPlanStore>()
-                              .delete(args);
+                          bool success = false;
+
+                          success = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BudgetPlanDeleteScreen(budgetPlanData: args),
+                            ),
+                          );
 
                           if (success) {
                             Navigator.of(context).pop();
                             Navigator.pop(context);
+                            await context
+                                .read<BudgetPlanStore>()
+                                .read(refreshed: true);
                           }
                         },
                         child: Container(

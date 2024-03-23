@@ -12,6 +12,7 @@ import 'package:finwise/modules/budget_plan/widgets/budget_plan/budget_grid_tile
 import 'package:finwise/modules/categories/screens/category_screen.dart';
 import 'package:finwise/modules/categories/stores/category_store.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/modules/upcoming_bill/screens/add_upcoming_bill_screen.dart';
 import 'package:finwise/modules/upcoming_bill/stores/upcoming_bill_store.dart';
 import 'package:finwise/modules/upcoming_bill/widgets/upcoming_bill_screen/main_content_list_view.dart';
 import 'package:finwise/route.dart';
@@ -214,6 +215,21 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
                   month: months[index],
                   budget:
                       store.upcomingBillYearly[months[index]]!.numberOfGoals,
+                  monthNumber: index + 1,
+                  date: store.startDate,
+                  addItem: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddUpcomingBillScreen(),
+                    ),
+                  ),
+                  setList: (date) {
+                    setState(() {
+                      store.startDate = date;
+                      _isGrid = false;
+                      store.read(refreshed: true);
+                    });
+                  },
                 ),
               ),
             );

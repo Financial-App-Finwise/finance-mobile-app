@@ -25,6 +25,10 @@ abstract class SVGName {
   static const String emptyPieChart = 'empty_pie_chart.svg';
   static const String expense = 'expense.svg';
   static const String finwise = 'finwise.svg';
+  static const String genderFemale = 'gender_female.svg';
+  static const String genderMale = 'gender_male.svg';
+  static const String genderNocomment = 'gender_nocomment.svg';
+  static const String genderNonbinary = 'gender_nonbinary.svg';
   static const String home = 'home.svg';
   static const String hourGlass = 'hour_glass.svg';
   static const String infoAlert = 'info_alert.svg';

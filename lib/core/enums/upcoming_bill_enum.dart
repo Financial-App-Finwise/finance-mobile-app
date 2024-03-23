@@ -1,1 +1,1 @@
-enum UpcomingBillFilterEnum{all, tomorrow, thisWeek}
+enum UpcomingBillFilterEnum{all, tomorrow, thisWeek, paid, unpaid}

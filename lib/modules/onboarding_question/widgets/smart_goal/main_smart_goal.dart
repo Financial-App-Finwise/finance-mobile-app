@@ -83,7 +83,10 @@ class _MainSmartGoalState extends State<MainSmartGoal> {
             ),
             Observer(builder: (context) {
               return ContinueButton(
-                nextPage: store.nextPage,
+                nextPage: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  store.nextPage();
+                },
                 isFormFilled: isFormFilled[store.smartGoalIndex - 1],
               );
             })

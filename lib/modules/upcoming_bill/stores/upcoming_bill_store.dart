@@ -55,12 +55,23 @@ abstract class _UpcomingBillStoreBase with Store {
   UpcomingBillFilterEnum filter = UpcomingBillFilterEnum.all;
 
   @action
-  void setFilter(UpcomingBillFilterEnum type) => filter = type;
+  void setFilter(UpcomingBillFilterEnum type) {
+    filter = type;
+    print('urlz $filter');
+  }
+
+  @observable
+  String homeFilter = '';
 
   // Use for filter upcoming bills
   @computed
   String get queryParameter {
     String filterParameter = UpcomingBillHelper.enumToQuery[filter] ?? '';
+    if (filterParameter.isNotEmpty &&
+        (filterParameter == 'paid' || filterParameter == 'unpaid')) {
+      return 'date[gte]=${startDate.year}-${startDate.month}-${startDate.day}&date[lte]=${endDate.year}-${endDate.month}-${endDate.day}&status=${UpcomingBillHelper.enumToQuery[filter]}';
+    }
+
     String parameter =
         'date[gte]=${startDate.year}-${startDate.month}-${startDate.day}&date[lte]=${endDate.year}-${endDate.month}-${endDate.day}';
 
@@ -118,7 +129,7 @@ abstract class _UpcomingBillStoreBase with Store {
 
   // Fetch monthly data
   @action
-  Future read({bool refreshed = false}) async {
+  Future read({bool refreshed = false, bool isHome = false}) async {
     debugPrint('--> Start fetching upcoming bill');
 
     if (refreshed) {
@@ -129,13 +140,20 @@ abstract class _UpcomingBillStoreBase with Store {
 
     try {
       int page = currentPage;
-      String url = 'upcomingbills?$queryParameter&page=$page';
+      String url;
+      if (isHome && homeFilter.isNotEmpty) {
+        url = 'upcomingbills?filter=$homeFilter';
+      } else {
+        url = 'upcomingbills?$queryParameter&page=$page';
+      }
 
       Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
         UpcomingBill newUpcomingBill = await compute(
             getUpcomingBill, response.data as Map<String, dynamic>);
         totalUpcomingBills = newUpcomingBill.totalUpcomingBills;
+
+        print('urlz ${totalUpcomingBills}');
         if (upcomingBill.data.length < newUpcomingBill.totalUpcomingBills &&
             upcomingBill.data.length + newUpcomingBill.data.length <=
                 newUpcomingBill.totalUpcomingBills) {

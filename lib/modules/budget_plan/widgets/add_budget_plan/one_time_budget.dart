@@ -1,6 +1,7 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
+import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/budget_plan/models/prediction_model.dart';
 import 'package:finwise/modules/budget_plan/store/budget_plan_store.dart';
@@ -32,6 +33,13 @@ class OneTimeBudget extends StatefulWidget {
 class _OneTimeBudgetState extends State<OneTimeBudget> {
   final _expenseNameController = TextEditingController();
   final _budgetAmountController = TextEditingController();
+  late AuthStore authStore = context.read<AuthStore>();
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<BudgetPlanStore>().prediction.data.predictedBudget = 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,13 +122,17 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CategoryButton(
-                setCategory: (category) {
+                setCategory: (category) async {
                   // debugPrint('${category.id}');
                   setState(() {
                     _selectedCategory = category;
                     _isFormFilled;
                   });
-                  debugPrint(_selectedCategory.name);
+                  await context.read<BudgetPlanStore>().readPrediction(
+                        authStore.user!.apiToken,
+                        _selectedCategory.name,
+                        _selectedDate.month,
+                      );
                 },
                 category: _selectedCategory,
               ),
@@ -130,10 +142,15 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
               CalendarMonthWidget(
                 date: _selectedDate,
                 selected: DateTime(_selectedDate.year, _selectedDate.month),
-                onChange: (value) {
+                onChange: (value) async {
                   setState(() {
                     _selectedDate = value;
                   });
+                  await context.read<BudgetPlanStore>().readPrediction(
+                        authStore.user!.apiToken,
+                        _selectedCategory.name,
+                        _selectedDate.month,
+                      );
                 },
               ),
               const SizedBox(
@@ -145,15 +162,11 @@ class _OneTimeBudgetState extends State<OneTimeBudget> {
                   _isFormFilled;
                 }),
               ),
-              predictionData.predictedBudget != '0'
-                  ? BudgetRecommendation(
-                      amount: int.parse(predictionData.predictedBudget),
-                      nullData: false,
-                    )
-                  : BudgetRecommendation(
-                      amount: int.parse(predictionData.predictedBudget),
-                      nullData: true,
-                    ),
+              BudgetRecommendation(
+                amount: predictionData.predictedBudget,
+                nullData: false,
+                status: context.watch<BudgetPlanStore>().predictionStatus,
+              )
             ],
           ),
           const SizedBox(

@@ -1,12 +1,13 @@
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:flutter/material.dart';
 
-class BudgetGridTile extends StatelessWidget {
+class BudgetGridTile extends StatefulWidget {
   final String month;
   final int budget;
   int? monthNumber;
   void Function(DateTime)? setList;
   DateTime? date;
+  VoidCallback? addItem;
 
   BudgetGridTile({
     super.key,
@@ -15,15 +16,21 @@ class BudgetGridTile extends StatelessWidget {
     this.monthNumber,
     this.setList,
     this.date,
+    this.addItem,
   });
 
   @override
+  State<BudgetGridTile> createState() => _BudgetGridTileState();
+}
+
+class _BudgetGridTileState extends State<BudgetGridTile> {
+  @override
   Widget build(BuildContext context) {
-    String budgetString = budget > 1 ? 'budgets' : 'budget';
+    String budgetString = widget.budget > 1 ? 'budgets' : 'budget';
 
     return InkWell(
       onTap: () {
-        setList!(DateTime(date!.year, monthNumber!));
+        widget.setList!(DateTime(widget.date!.year, widget.monthNumber!));
       },
       child: Container(
         width: 103.67,
@@ -35,7 +42,7 @@ class BudgetGridTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              month,
+              widget.month,
               style: const TextStyle(
                 letterSpacing: 0.75,
                 color: ColorConstant.primary,
@@ -47,7 +54,7 @@ class BudgetGridTile extends StatelessWidget {
               height: 8,
             ),
             Text(
-              '$budget $budgetString',
+              '${widget.budget} $budgetString',
               style: const TextStyle(
                 letterSpacing: 0.75,
                 fontSize: 14,
@@ -62,7 +69,7 @@ class BudgetGridTile extends StatelessWidget {
               width: 24,
               height: 24,
               child: IconButton(
-                onPressed: () {},
+                onPressed: widget.addItem,
                 icon: const Icon(
                   Icons.add,
                   size: 16,

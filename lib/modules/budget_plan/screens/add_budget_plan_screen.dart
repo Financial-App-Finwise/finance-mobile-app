@@ -19,17 +19,6 @@ class _AddBudgetPlanScreenState extends State<AddBudgetPlanScreen> {
   double _progressBar = 0.5;
 
   @override
-  void initState() {
-    super.initState();
-
-    Future.delayed(const Duration(seconds: 0), () async {
-      if (mounted) {
-        await context.read<BudgetPlanStore>().readPrediction();
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
