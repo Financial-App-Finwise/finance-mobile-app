@@ -37,6 +37,13 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
       (_$isLoadingYearlyComputed ??= Computed<bool>(() => super.isLoadingYearly,
               name: '_SmartGoalStoreBase.isLoadingYearly'))
           .value;
+  Computed<bool>? _$isLoadingDeleteComputed;
+
+  @override
+  bool get isLoadingDelete =>
+      (_$isLoadingDeleteComputed ??= Computed<bool>(() => super.isLoadingDelete,
+              name: '_SmartGoalStoreBase.isLoadingDelete'))
+          .value;
   Computed<String>? _$dateQueryComputed;
 
   @override
@@ -158,6 +165,22 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
     });
   }
 
+  late final _$loadingDeleteAtom =
+      Atom(name: '_SmartGoalStoreBase.loadingDelete', context: context);
+
+  @override
+  LoadingStatusEnum get loadingDelete {
+    _$loadingDeleteAtom.reportRead();
+    return super.loadingDelete;
+  }
+
+  @override
+  set loadingDelete(LoadingStatusEnum value) {
+    _$loadingDeleteAtom.reportWrite(value, super.loadingDelete, () {
+      super.loadingDelete = value;
+    });
+  }
+
   late final _$smartGoalAtom =
       Atom(name: '_SmartGoalStoreBase.smartGoal', context: context);
 
@@ -264,6 +287,22 @@ mixin _$SmartGoalStore on _SmartGoalStoreBase, Store {
   set meta(SmartGoalMeta value) {
     _$metaAtom.reportWrite(value, super.meta, () {
       super.meta = value;
+    });
+  }
+
+  late final _$filteredMetaAtom =
+      Atom(name: '_SmartGoalStoreBase.filteredMeta', context: context);
+
+  @override
+  SmartGoalMeta get filteredMeta {
+    _$filteredMetaAtom.reportRead();
+    return super.filteredMeta;
+  }
+
+  @override
+  set filteredMeta(SmartGoalMeta value) {
+    _$filteredMetaAtom.reportWrite(value, super.filteredMeta, () {
+      super.filteredMeta = value;
     });
   }
 
@@ -447,12 +486,14 @@ loadingStatus: ${loadingStatus},
 loadingCreate: ${loadingCreate},
 loadingUpdate: ${loadingUpdate},
 loadingYearly: ${loadingYearly},
+loadingDelete: ${loadingDelete},
 smartGoal: ${smartGoal},
 endDateGTE: ${endDateGTE},
 endDateLTE: ${endDateLTE},
 filteredProgress: ${filteredProgress},
 filteredSmartGoalMap: ${filteredSmartGoalMap},
 meta: ${meta},
+filteredMeta: ${filteredMeta},
 smartGoalYearly: ${smartGoalYearly},
 year: ${year},
 smartGoalDetail: ${smartGoalDetail},
@@ -461,6 +502,7 @@ isLoading: ${isLoading},
 isLoadingCreate: ${isLoadingCreate},
 isLoadingUpdate: ${isLoadingUpdate},
 isLoadingYearly: ${isLoadingYearly},
+isLoadingDelete: ${isLoadingDelete},
 dateQuery: ${dateQuery},
 queryParemeter: ${queryParemeter},
 queryParemeterInProgress: ${queryParemeterInProgress},

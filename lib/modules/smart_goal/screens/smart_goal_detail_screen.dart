@@ -21,6 +21,7 @@ import 'package:finwise/core/widgets/transaction_item.dart';
 import 'package:finwise/core/widgets/view_more_text_button.dart';
 import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/smart_goal/models/smart_goal_model.dart';
+import 'package:finwise/modules/smart_goal/screens/smart_goal_delete_screen.dart';
 import 'package:finwise/modules/smart_goal/stores/smart_goal_store.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/route.dart';
@@ -77,7 +78,11 @@ class _SmartGoalDetailScreenState extends State<SmartGoalDetailScreen> {
           'Are you sure you want to delete this SMART gaol?',
           'You will delete every transaction added to this goal.',
           onTap: () async {
-            bool success = await context.read<SmartGoalStore>().delete(args);
+            bool success = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) =>
+                        SmartGoalDeleteScreen(smartGoalData: args)));
             if (success) {
               if (mounted) {
                 context.read<SmartGoalStore>().readByPage(refreshed: true);

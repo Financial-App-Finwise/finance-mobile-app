@@ -15,7 +15,9 @@ part 'smart_goal_store.g.dart';
 class SmartGoalStore = _SmartGoalStoreBase with _$SmartGoalStore;
 
 abstract class _SmartGoalStoreBase with Store {
-  // -------------------- Loading --------------------
+  // **************************************************************************
+  // Loading
+  // **************************************************************************
   @observable
   LoadingStatusEnum loadingStatus = LoadingStatusEnum.none;
 
@@ -39,6 +41,12 @@ abstract class _SmartGoalStoreBase with Store {
 
   @computed
   bool get isLoadingYearly => loadingYearly == LoadingStatusEnum.loading;
+
+  @observable
+  LoadingStatusEnum loadingDelete = LoadingStatusEnum.none;
+
+  @computed
+  bool get isLoadingDelete => loadingDelete == LoadingStatusEnum.loading;
 
   @action
   void setLoadingStatus(LoadingStatusEnum status) => loadingStatus = status;
@@ -162,7 +170,9 @@ abstract class _SmartGoalStoreBase with Store {
           ? _defaultSmartGoal
           : filteredSmartGoalMap[queryParemeterAchieved]!;
 
-  // -------------------- Read --------------------
+  // **************************************************************************
+  // Read Smart Goal
+  // **************************************************************************
   @action
   Future read({SmartGoalStatusEnum status = SmartGoalStatusEnum.all}) async {
     debugPrint('--> START: read smart goal');
@@ -201,7 +211,12 @@ abstract class _SmartGoalStoreBase with Store {
     ];
   }
 
-  // -------------------- Read one page at a time --------------------
+  @observable
+  SmartGoalMeta filteredMeta = SmartGoalMeta();
+
+  // **************************************************************************
+  // Read with Pagination
+  // **************************************************************************
   @action
   Future readByPage({
     bool refreshed = false,
@@ -237,6 +252,8 @@ abstract class _SmartGoalStoreBase with Store {
           response.data as Map<String, dynamic>,
         );
 
+        filteredMeta = smartGoal.meta;
+
         // update general smart goal
         if (updateScreen) {
           this.smartGoal = smartGoal;
@@ -261,7 +278,9 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
-  // -------------------- Read Yearly Smart Goal --------------------
+  // **************************************************************************
+  // Read Yearly Goal
+  // **************************************************************************
   @observable
   ObservableMap<String, SmartGoalMonth> smartGoalYearly = ObservableMap();
 
@@ -295,7 +314,9 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
-  // -------------------- Show --------------------
+  // **************************************************************************
+  // Show specific goal
+  // **************************************************************************
   @observable
   SmartGoalDetailModel smartGoalDetail = SmartGoalDetailModel(
       smartGoalDetail: SmartGoalDetail(
@@ -334,7 +355,9 @@ abstract class _SmartGoalStoreBase with Store {
     }
   }
 
-  // -------------------- Create a Smart Goal --------------------
+  // **************************************************************************
+  // Create a Smart Goal
+  // **************************************************************************
   @action
   Future<bool> post(SmartGoalData smartGoalData) async {
     debugPrint('--> START: post, smart goal');
@@ -366,7 +389,9 @@ abstract class _SmartGoalStoreBase with Store {
     return success;
   }
 
-  // -------------------- Update a Smart Goal --------------------
+  // **************************************************************************
+  // Update a Smart Goal
+  // **************************************************************************
   @action
   Future<bool> update(SmartGoalData smartGoalData) async {
     debugPrint('--> START: update, smart goal');
@@ -396,7 +421,9 @@ abstract class _SmartGoalStoreBase with Store {
     return success;
   }
 
-  // -------------------- Delete a Smart Goal --------------------
+  // **************************************************************************
+  // Delete a Smart Goal
+  // **************************************************************************
   @action
   Future<bool> delete(SmartGoalData smartGoalData) async {
     debugPrint('--> START: delete, smart goal');

@@ -302,7 +302,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Total SMART Goal', style: SmartGoalTextStyle.totalTitle),
-                Text('${_store.meta.total}',
+                Text('${_store.filteredMeta.total}',
                     style: SmartGoalTextStyle.totalNumber),
               ],
             ),
