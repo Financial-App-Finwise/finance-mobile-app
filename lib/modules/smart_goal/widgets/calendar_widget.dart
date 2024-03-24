@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 final kToday = DateTime.now();
-final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
-final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+final kFirstDay = DateTime(kToday.year - 2, kToday.month, kToday.day);
+final kLastDay = DateTime(kToday.year + 2, kToday.month, kToday.day);
 
 class CalendarWidget extends StatefulWidget {
-  late final void Function(DateTime selectedDay, DateTime focusedDay)
-      onDaySelected;
+  final void Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
 
-  CalendarWidget({
+  const CalendarWidget({
     super.key,
     required this.onDaySelected,
   });
