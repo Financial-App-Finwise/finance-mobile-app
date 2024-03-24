@@ -233,28 +233,28 @@ abstract class _TransactionStoreBase with Store {
 
   // -------------------- Update a Transaction --------------------
   @action
-  Future<bool> update(TransactionData transactionData) async {
+  Future<bool> update(TransactionPost transactionPost, int id) async {
     debugPrint('--> START: update, transaction');
-    setLoadingStatus(LoadingStatusEnum.loading);
+    loadingUpdate = LoadingStatusEnum.loading;
     bool success = false;
     try {
-      Response response = await ApiService.dio.put(
-        'transactions/${transactionData.id}',
-        data: transactionData.toJson(),
+      Response response = await ApiService.dio.patch(
+        'transactions/$id',
+        data: transactionPost.toJson(),
       );
       if (response.statusCode == 200) {
         success = true;
         await readByPage(refreshed: true);
-        setLoadingStatus(LoadingStatusEnum.done);
+        loadingUpdate = LoadingStatusEnum.done;
       } else {
         debugPrint('Something went wrong, code: ${response.statusCode}');
         success = false;
-        setLoadingStatus(LoadingStatusEnum.error);
+        loadingUpdate = LoadingStatusEnum.error;
       }
     } catch (e) {
       debugPrint('${e.runtimeType}: ${e.toString()}');
       success = false;
-      setLoadingStatus(LoadingStatusEnum.error);
+      loadingUpdate = LoadingStatusEnum.error;
     } finally {
       debugPrint('<-- END: update, transaction');
     }

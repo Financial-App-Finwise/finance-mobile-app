@@ -158,7 +158,8 @@ class _TransactionFormLayoutState extends State<TransactionFormLayout> {
   late final _dateController = TextEditingController(
       text: UIHelper.getDateFormat(widget.dateController.text, 'dd MMM, yyyy'));
   late final _noteController = widget.noteController;
-  late CategoryData _selectedIncomeCategory = CategoryData();
+  late CategoryData _selectedIncomeCategory =
+      widget.transactionData.categoryData ?? CategoryData();
 
   Widget _buildForm() {
     return Container(

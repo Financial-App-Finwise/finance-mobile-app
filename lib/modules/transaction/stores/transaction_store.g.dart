@@ -271,8 +271,8 @@ mixin _$TransactionStore on _TransactionStoreBase, Store {
       AsyncAction('_TransactionStoreBase.update', context: context);
 
   @override
-  Future<bool> update(TransactionData transactionData) {
-    return _$updateAsyncAction.run(() => super.update(transactionData));
+  Future<bool> update(TransactionPost transactionPost, int id) {
+    return _$updateAsyncAction.run(() => super.update(transactionPost, id));
   }
 
   late final _$deleteAsyncAction =

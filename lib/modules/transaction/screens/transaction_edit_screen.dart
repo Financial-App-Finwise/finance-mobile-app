@@ -1,13 +1,12 @@
 import 'package:finwise/modules/budget_plan/models/budget_plan_model.dart';
 import 'package:finwise/modules/categories/models/categories_model.dart';
-import 'package:finwise/modules/finance/stores/finance_store.dart';
 import 'package:finwise/modules/transaction/layouts/transaction_form_layout.dart';
 import 'package:finwise/modules/transaction/models/transaction_model.dart';
 import 'package:finwise/modules/transaction/models/transaction_post_model.dart';
-import 'package:finwise/modules/transaction/stores/transaction_store.dart';
+import 'package:finwise/modules/transaction/screens/transaction_update_screen.dart';
 import 'package:finwise/modules/upcoming_bill/models/upcoming_bill_model.dart';
+import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TransactionEditScreen extends StatefulWidget {
   const TransactionEditScreen({super.key});
@@ -28,8 +27,7 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
   @override
   Widget build(BuildContext context) {
     return TransactionFormLayout(
-      amountController:
-          TextEditingController(text: args.amount.toString()),
+      amountController: TextEditingController(text: args.amount.toString()),
       amountExpenseController:
           TextEditingController(text: args.amount.toString()),
       noteController: TextEditingController(text: args.note),
@@ -71,17 +69,18 @@ class _TransactionEditScreenState extends State<TransactionEditScreen> {
           selectedCategoryId = args.categoryID;
         }
 
-        print(args.toJson());
-
-        // bool success = await context.read<TransactionStore>().update(
-        //       TransactionData(id: args.id),
-        //     );
-        // if (success) {
-        //   await context.read<FinanceStore>().read();
-        //   if (mounted) {
-        //     Navigator.pop(context);
-        //   }
-        // }
+        bool success = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => TransactionUpdateScreen(
+                transactionPost: transactionPost,
+                id: args.id,
+              ),
+            ));
+        if (success) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
       },
     );
   }

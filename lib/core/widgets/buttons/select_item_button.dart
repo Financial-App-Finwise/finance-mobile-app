@@ -64,7 +64,7 @@ class _SelectItemButtonState extends State<SelectItemButton> {
           Container(
             padding: const EdgeInsets.symmetric(
               vertical: 16,
-              horizontal: 20,
+              horizontal: 16,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
