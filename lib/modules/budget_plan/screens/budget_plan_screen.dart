@@ -163,6 +163,7 @@ class _BudgetPlanScreenState extends State<BudgetPlanScreen> {
 
   Widget _buildContent() {
     return RefreshIndicator(
+      color: ColorConstant.primary,
       onRefresh: () async {
         await context.read<BudgetPlanStore>().read(refreshed: true);
       },
