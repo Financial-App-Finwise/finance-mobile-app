@@ -136,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AuthLoadingDataScreen()));
+                          builder: (_) => const AuthLoadingDataScreen()));
                 }
               }
             },

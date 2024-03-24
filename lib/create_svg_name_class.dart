@@ -1,5 +1,8 @@
 import 'dart:io';
 
+// **************************************************************************
+// Create a class to store all icon assets
+// **************************************************************************
 // run
 // dart path_to_this_file
 // example: dart lib/create_svg_file.dart

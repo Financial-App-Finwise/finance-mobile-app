@@ -62,22 +62,49 @@ class _HomeScreenState extends State<HomeScreen>
   late final UpcomingBillStore _upcomingBillStore =
       context.read<UpcomingBillStore>();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(Duration.zero, () async {
-  //     await _readAll();
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await _readAll();
+    });
+  }
 
   // -------------------- Read all Necessary Data --------------------
   Future _readAll() async {
+    // ---------- Insight Web Page ----------
     _insightStore.loadWebPage();
+
+    // ---------- Budget Plan ----------
     await _budgetPlanStore.read();
-    await _financeStore.read(updateFinance: true);
+
+    // ---------- My Finance ----------
+    await _financeStore.read(
+        updateFinance: true,
+        queryParemeter: '?period=${FinanceFilterConstant.thisMonth}');
+
+    // ---------- Bar Chart ----------
+    await _financeStore.read(
+        queryParemeter: '?period=${FinanceFilterConstant.thisMonth}');
+
+    // ---------- General Expense ----------
     await _financeStore.read(
         queryParemeter: '?${FinanceFilterConstant.expenseQuery}');
+
+    // ---------- Total Spending ----------
+    await _financeStore.read(
+        queryParemeter:
+            '?${FinanceFilterConstant.expenseQuery}&${FinanceFilterConstant.thisMonthQuery}');
+
+    // ---------- Total Earning ----------
+    await _financeStore.read(
+        queryParemeter:
+            '?${FinanceFilterConstant.incomeQuery}&${FinanceFilterConstant.thisMonthQuery}');
+
+    // ---------- Smart Goal ----------
     await _smartGoalStore.read(status: SmartGoalStatusEnum.all);
+
+    // ---------- Upcoming Bill ----------
     await _upcomingBillStore.read();
   }
 
@@ -194,6 +221,7 @@ class _HomeScreenState extends State<HomeScreen>
                         Navigator.pushNamed(context, RouteName.finance))
               ],
             ),
+
             Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
@@ -227,7 +255,12 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
             const SizedBox(height: 12),
-
+            // ---------- Loading ----------
+            Visibility(
+              visible: _financeStore.isLoading,
+              child: const LinearProgressDots(),
+            ),
+            const SizedBox(height: 8),
             // ---------- Content ----------
             RoundedContainer(
               child: Column(
@@ -249,41 +282,27 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                       // ---------- Dropdown Button ----------
-                      // DurationDropDown(
-                      //   items: [
-                      //     DurationDropDownItem(
-                      //         title: 'This Month', value: 'this_month'),
-                      //     DurationDropDownItem(
-                      //         title: 'Last Month', value: 'last_month'),
-                      //     DurationDropDownItem(
-                      //         title: 'Last 3 Months', value: 'last_3_months'),
-                      //     DurationDropDownItem(
-                      //         title: 'Last 4 Months', value: 'last_4_months'),
-                      //   ],
-                      //   selectedValue: _financeStore.period,
-                      //   onChange: (value) async {
-                      //     // save previous value, to aviod UI error in the bar chart
-                      //     _financeStore.previousBarData = ObservableMap.of(
-                      //         _financeStore.filteredFinance.data.total);
-
-                      //     // change the period
-                      //     _financeStore.period = value;
-
-                      //     // initialize the map item value
-                      //     _financeStore
-                      //         .initialize(_financeStore.queryParemeter);
-
-                      //     // if the filteredFinance is empty, read to get data
-                      //     if (_financeStore
-                      //         .filteredFinance.data.items.isEmpty) {
-                      //       await _financeStore.read(
-                      //         isIncome: true,
-                      //         setLoading: () => _financeStore.loadingBarChart =
-                      //             LoadingStatusEnum.loading,
-                      //       );
-                      //     }
-                      //   },
-                      // ),
+                      DurationDropDown(
+                        items: [
+                          DurationDropDownItem(
+                              title: 'This Month', value: 'this_month'),
+                          DurationDropDownItem(
+                              title: 'Last Month', value: 'last_month'),
+                          DurationDropDownItem(
+                              title: 'Last 3 Months', value: 'last_3_months'),
+                          DurationDropDownItem(
+                              title: 'Last 4 Months', value: 'last_4_months'),
+                        ],
+                        selectedValue: _financeStore.myFinancePeriod,
+                        onChange: (value) async {
+                          _financeStore.myFinancePeriod = value;
+                          await _financeStore.read(
+                            queryParemeter: '?period=$value',
+                            setLoading: () => _financeStore.loadingStatus =
+                                LoadingStatusEnum.loading,
+                          );
+                        },
+                      ),
                     ],
                   ),
                   // ---------- Divider ----------
@@ -300,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen>
                           child: _buildFinanceItem(
                             text: 'Income',
                             amount:
-                                '\$${_financeStore.filteredFinance.data.totalIncome}',
+                                '\$${_financeStore.myFinance.data.filteredIncome}',
                             color: ColorConstant.income,
                             icon: IconHelper.getSVG(
                               SVGName.earn,
@@ -319,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen>
                           child: _buildFinanceItem(
                             text: 'Expense',
                             amount:
-                                '\$${_financeStore.filteredFinance.data.totalExpense}',
+                                '\$${_financeStore.myFinance.data.filteredExpense}',
                             color: ColorConstant.expense,
                             icon: IconHelper.getSVG(
                               SVGName.expense,
@@ -507,18 +526,18 @@ class _HomeScreenState extends State<HomeScreen>
                       onChange: (value) async {
                         // save previous value, to aviod UI error in the bar chart
                         _financeStore.previousBarData = ObservableMap.of(
-                            _financeStore.filteredFinance.data.total);
+                            _financeStore.barChartFinance.data.total);
 
                         // change the period
-                        _financeStore.period = value;
+                        _financeStore.barChartPeriod = value;
 
                         // initialize the map item value
                         _financeStore.initialize(_financeStore.queryParemeter);
 
                         // if the filteredFinance is empty, read to get data
-                        if (_financeStore.filteredFinance.data.items.isEmpty) {
+                        if (_financeStore.barChartFinance.data.items.isEmpty) {
                           await _financeStore.read(
-                            isIncome: true,
+                            queryParemeter: '?period=${value}',
                             setLoading: () => _financeStore.loadingBarChart =
                                 LoadingStatusEnum.loading,
                           );
@@ -542,9 +561,9 @@ class _HomeScreenState extends State<HomeScreen>
                           ],
                         )
                       : IncomeExpenseBarChart(
-                          data: _financeStore.filteredFinance.data.total.isEmpty
+                          data: _financeStore.barChartFinance.data.total.isEmpty
                               ? _financeStore.previousBarData
-                              : _financeStore.filteredFinance.data.total),
+                              : _financeStore.barChartFinance.data.total),
                 ],
               ),
             ),

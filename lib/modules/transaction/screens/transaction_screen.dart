@@ -189,7 +189,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       const Divider(color: ColorConstant.divider),
                 ),
                 Visibility(
-                  // visible: ,
+                  visible: store.filteredTransaction.items.length <
+                      store.transaction.meta.total,
                   child: const CircularProgressIndicatorTwoArcs(),
                 ),
               ],

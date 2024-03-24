@@ -31,19 +31,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 48),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBarWidget(
-      //   currentIndex: 2,
-      //   onTap: () {},
-      // ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () =>
-      //       Navigator.pushNamed(context, RouteName.transactionCreate),
-      //   elevation: 0,
-      //   backgroundColor: const Color(0xff00A6FB),
-      //   shape: const CircleBorder(),
-      //   child: const Icon(Icons.add, color: Colors.white),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

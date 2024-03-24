@@ -60,15 +60,6 @@ abstract class _FinanceStoreBase with Store {
   @observable
   late Finance finance = _defaultFinance;
 
-  // -------------------- Dollar Account --------------------
-  @computed
-  FinanceItem get dollarAccount => finance.data.items.firstWhere(
-        (element) => element.currency.code == 'USD',
-        orElse: () {
-          return FinanceItem(currency: Currency());
-        },
-      );
-
   // Keep track of previous bar chart data
   @observable
   ObservableMap<String, IncomeExpenseCompare> previousBarData = ObservableMap();
@@ -154,6 +145,37 @@ abstract class _FinanceStoreBase with Store {
   // **************************************************************************
   // Filtered Finance on Specific UI
   // **************************************************************************
+  // -------------------- My Finance --------------------
+  @observable
+  String myFinancePeriod = FinanceFilterConstant.thisMonth;
+
+  @computed
+  String get myFinanceQuery => 'period=$myFinancePeriod';
+
+  @computed
+  Finance get myFinance =>
+      filteredFinanceMap['?$myFinanceQuery'] ?? _defaultFinance;
+
+  // -------------------- Dollar Account --------------------
+  @computed
+  FinanceItem get dollarAccount => finance.data.items.firstWhere(
+        (element) => element.currency.code == 'USD',
+        orElse: () {
+          return FinanceItem(currency: Currency());
+        },
+      );
+
+  // -------------------- Bar Chart --------------------
+  @observable
+  String barChartPeriod = FinanceFilterConstant.thisMonth;
+
+  @computed
+  String get barChartQuery => 'period=$barChartPeriod';
+
+  @computed
+  Finance get barChartFinance =>
+      filteredFinanceMap['?$barChartQuery'] ?? _defaultFinance;
+
   // -------------------- Total Spending --------------------
   @observable
   String totalSpendPeriod = FinanceFilterConstant.thisMonth;
@@ -190,10 +212,6 @@ abstract class _FinanceStoreBase with Store {
     loadingBarChart = LoadingStatusEnum.error;
     loadingPieChart = LoadingStatusEnum.error;
   }
-
-  // -------------------- Has Loaded --------------------
-  @observable
-  bool _hasReadOnce = false;
 
   // **************************************************************************
   // Read Finance
@@ -334,6 +352,5 @@ abstract class _FinanceStoreBase with Store {
     period = 'this_month';
     isIncome = 1;
     filteredFinanceMap = ObservableMap();
-    _hasReadOnce = false;
   }
 }

@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/text_style_constants/auth_text_style_cons
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/modules/auth/layouts/auth_screen_layout.dart';
 import 'package:finwise/modules/auth/models/user_post_model/user_post_model.dart';
+import 'package:finwise/modules/auth/screens/auth_loading_data_screen.dart';
 import 'package:finwise/modules/auth/widgets/sign_loading_widget.dart';
 import 'package:finwise/modules/auth/stores/auth_store.dart';
 import 'package:finwise/modules/auth/widgets/auth_form_widget.dart';
@@ -23,49 +24,40 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // @override
-  // void deactivate() {
-  //   _emailController.dispose();
-  //   super.deactivate();
-  // }
-
-  @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      authStore = context.read<AuthStore>();
-    }
-  }
-
-  late final AuthStore authStore;
+  late final AuthStore authStore = context.read<AuthStore>();
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return authStore.isLoading
-          ? const SignLoadingWidget()
-          : AuthScreenLayout(
-              // appBar: ,
-              title: 'Welcome Back',
-              subtitle: 'Please enter your email and password to sign in',
-              buttonLabel: 'Sign in',
-              bottomContent: _buildBottomContent(),
-              isFormFilled: _isFormFilled,
-              formArea: _buildTextFields(),
-              onButtonTap: () async {
-                debugPrint(_emailController.text);
-                bool success = await authStore.signIn(
-                  UserSignIn(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                  ),
-                );
-                if (success) {
-                  Navigator.pop(context);
-                }
-              },
-            );
-    });
+    return _loading
+        ? const SignLoadingWidget()
+        : AuthScreenLayout(
+            // appBar: ,
+            title: 'Welcome Back',
+            subtitle: 'Please enter your email and password to sign in',
+            buttonLabel: 'Sign in',
+            bottomContent: _buildBottomContent(),
+            isFormFilled: _isFormFilled,
+            formArea: _buildTextFields(),
+            onButtonTap: () async {
+              setState(() {
+                _loading = true;
+              });
+              bool success = await authStore.signIn(
+                UserSignIn(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                ),
+              );
+
+              if (success) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const AuthLoadingDataScreen()));
+              }
+            },
+          );
   }
 
   final TextEditingController _emailController = TextEditingController();

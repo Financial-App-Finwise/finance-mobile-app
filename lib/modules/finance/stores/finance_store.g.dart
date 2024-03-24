@@ -37,13 +37,6 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
       (_$isLoadingUpdateComputed ??= Computed<bool>(() => super.isLoadingUpdate,
               name: '_FinanceStoreBase.isLoadingUpdate'))
           .value;
-  Computed<FinanceItem>? _$dollarAccountComputed;
-
-  @override
-  FinanceItem get dollarAccount => (_$dollarAccountComputed ??=
-          Computed<FinanceItem>(() => super.dollarAccount,
-              name: '_FinanceStoreBase.dollarAccount'))
-      .value;
   Computed<String>? _$queryParemeterComputed;
 
   @override
@@ -92,6 +85,41 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
   Finance get filteredFinanceExpense => (_$filteredFinanceExpenseComputed ??=
           Computed<Finance>(() => super.filteredFinanceExpense,
               name: '_FinanceStoreBase.filteredFinanceExpense'))
+      .value;
+  Computed<String>? _$myFinanceQueryComputed;
+
+  @override
+  String get myFinanceQuery =>
+      (_$myFinanceQueryComputed ??= Computed<String>(() => super.myFinanceQuery,
+              name: '_FinanceStoreBase.myFinanceQuery'))
+          .value;
+  Computed<Finance>? _$myFinanceComputed;
+
+  @override
+  Finance get myFinance =>
+      (_$myFinanceComputed ??= Computed<Finance>(() => super.myFinance,
+              name: '_FinanceStoreBase.myFinance'))
+          .value;
+  Computed<FinanceItem>? _$dollarAccountComputed;
+
+  @override
+  FinanceItem get dollarAccount => (_$dollarAccountComputed ??=
+          Computed<FinanceItem>(() => super.dollarAccount,
+              name: '_FinanceStoreBase.dollarAccount'))
+      .value;
+  Computed<String>? _$barChartQueryComputed;
+
+  @override
+  String get barChartQuery =>
+      (_$barChartQueryComputed ??= Computed<String>(() => super.barChartQuery,
+              name: '_FinanceStoreBase.barChartQuery'))
+          .value;
+  Computed<Finance>? _$barChartFinanceComputed;
+
+  @override
+  Finance get barChartFinance => (_$barChartFinanceComputed ??=
+          Computed<Finance>(() => super.barChartFinance,
+              name: '_FinanceStoreBase.barChartFinance'))
       .value;
   Computed<String>? _$totalSpendQueryComputed;
 
@@ -270,6 +298,38 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
     });
   }
 
+  late final _$myFinancePeriodAtom =
+      Atom(name: '_FinanceStoreBase.myFinancePeriod', context: context);
+
+  @override
+  String get myFinancePeriod {
+    _$myFinancePeriodAtom.reportRead();
+    return super.myFinancePeriod;
+  }
+
+  @override
+  set myFinancePeriod(String value) {
+    _$myFinancePeriodAtom.reportWrite(value, super.myFinancePeriod, () {
+      super.myFinancePeriod = value;
+    });
+  }
+
+  late final _$barChartPeriodAtom =
+      Atom(name: '_FinanceStoreBase.barChartPeriod', context: context);
+
+  @override
+  String get barChartPeriod {
+    _$barChartPeriodAtom.reportRead();
+    return super.barChartPeriod;
+  }
+
+  @override
+  set barChartPeriod(String value) {
+    _$barChartPeriodAtom.reportWrite(value, super.barChartPeriod, () {
+      super.barChartPeriod = value;
+    });
+  }
+
   late final _$totalSpendPeriodAtom =
       Atom(name: '_FinanceStoreBase.totalSpendPeriod', context: context);
 
@@ -299,22 +359,6 @@ mixin _$FinanceStore on _FinanceStoreBase, Store {
   set totalEarnPeriod(String value) {
     _$totalEarnPeriodAtom.reportWrite(value, super.totalEarnPeriod, () {
       super.totalEarnPeriod = value;
-    });
-  }
-
-  late final _$_hasReadOnceAtom =
-      Atom(name: '_FinanceStoreBase._hasReadOnce', context: context);
-
-  @override
-  bool get _hasReadOnce {
-    _$_hasReadOnceAtom.reportRead();
-    return super._hasReadOnce;
-  }
-
-  @override
-  set _hasReadOnce(bool value) {
-    _$_hasReadOnceAtom.reportWrite(value, super._hasReadOnce, () {
-      super._hasReadOnce = value;
     });
   }
 
@@ -376,13 +420,14 @@ previousBarData: ${previousBarData},
 isIncome: ${isIncome},
 period: ${period},
 filteredFinanceMap: ${filteredFinanceMap},
+myFinancePeriod: ${myFinancePeriod},
+barChartPeriod: ${barChartPeriod},
 totalSpendPeriod: ${totalSpendPeriod},
 totalEarnPeriod: ${totalEarnPeriod},
 isLoading: ${isLoading},
 isLoadingBarChart: ${isLoadingBarChart},
 isLoadingPieChart: ${isLoadingPieChart},
 isLoadingUpdate: ${isLoadingUpdate},
-dollarAccount: ${dollarAccount},
 queryParemeter: ${queryParemeter},
 queryParemeterIncome: ${queryParemeterIncome},
 queryParemeterExpense: ${queryParemeterExpense},
@@ -390,6 +435,11 @@ filteredFinance: ${filteredFinance},
 financeExpense: ${financeExpense},
 filteredFinanceIncome: ${filteredFinanceIncome},
 filteredFinanceExpense: ${filteredFinanceExpense},
+myFinanceQuery: ${myFinanceQuery},
+myFinance: ${myFinance},
+dollarAccount: ${dollarAccount},
+barChartQuery: ${barChartQuery},
+barChartFinance: ${barChartFinance},
 totalSpendQuery: ${totalSpendQuery},
 totalSpendFinance: ${totalSpendFinance},
 totalEarnQuery: ${totalEarnQuery},

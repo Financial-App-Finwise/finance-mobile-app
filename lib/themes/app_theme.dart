@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/font_constant.dart';
 
+// **************************************************************************
+// Theme of the app
+// **************************************************************************
 ThemeData appTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   fontFamily: FontConstant.balooThambi2Medium,

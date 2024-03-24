@@ -27,7 +27,9 @@ import 'package:finwise/initiating_screens/wrapper_screen.dart';
 import 'package:finwise/modules/user/profile_screen.dart';
 import 'package:flutter/material.dart';
 
-// store all route names
+// **************************************************************************
+// Store all route names
+// **************************************************************************
 abstract class RouteName {
   // -------------------- Initiating Screens --------------------
   static const String splash = '/splash';
@@ -76,7 +78,9 @@ abstract class RouteName {
   static const String profile = '/profile';
 }
 
-// map from route names to screens
+// **************************************************************************
+// Map each route name to its screen
+// **************************************************************************
 var appRoutes = {
   // -------------------- Initiating Screens --------------------
   RouteName.wrapper: (BuildContext context) => const WrapperScreen(),
@@ -96,8 +100,7 @@ var appRoutes = {
 
   // -------------------- Finance --------------------
   RouteName.finance: (BuildContext context) => const FinanceScreen(),
-  RouteName.financeEdit: (BuildContext context) =>
-      const FinanceEditScreen(),
+  RouteName.financeEdit: (BuildContext context) => const FinanceEditScreen(),
 
   // -------------------- Transaction --------------------
   RouteName.transaction: (BuildContext context) => const TransactionScreen(),
@@ -110,8 +113,7 @@ var appRoutes = {
 
   // -------------------- Smart goal --------------------
   RouteName.smartGoal: (BuildContext context) => const SmartGoalScreen(),
-  RouteName.smartGoalAdd: (BuildContext context) =>
-      const SmartGoalAddScreen(),
+  RouteName.smartGoalAdd: (BuildContext context) => const SmartGoalAddScreen(),
   RouteName.smartGoalDetail: (BuildContext context) =>
       const SmartGoalDetailScreen(),
   RouteName.smartGoalEdit: (BuildContext context) =>
