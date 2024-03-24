@@ -128,7 +128,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
             SizedBox(
               width: 72,
               height: 72,
-              child:  IconConstant.myBudget(
+              child: IconConstant.myBudget(
                 color: ColorConstant.primary,
               ),
             ),
@@ -210,20 +210,7 @@ class _EditBudgetPlanScreenState extends State<EditBudgetPlanScreen> {
               const SizedBox(
                 height: 8,
               ),
-              const Text(
-                'Amount needed to be spent in this category.',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12,
-                  letterSpacing: 0.5,
-                  height: 1.5,
-                  color: ColorConstant.mainText,
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              predictionData.predictedBudget != '0'
+              predictionData.predictedBudget != 0
                   ? BudgetRecommendation(
                       amount: predictionData.predictedBudget,
                       nullData: false,

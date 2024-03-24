@@ -146,7 +146,7 @@ abstract class _UpcomingBillStoreBase with Store {
       } else {
         url = 'upcomingbills?$queryParameter&page=$page';
       }
-
+      print('nnnn $url');
       Response response = await ApiService.dio.get(url);
       if (response.statusCode == 200) {
         UpcomingBill newUpcomingBill = await compute(

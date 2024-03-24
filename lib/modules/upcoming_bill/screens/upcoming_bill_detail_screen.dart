@@ -410,7 +410,7 @@ class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
                   height: 16,
                 ),
                 const Text(
-                  'Are you sure you want to delete this SMART gaol?',
+                  'Are you sure you want to delete this bill?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
@@ -424,7 +424,7 @@ class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
                   height: 16,
                 ),
                 const Text(
-                  'You will delete every transaction added to this goal.',
+                  'All related transaction must be delete first.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -466,52 +466,55 @@ class _UpcomingBillDetailScreenState extends State<UpcomingBillDetailScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 12,
+                    SizedBox(
+                      width: args.status == 'unpaid' ? 12 : 0,
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-                          bool success = false;
+                    args.status == 'unpaid'
+                        ? Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                bool success = false;
 
-                          success = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UpcomingBillDeleteScreen(
-                                  upcomingBillData: args),
-                            ),
-                          );
+                                success = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        UpcomingBillDeleteScreen(
+                                            upcomingBillData: args),
+                                  ),
+                                );
 
-                          if (success) {
-                            Navigator.of(context).pop();
-                            Navigator.pop(context);
-                            await context
-                                .read<UpcomingBillStore>()
-                                .read(refreshed: true);
-                          }
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: ColorConstant.expense,
-                          ),
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              letterSpacing: 1,
-                              color: ColorConstant.white,
+                                if (success) {
+                                  Navigator.of(context).pop();
+                                  Navigator.pop(context);
+                                  await context
+                                      .read<UpcomingBillStore>()
+                                      .read(refreshed: true);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 24,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: ColorConstant.expense,
+                                ),
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                    color: ColorConstant.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          )
+                        : Container(),
                   ],
                 )
               ]),

@@ -124,38 +124,6 @@ class _TransactionContentState extends State<TransactionContent> {
                 height: 2,
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 24,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: ColorConstant.secondary,
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TransactionAddScreen()));
-                },
-                child: const Text(
-                  'Add Transaction',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: ColorConstant.white,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
