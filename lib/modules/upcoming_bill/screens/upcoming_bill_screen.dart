@@ -161,6 +161,7 @@ class _UpcomingBillScreenState extends State<UpcomingBillScreen> {
 
   Widget _buildContent() {
     return RefreshIndicator(
+      color: ColorConstant.primary,
       onRefresh: () async {
         _isGrid
             ? await context.read<UpcomingBillStore>().readYearly()
