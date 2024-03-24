@@ -8,6 +8,7 @@ import 'package:finwise/core/helpers/text_style_helper.dart';
 import 'package:finwise/core/helpers/ui_helper.dart';
 import 'package:finwise/core/layouts/general_sticky_header_layout.dart';
 import 'package:finwise/core/widgets/circular_progress/circular_progress_two_arches.dart';
+import 'package:finwise/core/widgets/circular_progress/linear_progress_dots.dart';
 import 'package:finwise/core/widgets/custom_icon_button.dart';
 import 'package:finwise/core/widgets/empty_data_widget.dart';
 import 'package:finwise/core/widgets/filter_bars/headers/models/filter_bar_header_item_model.dart';
@@ -23,6 +24,7 @@ import 'package:finwise/modules/smart_goal/widgets/smart_goal_list.dart';
 import 'package:finwise/modules/smart_goal/widgets/smart_goal_overview.dart';
 import 'package:finwise/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -349,9 +351,7 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
               _store.readByPage(
                 refreshed: _store.filteredSmartGoal.items.isEmpty,
                 setLoading: () {
-                  if (_store.filteredSmartGoal.items.isEmpty) {
-                    _store.loadingStatus = LoadingStatusEnum.loading;
-                  }
+                  _store.loadingStatus = LoadingStatusEnum.loading;
                 },
               );
             },
@@ -393,7 +393,6 @@ class _SmartGoalScreenState extends State<SmartGoalScreen> {
           ? const CircularProgressIndicatorTwoArcs()
           : Column(
               children: [
-                Text('${items.length}'),
                 ListView.separated(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
