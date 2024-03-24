@@ -45,7 +45,7 @@ class _UpcomingBillEditScreenState extends State<UpcomingBillEditScreen> {
 
   Widget _buildLoadingScreen() {
     return Observer(builder: (context) {
-      return store.createStatus == LoadingStatusEnum.done
+      return store.createStatus != LoadingStatusEnum.done
           ? LoadingScreen(
               title: 'Upcoming Bill Edited Successfully!',
               description: 'Please wait...\nYou will be directed back.',

@@ -255,7 +255,7 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                   height: 16,
                 ),
                 const Text(
-                  'Are you sure you want to delete this SMART gaol?',
+                  'Are you sure you want to delete this budget plan?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
@@ -269,7 +269,7 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                   height: 16,
                 ),
                 const Text(
-                  'You will delete every transaction added to this goal.',
+                  'All related transaction must be delete first.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -311,52 +311,55 @@ class _BudgetPlanDetailScreenState extends State<BudgetPlanDetailScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 12,
+                    SizedBox(
+                      width: args.transactionCount <= 0 ? 12 : 0,
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-                          bool success = false;
+                    args.transactionCount <= 0
+                        ? Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                bool success = false;
 
-                          success = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  BudgetPlanDeleteScreen(budgetPlanData: args),
-                            ),
-                          );
+                                success = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        BudgetPlanDeleteScreen(
+                                            budgetPlanData: args),
+                                  ),
+                                );
 
-                          if (success) {
-                            Navigator.of(context).pop();
-                            Navigator.pop(context);
-                            await context
-                                .read<BudgetPlanStore>()
-                                .read(refreshed: true);
-                          }
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: ColorConstant.expense,
-                          ),
-                          child: const Text(
-                            'Delete',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              letterSpacing: 1,
-                              color: ColorConstant.white,
+                                if (success) {
+                                  Navigator.of(context).pop();
+                                  Navigator.pop(context);
+                                  await context
+                                      .read<BudgetPlanStore>()
+                                      .read(refreshed: true);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 24,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: ColorConstant.expense,
+                                ),
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                    color: ColorConstant.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          )
+                        : Container(),
                   ],
                 )
               ]),

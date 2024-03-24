@@ -5,7 +5,7 @@ abstract class UpcomingBillHelper {
 
   static final DateTime startTomorrow =
       currentDate.add(const Duration(days: 1));
-  static final DateTime endTomorrow = currentDate.add(const Duration(days: 3));
+  static final DateTime endTomorrow = currentDate.add(const Duration(days: 2));
 
   static int weekDay = currentDate.weekday;
   static DateTime startWeek = currentDate.subtract(Duration(days: weekDay - 1));
