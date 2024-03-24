@@ -297,7 +297,7 @@ class _MainBudgetingState extends State<MainBudgeting> {
             SizedBox(
               height: 28,
               width: 28,
-              child: IconHelper.getSVG(SVGName.pandaFinancialSnapshot),
+              child: IconHelper.getSVGDefault(SVGName.pandaFinancialSnapshot),
             ),
             Text(
               title,
