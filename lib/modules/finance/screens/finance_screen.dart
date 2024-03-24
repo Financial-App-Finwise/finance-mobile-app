@@ -180,18 +180,15 @@ class _FinanceScreenState extends State<FinanceScreen> {
                 onChange: (value) async {
                   // save previous value, to aviod UI error in the bar chart
                   store.previousBarData =
-                      ObservableMap.of(store.filteredFinance.data.total);
+                      ObservableMap.of(store.barChartFinance.data.total);
 
                   // change the period
-                  store.period = value;
-
-                  // initialize the map item value
-                  store.initialize(store.queryParemeter);
+                  store.barChartPeriod = value;
 
                   // if the filteredFinance is empty, read to get data
-                  if (store.filteredFinance.data.items.isEmpty) {
+                  if (store.barChartFinance.data.items.isEmpty) {
                     await store.read(
-                      isIncome: true,
+                      queryParemeter: '?period=${value}',
                       setLoading: () =>
                           store.loadingBarChart = LoadingStatusEnum.loading,
                     );
@@ -222,9 +219,9 @@ class _FinanceScreenState extends State<FinanceScreen> {
                   ],
                 )
               : IncomeExpenseBarChart(
-                  data: store.filteredFinance.data.total.isEmpty
+                  data: store.barChartFinance.data.total.isEmpty
                       ? store.previousBarData
-                      : store.filteredFinance.data.total),
+                      : store.barChartFinance.data.total),
         ],
       ),
     );
@@ -237,7 +234,6 @@ class _FinanceScreenState extends State<FinanceScreen> {
     return DurationDropDown(
       items: [
         DurationDropDownItem(title: 'This Month', value: 'this_month'),
-        // DurationDropDownItem(title: 'This Week', value: 'this_week'),
         DurationDropDownItem(title: 'Last Month', value: 'last_month'),
         DurationDropDownItem(title: 'Last 3 Months', value: 'last_3_months'),
         DurationDropDownItem(title: 'Last 4 Months', value: 'last_4_months'),
@@ -253,13 +249,13 @@ class _FinanceScreenState extends State<FinanceScreen> {
       children: [
         _buildFinanceItem(
           text: 'Income',
-          amount: '\$${store.filteredFinance.data.filteredIncome}',
+          amount: '\$${store.finance.data.totalIncome}',
           icon: IconHelper.getSVG(SVGName.earn, color: ColorConstant.income),
           color: ColorConstant.income,
         ),
         _buildFinanceItem(
           text: 'Expense',
-          amount: '\$${store.filteredFinance.data.filteredExpense}',
+          amount: '\$${store.finance.data.totalExpense}',
           icon:
               IconHelper.getSVG(SVGName.expense, color: ColorConstant.expense),
           color: ColorConstant.expense,

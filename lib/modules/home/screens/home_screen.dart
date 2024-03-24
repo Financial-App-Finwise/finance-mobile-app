@@ -531,9 +531,6 @@ class _HomeScreenState extends State<HomeScreen>
                         // change the period
                         _financeStore.barChartPeriod = value;
 
-                        // initialize the map item value
-                        _financeStore.initialize(_financeStore.queryParemeter);
-
                         // if the filteredFinance is empty, read to get data
                         if (_financeStore.barChartFinance.data.items.isEmpty) {
                           await _financeStore.read(
