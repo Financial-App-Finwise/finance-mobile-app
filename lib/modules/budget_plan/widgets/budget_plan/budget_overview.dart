@@ -2,6 +2,7 @@ import 'package:finwise/core/constants/color_constant.dart';
 import 'package:finwise/core/constants/icon_constant.dart';
 import 'package:finwise/core/constants/svg_name_constant.dart';
 import 'package:finwise/core/helpers/icon_helper.dart';
+import 'package:finwise/modules/onboarding_question/screens/get_started_screen.dart';
 import 'package:finwise/modules/onboarding_question/screens/onboarding_question_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -46,53 +47,61 @@ class _BudgetOverviewState extends State<BudgetOverview> {
 
   // Total budget
   Widget _totalBudget() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      decoration: BoxDecoration(
-          color: const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(12)),
-      child: Column(children: [
-        Row(
-          children: [
-            SizedBox(
-              height: 36,
-              width: 36,
-              child: IconConstant.myBudget(
-                color: ColorConstant.secondary,
-              ),
-            ),
-
-            const SizedBox(
-              width: 12,
-            ),
-            // Text
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Total budgets',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF333652),
-                  ),
-                ),
-                const SizedBox(
-                  height: 1,
-                ),
-                Text(
-                  '${widget.totalBudget}',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF0B8AAF),
-                  ),
-                ),
-              ],
-            ),
-          ],
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GetStartedScreen(),
         ),
-      ]),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        decoration: BoxDecoration(
+            color: const Color(0xFFFFFFFF),
+            borderRadius: BorderRadius.circular(12)),
+        child: Column(children: [
+          Row(
+            children: [
+              SizedBox(
+                height: 36,
+                width: 36,
+                child: IconConstant.myBudget(
+                  color: ColorConstant.secondary,
+                ),
+              ),
+
+              const SizedBox(
+                width: 12,
+              ),
+              // Text
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Total budgets',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF333652),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 1,
+                  ),
+                  Text(
+                    '${widget.totalBudget}',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF0B8AAF),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ]),
+      ),
     );
   }
 
